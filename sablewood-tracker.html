@@ -1,0 +1,965 @@
+<title>Sablewood Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky bar (Fear · Contatore · Atti) / colonna principale a schede + colonna laterale Party & Dadi */
+:root{
+  --bg:#e4e7df; --paper:#f1f2ec; --ink:#1d2421; --muted:#5b665f; --line:#c3cabf;
+  --moss:#3f5a48; --moss-soft:#d5dfd3;
+  --hope:#a8741a; --hope-soft:#f0e2c2;
+  --fear:#6a3f86; --fear-soft:#e5daee;
+  --blood:#9b2f2a; --blood-soft:#f1d9d5;
+  --ok:#2f6d43;
+  --f-display:"IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --f-read:"IM Fell English", "Iowan Old Style", Georgia, serif;
+  --f-body:"Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111613; --paper:#192019; --ink:#e3e7df; --muted:#9aa69c; --line:#2f3a32;
+  --moss:#8fb79a; --moss-soft:#24332a;
+  --hope:#e0aa4c; --hope-soft:#3a2e17;
+  --fear:#b892d6; --fear-soft:#2f2339;
+  --blood:#e0786e; --blood-soft:#3b1f1c; --ok:#7cc293; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#111613; --paper:#192019; --ink:#e3e7df; --muted:#9aa69c; --line:#2f3a32;
+  --moss:#8fb79a; --moss-soft:#24332a;
+  --hope:#e0aa4c; --hope-soft:#3a2e17;
+  --fear:#b892d6; --fear-soft:#2f2339;
+  --blood:#e0786e; --blood-soft:#3b1f1c; --ok:#7cc293; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);margin:0}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:1.75rem} h3{font-size:1.3rem} h4{font-size:1.05rem}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--hope);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.lab{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1320px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+@media (max-width:700px){.bar{position:static}.acts{margin-left:0}}
+.brand{display:flex;flex-direction:column;line-height:1}
+.brand b{font-family:var(--f-display);font-weight:400;font-size:1.45rem}
+.brand span{font-size:.75rem;color:var(--muted);letter-spacing:.06em}
+.meter{display:flex;align-items:center;gap:8px}
+.acts{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.acts button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:3px 11px;cursor:pointer;font-family:var(--f-display);font-size:1rem}
+.acts button.on{background:var(--moss);border-color:var(--moss);color:var(--paper)}
+.acts button.done{border-color:var(--moss);color:var(--moss)}
+
+.fear-pips{display:flex;gap:3px;flex-wrap:wrap;max-width:260px}
+.fp{width:15px;height:15px;transform:rotate(45deg);border:1.5px solid var(--fear);background:transparent;cursor:pointer;padding:0;border-radius:2px}
+.fp.on{background:var(--fear)}
+.counter{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:var(--r);padding:3px 8px}
+.counter.live{border-color:var(--blood);background:var(--blood-soft)}
+.counter .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600;min-width:2ch;text-align:center}
+
+/* page */
+.page{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:18px 60px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start}
+@media (max-width:980px){.page{grid-template-columns:minmax(0,1fr)}}
+.side{display:flex;flex-direction:column;gap:16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+@media (max-width:980px){.side{position:static}}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:8px 14px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--hope)}
+.main{min-width:0}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.panel>h3,.panel>h4{margin-bottom:8px}
+.sec-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px dotted var(--muted);padding-bottom:4px;margin-top:6px}
+.act-h{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.act-h .num{font-family:var(--f-mono);font-size:.8rem;background:var(--ink);color:var(--paper);padding:2px 8px;border-radius:3px;letter-spacing:.08em}
+
+.read{font-family:var(--f-read);font-size:1.08rem;line-height:1.55;background:var(--moss-soft);border-left:3px solid var(--moss);padding:12px 16px;border-radius:0 var(--r) var(--r) 0}
+.read p{margin:0 0 .6em} .read p:last-child{margin:0}
+.read .cue{font-family:var(--f-body);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--moss);font-weight:700;display:block;margin-bottom:4px}
+.note{border-left:3px solid var(--hope);padding:8px 12px;background:var(--hope-soft);border-radius:0 var(--r) var(--r) 0}
+.warn{border-left:3px solid var(--blood);padding:8px 12px;background:var(--blood-soft);border-radius:0 var(--r) var(--r) 0}
+ul.tight{margin:4px 0;padding-left:20px} ul.tight li{margin:2px 0}
+
+/* stat block */
+.stat{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--paper)}
+.stat-h{background:var(--ink);color:var(--paper);display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 12px;flex-wrap:wrap}
+.stat-h b{font-family:var(--f-display);font-weight:400;font-size:1.2rem}
+.stat-h span{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.stat-b{padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.kv{display:flex;flex-wrap:wrap;gap:4px 16px}
+.kv span b{font-weight:700}
+
+/* pips */
+.pips{display:inline-flex;gap:4px;flex-wrap:wrap;vertical-align:middle}
+.pip{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--muted);background:transparent;padding:0;cursor:pointer}
+.pip.on{background:var(--ink);border-color:var(--ink)}
+.pip.hp.on{background:var(--blood);border-color:var(--blood)}
+.pip.st.on{background:var(--fear);border-color:var(--fear)}
+.pip.hope{border-radius:3px;transform:rotate(45deg);width:14px;height:14px;margin:2px;border-color:var(--hope)}
+.pip.hope.on{background:var(--hope)}
+.pip.ar{border-radius:3px;border-color:var(--moss)}
+.pip.ar.on{background:var(--moss)}
+.pip.cd{width:24px;height:24px;border-color:var(--moss)}
+.pip.cd.on{background:var(--moss);border-color:var(--moss)}
+
+/* buttons */
+.btn{border:1px solid var(--line);background:var(--bg);border-radius:var(--r);padding:5px 11px;cursor:pointer;font-weight:500;font-size:.93rem;line-height:1.3}
+.btn:hover{border-color:var(--ink)}
+.btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.hope{background:var(--hope-soft);border-color:var(--hope)}
+.btn.fear{background:var(--fear-soft);border-color:var(--fear)}
+.btn.bad{background:var(--blood-soft);border-color:var(--blood)}
+.btn.ok{background:var(--moss-soft);border-color:var(--moss)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.xs{padding:1px 7px;font-size:.8rem}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:1px 9px;font-size:.78rem;font-weight:700;border:1px solid var(--line)}
+.chip.fear{border-color:var(--fear);color:var(--fear)}
+.chip.hope{border-color:var(--hope);color:var(--hope)}
+.chip.bad{border-color:var(--blood);color:var(--blood)}
+.chip.ok{border-color:var(--moss);color:var(--moss)}
+input[type=text],input[type=number],select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:4px 7px;min-width:0}
+input[type=number]{width:4.2em}
+textarea{width:100%;resize:vertical}
+label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
+
+/* PC cards */
+.pc{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--paper)}
+.pc.down{border-color:var(--blood)}
+.pc-top{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-top input.name{font-family:var(--f-display);font-size:1.15rem;border:0;background:transparent;padding:0;flex:1 1 120px}
+.trk{display:grid;grid-template-columns:62px 1fr;gap:4px 8px;align-items:center}
+.cond{display:flex;flex-wrap:wrap;gap:4px}
+.cond button{border:1px dashed var(--line);background:none;border-radius:999px;font-size:.75rem;padding:0 8px;cursor:pointer;color:var(--muted)}
+.cond button.on{border-style:solid;border-color:var(--blood);color:var(--blood);font-weight:700}
+
+/* dice */
+.dice-out{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.die{width:52px;height:52px;display:grid;place-items:center;font-family:var(--f-mono);font-size:1.35rem;font-weight:600;border-radius:8px;border:2px solid}
+.die.h{border-color:var(--hope);background:var(--hope-soft)}
+.die.f{border-color:var(--fear);background:var(--fear-soft)}
+.die.d6{width:38px;height:38px;font-size:1rem;border-color:var(--muted)}
+.verdict{font-family:var(--f-display);font-size:1.35rem}
+.verdict.h{color:var(--hope)} .verdict.f{color:var(--fear)} .verdict.c{color:var(--ok)}
+@media (prefers-reduced-motion:no-preference){.die.roll{animation:tumble .45s ease-out}}
+@keyframes tumble{0%{transform:rotate(-90deg) scale(.6);opacity:.2}100%{transform:none;opacity:1}}
+
+/* foes */
+.foe{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;background:var(--paper)}
+.foe.dead{opacity:.5}
+.foe .acts2{display:flex;gap:6px;flex-wrap:wrap;grid-column:1/-1}
+
+.log{display:flex;flex-direction:column;gap:2px;max-height:520px;overflow:auto;font-size:.92rem}
+.log div{display:grid;grid-template-columns:56px 1fr;gap:8px;padding:3px 0;border-bottom:1px dotted var(--line)}
+.log .t{font-family:var(--f-mono);font-size:.76rem;color:var(--muted)}
+
+.out-card{border:1px solid var(--line);border-radius:var(--r);padding:8px 12px}
+.out-card.hit{border-color:var(--hope);background:var(--hope-soft)}
+.gen-card{border:1px solid var(--line);border-radius:var(--r);padding:14px;background:var(--paper);display:flex;flex-direction:column;gap:10px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:var(--r);font-size:.9rem;z-index:50;max-width:calc(100% - 32px)}
+details summary{cursor:pointer;font-weight:700}
+.rules h4{margin-top:10px}
+.rules p{margin:4px 0}
+.save-ind{font-size:.75rem;color:var(--muted)}
+</style>
+
+<header class="bar"><div class="bar-in" id="bar"></div></header>
+<div class="page">
+  <main class="main">
+    <nav class="tabs" id="tabs"></nav>
+    <div id="view"></div>
+  </main>
+  <aside class="side" id="side"></aside>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ============ dati della campagna ============ */
+const ACTS=[
+ {id:'1',n:'I',t:"Il peccato di Luna"},
+ {id:'2',n:'II',t:"Gli Scarshade"},
+ {id:'2.5',n:'II½',t:"La scorciatoia"},
+ {id:'3',n:'III',t:"Hush"},
+ {id:'4',n:'IV',t:"Il rinnovo del sigillo"},
+ {id:'5',n:'V',t:"Ritorno a casa"}];
+
+const TEMPLATES={
+ strixwolf:{name:"Strixwolf",tier:"Tier 1 Solo",hp:8,stress:3,thr:[8,14],diff:14,atk:3,attack:"Morso Primordiale · Mischia · 1d10+4 mag",dmg:"1d10+4",
+   motives:"Separare, isolare, aggirare, superare in manovra",
+   feats:["<b>Caduta Letale.</b> Dopo aver colpito col Morso Primordiale, vola a distanza Vicina e lascia cadere il bersaglio. Se la caduta non viene impedita nella prossima azione dei PG, il bersaglio subisce 1d10+4 danni fisici all'atterraggio.",
+          "<b>Fulmine a Catena — segna 1 Stress.</b> Attacca un nemico a distanza Vicina: 1d10+4 danni magici e ripeti l'attacco. Ogni ripetizione deve colpire un bersaglio non ancora colpito."]},
+ luna:{name:"Luna (fata Wildborne)",tier:"PNG",hp:4,stress:3,thr:[6,12],diff:12,atk:0,attack:"—",dmg:"",motives:"Sopravvivere, rannicchiarsi per la paura, insultare i PG per il ritardo",feats:["Esperienze: Cacciatrice +4, Abitante del villaggio +4"]},
+ scarshade:{name:"Scarshade",tier:"Tier 1 Bruiser",hp:6,stress:3,thr:[7,14],diff:13,atk:2,attack:"Prosciugavita · Lontano · 2d6+3 mag",dmg:"2d6+3",
+   motives:"Vendicare instancabilmente gli Dèi Dimenticati",
+   feats:["Esperienze: Immateriale +4, Percepire la Magia +4",
+   "<b>Scavo nella Memoria.</b> Tiro d'attacco contro un bersaglio Vicino. Se riesce, lo Scarshade vola in Mischia e posa la mano sulla fronte del bersaglio: il giocatore descrive un momento terrificante dell'infanzia del PG. Poi 3d4+3 danni magici e il bersaglio diventa temporaneamente <i>Vulnerabile</i>.",
+   "Finché i PG non attaccano uno shade, lo Scavo nella Memoria non infligge danni."]},
+ elder:{name:"Anziano Halython",tier:"Tier 1 Social",hp:2,stress:4,thr:[6,null],diff:15,atk:0,attack:"—",dmg:"",motives:"Intimidire gli estranei, proteggere i paesani",
+   feats:["<b>Diffidente.</b> Se un PG fallisce un tiro d'azione contro l'Anziano, il PG segna 1 Stress. Altrimenti l'Anziano segna 1 Stress.","Con 4 Stress l'Anziano si arrende."]},
+ villager:{name:"Paesano Preoccupato",tier:"Tier 1 Minion",hp:1,stress:0,thr:[null,null],diff:9,atk:0,attack:"Pugnali · Mischia · 2 fis",dmg:"2",minion:true,
+   feats:["<b>Gregario.</b> Sconfitto da qualunque danno. Ogni 3 danni inflitti, sconfiggi un Gregario aggiuntivo a portata.","<b>Attacco di Gruppo — spendi 1 Paura.</b> Tutti i Paesani a distanza Vicina si muovono in Mischia e fanno un tiro d'attacco condiviso. Se riesce, 2 danni fisici ciascuno (somma)."]},
+ skeleton:{name:"Scheletro Antico",tier:"Tier 1 Standard",hp:2,stress:1,thr:[7,null],diff:10,atk:0,attack:"Spada Arrugginita · Mischia · 1d6+1 fis",dmg:"1d6+1",
+   feats:["<b>Prosciuga Magia.</b> Assorbe energia da un bersaglio a distanza Molto Vicina: tiro reazione Presenza. Se fallisce: 1d6+1 danni magici e perde 1 Speranza."]},
+ hero:{name:"Eroe Dimenticato",tier:"Tier 1 Leader",hp:5,stress:3,thr:[8,13],diff:13,atk:2,attack:"Lama Spettrale · Mischia · 1d6+3 mag",dmg:"1d6+3",
+   feats:["<b>Tormenta — segna 1 Stress.</b> Scegli un bersaglio e metti sotto i riflettori qualsiasi numero di Scheletri Antichi a distanza Vicina: vanno in Mischia e fanno un tiro d'attacco condiviso. Se riesce, 4 danni fisici ciascuno (somma).",
+   "<b>Possessione — segna 1 Stress.</b> Possiede temporaneamente un bersaglio Vicino, a meno che superi un tiro reazione Presenza. Il posseduto può solo provare a liberarsi; l'Eroe non può essere attaccato. Quando metti l'Eroe sotto i riflettori puoi far agire il posseduto al suo posto (se usa un'abilità che costa Speranza, spendi Paura). Liberato, il bersaglio acquisisce ricordi di un'epoca dimenticata."]}
+};
+
+const OBSTACLES=["Una pozza di fango","Radici giganti alte sei metri","Una chiazza di muschio scivoloso","Felci rigogliose","Uno sciame di mosche-topo","Una ragnatela gigante di ragno-gatto"];
+const COMPLICATIONS=["Rampicanti animati dalla magia afferrano la gamba di un PG","Un albero grida di dolore quando un PG ci salta sopra, cogliendolo di sorpresa","Una nube di spore luccicanti si alza dai funghi giganti, accecando il gruppo"];
+const UNDERTOW=["Il PG segna 1 Stress","Il PG subisce 2d6+3 danni fisici","Il PG mette in deposito (vault) una carta dominio a scelta (ritira se non ne ha)","Un oggetto che il PG porta affonda sul fondo del fiume (ritira se non ne ha)"];
+const TREASURES=[["Stivali del Camminalago","cammini sull'acqua come su terreno soffice"],["Pietra del Fascino","spendi 1 Speranza per camuffarti magicamente da qualcuno che hai già visto"],["Verga Sospesa","mentre è attiva non può essere spostata e ignora le leggi della gravità"]];
+const CONDITIONS=["Vulnerabile","Trattenuto","Nascosto","Annegamento","Posseduto","Incosciente"];
+
+/* ============ stato ============ */
+const KEY="sablewood-tracker-v1";
+const uid=()=>Math.random().toString(36).slice(2,9);
+function mkPC(name,sage){return {id:uid(),name,cls:"",sage:!!sage,hpMax:6,hp:0,stMax:6,st:0,hope:2,arMax:3,ar:0,eva:10,major:6,severe:12,cond:[],exp:"",notes:""}}
+function fresh(){
+  return {v:1,savedAt:0,act:'1',tab:'atto',fear:3,counter:{on:false,value:15},
+   critters:["",""],
+   flags:{luna:null,ring:false,bargain:"",bargainUsed:false,learned:null,shortcut:null,searchTick:false,elderDone:false,peaceUsed:false,ritualHere:null,rest:null,ritualDone:false,final:null},
+   chase:{d:3,t:3},river:{t:4},ritual:{v:8},villagers:0,undertow:null,loot:[],
+   pcs:[mkPC("Marlowe Fairwind",true),mkPC("Varian Soto"),mkPC("Garrick Reed")],
+   home:[{n:"",note:""}],
+   foes:[],cds:[],log:[],gens:[],notes:"",rest:{}};
+}
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+if(!S||S.v!==1)S=fresh();
+
+let dbDoc=null,saving=false,pending=false,saveTimer=null,saveWhere="questo browser";
+function persist(){
+  S.savedAt=Date.now();
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  if(dbDoc){clearTimeout(saveTimer);saveTimer=setTimeout(pushDb,1500)}
+}
+async function pushDb(){
+  if(saving){pending=true;return}
+  saving=true;
+  try{await dbDoc.set({json:JSON.stringify(S),savedAt:S.savedAt});saveWhere="il tuo account"}catch(e){saveWhere="questo browser (sync non riuscito)"}
+  saving=false;renderBar();
+  if(pending){pending=false;pushDb()}
+}
+(async()=>{
+  try{
+    if(!window.claude?.use)return;
+    const [db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
+    if(!db||!user)return;
+    const id=await user.id(); if(!id)return;
+    dbDoc=db.collection("data/users/"+id).doc("tracker");
+    const snap=await dbDoc.get();
+    if(snap.exists){const d=snap.data();
+      if(d&&d.savedAt>(S.savedAt||0)){try{const n=JSON.parse(d.json);if(n&&n.v===1){S=n;toast("Partita caricata dal tuo account")}}catch(e){}}}
+    saveWhere="il tuo account";render();
+  }catch(e){}
+})();
+
+/* ============ utilità ============ */
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const d=n=>1+Math.floor(Math.random()*n);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function rollExpr(expr){
+  const m=String(expr).replace(/\s/g,"").match(/^(\d*)d(\d+)([+-]\d+)?$/i);
+  if(!m){const n=parseInt(expr);return isNaN(n)?null:{total:n,rolls:[],text:String(n)}}
+  const c=+(m[1]||1),f=+m[2],mod=+(m[3]||0);const rolls=[];for(let i=0;i<c;i++)rolls.push(d(f));
+  const total=rolls.reduce((a,b)=>a+b,0)+mod;
+  return {total,rolls,text:`${expr} → [${rolls.join(", ")}]${mod?(mod>0?" +":" ")+mod:""} = ${total}`};
+}
+function log(text,kind=""){
+  const t=new Date();S.log.unshift({t:t.toTimeString().slice(0,5),text,kind});
+  if(S.log.length>250)S.log.length=250;
+}
+let toastT;function toast(m){const el=document.getElementById("toast");el.textContent=m;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2600)}
+function upd(fn){fn();persist();render()}
+const pcById=id=>S.pcs.find(p=>p.id===id);
+const actIdx=id=>ACTS.findIndex(a=>a.id===id);
+function addFear(n,why){const before=S.fear;S.fear=clamp(S.fear+n,0,12);if(S.fear!==before)log(`Paura ${n>0?"+":""}${S.fear-before} (${S.fear})${why?" — "+why:""}`,"fear")}
+function counterAdd(n,why){if(!S.counter.on)return false;S.counter.value+=n;log(`Contatore d'Assalto ${n>0?"+":""}${n} → ${S.counter.value}${why?" — "+why:""}`,"bad");return true}
+function counterStart(v,why){S.counter={on:true,value:v};log(`Contatore d'Assalto alla Città avviato a ${v}${why?" — "+why:""}`,"bad")}
+const pips=(n,val,cls,a,extra="")=>`<span class="pips">${Array.from({length:n},(_,i)=>`<button class="pip ${cls} ${i<val?"on":""}" data-a="${a}" data-i="${i}" ${extra} aria-label="${i+1}"></button>`).join("")}</span>`;
+const pcOptions=(sel,blank="— nessuno —")=>`<option value="">${blank}</option>`+S.pcs.map(p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(p.name||"PG senza nome")}</option>`).join("");
+
+/* ============ meccaniche PG ============ */
+function pcMarkStress(p,n,why){
+  let over=0;for(let i=0;i<n;i++){if(p.st<p.stMax)p.st++;else over++}
+  log(`${p.name}: +${n-over} Stress${why?" ("+why+")":""}`);
+  if(over){p.hp=Math.min(p.hpMax,p.hp+over);log(`${p.name}: Stress pieno → segna ${over} PF`,"bad")}
+  checkDown(p);
+}
+function hpFromDamage(dmg,major,severe,massive){
+  if(dmg<=0)return 0;
+  if(severe!=null&&massive&&dmg>=severe*2)return 4;
+  if(severe!=null&&dmg>=severe)return 3;
+  if(major!=null&&dmg>=major)return 2;
+  return 1;
+}
+function pcDamage(p,dmg,useArmor,massive){
+  let hp=hpFromDamage(dmg,p.major,p.severe,massive);
+  let armorNote="";
+  if(useArmor&&hp>0&&p.ar<p.arMax){p.ar++;hp--;armorNote=" (−1 grazie a 1 slot Armatura)"}
+  p.hp=Math.min(p.hpMax,p.hp+hp);
+  log(`${p.name} subisce ${dmg} danni → segna ${hp} PF${armorNote}`,"bad");
+  checkDown(p);
+}
+function checkDown(p){if(p.hp>=p.hpMax){log(`${p.name} ha segnato l'ultimo PF: Mossa di Morte!`,"bad");deathFor=p.id}}
+let deathFor=null;
+
+/* ============ dadi ============ */
+let R={who:"",mod:0,diff:12,adv:0,dis:0,exp:0,reaction:false,helpers:[],label:"",final:false,res:null,anim:0};
+let simple={expr:"1d10+4",res:null},foeRoll={res:null};
+function preset(o){Object.assign(R,{mod:0,adv:0,dis:0,exp:0,reaction:false,helpers:[],final:false,label:"",res:null},o);render();document.getElementById("roller")?.scrollIntoView({behavior:"smooth",block:"start"})}
+function doDuality(){
+  const p=pcById(R.who);
+  const helpers=R.helpers.map(pcById).filter(Boolean).filter(h=>h!==p);
+  const spent=[];
+  if(R.exp>0&&p){if(p.hope<1){toast(`${p.name} non ha Speranza per l'Esperienza`);return}p.hope--;spent.push(`${p.name} −1 Speranza (Esperienza)`)}
+  for(const h of helpers){if(h.hope<1){toast(`${h.name} non ha Speranza per aiutare`);return}}
+  helpers.forEach(h=>{h.hope--;spent.push(`${h.name} −1 Speranza (Aiuto)`)});
+  const hope=d(12),fear=d(12);
+  const advN=R.adv+helpers.length;
+  const advDice=Array.from({length:advN},()=>d(6));const disDice=Array.from({length:R.dis},()=>d(6));
+  let net=0,netTxt="";
+  if(advN&&R.dis){netTxt="Vantaggio e svantaggio si annullano"}
+  else if(advN){net=Math.max(...advDice);netTxt=`Vantaggio +${net}`}
+  else if(R.dis){net=-Math.max(...disDice);netTxt=`Svantaggio ${net}`}
+  const total=hope+fear+(+R.mod)+(+R.exp)+net;
+  const crit=hope===fear;
+  const success=crit||total>=+R.diff;
+  let kind=crit?"c":hope>fear?"h":"f";
+  let verdict=crit?"Successo Critico":`${success?"Successo":"Fallimento"} con ${hope>fear?"Speranza":"Paura"}`;
+  const effects=[...spent];
+  if(!R.reaction){
+    if(crit){if(p){p.hope=Math.min(6,p.hope+1);if(p.st>0)p.st--;effects.push(`${p.name} +1 Speranza e −1 Stress`)}else effects.push("Critico: +1 Speranza e −1 Stress al PG")}
+    else if(hope>fear){if(p){p.hope=Math.min(6,p.hope+1);effects.push(`${p.name} +1 Speranza`)}else effects.push("+1 Speranza al PG")}
+    else {S.fear=Math.min(12,S.fear+1);effects.push(`Il GM ottiene 1 Paura (${S.fear})`)}
+    if(!crit&&p&&p.cond.includes("Annegamento"))effects.push("Annegamento attivo: ricordati che tutti i PG che annegano segnano 1 Stress");
+  } else effects.push("Tiro reazione: non genera Speranza né Paura");
+  R.res={hope,fear,advDice,disDice,netTxt,total,crit,success,kind,verdict,effects,diff:R.diff,mod:+R.mod,exp:+R.exp};
+  R.anim++;
+  log(`${R.label?R.label+" — ":""}${p?p.name:"Tiro"}: ${hope}+${fear}${R.mod?` ${R.mod>0?"+":""}${R.mod}`:""}${R.exp?` +${R.exp} esp`:""}${net?` ${net>0?"+":""}${net}`:""} = ${total} vs ${R.diff} → ${verdict}`,kind==="f"?"fear":"hope");
+  if(R.final){S.flags.final=finalOutcome(R.res);log(`Tiro finale: ${S.flags.final}`,"bad");if(S.flags.bargain&&!S.flags.bargainUsed){S.flags.bargainUsed=true}}
+  persist();render();
+}
+function finalOutcome(r){if(r.crit)return "crit";if(r.success)return r.kind==="h"?"sh":"sf";return r.kind==="h"?"fh":"ff"}
+
+/* ============ avversari ============ */
+function addFoe(key,n=1,over){
+  const t={...TEMPLATES[key],...(over||{})};
+  const same=S.foes.filter(f=>f.tmpl===key).length;
+  for(let i=0;i<n;i++)S.foes.push({id:uid(),tmpl:key,name:t.name+(n>1||same?` #${same+i+1}`:""),hp:0,hpMax:t.hp,st:0,stMax:t.stress,diff:t.diff,atk:t.atk,thr:t.thr,attack:t.attack,dmg:t.dmg,minion:!!t.minion,dead:false,feats:t.feats||[],tier:t.tier});
+  log(`Entrano in scena: ${n}× ${t.name}`);
+}
+function addCustomFoe(a){
+  const thr=String(a.soglie||"").split("/").map(x=>parseInt(x));
+  const key="gen_"+uid();
+  TEMPLATES[key]={name:a.nome||"Avversario",tier:`Tier ${a.tier||1} ${a.ruolo||""}`.trim(),hp:+a.pf||4,stress:+a.stress||2,thr:[isNaN(thr[0])?null:thr[0],isNaN(thr[1])?null:thr[1]],diff:+a.difficolta||12,atk:+a.atk||0,attack:a.attacco||"",dmg:(String(a.attacco||"").match(/\d*d\d+([+-]\d+)?/)||[""])[0],feats:(a.caratteristiche||[]).map(esc),minion:/minion|gregar/i.test(a.ruolo||"")};
+  addFoe(key,clamp(+a.quantita||1,1,12));
+}
+function foeDefeated(f){
+  if(f.dead)return;f.dead=true;log(`${f.name} è sconfitto`,"ok");
+  if(S.act==='4'&&!S.flags.ritualDone&&(f.tmpl==='skeleton'||f.tmpl==='hero')){S.ritual.v=Math.max(0,S.ritual.v-1);log(`Rituale −1 → ${S.ritual.v}`,"ok");if(S.ritual.v===0)toast("Il Rituale è a zero: leggi «Il Rituale termina»")}
+}
+
+/* ============ testo atti ============ */
+const read=(html,cue="Leggi ad alta voce")=>`<div class="read"><span class="cue">${cue}</span>${html}</div>`;
+function statBlock(key){
+  const t=TEMPLATES[key];
+  return `<div class="stat"><div class="stat-h"><b>${t.name}</b><span>${t.tier}</span></div><div class="stat-b">
+  ${t.motives?`<div><i>${t.motives}</i></div>`:""}
+  <div class="kv mono small"><span><b>PF</b> ${t.hp}</span><span><b>Stress</b> ${t.stress}</span><span><b>Soglie</b> ${t.thr[0]??"—"}/${t.thr[1]??"—"}</span><span><b>Diff</b> ${t.diff}</span><span><b>ATK</b> ${t.atk>=0?"+":""}${t.atk}</span></div>
+  ${t.attack&&t.attack!=="—"?`<div><b>${t.attack}</b></div>`:""}
+  ${t.feats.map(f=>`<div class="small">${f}</div>`).join("")}
+  </div></div>`;
+}
+const hybrid=()=>{const [a,b]=S.critters;return a&&b?`${esc(a)}-${esc(b)}`:"[ibrido delle due creature]"};
+const luna=()=>S.flags.luna==="saved";
+const nShades=()=>S.pcs.length>=4?3:2;
+const counterChip=()=>S.counter.on?`<span class="chip bad">Contatore attivo: ${S.counter.value}</span>`:`<span class="chip">Contatore non attivo</span>`;
+
+const ACT_VIEW={
+'1':()=>`
+<div class="act-h"><span class="num">ATTO I</span><h2>Il peccato di Luna</h2></div>
+<div class="sec-h"><h3>L'inizio</h3></div>
+<div class="row small"><span class="lab">Due creature della foresta scelte dai giocatori</span>
+ <input type="text" id="cr0" data-f="critter" data-i="0" value="${esc(S.critters[0])}" placeholder="es. tasso">
+ <input type="text" id="cr1" data-f="critter" data-i="1" value="${esc(S.critters[1])}" placeholder="es. falena"></div>
+${read(`<p>Siete attorno a un fuoco. Dovrebbe essere giorno, ma gli alberi del Sablewood salgono per centinaia di metri e coprono il cielo intero: sembra piena notte.</p>
+<p>Tutto intorno sentite il gracidare dei lemuri-rospo e il brulicare di sciami di <b>${hybrid()}</b> nel sottobosco.</p>
+<p>Da un paio d'ore aspettate Luna, una cacciatrice del villaggio di Hush che, secondo le lettere scambiate, dovrebbe guidarvi. È <i>molto</i> in ritardo.</p>
+<p>Poi, in lontananza, delle grida. Qualcuno chiede aiuto, e potrebbe essere lei. Le urla vengono da un centinaio di metri, e il terreno è così impervio che non siete sicuri di arrivare in tempo, se non date tutto. Cosa fate?</p>`)}
+<p class="small muted">Questo incontro insegna i tiri d'azione. Descrivi 1 o 2 ostacoli alla volta.</p>
+<div class="stat"><div class="stat-h"><b>Corsa tra le Radici</b><span>Tier 1 Inseguimento · Diff 12</span></div><div class="stat-b">
+ <div class="grid2">
+  <div><div class="lab">Distanza — a zero raggiungete Luna</div>${pips(3,S.chase.d,"cd","chase-d")} <span class="mono">${S.chase.d}</span></div>
+  <div><div class="lab">Tempo — a zero Luna muore</div>${pips(3,S.chase.t,"cd","chase-t")} <span class="mono">${S.chase.t}</span></div>
+ </div>
+ <div class="row">
+  <button class="btn" data-a="roll-preset" data-diff="12" data-label="Corsa tra le Radici">Tira (Diff 12)</button>
+  <button class="btn ok" data-a="chase" data-k="s">Successo · Distanza −1</button>
+  <button class="btn ok" data-a="chase" data-k="c">Critico · Distanza −2</button>
+  <button class="btn bad" data-a="chase" data-k="f">Fallimento · Tempo −1</button>
+  <button class="btn xs" data-a="chase" data-k="r">Azzera</button>
+ </div>
+ ${S.chase.d===0?`<div class="note">Il gruppo arriva in tempo. Vai a «Un prezzo da pagare» (successo).</div>`:S.chase.t===0?`<div class="warn">Il tempo è scaduto. Luna è morta. Vai a «Un prezzo da pagare» (fallimento).</div>`:""}
+ <div class="grid2 small"><div><div class="lab">Ostacoli</div><ul class="tight">${OBSTACLES.map(o=>`<li>${o}</li>`).join("")}</ul></div>
+ <div><div class="lab">Complicazioni — spendi 1 Paura</div><ul class="tight">${COMPLICATIONS.map(o=>`<li>${o}</li>`).join("")}</ul>
+ <button class="btn fear" data-a="complication" ${S.fear<1?"disabled":""}>Spendi 1 Paura: complicazione casuale</button>
+ <div class="muted">Il prossimo tiro d'azione dei PG ha svantaggio.</div></div></div>
+</div></div>
+
+<div class="sec-h"><h3>Un prezzo da pagare</h3>${S.flags.luna?`<span class="chip ${luna()?"ok":"bad"}">Luna ${luna()?"viva":"morta"}</span>`:""}</div>
+<div class="row"><button class="btn ${S.flags.luna==="saved"?"pri":""}" data-a="luna" data-k="saved">Inseguimento riuscito</button><button class="btn ${S.flags.luna==="dead"?"pri":""}" data-a="luna" data-k="dead">Inseguimento fallito</button></div>
+${S.flags.luna==="dead"?`
+${read(`<p>D'un tratto vi rendete conto che sono quasi dieci secondi che non sentite più gridare.</p><p>Arrivate in una piccola radura, ma trovate solo il corpo senza vita della cacciatrice che doveva guidarvi nella foresta. Chi o cosa l'ha uccisa se n'è già andato.</p>`)}
+${read(`<p>A un dito porta un anello magico che tira sempre in una direzione. È una fede nuziale, incantata per indicare sempre dove si trova lo sposo di chi la indossa.</p>`,"Se perquisiscono il corpo")}
+<label class="inl"><input type="checkbox" data-a="flag" data-k="ring" ${S.flags.ring?"checked":""}> Il gruppo ha preso l'anello (porterà a Octavio, ad Hush)</label>`:""}
+${S.flags.luna==="saved"?`
+${read(`<p>Vedete una fata ferita a terra che grida aiuto. È grande appena come due mele e indossa una pelle d'ornitorinco come mantello da caccia.</p>
+<p>Accanto a lei c'è un lupo gigante e maestoso con la testa di gufo. Il suo pelo è così bianco che sembra un'apparizione. Quando si volta verso di voi, sentite una voce nella testa:</p>
+<p>«Allontanatevi, mortali. Costei ha cacciato un cucciolo del mio branco, e per questo deve pagare un prezzo.»</p>`)}
+<p>Lo <b>Strixwolf</b> è un grande spirito, creato tanto tempo fa per proteggere le specie più rare del Sablewood. Luna non sapeva che l'ornitorinco che indossa era una delle creature sotto la sua protezione.</p>
+<div class="grid2">
+<div class="panel"><h4>Patto fatato</h4>
+${read(`<p>«Una vita per una vita: questo è il prezzo che chiedo. Eppure vedo fuoco nella tua anima, e mi fa credere che potresti saziare la mia fame con la <i>sorpresa</i> invece che con il sangue.</p><p>Concedimi un solo momento del tuo tempo, e lo userò per metterti alla prova. Prima che il tuo viaggio finisca reclamerò quel momento, e ti farò minacciare la vita che mi è dovuta. Cosa accadrà dopo, sono curioso di scoprirlo.»</p>`,"Se viene chiesto")}
+<div class="row" style="margin-top:8px"><span class="lab">PG che accetta</span><select id="bargain" data-f="bargain">${pcOptions(S.flags.bargain)}</select></div>
+<p class="small muted">Poi: ad Hush il PG attacca un PNG (se drammatico), <i>oppure</i> nel tiro finale sabota gli alleati dando svantaggio.</p></div>
+<div class="panel"><h4>Combattere lo Strixwolf</h4>
+<ul class="tight small"><li><b>Su un fallimento:</b> usa la tua mossa GM e fai attaccare i PG allo Strixwolf.</li>
+<li><b>Su un tiro con Paura:</b> spendi quella Paura per una mossa GM extra e fai attaccare Luna.</li>
+<li>Se un PG o Luna muore, lo Strixwolf annuncia «il prezzo è pagato» e cerca di andarsene.</li></ul>
+<button class="btn pri" data-a="spawn" data-k="strixwolf" data-n="1" data-luna="1">Schiera Strixwolf + Luna</button></div>
+</div>
+<div class="grid2">${statBlock("strixwolf")}${statBlock("luna")}</div>`:""}
+<div class="row"><button class="btn pri" data-a="goact" data-k="2">Prosegui all'Atto II →</button></div>`,
+
+'2':()=>`
+<div class="act-h"><span class="num">ATTO II</span><h2>Gli Scarshade</h2></div>
+${read(`<p>Mentre continuate a camminare succede qualcosa di strano. Non sentite più gli scarabei-serpente né i lama-saltafango. La foresta si fa stranamente silenziosa.</p>`)}
+${luna()?read(`<p>Luna si volta verso di voi: «Oh, <i>bastoncini</i>, qualunque cosa stiate trasportando, sembra che gli Dèi Dimenticati l'abbiano percepita, e ne vogliono un pezzo.»</p>`,"Luna è con il gruppo"):""}
+<p>I giocatori hanno un paio di minuti per prepararsi. Gli shade sono attratti dalla magia che filtra dal pacco, ma non ne conoscono la posizione esatta. I PG possono nascondersi, ma gli shade usano l'Esperienza <b>Percepire la Magia +4</b>.</p>
+<div class="sec-h"><h3>Emissari degli Antichi Dèi</h3></div>
+${read(`<p>Sagome gigantesche e distorte emergono dalla boscaglia. Sono come buchi nel tessuto della realtà: puoi vederci attraverso, ma ciò che vedi è un'altra foresta.</p><p>Gli alberi sono più verdi, più sottili, non così assurdamente alti. È come se dentro questi squarci a forma umana ci fosse la visione di com'era la foresta in un passato lontano, prima che gli Antichi Dèi venissero uccisi qui.</p>`)}
+${read(`<p>Uno di loro tende un braccio verso il pacco. E capite subito cosa questa cosa ha detto senza parole: pretende di sapere cos'è.</p>`,"Se vedono il pacco")}
+<p>Gli Scarshade sono resti degli Antichi Dèi, con un odio infinito per chiunque adori i Nuovi Dèi, compreso il regno dei PG. Proveranno lo <b>Scavo nella Memoria</b>:</p>
+<ul class="tight"><li>Su un PG qualsiasi: scoprono che il Saggio di Corte sa cos'è il pacco, e si concentrano su di lui.</li><li>Sul Saggio di Corte: scoprono che la città è indifesa e partono subito per assaltarla con migliaia di creature magiche.</li></ul>
+<div class="row"><button class="btn pri" data-a="spawn" data-k="scarshade" data-n="${nShades()}">Schiera ${nShades()} Scarshade</button><span class="small muted">(3 se il gruppo ha 4+ PG)</span></div>
+${statBlock("scarshade")}
+<div class="sec-h"><h3>La polvere si posa</h3></div>
+<div class="row"><span class="lab">Gli Scarshade hanno scoperto cos'è il pacco?</span>
+<button class="btn ${S.flags.learned===true?"pri":""}" data-a="learned" data-k="1">Sì</button><button class="btn ${S.flags.learned===false?"pri":""}" data-a="learned" data-k="0">No</button></div>
+${S.flags.learned===true?`<div class="warn">Avvia il <b>Contatore d'Assalto alla Città</b> a 15 + Scarshade sopravvissuti (ora: ${aliveShades()}). Sarà la difficoltà del tiro finale.
+<div class="row" style="margin-top:6px">${S.counter.on?counterChip():`<button class="btn bad" data-a="counter-shades">Avvia a ${15+aliveShades()}</button>`}</div></div>
+<p><b>La scorciatoia.</b> Con questa urgenza, i giocatori potrebbero cercare una scorciatoia attraverso le parti più pericolose del Sablewood.</p>
+<ul class="tight"><li>${luna()?"<b>Luna è con il gruppo:</b> può indicare la strada.":"Luna non c'è: un PG può fare un tiro <b>Istinto</b> a Diff 15 per trovarla."}</li>
+<li>Se proseguono senza scorciatoia, il Contatore sale di <b>2</b>.</li></ul>
+<div class="row">${luna()?"":`<button class="btn" data-a="roll-preset" data-diff="15" data-label="Istinto: trovare la scorciatoia">Tiro Istinto (Diff 15)</button>`}
+<button class="btn pri" data-a="shortcut" data-k="taken">Prendono la scorciatoia → Atto II½</button>
+<button class="btn" data-a="shortcut" data-k="skip">Niente scorciatoia (+2) → Atto III</button></div>`:""}
+${S.flags.learned===false?`<div class="row"><button class="btn pri" data-a="goact" data-k="3">Prosegui all'Atto III →</button></div>`:""}`,
+
+'2.5':()=>{const drowning=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
+<div class="act-h"><span class="num">ATTO II½</span><h2>La scorciatoia</h2></div>
+<div class="sec-h"><h3>Il fiume Orfanatore</h3></div>
+${read(`<p>Il fragore incessante del famigerato fiume Orfanatore minaccia di assordarvi molto prima che lo vediate.</p><p>L'acqua è così turbolenta che sembra una cascata orizzontale.</p><p>Ognuno di voi mi dica una cosa che vede sporgere dall'acqua.</p>`)}
+<div class="stat"><div class="stat-h"><b>Fiume Orfanatore</b><span>Tier 1 Traversata · Diff 13</span></div><div class="stat-b">
+<div><div class="lab">Traversata — a zero il gruppo attraversa (non può arrivare a zero se qualcuno sta annegando)</div>${pips(4,S.river.t,"cd","river")} <span class="mono">${S.river.t}</span></div>
+${drowning.length?`<div class="warn"><b>Annegano:</b> ${drowning.map(p=>esc(p.name)).join(", ")}. Ogni volta che un PG fa un tiro d'azione, tutti i PG che annegano segnano 1 Stress.
+<div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div></div>`:""}
+<div class="row"><button class="btn" data-a="roll-preset" data-diff="13" data-label="Attraversare l'Orfanatore">Tira (Diff 13)</button>
+<button class="btn ok" data-a="river" data-k="s" ${drowning.length&&S.river.t<=1?"disabled":""}>Successo · Traversata −1</button>
+<button class="btn bad" data-a="river" data-k="f">Fallimento · azione Annegare</button>
+<button class="btn xs" data-a="river" data-k="r">Azzera</button></div>
+<div class="grid2 small">
+<div><div class="lab">Dettagli utili (azione riuscita)</div><ul class="tight"><li>Ponte di corda spezzato</li><li>Tratto poco profondo</li><li>Un isolotto</li><li>Liane pendenti</li></ul></div>
+<div><div class="lab">Annegare</div><p>Un PG fa un tiro reazione di <b>Agilità</b>, altrimenti inizia temporaneamente ad <i>Annegare</i>. Si libera con un tiro d'azione.</p>
+<div class="row"><select id="drownpc" data-f="drownpc">${pcOptions(drownPick)}</select><button class="btn" data-a="drown-roll">Reazione Agilità (13)</button><button class="btn bad" data-a="drown-set">Annega</button></div></div>
+<div><div class="lab">Risacca — spendi 1 Paura</div><p>Un PG che annega sbatte contro una roccia. Tira 1d4:</p><ol class="tight">${UNDERTOW.map(u=>`<li>${u}</li>`).join("")}</ol>
+<button class="btn fear" data-a="undertow" ${S.fear<1||!drowning.length?"disabled":""}>Spendi 1 Paura: Risacca</button>
+${S.undertow?`<div class="note" style="margin-top:6px">${esc(S.undertow)}</div>`:""}</div>
+<div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
+<ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b> — ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul>
+<button class="btn xs" data-a="roll-preset" data-diff="13" data-label="Forza: tesori sommersi">Tiro Forza</button></div>
+</div></div></div>
+<div class="note small"><b>Glossario:</b> una condizione temporanea (come Annegamento) si rimuove con un tiro d'azione. I tiri reazione non generano Speranza né Paura. Le carte in deposito non si possono usare; tornano nella dotazione durante un riposo, oppure segna Stress pari al costo di richiamo per scambiarla con una carta non in deposito.</div>
+${S.river.t===0?`<div class="note">Il gruppo ha attraversato il fiume.</div>`:""}
+<div class="row"><button class="btn pri" data-a="goact" data-k="3">Prosegui all'Atto III →</button></div>`},
+
+'3':()=>`
+<div class="act-h"><span class="num">ATTO III</span><h2>Hush</h2></div>
+<div class="sec-h"><h3>Entrare nel villaggio</h3></div>
+${read(`<p>Dopo un altro paio d'ore nel Sablewood trovate un cippo di pietra a terra, scolpito come un volto accigliato con un dito premuto in verticale sulle labbra corrugate.</p><p>Sembra che i suoi occhi seguano i vostri movimenti, anche se siete <i>quasi certi</i> che la statua sia immobile.</p>`)}
+${luna()?read(`<p>Luna gli svolazza accanto con disinvoltura… e scompare.</p>`,"Luna è con il gruppo"):""}
+${read(`<p>Sentite una piccola sensazione, come lo scoppio di una bolla, e il brusio delle chiacchiere si fa più forte. Oltre questa barriera magica si rivela il villaggio di Hush, con decine di capanne di legno. Intorno a voi, gli sguardi di qualche dozzina di volti diffidenti. È chiaro che qui gli estranei non piacciono. Ditemi tre cose che vedete e che vi fanno capire quanto questo posto sia ostile.</p>`,"Quando superano il cippo")}
+${luna()?`<p class="note">Luna è con il gruppo: passa direttamente all'<b>Anziano Halython</b>.</p>`:`
+<div class="sec-h"><h3>Trovare l'Arcanista</h3>${counterChip()}</div>
+<p>Quasi tutti rifiutano di parlare con i PG: bisbigliano, fissano, sputano a terra, se ne vanno. La posizione dell'Arcanista dovrebbe restare segreta.</p>
+${S.counter.on?`<div class="row"><button class="btn bad" data-a="search-tick" ${S.flags.searchTick?"disabled":""}>Ricerca nel villaggio: Contatore +1</button></div>`:""}
+<div class="grid2">
+<div class="panel"><h4>Fidget · umano Wildborne (loro)</h4><p class="small">Un bambino curiosissimo di sapere com'è la vita fuori da Hush. Non riesce a smettere di dimenarsi: è chiaro da dove venga il soprannome.</p></div>
+<div class="panel"><h4>Lausa · nana Wildborne (lei)</h4><p class="small">La fabbra del villaggio, che di solito forgia solo chiodi e pentole. Incuriosita da armi e armature dei PG: vuole sapere chi le ha fatte e quando.</p></div>
+<div class="panel"><h4>Octavio · fauno Wildborne (lui)</h4><p class="small">Il marito di Luna. Se il gruppo ha il suo anello, li guida da lui. Sarà devastato dalla notizia.</p>${S.flags.ring?`<span class="chip ok">Il gruppo ha l'anello</span>`:""}</div>
+</div>`}
+<div class="sec-h"><h3>Anziano Halython</h3>${S.flags.elderDone?`<span class="chip ok">convinto</span>`:""}</div>
+${read(`<p>D'improvviso sentite un tonfo alle vostre spalle. Un uomo anziano, alto poco più di un metro, ha appena sbattuto a terra la punta del suo bastone di legno, pretendendo attenzione e rispetto.</p><p>La persona con cui stavate parlando balbetta: «Anziano Halython? Non stavo cercando di…»</p><p>Il vecchio halfling la interrompe: «Non un'altra parola. Hai già detto troppo. Quanto a voi, dovete lasciare questo villaggio. Subito.»</p>`,"Quando un paesano accetta di guidarli")}
+<div class="grid2">
+<div class="panel stack"><h4>Convincere l'Anziano</h4>
+<div><div class="lab">Stress dell'Anziano — a 4 si arrende</div>${pips(4,S.elderSt||0,"st","elder-st")}</div>
+${luna()?`<div class="note small">Luna garantisce per il gruppo: <b>vantaggio</b> ai tiri per convincerlo.</div>`:""}
+<div class="row"><button class="btn" data-a="roll-preset" data-diff="15" data-label="Convincere l'Anziano" ${luna()?'data-adv="1"':""}>Tira (Diff 15)</button></div>
+<div class="row small"><select id="elderpc" data-f="elderpc">${pcOptions(elderPick,"PG che tira")}</select>
+<button class="btn ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button>
+<button class="btn bad" data-a="elder" data-k="f">Fallimento: PG +1 Stress</button></div>
+<div class="row small"><button class="btn" data-a="no-hosp" ${(S.elderSt||0)>=4?"disabled":""}>Niente ospitalità: Anziano +1 Stress, arrivano 2d6 paesani</button></div>
+<div class="row small"><button class="btn fear" data-a="peace" ${S.flags.peaceUsed||S.fear<2?"disabled":""}>CI SARÀ PACE: spendi 2 Paura</button><span class="muted">Quando un PG attacca un paesano. Tutti i PG perdono tutta la Speranza e segnano 2d4 Stress. Una volta sola.</span></div>
+</div>
+<div class="panel stack"><h4>Paesani preoccupati</h4>
+<div class="row"><span class="mono" style="font-size:1.6rem">${S.villagers}</span><span class="muted">presenti</span>
+<button class="btn xs" data-a="vill" data-k="-1">−1</button><button class="btn xs" data-a="vill" data-k="1">+1</button></div>
+<div class="row small"><input type="number" id="villdmg" value="3" min="1"> <button class="btn" data-a="vill-dmg">Infliggi danni a un gregario</button></div>
+<div class="row small"><button class="btn fear" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>Attacco di Gruppo (1 Paura)</button></div>
+${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcById(S.flags.bargain)?.name||"il PG")} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
+</div></div>
+<div class="grid2">${statBlock("elder")}${statBlock("villager")}</div>
+<div class="row"><button class="btn pri" data-a="goact" data-k="4">L'Anziano cede → Atto IV</button></div>`,
+
+'4':()=>`
+<div class="act-h"><span class="num">ATTO IV</span><h2>Il rinnovo del sigillo</h2></div>
+<div class="sec-h"><h3>Villa Fuocobianco</h3></div>
+${read(`<p>Superando le case del villaggio notate che qui gli alberi del Sablewood hanno centinaia di volti unici intagliati su ogni lato, con gli occhi che scrutano in ogni direzione.</p><p>Ogni volta che passate accanto a uno di questi intagli, la bocca si apre ed emette piccole fiamme bianche che illuminano il sentiero.</p><p>Un albero, più alto degli altri, regge tra i rami una villa di legno. Mentre vi avvicinate, rune blu dipinte nella corteccia si accendono. Il ramo si anima e l'intera struttura scende lentamente fino a terra.</p><p>Al posto della porta c'è un bocciolo gigante, largo forse tre metri, che si schiude rivelando petali colorati. Al centro, dove dovrebbero esserci i semi, c'è un'apertura da cui esce una figura alta più di due metri.</p><p>È un misto tra un umanoide e una lucciola, con vesti da maga bianca, carica di libri e pozioni. «Vi stavo aspettando. Spero che nessuno abbia scoperto cosa trasportavate. L'ultima volta che la vostra città è rimasta indifesa così, i seguaci degli Antichi Dèi l'hanno quasi rasa al suolo. Comunque, come sta il piccolo Emeris? È ancora vivo?»</p>`)}
+<p class="small">L'Arcanista Fuocobianco ha diverse migliaia di anni. L'Emeris di cui parla è Emeris IV; il re che ha assunto il gruppo è Emeris VIII. Ha creato il sigillo e ha un accordo con la stirpe reale: ogni paio di secoli rinnova il rituale, e in cambio il Regno evita il più possibile il Sablewood. Se le chiedono perché i paesani non sapessero della consegna: «Oh, l'avevo detto… mi pare 12 o 13 anni fa?»</p>
+${read(`<p>«Dovremmo andare nella Valle Aperta per il rituale di rinnovo. È solo a un paio di miglia.</p><p>Il fatto è che un incantesimo del genere attirerà creature pericolose dagli angoli più oscuri del Sablewood. Dalle vostre facce capisco che ne avete già incontrate alcune.</p><p>…E preferirei che succedesse fuori dal villaggio. Quel ragazzino Lylython è un tipo lunatico, si mette a urlarmi contro ogni volta che un mio esperimento va storto.»</p>`,"Quando ha parlato abbastanza")}
+${S.counter.on?`<div class="row"><span class="lab">Contatore attivo</span>
+<button class="btn ${S.flags.ritualHere===true?"pri":""}" data-a="ritual-here" data-k="1">Convincono i paesani a fare il rituale qui</button>
+<button class="btn ${S.flags.ritualHere===false?"pri":""}" data-a="ritual-here" data-k="0">Vanno alla Valle Aperta (+1)</button></div>`:""}
+<div class="sec-h"><h3>Preparare il rituale</h3></div>
+${S.flags.ritualHere!==true?read(`<p>Entrate in una radura larga un paio di centinaia di metri, così perfettamente circolare da sembrare innaturale. Per quanto ne sapete, è l'unico posto del Sablewood dove si vede il cielo.</p><p>L'Arcanista inizia a preparare il rituale e dice: «Mi serve un'ora per prepararmi. Godetevi l'aria della notte finché potete. Presto saremo molto occupati.»</p>`,"Se sono andati alla Valle Aperta"):""}
+${S.counter.on?`<p class="small">Con il Contatore attivo, i giocatori possono saltare il riposo e aiutare con la preparazione: passa a «Il rituale inizia».</p>`:""}
+<div class="panel stack"><h4>Riposo breve</h4>
+<p class="small">Ogni PG sceglie fino a due opzioni (anche la stessa due volte).</p>
+${S.pcs.map(p=>{const used=(S.rest[p.id]||[]).length;return `<div class="row small"><b style="min-width:9em">${esc(p.name)}</b><span class="muted">${used}/2</span>
+<button class="btn xs" data-a="rest" data-k="wounds" data-id="${p.id}" ${used>=2?"disabled":""}>Curare ferite (1d4+1 PF)</button>
+<button class="btn xs" data-a="rest" data-k="stress" data-id="${p.id}" ${used>=2?"disabled":""}>Ricomporsi (1d4+1 Stress)</button>
+<button class="btn xs" data-a="rest" data-k="armor" data-id="${p.id}" ${used>=2?"disabled":""}>Riparare armatura (1d4+1)</button>
+<button class="btn xs" data-a="rest" data-k="prep" data-id="${p.id}" ${used>=2?"disabled":""}>Prepararsi (+1 Speranza)</button></div>`}).join("")}
+<div class="row small"><button class="btn xs" data-a="rest-group">Prepararsi insieme: +2 Speranza a ciascun PG scelto per gruppo</button>
+<button class="btn xs" data-a="rest-reset">Nuovo riposo</button></div>
+<div class="row"><button class="btn fear" data-a="downtime" ${S.flags.rest?"disabled":""}>Benefici del GM: +1d4 Paura${S.counter.on?", Contatore +2":""}</button>
+${S.counter.on?`<button class="btn" data-a="skip-rest" ${S.flags.rest?"disabled":""}>Saltano il riposo</button>`:""}</div>
+</div>
+<div class="sec-h"><h3>Il rituale inizia</h3></div>
+${read(`<p>Quando siete pronti, l'Arcanista dà inizio al rituale. Il suo corpo e la pietra del sigillo iniziano a brillare, e grida ultraterrene risuonano dai boschi mentre le creature vicine percepiscono l'energia arcana.</p>`)}
+<p>Piazza <b>5 Scheletri Antichi</b> e <b>2 Eroi Dimenticati</b> ai margini della radura, a distanza Lontana. Finché ci sono meno di 8 scheletri, se un giocatore tira con Paura, spendi quella Paura per la Vendetta degli Antichi Dèi. Altrimenti spendi Paura per turni extra in cui attacchi l'Arcanista.</p>
+<div class="stat"><div class="stat-h"><b>Il Rituale del Rinnovo</b><span>Tier 1 Evento</span></div><div class="stat-b">
+<div><div class="lab">Rituale — a zero il rituale riesce</div>${pips(8,S.ritual.v,"cd","ritual")} <span class="mono">${S.ritual.v}</span></div>
+<p class="small">Ogni nemico sconfitto: Rituale −1 (automatico quando segni un nemico come sconfitto). Ogni volta che l'Arcanista viene colpita (Diff 11): Rituale +1.</p>
+<div class="row"><button class="btn pri" data-a="ritual-spawn">Schiera 5 Scheletri + 2 Eroi</button>
+<button class="btn bad" data-a="ritual" data-k="hit">Arcanista colpita: +1</button>
+<button class="btn ok" data-a="ritual" data-k="kill">Nemico sconfitto: −1</button>
+<button class="btn fear" data-a="vengeance" ${S.fear<1||aliveSkel()>=10?"disabled":""}>Vendetta degli Antichi Dèi (1 Paura): +2 Scheletri</button>
+<span class="small muted">Scheletri vivi: ${aliveSkel()}</span></div>
+</div></div>
+<div class="grid2">${statBlock("skeleton")}${statBlock("hero")}</div>
+<div class="sec-h"><h3>Il rituale termina</h3></div>
+${read(`<p>Un'onda di magia riduce in polvere tutti i nemici rimasti.</p><p>L'Arcanista Fuocobianco vi ringrazia, ma vi esorta a riportare a casa la pietra il prima possibile… perché ora gli Antichi Dèi lo sanno di sicuro.</p>`,"Quando il conto arriva a zero")}
+${read(`<p>Lancia un incantesimo che vi trasforma tutti in libellule con la testa umanoide. «L'insetto più veloce della natura, con qualche miglioria mia. Dovrebbe aiutarvi a tornare a casa. Buona fortuna, e salutatemi il piccolo Emeris!»</p>`,"Quando i giocatori accettano")}
+<div class="row"><button class="btn pri" data-a="ritual-end" ${S.flags.ritualDone?"disabled":""}>Il rituale è completo${S.counter.on?"":" (avvia Contatore a 15)"}</button>
+<button class="btn" data-a="goact" data-k="5">Atto V →</button></div>`,
+
+'5':()=>{const f=S.flags.final;const bp=pcById(S.flags.bargain);return `
+<div class="act-h"><span class="num">ATTO V</span><h2>Ritorno a casa</h2></div>
+<div class="sec-h"><h3>Il tiro finale</h3>${counterChip()}</div>
+${read(`<p>Dopo aver volato per centinaia di chilometri in un paio d'ore, vedete finalmente la vostra città all'orizzonte. Tre cerchi concentrici di mura, ognuno più alto del precedente, e un enorme castello al centro.</p><p>E in questo momento la città è sotto assedio: orso-vespe giganti attaccano dal cielo, alberi animati del Sablewood colpiscono le mura con le radici, e alcuni degli Scarshade di prima seminano il caos per le strade.</p><p>Dopo averla vista, sapete esattamente dove va la pietra: anche se non sapevate cosa fosse, l'avete vista decine di volte, come uno dei gioielli della corona della statua di re Emeris II, davanti al castello. Tutto si riduce a questo: riuscirete ad arrivarci in tempo?</p>`)}
+<p>Chiedi <b>un ultimo tiro d'azione</b>. La difficoltà è il valore attuale del Contatore d'Assalto alla Città: <b class="mono">${S.counter.value}</b>.</p>
+<ul class="tight small"><li>Spendendo 1 Speranza, un PG usa una sua <b>Esperienza</b> per un bonus fisso.</li><li>Spendendo 1 Speranza, un PG può <b>Aiutare</b>: dà vantaggio (+d6; con più fonti si tiene il d6 più alto).</li><li>Spendendo 3 Speranza ciascuno, due o più PG fanno un <b>Tiro di Squadra</b>: ognuno tira e si tiene il migliore.</li><li>Abilità come gli Istinti Felini di Varian Soto o l'Adattabilità di Garrick Reed possono aiutare.</li></ul>
+${bp&&!S.flags.bargainUsed?`<div class="warn"><b>Patto fatato:</b> ${esc(bp.name)} non ha attaccato nessuno ad Hush, quindi deve sabotare gli alleati. Il tiro finale ha <b>svantaggio</b> (−1d6; si annulla con il vantaggio).</div>`:""}
+<div class="row"><button class="btn pri" data-a="final-preset">Prepara il tiro finale nel lanciadadi</button></div>
+<div class="sec-h"><h3>Risolvere il tiro</h3></div>
+${read(`<p>Vi precipitate al castello, sfrecciando oltre squadroni di soldati che tengono a bada le bestie del Sablewood.</p><p>Alla fine arrivate e incastrate la pietra nell'incavo vuoto. Un'altra ondata di magia, molto più potente di quella nella Valle Aperta, investe l'intera città.</p><p>Gli Scarshade vanno in frantumi. Le orso-vespe vengono scagliate in cielo. Gli alberi animati si fermano.</p>`)}
+<div class="stack">
+${[["ff","Fallimento con Paura","I PNG che i giocatori speravano di proteggere sono stati uccisi nell'attacco. Il re incolpa il gruppo e i PG vengono banditi dal regno."],
+["fh","Fallimento con Speranza","I PNG che i giocatori speravano di proteggere sono morti durante l'attacco. C'è una cerimonia in cui i PG sono acclamati come eroi, ma con un minuto di silenzio per chi non ce l'ha fatta."],
+["sf","Successo con Paura","I PNG da proteggere sono feriti ma vivi. Un PNG rivale che i PG detestano viene acclamato come eroe per aver protetto personalmente re Emeris: il suo rango sale e diventa più potente."],
+["sh","Successo con Speranza","I PNG da proteggere sono salvi. I PG sono acclamati come eroi che hanno salvato la città e re Emeris offre loro delle ricompense."],
+["crit","Successo Critico","Come un successo con Speranza, ma un PNG rivale odiato dai giocatori ha trovato la fine durante l'attacco."]].map(([k,t,x])=>`<div class="out-card ${f===k?"hit":""}"><b>${t}</b>${f===k?` <span class="chip hope">risultato</span>`:""}<div class="small">${x}</div></div>`).join("")}
+</div>
+<div class="sec-h"><h3>PNG di casa da proteggere</h3></div>
+<p class="small muted">Annota i PNG nominati nelle domande di background e connessione all'inizio della partita.</p>
+${homeEditor()}`}
+};
+let drownPick="",elderPick="";
+const aliveShades=()=>S.foes.filter(f=>f.tmpl==="scarshade"&&!f.dead).length;
+const aliveSkel=()=>S.foes.filter(f=>f.tmpl==="skeleton"&&!f.dead).length;
+function homeEditor(){return `<div class="stack">${S.home.map((h,i)=>`<div class="row"><input type="text" id="hn${i}" data-f="home-n" data-i="${i}" value="${esc(h.n)}" placeholder="Nome PNG" style="flex:0 1 180px"><input type="text" id="ht${i}" data-f="home-note" data-i="${i}" value="${esc(h.note)}" placeholder="Legame / rivale / alleato" style="flex:1 1 200px"><button class="btn xs" data-a="home-del" data-i="${i}">×</button></div>`).join("")}<div><button class="btn xs" data-a="home-add">+ PNG</button></div></div>`}
+
+/* ============ viste ============ */
+const TABS=[["atto","Atto"],["scontro","Scontro"],["genera","Generatore IA"],["regole","Regole"],["diario","Diario"]];
+function renderBar(){
+  const ai=actIdx(S.act);
+  document.getElementById("bar").innerHTML=`
+  <div class="brand"><b>Sablewood</b><span>I MESSAGGERI · TRACKER DEL GM</span></div>
+  <div class="meter"><span class="lab" style="color:var(--fear)">Paura</span><span class="mono" style="font-weight:600;color:var(--fear)">${S.fear}</span>
+   <div class="fear-pips">${Array.from({length:12},(_,i)=>`<button class="fp ${i<S.fear?"on":""}" data-a="fear-set" data-i="${i}" aria-label="Paura ${i+1}"></button>`).join("")}</div></div>
+  <div class="counter ${S.counter.on?"live":""}"><span class="lab">Assalto alla Città</span>
+   ${S.counter.on?`<button class="btn xs" data-a="ctr" data-k="-1">−</button><span class="v">${S.counter.value}</span><button class="btn xs" data-a="ctr" data-k="1">+</button>`:`<button class="btn xs" data-a="ctr-start">Avvia (15)</button>`}</div>
+  <nav class="acts">${ACTS.map((a,i)=>`<button class="${a.id===S.act?"on":i<ai?"done":""}" data-a="goact" data-k="${a.id}" title="${a.t}">${a.n}</button>`).join("")}</nav>
+  <span class="save-ind">Salvato su ${saveWhere}</span>`;
+}
+function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")}
+
+function pcCard(p){
+  return `<div class="pc ${p.hp>=p.hpMax?"down":""}">
+  <div class="pc-top"><input class="name" type="text" id="pn-${p.id}" data-f="pc" data-k="name" data-id="${p.id}" value="${esc(p.name)}" aria-label="Nome">
+   ${p.sage?`<span class="chip hope">Saggio di Corte</span>`:""}${S.flags.bargain===p.id?`<span class="chip fear">Patto fatato</span>`:""}
+   <button class="btn xs" data-a="pc-edit" data-id="${p.id}">${editPc===p.id?"Fatto":"Modifica"}</button></div>
+  ${editPc===p.id?`<div class="stack small">
+   <div class="row"><input type="text" id="pc-${p.id}" data-f="pc" data-k="cls" data-id="${p.id}" value="${esc(p.cls)}" placeholder="Classe / ascendenza"><label class="inl"><input type="checkbox" data-a="pc-sage" data-id="${p.id}" ${p.sage?"checked":""}> Saggio di Corte</label></div>
+   <div class="row">${[["hpMax","PF max"],["stMax","Stress max"],["arMax","Armatura"],["eva","Evasione"],["major","Grave"],["severe","Severa"]].map(([k,l])=>`<label class="inl">${l}<input type="number" id="${k}-${p.id}" data-f="pc" data-k="${k}" data-id="${p.id}" value="${p[k]}"></label>`).join("")}</div>
+   <input type="text" id="ex-${p.id}" data-f="pc" data-k="exp" data-id="${p.id}" value="${esc(p.exp)}" placeholder="Esperienze (es. Diplomatico +2, Cacciatore +2)">
+   <textarea id="nt-${p.id}" data-f="pc" data-k="notes" data-id="${p.id}" rows="2" placeholder="Note">${esc(p.notes)}</textarea>
+   <div><button class="btn xs bad" data-a="pc-del" data-id="${p.id}">Rimuovi PG</button></div></div>`:
+   `<div class="small muted">${esc(p.cls||"")}${p.cls?" · ":""}Evasione <b class="mono">${p.eva}</b> · Soglie <b class="mono">${p.major}/${p.severe}</b>${p.exp?` · ${esc(p.exp)}`:""}</div>`}
+  <div class="trk">
+   <span class="lab">PF</span><span>${pips(p.hpMax,p.hp,"hp","pc-pip",`data-id="${p.id}" data-k="hp"`)}</span>
+   <span class="lab">Stress</span><span>${pips(p.stMax,p.st,"st","pc-pip",`data-id="${p.id}" data-k="st"`)}</span>
+   <span class="lab" style="color:var(--hope)">Speranza</span><span>${pips(6,p.hope,"hope","pc-pip",`data-id="${p.id}" data-k="hope"`)}</span>
+   <span class="lab">Armatura</span><span>${pips(p.arMax,p.ar,"ar","pc-pip",`data-id="${p.id}" data-k="ar"`)}</span>
+  </div>
+  <div class="row small"><input type="number" id="dmg-${p.id}" value="" placeholder="dan." min="0"><label class="inl"><input type="checkbox" id="arm-${p.id}"> usa Armatura</label><button class="btn xs bad" data-a="pc-dmg" data-id="${p.id}">Subisci danni</button></div>
+  <div class="cond">${CONDITIONS.map(c=>`<button class="${p.cond.includes(c)?"on":""}" data-a="pc-cond" data-id="${p.id}" data-k="${c}">${c}</button>`).join("")}</div>
+  ${deathFor===p.id||p.hp>=p.hpMax?`<div class="warn small"><b>Mossa di Morte</b> — scegli:
+   <div class="row" style="margin-top:4px"><button class="btn xs" data-a="death" data-k="blaze" data-id="${p.id}">Gloria Finale</button><button class="btn xs" data-a="death" data-k="avoid" data-id="${p.id}">Evitare la Morte</button><button class="btn xs" data-a="death" data-k="risk" data-id="${p.id}">Rischiare Tutto</button></div></div>`:""}
+  </div>`;
+}
+let editPc=null;
+
+function renderSide(){
+  const r=R.res;
+  const helpersOpts=S.pcs.filter(p=>p.id!==R.who).map(p=>`<label class="inl"><input type="checkbox" data-a="helper" data-id="${p.id}" ${R.helpers.includes(p.id)?"checked":""}> ${esc(p.name)} <span class="muted">(${p.hope})</span></label>`).join("");
+  document.getElementById("side").innerHTML=`
+  <section class="panel stack" id="roller"><div class="row" style="justify-content:space-between"><h3>Dadi della Dualità</h3>${R.final?`<span class="chip bad">Tiro finale</span>`:""}</div>
+   ${R.label?`<div class="small"><b>${esc(R.label)}</b></div>`:""}
+   <div class="row small"><label class="inl">PG <select id="r-who" data-f="r" data-k="who">${pcOptions(R.who,"— generico —")}</select></label>
+   <label class="inl">Diff <input type="number" id="r-diff" data-f="r" data-k="diff" value="${R.diff}"></label>
+   <label class="inl">Tratto <input type="number" id="r-mod" data-f="r" data-k="mod" value="${R.mod}"></label></div>
+   <div class="row small"><label class="inl">Esperienza (−1 Sp.) +<input type="number" id="r-exp" data-f="r" data-k="exp" value="${R.exp}" min="0"></label>
+   <label class="inl">Vant. <input type="number" id="r-adv" data-f="r" data-k="adv" value="${R.adv}" min="0" max="3"></label>
+   <label class="inl">Svant. <input type="number" id="r-dis" data-f="r" data-k="dis" value="${R.dis}" min="0" max="3"></label>
+   <label class="inl"><input type="checkbox" data-a="r-react" ${R.reaction?"checked":""}> Reazione</label></div>
+   ${helpersOpts?`<div class="small"><span class="lab">Aiutano (−1 Speranza, +d6 vantaggio)</span><div class="row">${helpersOpts}</div></div>`:""}
+   <div class="row"><button class="btn pri" data-a="roll">Tira 2d12</button>${R.label||R.final?`<button class="btn xs" data-a="r-clear">Pulisci</button>`:""}</div>
+   ${r?`<div class="dice-out" data-anim="${R.anim}"><div class="die h roll" title="Speranza">${r.hope}</div><div class="die f roll" title="Paura">${r.fear}</div>
+     ${r.advDice.map(x=>`<div class="die d6 roll" title="vantaggio">${x}</div>`).join("")}${r.disDice.map(x=>`<div class="die d6 roll" title="svantaggio">−${x}</div>`).join("")}
+     <div><div class="mono" style="font-size:1.6rem;font-weight:600">${r.total}</div><div class="small muted">vs ${r.diff}</div></div></div>
+     <div class="verdict ${r.kind}">${r.verdict}</div>
+     ${r.netTxt?`<div class="small muted">${r.netTxt}</div>`:""}
+     <ul class="tight small">${r.effects.map(e=>`<li>${esc(e)}</li>`).join("")}</ul>`:""}
+   <hr style="border:0;border-top:1px dotted var(--line);width:100%">
+   <div class="row small"><input type="text" id="s-expr" data-f="simple" value="${esc(simple.expr)}" style="width:7em"><button class="btn" data-a="simple">Tira</button>
+   ${["1d4","1d6","1d8","1d10","1d12","1d20","2d6+3","1d4+1"].map(x=>`<button class="btn xs" data-a="simple" data-k="${x}">${x}</button>`).join("")}</div>
+   ${simple.res?`<div class="mono small">${esc(simple.res)}</div>`:""}
+  </section>
+  <section class="stack"><div class="row" style="justify-content:space-between"><h3>Il gruppo</h3><button class="btn xs" data-a="pc-add">+ PG</button></div>
+   ${S.pcs.map(pcCard).join("")}
+   <div class="small muted">Danni: sotto la soglia Grave = 1 PF, Grave = 2, Severa = 3. Uno slot Armatura riduce di un livello.</div>
+  </section>`;
+}
+
+function renderCombat(){
+  const live=S.foes.filter(f=>!f.dead);
+  return `<div class="stack">
+  <div class="row" style="justify-content:space-between"><h2>Scontro</h2>
+   <div class="row"><select id="add-tmpl">${Object.entries(TEMPLATES).map(([k,t])=>`<option value="${k}">${esc(t.name)}</option>`).join("")}</select><input type="number" id="add-n" value="1" min="1" max="12"><button class="btn pri" data-a="add-foe">Aggiungi</button>
+   <button class="btn" data-a="clear-dead">Rimuovi sconfitti</button><button class="btn bad" data-a="clear-foes">Svuota</button></div></div>
+  ${foeRoll.res?`<div class="note mono small">${esc(foeRoll.res)}</div>`:""}
+  ${S.foes.length?"":`<div class="panel muted">Nessun avversario in scena. Schieralo da un atto, dal Generatore IA o con «Aggiungi».</div>`}
+  ${S.foes.map(f=>`<div class="foe ${f.dead?"dead":""}">
+   <div><div class="row"><h4>${esc(f.name)}</h4><span class="chip">${esc(f.tier||"")}</span>${f.dead?`<span class="chip ok">sconfitto</span>`:""}</div>
+   <div class="kv mono small"><span>Diff ${f.diff}</span><span>ATK ${f.atk>=0?"+":""}${f.atk}</span><span>Soglie ${f.thr?.[0]??"—"}/${f.thr?.[1]??"—"}</span></div>
+   <div class="small">${esc(f.attack)}</div></div>
+   <div class="stack small" style="gap:4px"><div><span class="lab">PF</span> ${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>
+   ${f.stMax?`<div><span class="lab">Stress</span> ${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}</div>
+   <div class="acts2 small">
+    <select id="tg-${f.id}">${S.pcs.map(p=>`<option value="${p.id}">${esc(p.name)} (Ev ${p.eva})</option>`).join("")}</select>
+    <button class="btn xs" data-a="foe-atk" data-id="${f.id}">Attacca (d20${f.atk>=0?"+":""}${f.atk})</button>
+    ${f.dmg?`<button class="btn xs" data-a="foe-dmg" data-id="${f.id}">Danni ${esc(f.dmg)}</button>`:""}
+    <span class="muted">|</span><input type="number" id="fd-${f.id}" placeholder="dan." min="0"><button class="btn xs bad" data-a="foe-hit" data-id="${f.id}">Infliggi</button>
+    <button class="btn xs" data-a="foe-kill" data-id="${f.id}">${f.dead?"Rianima":"Sconfitto"}</button><button class="btn xs" data-a="foe-del" data-id="${f.id}">×</button>
+    ${f.feats?.length?`<details style="flex-basis:100%"><summary class="small">Caratteristiche</summary>${f.feats.map(x=>`<div class="small">${x}</div>`).join("")}</details>`:""}
+   </div></div>`).join("")}
+  <div class="sec-h"><h3>Conti alla rovescia</h3></div>
+  <div class="stack">${S.cds.map(c=>`<div class="row"><b>${esc(c.name)}</b>${pips(c.max,c.v,"cd","cd-pip",`data-id="${c.id}"`)}<span class="mono">${c.v}</span><button class="btn xs" data-a="cd-tick" data-id="${c.id}" data-k="-1">−1</button><button class="btn xs" data-a="cd-tick" data-id="${c.id}" data-k="1">+1</button><button class="btn xs" data-a="cd-del" data-id="${c.id}">×</button>${c.note?`<span class="small muted">${esc(c.note)}</span>`:""}</div>`).join("")}
+  <div class="row small"><input type="text" id="cd-name" placeholder="Nome conto"><input type="number" id="cd-max" value="4" min="1" max="12"><button class="btn xs" data-a="cd-add">+ Conto</button></div></div>
+  <div class="note small"><b>Riflettori:</b> dopo un tiro con Paura o un fallimento, il GM fa una mossa. Spendi 1 Paura per mettere sotto i riflettori un avversario in più, o per usare un'azione che costa Paura.</div>
+  </div>`;
+}
+
+const RULES=`<div class="rules stack">
+<h2>Regole di Daggerheart in breve</h2>
+<div class="grid2">
+<div class="panel"><h4>Tiro d'azione (Dadi della Dualità)</h4><p>Tira 2d12: Speranza e Paura. Somma tratto ed eventuali bonus e confronta con la Difficoltà. ≥ Diff è un successo.</p><ul class="tight"><li><b>Con Speranza</b> (Speranza più alto): il PG ottiene 1 Speranza.</li><li><b>Con Paura</b> (Paura più alto): il GM ottiene 1 Paura e di solito fa una mossa.</li><li><b>Critico</b> (dadi uguali): successo automatico, +1 Speranza, −1 Stress. In attacco: danni massimi dei dadi + il tiro.</li></ul></div>
+<div class="panel"><h4>Vantaggio, Esperienze, Aiuto</h4><ul class="tight"><li><b>Vantaggio</b>: +d6; <b>svantaggio</b>: −d6. Si annullano. Con più fonti tieni il d6 più alto.</li><li><b>Esperienza</b>: spendi 1 Speranza per aggiungere il suo bonus.</li><li><b>Aiutare</b>: spendi 1 Speranza per dare vantaggio a un alleato.</li><li><b>Tiro di Squadra</b>: 3 Speranza; due PG tirano, si tiene il migliore. In combattimento i danni si sommano.</li></ul></div>
+<div class="panel"><h4>Tiri reazione</h4><p>Per resistere a un effetto (es. Agilità contro l'annegamento). Non generano Speranza né Paura e il critico non dà benefici extra.</p></div>
+<div class="panel"><h4>Danni e soglie</h4><p>Danni sotto la soglia <b>Grave</b>: 1 PF. Da Grave: 2 PF. Da <b>Severa</b>: 3 PF. Opzionale: danni massicci (≥ 2× Severa) = 4 PF. Spendendo 1 slot <b>Armatura</b> riduci di un livello. Quando non puoi segnare Stress, segni 1 PF al suo posto.</p></div>
+<div class="panel"><h4>Mosse di Morte</h4><ul class="tight"><li><b>Gloria Finale</b>: un'ultima azione con successo critico automatico, poi il PG muore.</li><li><b>Evitare la Morte</b>: perdi i sensi; tira il dado Speranza: se ≤ livello, ottieni una cicatrice (cancella permanentemente uno slot Speranza).</li><li><b>Rischiare Tutto</b>: tira i Dadi della Dualità. Speranza più alto: recuperi PF e/o Stress per il valore del dado Speranza. Paura più alto: muori. Critico: recuperi tutti PF e Stress.</li></ul></div>
+<div class="panel"><h4>Condizioni</h4><ul class="tight"><li><b>Vulnerabile</b>: i tiri contro di te hanno vantaggio.</li><li><b>Trattenuto</b>: non puoi muoverti, ma puoi agire.</li><li><b>Nascosto</b>: i tiri contro di te hanno svantaggio.</li><li>Le condizioni temporanee (es. Annegamento) si rimuovono con un tiro d'azione.</li></ul></div>
+<div class="panel"><h4>Riposo</h4><p><b>Breve</b>: 2 mosse tra Curare ferite (1d4+Tier PF), Ricomporsi (1d4+Tier Stress), Riparare armatura (1d4+Tier slot), Prepararsi (+1 Speranza, +2 se in gruppo). Il GM ottiene 1d4 Paura. <b>Lungo</b>: le mosse recuperano tutto; il GM ottiene 2d4 Paura e avanza un conto a lungo termine.</p></div>
+<div class="panel"><h4>Il GM e la Paura</h4><p>Il GM inizia con 1 Paura per PG (massimo 12). Spende Paura per: mosse extra, mettere avversari sotto i riflettori, azioni di avversari e ambienti, complicazioni.</p></div>
+<div class="panel"><h4>Distanze</h4><p>Mischia · Molto Vicina · Vicina · Lontana · Molto Lontana. Gli avversari attaccano con d20 + ATK contro l'Evasione del PG.</p></div>
+<div class="panel"><h4>Carte in deposito (vault)</h4><p>Non si possono usare; tornano nella dotazione durante un riposo. In alternativa segna Stress pari al costo di richiamo per scambiarle con una carta della dotazione.</p></div>
+</div></div>`;
+
+function renderDiary(){return `<div class="stack"><h2>Diario della sessione</h2>
+<div class="grid2"><div class="panel stack"><h4>Stato della campagna</h4>
+<ul class="tight small">
+<li>Luna: <b>${S.flags.luna==="saved"?"salvata":S.flags.luna==="dead"?"morta":"—"}</b>${S.flags.ring?" · anello preso":""}</li>
+<li>Patto fatato: <b>${esc(pcById(S.flags.bargain)?.name||"nessuno")}</b>${S.flags.bargainUsed?" (riscosso)":""}</li>
+<li>Gli Scarshade sanno del pacco: <b>${S.flags.learned===true?"sì":S.flags.learned===false?"no":"—"}</b></li>
+<li>Scorciatoia: <b>${S.flags.shortcut==="taken"?"presa":S.flags.shortcut==="skip"?"evitata":"—"}</b></li>
+<li>Bottino: <b>${S.loot.length?esc(S.loot.join(", ")):"nessuno"}</b></li>
+<li>Rituale: <b>${S.flags.ritualDone?"completato":S.ritual.v+" al termine"}</b></li>
+<li>Contatore d'Assalto: <b>${S.counter.on?S.counter.value:"non attivo"}</b></li></ul>
+<div class="lab">PNG di casa</div>${homeEditor()}
+<div class="lab">Note libere</div><textarea id="notes" data-f="notes" rows="6">${esc(S.notes)}</textarea>
+<div class="row">${resetAsk?`<span class="small">Cancellare tutto e ricominciare?</span><button class="btn bad" data-a="reset-yes">Sì, azzera</button><button class="btn" data-a="reset-no">Annulla</button>`:`<button class="btn bad xs" data-a="reset">Nuova campagna…</button>`}</div></div>
+<div class="panel"><h4>Registro</h4><div class="log">${S.log.map(l=>`<div><span class="t">${l.t}</span><span>${esc(l.text)}</span></div>`).join("")||`<span class="muted small">Ancora vuoto: tiri ed eventi compariranno qui.</span>`}</div></div></div></div>`}
+let resetAsk=false;
+
+/* ============ generatore IA ============ */
+let G={kind:"incontro di combattimento",tone:"tetro e fiabesco",extra:"",busy:false,err:"",stream:"",ctrl:null};
+const KINDS=["incontro di combattimento","incontro sociale","ostacolo ambientale / traversata","complicazione improvvisa","PNG da incontrare","scoperta, mistero o tesoro","evento con conto alla rovescia","sogno o visione degli Antichi Dèi"];
+function campaignContext(){
+  const a=ACTS.find(x=>x.id===S.act);
+  return `CAMPAGNA: "The Sablewood Messengers (Trek's Remix)", avventura introduttiva per Daggerheart (Tier 1, PG di livello 1).
+AMBIENTAZIONE: Il Sablewood è la foresta dove i nuovi dèi sconfissero gli antichi. Alberi alti centinaia di metri oscurano il cielo (sempre buio). Fauna e flora ibride e distorte (alci-tigre, lemuri-rospo, pipistrelli-serpente, orso-vespe, ragni-gatto, mosche-topo). Il Saggio di Corte ha assunto il gruppo per consegnare un pacco segreto all'Arcanista Fuocobianco nel villaggio nascosto di Hush: è la pietra del sigillo che protegge la città (ora indifesa), da ricaricare con un rituale. Re attuale: Emeris VIII.
+TRAMA: Atto 1 la fata cacciatrice Luna (di Hush, moglie del fauno Octavio) è attaccata dallo Strixwolf, lupo-gufo spirito guardiano, che offre un patto fatato. Atto 2 gli Scarshade (squarci nella realtà, emissari degli Antichi Dèi) cercano di scoprire il pacco con lo Scavo nella Memoria; se scoprono la verità parte il Contatore d'Assalto alla Città (difficoltà del tiro finale). Atto 2.5 scorciatoia attraverso il fiume Orfanatore. Atto 3 Hush, villaggio ostile agli estranei, l'Anziano halfling Halython, i PNG Fidget, Lausa (fabbra), Octavio. Atto 4 l'Arcanista Fuocobianco (umanoide-lucciola millenaria) compie il rituale nella Valle Aperta mentre Scheletri Antichi ed Eroi Dimenticati attaccano. Atto 5 ritorno in volo come libellule; la città è assediata; tiro finale.
+MOMENTO ATTUALE: Atto ${a.n} — ${a.t}.
+STATO: Paura del GM ${S.fear}/12. Contatore d'Assalto ${S.counter.on?"ATTIVO a "+S.counter.value:"non attivo"}. Luna: ${S.flags.luna==="saved"?"viva, accompagna il gruppo":S.flags.luna==="dead"?"morta":"sorte non ancora decisa"}. Patto fatato: ${pcById(S.flags.bargain)?.name||"nessuno"}${S.flags.bargainUsed?" (già riscosso)":""}. Scarshade sanno del pacco: ${S.flags.learned===true?"sì":S.flags.learned===false?"no":"non ancora"}. Scorciatoia: ${S.flags.shortcut||"non decisa"}. Rituale: ${S.flags.ritualDone?"completato":"non completato"}. Bottino: ${S.loot.join(", ")||"nessuno"}.
+GRUPPO: ${S.pcs.map(p=>`${p.name}${p.cls?" ("+p.cls+")":""}${p.sage?" [Saggio di Corte]":""} PF ${p.hpMax-p.hp}/${p.hpMax}, Stress ${p.st}/${p.stMax}, Speranza ${p.hope}${p.cond.length?", condizioni: "+p.cond.join(", "):""}`).join("; ")}.
+AVVERSARI IN SCENA: ${S.foes.filter(f=>!f.dead).map(f=>f.name).join(", ")||"nessuno"}.
+EVENTI RECENTI: ${S.log.slice(0,12).map(l=>l.text).join(" | ")||"nessuno"}.
+NOTE DEL GM: ${S.notes||"—"}`;
+}
+async function generate(){
+  const sample=window.claude?.use?await window.claude.use("sample").catch(()=>null):null;
+  if(!sample){G.err="Il generatore usa Claude dal tuo account: apri il tracker su claude.ai per usarlo.";render();return}
+  G.busy=true;G.err="";G.stream="";render();
+  G.ctrl=new AbortController();
+  const prompt=`Sei un game designer esperto di Daggerheart (Darrington Press). Crea UNA sezione giocabile per il GM, in italiano, coerente con la campagna e con il punto in cui si trova il gruppo.
+
+${campaignContext()}
+
+TIPO RICHIESTO: ${G.kind}
+TONO: ${G.tone}
+INDICAZIONI EXTRA DEL GM: ${G.extra||"nessuna"}
+
+Regole da rispettare: avversari Tier 1 con statistiche plausibili (Difficoltà 9-15, ATK da +0 a +3, soglie Grave/Severa tipo 6/12 o 8/14, PF 1-8, Stress 1-4, danni come 1d6+2 / 2d6+3 / 1d10+4 con tipo fis o mag). Usa la terminologia di Daggerheart: tiri d'azione con tratti (Agilità, Forza, Finezza, Istinto, Presenza, Conoscenza), Speranza, Paura, mosse del GM, conti alla rovescia, tiri reazione, condizioni (Vulnerabile, Trattenuto, Nascosto). Se pertinente, indica come la scena può influire sul Contatore d'Assalto alla Città. Non risolvere la trama principale e non contraddire i fatti dello stato. Scrivi testi evocativi ma brevi.
+
+Rispondi SOLO con un oggetto JSON con questa forma:
+{"titolo":"","tipo":"","luogo":"","leggi_ad_alta_voce":"testo da leggere ai giocatori, 2-4 frasi","descrizione_gm":"cosa succede e come gestirlo, 3-6 frasi","aggancio":"come si collega al punto attuale della campagna","difficolta_tiri":[{"azione":"","tratto":"","difficolta":12}],"conti_alla_rovescia":[{"nome":"","valore":4,"nota":""}],"avversari":[{"nome":"","tier":1,"ruolo":"Standard|Bruiser|Minion|Leader|Solo|Skulk|Social","quantita":1,"difficolta":12,"soglie":"6/12","pf":4,"stress":2,"atk":1,"attacco":"Nome · Mischia · 1d8+2 fis","caratteristiche":["Nome. effetto"]}],"png":[{"nome":"","descrizione":"","motivazione":""}],"mosse_paura":["spendi 1 Paura: ..."],"esiti":{"successo":"","fallimento":""},"effetto_contatore":"","ricompense":[""]}
+Lascia vuoti gli array non pertinenti.`;
+  try{
+    const out=await sample.json(prompt,{signal:G.ctrl.signal,modelTier:"default",onText:({text})=>{G.stream=text;const el=document.getElementById("gen-stream");if(el)el.textContent=text.slice(-600)}});
+    out.id=uid();out.atto=S.act;out.quando=new Date().toTimeString().slice(0,5);
+    S.gens.unshift(out);if(S.gens.length>25)S.gens.length=25;
+    log(`Generata sezione: ${out.titolo||"senza titolo"}`);persist();
+  }catch(e){
+    const m={not_granted:"Accesso a Claude negato per questa pagina. Puoi riattivarlo dal menu Permessi dell'artefatto.",rate_limited:"Troppe richieste ravvicinate. Aspetta un momento e riprova.",cancelled:"Generazione annullata.",invalid_json:"La risposta non era nel formato atteso. Riprova.",refused:"Claude non ha generato questa sezione. Prova a cambiare le indicazioni.",session_expired:"Sessione scaduta: ricarica la pagina.",sampling_disabled:"La generazione con Claude non è attiva per questo account."};
+    G.err=m[e?.code]||"Generazione non riuscita. Riprova tra poco.";
+  }
+  G.busy=false;G.ctrl=null;render();
+}
+function genCard(g){
+  const L=(a)=>Array.isArray(a)?a.filter(x=>x&&(typeof x!=="object"||Object.values(x).some(v=>v))):[];
+  const foes=L(g.avversari),cds=L(g.conti_alla_rovescia),png=L(g.png),rolls=L(g.difficolta_tiri),fm=L(g.mosse_paura),rw=L(g.ricompense);
+  return `<article class="gen-card"><div class="row" style="justify-content:space-between"><div><h3>${esc(g.titolo)}</h3><div class="small muted">${esc(g.tipo)}${g.luogo?" · "+esc(g.luogo):""} · Atto ${esc(g.atto)} · ${esc(g.quando)}</div></div><button class="btn xs" data-a="gen-del" data-id="${g.id}">×</button></div>
+  ${g.leggi_ad_alta_voce?`<div class="read"><span class="cue">Leggi ad alta voce</span><p>${esc(g.leggi_ad_alta_voce)}</p></div>`:""}
+  ${g.descrizione_gm?`<p>${esc(g.descrizione_gm)}</p>`:""}
+  ${g.aggancio?`<div class="note small"><b>Aggancio:</b> ${esc(g.aggancio)}</div>`:""}
+  ${rolls.length?`<div><div class="lab">Tiri</div><div class="row">${rolls.map(r=>`<button class="btn xs" data-a="roll-preset" data-diff="${+r.difficolta||12}" data-label="${esc(r.azione)} (${esc(r.tratto)})">${esc(r.azione)} · ${esc(r.tratto)} ${+r.difficolta||12}</button>`).join("")}</div></div>`:""}
+  ${cds.length?`<div><div class="lab">Conti alla rovescia</div>${cds.map((c,i)=>`<div class="row small"><b>${esc(c.nome)}</b> (${+c.valore||4}) <span class="muted">${esc(c.nota)}</span><button class="btn xs" data-a="gen-cd" data-id="${g.id}" data-i="${i}">Aggiungi</button></div>`).join("")}</div>`:""}
+  ${foes.length?`<div class="stack">${foes.map((a,i)=>`<div class="stat"><div class="stat-h"><b>${esc(a.nome)}${(+a.quantita||1)>1?` ×${+a.quantita}`:""}</b><span>Tier ${esc(a.tier||1)} ${esc(a.ruolo)}</span></div><div class="stat-b">
+   <div class="kv mono small"><span><b>PF</b> ${esc(a.pf)}</span><span><b>Stress</b> ${esc(a.stress)}</span><span><b>Soglie</b> ${esc(a.soglie)}</span><span><b>Diff</b> ${esc(a.difficolta)}</span><span><b>ATK</b> ${+a.atk>=0?"+":""}${esc(a.atk)}</span></div>
+   ${a.attacco?`<div><b>${esc(a.attacco)}</b></div>`:""}${L(a.caratteristiche).map(c=>`<div class="small">${esc(c)}</div>`).join("")}
+   <div><button class="btn xs pri" data-a="gen-foe" data-id="${g.id}" data-i="${i}">Schiera nello scontro</button></div></div></div>`).join("")}</div>`:""}
+  ${png.length?`<div><div class="lab">PNG</div><ul class="tight">${png.map(p=>`<li><b>${esc(p.nome)}</b> — ${esc(p.descrizione)}${p.motivazione?` <i>(${esc(p.motivazione)})</i>`:""}</li>`).join("")}</ul></div>`:""}
+  ${fm.length?`<div><div class="lab" style="color:var(--fear)">Mosse con Paura</div><ul class="tight">${fm.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  ${g.esiti&&(g.esiti.successo||g.esiti.fallimento)?`<div class="grid2 small"><div class="out-card"><b>Successo</b><div>${esc(g.esiti.successo)}</div></div><div class="out-card"><b>Fallimento</b><div>${esc(g.esiti.fallimento)}</div></div></div>`:""}
+  ${g.effetto_contatore?`<div class="warn small"><b>Contatore d'Assalto:</b> ${esc(g.effetto_contatore)}</div>`:""}
+  ${rw.length?`<div class="small"><span class="lab">Ricompense</span> ${rw.map(esc).join(" · ")}</div>`:""}
+  </article>`;
+}
+function renderGen(){
+  const a=ACTS.find(x=>x.id===S.act);
+  return `<div class="stack"><h2>Generatore di sezioni</h2>
+  <p class="muted">Claude crea un incontro o una situazione su misura per il punto attuale: Atto ${a.n}, ${a.t}. Legge lo stato del tracker (Luna, patto, Contatore, salute del gruppo, eventi recenti) e restituisce una sezione giocabile con statistiche Daggerheart.</p>
+  <div class="panel stack">
+   <div class="row"><span class="lab">Tipo</span>${KINDS.map(k=>`<button class="btn xs ${G.kind===k?"pri":""}" data-a="g-kind" data-k="${k}">${k}</button>`).join("")}</div>
+   <div class="row"><label class="inl">Tono <select id="g-tone" data-f="g" data-k="tone">${["tetro e fiabesco","horror boschivo","leggero e buffo","epico","malinconico","teso e frenetico"].map(t=>`<option ${G.tone===t?"selected":""}>${t}</option>`).join("")}</select></label></div>
+   <textarea id="g-extra" data-f="g" data-k="extra" rows="2" placeholder="Indicazioni extra (facoltative): es. «qualcosa che metta alla prova il patto con lo Strixwolf», «un mercante di Hush»…">${esc(G.extra)}</textarea>
+   <div class="row"><button class="btn pri" data-a="gen" ${G.busy?"disabled":""}>${G.busy?"Sto generando…":"Genera sezione"}</button>${G.busy?`<button class="btn" data-a="gen-stop">Interrompi</button>`:""}</div>
+   ${G.busy?`<pre class="mono small muted" id="gen-stream" style="white-space:pre-wrap;max-height:140px;overflow:auto;margin:0">${esc(G.stream.slice(-600))||"Claude sta pensando…"}</pre>`:""}
+   ${G.err?`<div class="warn small">${esc(G.err)}</div>`:""}
+  </div>
+  ${S.gens.length?S.gens.map(genCard).join(""):`<div class="panel muted">Le sezioni generate compariranno qui e restano salvate con la partita.</div>`}
+  </div>`;
+}
+
+function render(){
+  renderBar();renderTabs();renderSide();
+  const v=document.getElementById("view");
+  v.innerHTML=`<div class="stack">${S.tab==="atto"?ACT_VIEW[S.act]():S.tab==="scontro"?renderCombat():S.tab==="genera"?renderGen():S.tab==="regole"?RULES:renderDiary()}</div>`;
+}
+
+/* ============ azioni ============ */
+const A={
+ tab:o=>{S.tab=o.k;persist();render();window.scrollTo({top:0})},
+ goact:o=>upd(()=>{S.act=o.k;S.tab="atto";log(`→ Atto ${ACTS.find(a=>a.id===o.k).n}: ${ACTS.find(a=>a.id===o.k).t}`)}),
+ "fear-set":o=>upd(()=>{const n=+o.i+1;addFear((S.fear===n?n-1:n)-S.fear,"manuale")}),
+ ctr:o=>upd(()=>counterAdd(+o.k,"manuale")),
+ "ctr-start":()=>upd(()=>counterStart(15,"manuale")),
+ "chase-d":o=>upd(()=>{const n=+o.i+1;S.chase.d=S.chase.d===n?n-1:n}),
+ "chase-t":o=>upd(()=>{const n=+o.i+1;S.chase.t=S.chase.t===n?n-1:n}),
+ chase:o=>upd(()=>{
+  if(o.k==="r"){S.chase={d:3,t:3};return}
+  if(o.k==="s")S.chase.d=Math.max(0,S.chase.d-1);
+  if(o.k==="c")S.chase.d=Math.max(0,S.chase.d-2);
+  if(o.k==="f")S.chase.t=Math.max(0,S.chase.t-1);
+  log(`Inseguimento: Distanza ${S.chase.d}, Tempo ${S.chase.t}`);
+  if(S.chase.d===0&&!S.flags.luna){S.flags.luna="saved";log("Il gruppo raggiunge Luna in tempo","ok")}
+  if(S.chase.t===0&&S.chase.d>0&&!S.flags.luna){S.flags.luna="dead";log("Luna muore prima dell'arrivo del gruppo","bad")}}),
+ complication:()=>upd(()=>{addFear(-1,"complicazione");const c=COMPLICATIONS[d(3)-1];log("Complicazione: "+c,"fear");toast(c)}),
+ luna:o=>upd(()=>{S.flags.luna=o.k;log(o.k==="saved"?"Luna è salva":"Luna è morta",o.k==="saved"?"ok":"bad")}),
+ flag:o=>upd(()=>{S.flags[o.k]=!S.flags[o.k]}),
+ spawn:o=>upd(()=>{addFoe(o.k,+o.n);if(o.luna)addFoe("luna",1);S.tab="scontro"}),
+ learned:o=>upd(()=>{S.flags.learned=o.k==="1";log(o.k==="1"?"Gli Scarshade hanno scoperto cos'è il pacco!":"Gli Scarshade non hanno scoperto nulla",o.k==="1"?"bad":"ok")}),
+ "counter-shades":()=>upd(()=>counterStart(15+aliveShades(),`15 + ${aliveShades()} Scarshade sopravvissuti`)),
+ shortcut:o=>upd(()=>{S.flags.shortcut=o.k;if(o.k==="skip"){counterAdd(2,"nessuna scorciatoia");S.act="3"}else{S.act="2.5";log("Il gruppo prende la scorciatoia")}}),
+ river:o=>upd(()=>{
+  if(o.k==="r"){S.river.t=4;return}
+  if(o.k==="s"){const dr=S.pcs.some(p=>p.cond.includes("Annegamento"));if(dr&&S.river.t<=1){toast("Qualcuno sta annegando: il conto non può arrivare a zero");return}S.river.t=Math.max(0,S.river.t-1);log(`Traversata −1 → ${S.river.t}`,"ok")}
+  if(o.k==="f"){log("Fallimento nella traversata: azione Annegare","bad");toast("Scegli un PG: tiro reazione di Agilità o inizia ad annegare")}}),
+ "drown-tick":()=>upd(()=>S.pcs.filter(p=>p.cond.includes("Annegamento")).forEach(p=>pcMarkStress(p,1,"annegamento"))),
+ "drown-roll":()=>{if(!drownPick){toast("Scegli prima un PG");return}preset({who:drownPick,diff:13,reaction:true,label:"Reazione Agilità contro l'annegamento"})},
+ "drown-set":()=>{const p=pcById(drownPick);if(!p){toast("Scegli prima un PG");return}upd(()=>{if(!p.cond.includes("Annegamento"))p.cond.push("Annegamento");log(`${p.name} sta annegando`,"bad")})},
+ undertow:()=>upd(()=>{
+  const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));const p=pcById(drownPick)&&dr.includes(pcById(drownPick))?pcById(drownPick):dr[0];
+  addFear(-1,"Risacca");const r=d(4);let txt=`Risacca su ${p.name}: d4 = ${r}. ${UNDERTOW[r-1]}.`;
+  if(r===1)pcMarkStress(p,1,"risacca");
+  if(r===2){const x=rollExpr("2d6+3");txt+=` ${x.text}.`;pcDamage(p,x.total,false,false)}
+  S.undertow=txt;log(txt,"fear")}),
+ loot:o=>upd(()=>{const t=TREASURES[+o.i][0];S.loot.push(t);log(`Recuperato dal fiume: ${t}`,"ok")}),
+ "search-tick":()=>upd(()=>{S.flags.searchTick=true;counterAdd(1,"ricerca nel villaggio")}),
+ "elder-st":o=>upd(()=>{const n=+o.i+1;S.elderSt=(S.elderSt||0)===n?n-1:n;if(S.elderSt>=4&&!S.flags.elderDone){S.flags.elderDone=true;log("L'Anziano Halython si arrende","ok")}}),
+ elder:o=>upd(()=>{
+  if(o.k==="s"){S.elderSt=Math.min(4,(S.elderSt||0)+1);log(`L'Anziano segna 1 Stress (${S.elderSt}/4)`);if(S.elderSt>=4){S.flags.elderDone=true;log("L'Anziano Halython si arrende","ok")}}
+  else{const p=pcById(elderPick);if(!p){toast("Scegli il PG che ha tirato");return}pcMarkStress(p,1,"Diffidente")}}),
+ "no-hosp":()=>upd(()=>{S.elderSt=Math.min(4,(S.elderSt||0)+1);const x=rollExpr("2d6");S.villagers+=x.total;log(`Niente ospitalità: ${x.text} paesani arrivano (${S.villagers})`,"fear");if(S.elderSt>=4){S.flags.elderDone=true;log("L'Anziano Halython si arrende","ok")}}),
+ peace:()=>upd(()=>{addFear(-2,"CI SARÀ PACE");S.flags.peaceUsed=true;S.pcs.forEach(p=>{p.hope=0;const x=rollExpr("2d4");pcMarkStress(p,x.total,"Ci sarà pace, "+x.text)});log("CI SARÀ PACE: tutti i PG perdono la Speranza","bad")}),
+ vill:o=>upd(()=>{S.villagers=Math.max(0,S.villagers+(+o.k))}),
+ "vill-dmg":()=>upd(()=>{const dmg=+document.getElementById("villdmg").value||0;const k=Math.min(S.villagers,dmg>0?1+Math.floor(dmg/3):0);S.villagers-=k;log(`${dmg} danni ai paesani: ${k} sconfitti (${S.villagers} restano)`)}),
+ "vill-attack":()=>upd(()=>{addFear(-1,"Attacco di Gruppo");const r=d(20);log(`Attacco di Gruppo dei Paesani (${S.villagers}): d20 = ${r} (+0). Se colpisce: ${2*S.villagers} danni fisici`,"fear");foeRoll.res=`Attacco di Gruppo: d20 = ${r}. Se ≥ Evasione: ${2*S.villagers} danni fisici.`;toast(foeRoll.res)}),
+ "bargain-used":()=>upd(()=>{S.flags.bargainUsed=true;log("Il patto fatato è stato riscosso ad Hush","fear")}),
+ "ritual-here":o=>upd(()=>{const here=o.k==="1";if(S.flags.ritualHere===false&&!here)return;if(!here&&S.flags.ritualHere!==false)counterAdd(1,"rituale alla Valle Aperta");S.flags.ritualHere=here;if(here)log("I paesani accettano il rituale nel villaggio")}),
+ rest:o=>upd(()=>{const p=pcById(o.id);const x=rollExpr("1d4+1");(S.rest[p.id]=S.rest[p.id]||[]).push(o.k);
+  if(o.k==="wounds"){p.hp=Math.max(0,p.hp-x.total);log(`${p.name} cura ${x.total} PF (${x.text})`,"ok")}
+  if(o.k==="stress"){p.st=Math.max(0,p.st-x.total);log(`${p.name} rimuove ${x.total} Stress (${x.text})`,"ok")}
+  if(o.k==="armor"){p.ar=Math.max(0,p.ar-x.total);log(`${p.name} ripara ${x.total} slot Armatura (${x.text})`,"ok")}
+  if(o.k==="prep"){p.hope=Math.min(6,p.hope+1);log(`${p.name} si prepara: +1 Speranza`,"hope")}}),
+ "rest-group":()=>upd(()=>{const ps=S.pcs.filter(p=>(S.rest[p.id]||[]).length<2);ps.forEach(p=>{(S.rest[p.id]=S.rest[p.id]||[]).push("prep");p.hope=Math.min(6,p.hope+2)});log(`Preparazione di gruppo: +2 Speranza a ${ps.map(p=>p.name).join(", ")}`,"hope")}),
+ "rest-reset":()=>upd(()=>{S.rest={};S.flags.rest=null}),
+ downtime:()=>upd(()=>{const x=rollExpr("1d4");addFear(x.total,"riposo breve ("+x.text+")");counterAdd(2,"riposo breve");S.flags.rest="taken"}),
+ "skip-rest":()=>upd(()=>{S.flags.rest="skipped";log("Il gruppo salta il riposo per guadagnare tempo")}),
+ ritual:o=>upd(()=>{
+  if(o.k==="hit"){S.ritual.v=Math.min(8,S.ritual.v+1);log(`L'Arcanista è colpita: Rituale +1 → ${S.ritual.v}`,"bad")}
+  if(o.k==="kill"){S.ritual.v=Math.max(0,S.ritual.v-1);log(`Rituale −1 → ${S.ritual.v}`,"ok")}}),
+ "ritual-pip":o=>upd(()=>{const n=+o.i+1;S.ritual.v=S.ritual.v===n?n-1:n}),
+ "ritual-spawn":()=>upd(()=>{addFoe("skeleton",5);addFoe("hero",2);S.tab="scontro"}),
+ vengeance:()=>upd(()=>{addFear(-1,"Vendetta degli Antichi Dèi");addFoe("skeleton",Math.min(2,10-aliveSkel()))}),
+ "ritual-end":()=>upd(()=>{S.flags.ritualDone=true;S.ritual.v=0;S.foes.forEach(f=>f.dead=true);log("Il rituale è completo: i nemici rimasti diventano polvere","ok");if(!S.counter.on)counterStart(15,"fine del rituale")}),
+ "final-preset":()=>{const bp=pcById(S.flags.bargain);preset({diff:S.counter.on?S.counter.value:15,final:true,label:"Tiro finale: arrivare alla statua in tempo",dis:bp&&!S.flags.bargainUsed?1:0,who:S.pcs[0]?.id||""})},
+ "home-add":()=>upd(()=>S.home.push({n:"",note:""})),
+ "home-del":o=>upd(()=>S.home.splice(+o.i,1)),
+ // dadi
+ roll:()=>doDuality(),
+ "roll-preset":o=>preset({diff:+o.diff,label:o.label||"",adv:+(o.adv||0)}),
+ "r-react":()=>{R.reaction=!R.reaction;render()},
+ "r-clear":()=>{Object.assign(R,{label:"",final:false,res:null,helpers:[],exp:0,adv:0,dis:0,reaction:false});render()},
+ helper:o=>{R.helpers=R.helpers.includes(o.id)?R.helpers.filter(x=>x!==o.id):[...R.helpers,o.id];render()},
+ simple:o=>{if(o.k)simple.expr=o.k;const x=rollExpr(simple.expr);simple.res=x?x.text:"Formato non valido: usa ad esempio 2d6+3";if(x)log("Tiro: "+x.text);persist();render()},
+ // PG
+ "pc-pip":o=>upd(()=>{const p=pcById(o.id),k=o.k,n=+o.i+1;p[k]=p[k]===n?n-1:n;if(k==="hp")checkDown(p)}),
+ "pc-edit":o=>{editPc=editPc===o.id?null:o.id;render()},
+ "pc-sage":o=>upd(()=>{const p=pcById(o.id);p.sage=!p.sage}),
+ "pc-add":()=>upd(()=>{const p=mkPC("Nuovo PG");S.pcs.push(p);editPc=p.id}),
+ "pc-del":o=>upd(()=>{S.pcs=S.pcs.filter(p=>p.id!==o.id);editPc=null}),
+ "pc-cond":o=>upd(()=>{const p=pcById(o.id);p.cond=p.cond.includes(o.k)?p.cond.filter(c=>c!==o.k):[...p.cond,o.k];log(`${p.name}: ${o.k} ${p.cond.includes(o.k)?"attivo":"rimosso"}`)}),
+ "pc-dmg":o=>{const v=+document.getElementById("dmg-"+o.id).value;if(!(v>0)){toast("Inserisci i danni");return}const arm=document.getElementById("arm-"+o.id).checked;upd(()=>pcDamage(pcById(o.id),v,arm,false))},
+ death:o=>upd(()=>{const p=pcById(o.id);deathFor=null;
+  if(o.k==="blaze")log(`${p.name} sceglie la Gloria Finale: un'ultima azione con successo critico, poi muore`,"bad");
+  if(o.k==="avoid"){const h=d(12);p.cond.includes("Incosciente")||p.cond.push("Incosciente");log(`${p.name} evita la morte e perde i sensi. Dado Speranza ${h}${h<=1?": ottiene una cicatrice (−1 slot Speranza)":": nessuna cicatrice"}`,"bad")}
+  if(o.k==="risk"){const h=d(12),f=d(12);
+   if(h===f){p.hp=0;p.st=0;log(`${p.name} rischia tutto: ${h}/${f} critico! Recupera tutti PF e Stress`,"ok")}
+   else if(h>f){let c=h;const hp=Math.min(p.hp,c);p.hp-=hp;c-=hp;p.st=Math.max(0,p.st-c);log(`${p.name} rischia tutto: Speranza ${h} > Paura ${f}. Recupera ${h} tra PF e Stress`,"ok")}
+   else log(`${p.name} rischia tutto: Paura ${f} > Speranza ${h}. Il personaggio muore`,"bad")}}),
+ // avversari
+ "add-foe":()=>upd(()=>{addFoe(document.getElementById("add-tmpl").value,clamp(+document.getElementById("add-n").value||1,1,12))}),
+ "clear-dead":()=>upd(()=>S.foes=S.foes.filter(f=>!f.dead)),
+ "clear-foes":()=>upd(()=>{S.foes=[];foeRoll.res=null}),
+ "foe-pip":o=>upd(()=>{const f=S.foes.find(x=>x.id===o.id),n=+o.i+1;f[o.k]=f[o.k]===n?n-1:n;if(o.k==="hp"&&f.hp>=f.hpMax)foeDefeated(f);if(o.k==="hp"&&f.hp<f.hpMax)f.dead=false}),
+ "foe-atk":o=>upd(()=>{const f=S.foes.find(x=>x.id===o.id);const p=pcById(document.getElementById("tg-"+o.id)?.value);const r=d(20),t=r+f.atk;
+  const hit=p?(r===20||t>=p.eva):null;foeRoll.res=`${f.name} attacca${p?" "+p.name:""}: d20 ${r} ${f.atk>=0?"+":""}${f.atk} = ${t}${p?` vs Evasione ${p.eva} → ${r===20?"CRITICO":hit?"COLPITO":"mancato"}`:""}`;log(foeRoll.res,hit?"bad":"")}),
+ "foe-dmg":o=>upd(()=>{const f=S.foes.find(x=>x.id===o.id);const x=rollExpr(f.dmg);foeRoll.res=`${f.name} danni: ${x.text}`;log(foeRoll.res,"bad");const p=pcById(document.getElementById("tg-"+o.id)?.value);if(p){setTimeout(()=>{const e2=document.getElementById("dmg-"+p.id);if(e2)e2.value=x.total},0)}}),
+ "foe-hit":o=>upd(()=>{const f=S.foes.find(x=>x.id===o.id);const v=+document.getElementById("fd-"+o.id).value||0;if(!v)return;
+  if(f.minion){foeDefeated(f);const extra=Math.floor(v/3);log(`${f.name} sconfitto${extra?`; i ${v} danni sconfiggono altri ${extra} gregari a portata`:""}`);return}
+  const hp=hpFromDamage(v,f.thr?.[0],f.thr?.[1],false);f.hp=Math.min(f.hpMax,f.hp+hp);log(`${f.name} subisce ${v} danni → ${hp} PF (${f.hp}/${f.hpMax})`);if(f.hp>=f.hpMax)foeDefeated(f)}),
+ "foe-kill":o=>upd(()=>{const f=S.foes.find(x=>x.id===o.id);if(f.dead){f.dead=false;f.hp=Math.min(f.hp,f.hpMax-1)}else{f.hp=f.hpMax;foeDefeated(f)}}),
+ "foe-del":o=>upd(()=>S.foes=S.foes.filter(f=>f.id!==o.id)),
+ "cd-pip":o=>upd(()=>{const c=S.cds.find(x=>x.id===o.id),n=+o.i+1;c.v=c.v===n?n-1:n}),
+ "cd-tick":o=>upd(()=>{const c=S.cds.find(x=>x.id===o.id);c.v=clamp(c.v+(+o.k),0,c.max);log(`${c.name}: ${c.v}`)}),
+ "cd-del":o=>upd(()=>S.cds=S.cds.filter(c=>c.id!==o.id)),
+ "cd-add":()=>{const n=document.getElementById("cd-name").value.trim();if(!n){toast("Dai un nome al conto");return}const m=clamp(+document.getElementById("cd-max").value||4,1,12);upd(()=>S.cds.push({id:uid(),name:n,max:m,v:m,note:""}))},
+ // generatore
+ "g-kind":o=>{G.kind=o.k;render()},
+ gen:()=>generate(),
+ "gen-stop":()=>G.ctrl?.abort(),
+ "gen-del":o=>upd(()=>S.gens=S.gens.filter(g=>g.id!==o.id)),
+ "gen-foe":o=>upd(()=>{const g=S.gens.find(x=>x.id===o.id);addCustomFoe(g.avversari[+o.i]);S.tab="scontro"}),
+ "gen-cd":o=>upd(()=>{const g=S.gens.find(x=>x.id===o.id);const c=g.conti_alla_rovescia[+o.i];const m=clamp(+c.valore||4,1,12);S.cds.push({id:uid(),name:c.nome||g.titolo,max:m,v:m,note:c.nota||""});toast("Conto aggiunto allo Scontro")}),
+ reset:()=>{resetAsk=true;render()},
+ "reset-no":()=>{resetAsk=false;render()},
+ "reset-yes":()=>{resetAsk=false;const keep=S.gens;S=fresh();S.gens=keep;persist();render();toast("Nuova campagna pronta")}
+};
+// pips con nome azione = chiave del conto
+const PIPMAP={river:o=>upd(()=>{const n=+o.i+1;S.river.t=S.river.t===n?n-1:n}),ritual:o=>A["ritual-pip"](o)};
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-a]");if(!b)return;
+  const o=b.dataset;
+  if(b.classList.contains("pip")&&PIPMAP[o.a]){PIPMAP[o.a](o);return}
+  const f=A[o.a];if(f)f(o,b);
+});
+document.addEventListener("change",e=>{
+  const el=e.target,o=el.dataset;if(!o.f)return;
+  const v=el.value;
+  switch(o.f){
+    case "pc":{const p=pcById(o.id);if(!p)return;const num=["hpMax","stMax","arMax","eva","major","severe"].includes(o.k);p[o.k]=num?clamp(+v||0,0,num&&o.k.endsWith("Max")?12:99):v;if(num){p.hp=Math.min(p.hp,p.hpMax);p.st=Math.min(p.st,p.stMax);p.ar=Math.min(p.ar,p.arMax)}persist();if(num||o.k==="name")render();return}
+    case "r":R[o.k]=o.k==="who"?v:(+v||0);if(o.k==="who")R.helpers=R.helpers.filter(x=>x!==v);render();return;
+    case "critter":S.critters[+o.i]=v;persist();render();return;
+    case "bargain":S.flags.bargain=v;log(v?`${pcById(v).name} accetta il patto dello Strixwolf`:"Nessun patto fatato","fear");persist();render();return;
+    case "drownpc":drownPick=v;return;
+    case "elderpc":elderPick=v;return;
+    case "home-n":S.home[+o.i].n=v;persist();return;
+    case "home-note":S.home[+o.i].note=v;persist();return;
+    case "notes":S.notes=v;persist();return;
+    case "simple":simple.expr=v;return;
+    case "g":G[o.k]=v;return;
+  }
+});
+render();
+</script>
