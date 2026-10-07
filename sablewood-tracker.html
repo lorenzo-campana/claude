@@ -283,7 +283,7 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .box b{font-family:var(--f-display);font-size:1.5rem;font-weight:400;line-height:1}
 .box small{font-size:.8rem;color:var(--muted)}
 .fearbox{border-color:var(--fear)} .fearbox b{color:var(--fear)}
-.enc-env{border:1px dashed var(--line);border-radius:8px;padding:10px 12px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
+.enc-env{border:1px dashed var(--line);border-radius:8px;padding:8px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
 .enc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;align-items:start}
 .mc{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:9px 10px;display:flex;flex-direction:column;gap:5px;cursor:pointer}
 .mc:hover{border-color:var(--ink)}
@@ -312,7 +312,7 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 .ava.lg{width:58px;height:58px;font-size:1.9rem;border-radius:12px}
 .shield.xs .sv{width:30px;height:33px;font-size:1rem;padding:2px}
 .shield.xs .sl{font-size:.5rem;margin-top:-6px;padding:0 4px}
-.enc-plus{min-height:110px;border:2px dashed var(--kc);border-radius:10px;background:none;color:var(--kc);font-size:2.2rem;font-weight:300;cursor:pointer}
+.enc-plus{min-height:84px;align-self:stretch;border:2px dashed var(--kc);border-radius:10px;background:none;color:var(--kc);font-size:2.2rem;font-weight:300;cursor:pointer}
 .enc-plus:hover{background:var(--bg)}
 .sheet{border:1px solid var(--kc);border-radius:10px;overflow:hidden;background:var(--paper)}
 .sh-ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--bg)}
@@ -324,6 +324,14 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 .sh-l{border-right:1px solid var(--line);display:flex;flex-direction:column}
 .sh-id{display:flex;gap:12px;align-items:center;padding:14px}
 .sh-atk{margin-top:6px;gap:6px}
+.env-compact{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:8px}
+.ec{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--paper)}
+.ec-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ec-n{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1;min-width:1.4em;text-align:center}
+.ec-full{grid-column:1/-1}
+.atk-card{border:1px solid var(--line);border-left:3px solid var(--fear);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.atk-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.atk-h b{font-weight:800}
 .sh-id b{font-family:var(--f-display);font-weight:400;font-size:1.5rem;display:block;line-height:1.1}
 .tbadge{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:1px 7px;border-radius:4px;background:var(--plate);color:var(--plate-fg)}
 .tbadge.t-Social,.tbadge.t-PNG{background:var(--hope)} .tbadge.t-Solo,.tbadge.t-Bruiser,.tbadge.t-Leader{background:var(--blood)} .tbadge.t-Minion,.tbadge.t-Standard{background:var(--moss)}
@@ -895,13 +903,18 @@ function miniCard(f){
   </div>`;
 }
 function foeSheet(f){
-  const a=f.attack,tabs=[["cap",`Capacità · ${f.feats.length}`],["nar","Narrazione"],["info","Info"]];
+  const a=f.attack,tabs=[["cap",`Capacità · ${f.feats.length}`],["nar","Narrazione"],["info",`Attacchi · ${(f.attack?1:0)+f.feats.filter(x=>x.roll).length}`]];
   const featsHTML=f.feats.length?f.feats.map((x,i)=>{const cost=x.c?x.c.split(":"):null;return `<div class="ftr"><div class="ftr-h"><b>${esc(x.n)}</b><span class="sp"></span><span class="ktag ${x.k}">${x.k}</span>${cost?`<span class="chip ${cost[0]==="fear"?"fear":"bad"}">${cost[1]} ${cost[0]==="fear"?"Paura":"Stress"}</span>`:""}
      ${cost||x.fx?`<button class="btn xs" data-a="foe-feat" data-id="${f.id}" data-i="${i}">Usa</button>`:""}${x.roll?rb(x.roll,{t:"expr",x:x.roll,label:f.name+": "+x.n,tgt:"pc"},"dmg"):""}</div><div class="small">${esc(x.x)}</div></div>`}).join(""):`<div class="small muted">Nessuna capacità.</div>`;
   const nar=`${f.desc?`<p><i>${esc(f.desc)}</i></p>`:""}${f.mot?`<div><span class="lab">Motivi e tattiche</span><p>${esc(f.mot)}</p></div>`:""}${f.tips.length?`<div class="note small"><ul class="tight">${f.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:""}${!f.desc&&!f.mot&&!f.tips.length?`<div class="small muted">Nessuna nota.</div>`:""}`;
-  const info=`<dl class="kv2">${a?`<dt>ATK</dt><dd class="mono">${sgn(f.atk||0)}</dd>`:""}${f.exp.length?`<dt>Esperienze</dt><dd>${f.exp.map(e=>`${esc(e[0])} ${sgn(e[1])}`).join(", ")}</dd>`:""}<dt>Tier</dt><dd>${f.tier}</dd>${f.sugg?`<dt>Difficoltà</dt><dd>suggerita: il modulo non la indica</dd>`:""}</dl>
-   ${a?`<div class="wpn"><b>${esc(a.n)}</b><span class="mono">${esc(a.d)} ${esc(a.ty)}</span><span class="muted small">${esc(a.r)}</span><span></span></div>
-    <div class="row small">${rb(`Attacco d20${sgn(f.atk||0)}`,{t:"atk",foe:f.id},"atk")}${/d/.test(a.d)?rb(`Danni ${a.d}`,{t:"expr",x:a.d,label:`${f.name}: ${a.n}`,tgt:"pc"},"dmg"):""}</div>`:`<div class="small muted">Nessun attacco.</div>`}`;
+  const rollFeats=f.feats.map((x,i)=>({x,i})).filter(o=>o.x.roll);
+  const info=`${a?`<div class="atk-card"><div class="atk-h"><b>${esc(a.n)}</b><span class="ktag">Attacco base</span></div>
+     <dl class="kv2"><dt>Portata</dt><dd>${esc(a.r)}</dd><dt>Tiro</dt><dd class="mono">d20${sgn(f.atk||0)} contro l'Evasione</dd><dt>Danni</dt><dd class="mono">${esc(a.d)} ${a.ty==="mag"?"magici":"fisici"}</dd></dl>
+     <div class="row">${rb(`Attacca · d20${sgn(f.atk||0)}`,{t:"atk",foe:f.id},"atk")}${/d/.test(a.d)?rb(`Danni ${a.d}`,{t:"expr",x:a.d,label:`${f.name}: ${a.n}`,tgt:"pc"},"dmg"):""}</div></div>`:""}
+   ${rollFeats.map(({x,i})=>{const cost=x.c?x.c.split(":"):null;return `<div class="atk-card"><div class="atk-h"><b>${esc(x.n)}</b><span class="ktag ${x.k}">${x.k}</span>${cost?`<span class="chip ${cost[0]==="fear"?"fear":"bad"}">${cost[1]} ${cost[0]==="fear"?"Paura":"Stress"}</span>`:""}</div>
+     <div class="small">${esc(x.x)}</div><div class="row">${cost||x.fx?`<button class="btn xs" data-a="foe-feat" data-id="${f.id}" data-i="${i}">Usa</button>`:""}${rb(`Danni ${x.roll}`,{t:"expr",x:x.roll,label:f.name+": "+x.n,tgt:"pc"},"dmg")}</div></div>`}).join("")}
+   ${!a&&!rollFeats.length?`<div class="small muted">Nessun attacco: è un incontro da gestire a parole.</div>`:""}
+   ${f.exp.length?`<div class="small"><span class="lab">Esperienze</span> ${f.exp.map(e=>`${esc(e[0])} ${sgn(e[1])}`).join(" · ")}</div>`:""}`;
   return `<div class="sheet" id="fd-${f.id}">
    <div class="sh-ctl"><b class="sh-name">${esc(f.name)}</b>${f.hpMax?`<span class="xsmall muted">soglie ${f.thr[0]??"—"}/${f.thr[1]??"—"}</span>`:""}<span class="sp"></span>
     ${f.hpMax?`<input type="number" id="fd-in-${f.id}" placeholder="Danni…" min="0" aria-label="Danni"><button class="btn hope" data-a="foe-hit" data-id="${f.id}">Applica</button>`:""}
@@ -1120,21 +1133,16 @@ const ENC={
    <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
  `},reset:()=>{S.river.t=4;S.undertow=null;S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}},
  "3:arcanista":{hide:()=>luna(),auto:[["fidget",1],["lausa",1],["octavio",1]],t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
- "3:anziano":{auto:[["elder",1]],t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",env:()=>`<div class="grid2">
- <div class="panel stack"><h4>Convincere l'Anziano ${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}</h4>
-  <div><div class="lab">Stress dell'Anziano — a 4 si arrende</div>${pips(4,S.elderSt||0,"st","elder-st")}</div>
-  ${luna()?`<div class="note small">Luna garantisce per il gruppo: <b>vantaggio</b> ai tiri.</div>`:""}
-  <div class="row small"><select id="elderpc" data-f="elderpc" aria-label="PG che tira">${pcOptions(elderPick,"PG che tira")}</select>
-   ${rb("Presenza · Diff 15",{t:"dual",trait:4,diff:15,adv:luna()?1:"",label:"Convincere l'Anziano"})}</div>
-  <div class="row small"><button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: il PG segna 1 Stress</button></div>
-  ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
- </div>
- <div class="panel stack"><h4>Paesani preoccupati</h4>
-  <div class="row"><span class="mono" style="font-size:1.6rem">${S.villagers}</span><span class="muted">presenti</span><button class="btn xs" data-a="vill" data-k="-1">−1</button><button class="btn xs" data-a="vill" data-k="1">+1</button></div>
-  <div class="row small"><input type="number" id="villdmg" value="3" min="1" aria-label="Danni"><button class="btn xs" data-a="vill-dmg">Danni a un gregario</button></div>
-  <div class="row small"><button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo (1 Paura)</button></div>
-  <div class="xsmall muted">Gregari · Diff 9 · Pugnali Mischia 2 fis · sconfitti da qualsiasi danno; ogni 3 danni un gregario in più.</div>
- </div></div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
+ "3:anziano":{auto:[["elder",1]],t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",env:()=>`<div class="env-compact">
+ <div class="ec"><div class="ec-h"><span class="lab">Convincere l'Anziano · cede a 4 Stress (${S.elderSt||0}/4)</span>${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}${luna()?`<span class="chip hope">Luna garantisce: vantaggio</span>`:""}</div>
+  <div class="row small">${rb("Presenza · Diff 15",{t:"dual",trait:4,diff:15,adv:luna()?1:"",label:"Convincere l'Anziano"})}<button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button></div>
+  <div class="row small"><select id="elderpc" data-f="elderpc" aria-label="PG che ha fallito">${pcOptions(elderPick,"PG che fallisce")}</select><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: PG +1 Stress</button></div></div>
+ <div class="ec"><div class="ec-h"><span class="lab">Paesani preoccupati</span><span class="xsmall muted">Gregari · Diff 9 · Pugnali Mischia 2 fis · ogni 3 danni un gregario in più</span></div>
+  <div class="row"><b class="ec-n">${S.villagers}</b><button class="btn xs" data-a="vill" data-k="-1" aria-label="Un paesano in meno">−1</button><button class="btn xs" data-a="vill" data-k="1" aria-label="Un paesano in più">+1</button>
+   <input type="number" id="villdmg" value="3" min="1" aria-label="Danni"><button class="btn xs" data-a="vill-dmg">Danni</button>
+   <button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo (1 Paura)</button></div></div>
+ ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small ec-full"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
+ </div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
  "4:villa":{auto:[["arcanist",1]],t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
  "4:rituale":{auto:[["skeleton",5],["hero",2]],t:"Il Rituale del Rinnovo",k:"Combattimento",d:"Proteggete l'Arcanista finché il conto del Rituale arriva a zero. Ogni nemico sconfitto lo abbassa di 1.",env:()=>`
   <div><div class="lab">Rituale — a zero il rituale riesce</div>${pips(8,S.ritual.v,"cd","ritual-pip")} <span class="mono">${S.ritual.v}</span></div>
