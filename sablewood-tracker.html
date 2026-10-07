@@ -117,6 +117,10 @@ p{margin:0}
 .ask .ask-x{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .asks{display:flex;flex-direction:column;gap:8px}
 
+.pact{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:2px solid var(--fear);border-radius:10px;padding:10px 12px;background:var(--fear-soft)}
+.pact>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pact b{font-family:var(--f-display);font-weight:400;font-size:1.2rem}
+.pact.yes{border-color:var(--hope);background:var(--hope-soft)} .pact.no{border-color:var(--blood);background:var(--blood-soft)}
 .pend{border:1px dashed var(--muted);border-radius:var(--r);padding:8px 12px;color:var(--muted);font-size:.92rem}
 details.alt{border:1px dashed var(--line);border-radius:var(--r);padding:6px 12px}
 details.alt>summary{font-weight:700;color:var(--muted);font-size:.9rem}
@@ -568,14 +572,14 @@ const uid=()=>Math.random().toString(36).slice(2,9);
 const mkPC=k=>({id:k,hp:0,st:0,hope:2,ar:0,cond:[],notes:"",item:false,over:{}});
 function fresh(){
   return {v:2,savedAt:0,act:'1',tab:'atto',fear:5,counter:{on:false,value:15},critters:["",""],
-   flags:{luna:null,ring:false,bargain:"",bargainUsed:false,learned:null,shortcut:null,searchTick:false,elderDone:false,peaceUsed:false,ritualHere:null,rest:null,ritualDone:false,final:null},
+   flags:{luna:null,pact:null,ring:false,bargain:"",bargainUsed:false,learned:null,shortcut:null,searchTick:false,elderDone:false,peaceUsed:false,ritualHere:null,rest:null,ritualDone:false,final:null},
    chase:{d:3,t:3},river:{t:4},ritual:{v:8},villagers:0,elderSt:0,undertow:null,loot:[],
    pcs:Object.keys(PREGEN).map(mkPC),home:[{n:"",note:""}],foes:[],cds:[],log:[],devs:[],scn:{},out:{},notes:"",rest:{}};
 }
 function migrate(s){
   if(!s||typeof s!=="object")return fresh();
   if(s.v===2){
-    s.scn=s.scn||{};s.out=s.out||{};
+    s.scn=s.scn||{};s.out=s.out||{};if(s.flags&&s.flags.pact===undefined)s.flags.pact=null;
     const moved={"2:silenzio":"2:emissari","3:ingresso":"3:arcanista","4:fine":"4:rituale"};
     (s.devs||[]).forEach(x=>{if(moved[x.where])x.where=moved[x.where];if(x.done==null)x.done=false});
     (s.foes||[]).forEach(f=>{if(moved[f.where])f.where=moved[f.where]});
@@ -986,7 +990,8 @@ const SECTIONS={
   <p>Lo <b>Strixwolf</b> è un grande spirito, creato per proteggere le specie più rare del Sablewood. Luna non sapeva che l'ornitorinco che indossa era sotto la sua protezione.</p>
   <div class="panel stack"><h4>Patto fatato</h4>
   ${read(`<p>«Una vita per una vita: questo è il prezzo che chiedo. Eppure vedo fuoco nella tua anima, e mi fa credere che potresti saziare la mia fame con la <i>sorpresa</i> invece che con il sangue.</p><p>Concedimi un solo momento del tuo tempo, e lo userò per metterti alla prova. Prima che il tuo viaggio finisca reclamerò quel momento, e ti farò minacciare la vita che mi è dovuta. Cosa accadrà dopo, sono curioso di scoprirlo.»</p>`,"Se viene chiesto")}
-  <p class="small muted">Poi: ad Hush il PG attacca un PNG (se è drammatico), <i>oppure</i> nel tiro finale sabota gli alleati dando svantaggio.</p></div>`;
+  <p class="small muted">Chi accetta: ad Hush attaccherà un PNG (se è drammatico), <i>oppure</i> nel tiro finale saboterà gli alleati dando svantaggio.</p>
+  ${pactUI()}</div>`;
   return branch(S.flags.luna==="saved"?"a":S.flags.luna==="dead"?"b":null,["Se Luna è viva",saved],["Se Luna è morta",dead],S.out["1:inizio"]==="Deviazione improvvisata"?"Si decide alla fine della scena improvvisata: quando torni alla trama qui resterà solo il ramo giusto.":"Concludi la scena 1: in base all'inseguimento qui resterà solo il ramo giusto.")}},
 ],
 '2':()=>[
@@ -1082,8 +1087,8 @@ const ENC={
    <button class="btn fear" data-a="complication" ${S.fear<1?"disabled":""}>Spendi 1 Paura: complicazione casuale</button>
    <div class="muted">Il prossimo tiro d'azione dei PG ha svantaggio.</div></div></div>
  `,reset:()=>{S.chase={d:3,t:3}}},
- "1:prezzo":{hide:()=>S.flags.luna==="dead",t:"Lo Strixwolf",k:"Combattimento",d:"Lo spirito guardiano pretende la vita di Luna. Si può combattere o trattare un patto fatato.",sug:[["strixwolf",1],["luna",1]]},
- "2:emissari":{t:"Emissari degli Antichi Dèi",k:"Combattimento",d:"Gli Scarshade vogliono sapere cosa contiene il pacco. Finché i PG non attaccano, lo Scavo nella Memoria non fa danni.",sug:()=>[["scarshade",nShades(),`${nShades()}× Scarshade`],["scarshade",1]]},
+ "1:prezzo":{hide:()=>S.flags.luna==="dead"||S.flags.pact==="yes",auto:[["strixwolf",1],["luna",1]],t:"Lo Strixwolf",k:"Combattimento",d:"Lo spirito guardiano pretende la vita di Luna. Si può combattere o trattare un patto fatato.",sug:[["strixwolf",1],["luna",1]]},
+ "2:emissari":{auto:()=>[["scarshade",nShades()]],t:"Emissari degli Antichi Dèi",k:"Combattimento",d:"Gli Scarshade vogliono sapere cosa contiene il pacco. Finché i PG non attaccano, lo Scavo nella Memoria non fa danni.",sug:()=>[["scarshade",nShades(),`${nShades()}× Scarshade`],["scarshade",1]]},
  "2.5:fiume":{t:"Il fiume Orfanatore",k:"Ambientale",d:"Traversata · Diff 13. Annegamento, Risacca e tesori sommersi.",env:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
  <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
  ${dr.length?`<div class="warn"><b>Annegano:</b> ${dr.map(p=>esc(pcName(p.id))).join(", ")}. Ogni tiro d'azione di un PG fa segnare 1 Stress a tutti quelli che annegano.
@@ -1101,8 +1106,8 @@ const ENC={
   <div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
    <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
  `},reset:()=>{S.river.t=4;S.undertow=null;S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}},
- "3:arcanista":{hide:()=>luna(),t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
- "3:anziano":{t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",env:()=>`<div class="grid2">
+ "3:arcanista":{hide:()=>luna(),auto:[["fidget",1],["lausa",1],["octavio",1]],t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
+ "3:anziano":{auto:[["elder",1]],t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",env:()=>`<div class="grid2">
  <div class="panel stack"><h4>Convincere l'Anziano ${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}</h4>
   <div><div class="lab">Stress dell'Anziano — a 4 si arrende</div>${pips(4,S.elderSt||0,"st","elder-st")}</div>
   ${luna()?`<div class="note small">Luna garantisce per il gruppo: <b>vantaggio</b> ai tiri.</div>`:""}
@@ -1117,8 +1122,8 @@ const ENC={
   <div class="row small"><button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo (1 Paura)</button></div>
   <div class="xsmall muted">Gregari · Diff 9 · Pugnali Mischia 2 fis · sconfitti da qualsiasi danno; ogni 3 danni un gregario in più.</div>
  </div></div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
- "4:villa":{t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
- "4:rituale":{t:"Il Rituale del Rinnovo",k:"Combattimento",d:"Proteggete l'Arcanista finché il conto del Rituale arriva a zero. Ogni nemico sconfitto lo abbassa di 1.",env:()=>`
+ "4:villa":{auto:[["arcanist",1]],t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
+ "4:rituale":{auto:[["skeleton",5],["hero",2]],t:"Il Rituale del Rinnovo",k:"Combattimento",d:"Proteggete l'Arcanista finché il conto del Rituale arriva a zero. Ogni nemico sconfitto lo abbassa di 1.",env:()=>`
   <div><div class="lab">Rituale — a zero il rituale riesce</div>${pips(8,S.ritual.v,"cd","ritual-pip")} <span class="mono">${S.ritual.v}</span></div>
   <p class="small">Ogni nemico sconfitto: −1 (automatico). Arcanista colpita (Diff 11): +1.</p>
   <div class="row"><button class="btn bad" data-a="ritual" data-k="hit">Arcanista colpita: +1</button><button class="btn ok" data-a="ritual" data-k="kill">Nemico sconfitto: −1</button>
@@ -1131,6 +1136,19 @@ function devEnc(dv){
   return {t:p.titolo||"Incontro improvvisato",k:kind,d:esc(p.posta||"Scena improvvisata."),
    devSug:()=>(p.avv.length||p.png.length)?`<div class="row">${p.avv.map((r,i)=>`<button class="btn xs ok" data-a="dev-foe" data-id="${dv.id}" data-i="${i}">${(parseInt(r[2])||1)>1?parseInt(r[2])+"× ":""}${esc(r[0])}</button>`).join("")}${p.png.map((r,i)=>`<button class="btn xs ok" data-a="dev-npc" data-id="${dv.id}" data-i="${i}">${esc(r[0])} · PNG</button>`).join("")}</div>`:""};
 }
+function pactUI(){
+  const f=S.flags;
+  if(f.pact==="yes")return `<div class="pact yes"><div><span class="lab">Patto fatato stretto</span><b>${esc(pcName(f.bargain))} ha accettato il patto</b><p class="small">Lo Strixwolf lascia andare Luna e svanisce tra gli alberi. Il PG è segnato nel gruppo con il chip «Patto».</p></div><button class="btn xs" data-a="pact-undo">Annulla</button></div>`;
+  if(f.pact==="no")return `<div class="pact no"><div><span class="lab">Patto rifiutato</span><b>Si combatte contro lo Strixwolf</b><p class="small">L'incontro qui sotto è pronto con Strixwolf e Luna.</p></div><button class="btn xs" data-a="pact-undo">Annulla</button></div>`;
+  return `<div class="pact"><div><span class="lab">Decisione del gruppo</span><b>Qualcuno accetta il patto fatato?</b></div>
+   <div class="row"><select id="pact-pc" aria-label="PG che accetta il patto">${pcOptions("","— chi lo accetta? —")}</select><button class="btn ok" data-a="pact-yes">Sì, accetta il patto</button>
+   <button class="btn bad" data-a="pact-no">No: combattimento</button></div></div>`;
+}
+function encAutoFill(key,def){
+  if(!def||!def.auto||S.foes.some(f=>f.where===key))return false;
+  const list=typeof def.auto==="function"?def.auto():def.auto;
+  list.forEach(([k,n])=>spawn(k,n,key));return list.length>0;
+}
 const pendNote=t=>`<div class="pend"><span aria-hidden="true">⟡</span> ${t}</div>`;
 function branch(which,a,b,msg){
   if(which==="a")return a[1];if(which==="b")return b[1];
@@ -1141,10 +1159,11 @@ const OUT={
  "1:inizio":{q:()=>"Il gruppo è arrivato da Luna in tempo?",opts:()=>[
   {k:"saved",l:"Sì, in tempo",d:"Luna è viva: nella radura c'è lo Strixwolf.",sug:S.chase.d===0,apply:()=>{S.flags.luna="saved"}},
   {k:"dead",l:"No, troppo tardi",d:"Luna è morta: restano il suo corpo e la fede nuziale.",sug:S.chase.t===0&&S.chase.d>0,apply:()=>{S.flags.luna="dead"}}]},
- "1:prezzo":{q:()=>luna()?"Com'è finita con lo Strixwolf?":"Il gruppo ha preso l'anello di Luna?",opts:()=>luna()?[
-  {k:"pact",l:"Un PG accetta il patto fatato",d:"Luna è salva; lo Strixwolf reclamerà il suo momento più avanti.",pick:true,apply:pc=>{S.flags.bargain=pc;S.flags.bargainUsed=false}},
-  {k:"fight",l:"Lo Strixwolf è respinto",d:"Luna è salva e accompagna il gruppo.",apply:()=>{S.flags.bargain=""}},
-  {k:"lunadies",l:"Luna muore nello scontro",d:"«Il prezzo è pagato». Il gruppo prende la sua fede.",apply:()=>{S.flags.luna="dead";S.flags.ring=true}}]:[
+ "1:prezzo":{q:()=>luna()?"Com'è finita con lo Strixwolf?":"Il gruppo ha preso l'anello di Luna?",opts:()=>luna()?(S.flags.pact==="yes"?[
+  {k:"pact",l:`Patto stretto da ${pcName(S.flags.bargain)}`,d:"Luna è salva e accompagna il gruppo; lo Strixwolf reclamerà il suo momento più avanti.",sug:true,apply:()=>{}}]:[
+  ...(S.flags.pact==="no"?[]:[{k:"pact",l:"Un PG accetta il patto fatato",d:"Luna è salva; lo Strixwolf reclamerà il suo momento più avanti.",pick:true,apply:pc=>{S.flags.pact="yes";S.flags.bargain=pc;S.flags.bargainUsed=false}}]),
+  {k:"fight",l:"Lo Strixwolf è respinto",d:"Luna è salva e accompagna il gruppo.",sug:S.foes.some(f=>f.where==="1:prezzo"&&f.tmpl==="strixwolf"&&f.dead),apply:()=>{S.flags.bargain=""}},
+  {k:"lunadies",l:"Luna muore nello scontro",d:"«Il prezzo è pagato». Il gruppo prende la sua fede.",sug:S.foes.some(f=>f.where==="1:prezzo"&&f.tmpl==="luna"&&f.dead),apply:()=>{S.flags.luna="dead";S.flags.ring=true}}]):[
   {k:"ring",l:"Sì, hanno l'anello",d:"La fede indicherà Octavio, ad Hush.",apply:()=>{S.flags.ring=true}},
   {k:"noring",l:"No",d:"Ad Hush dovranno cercare da soli.",apply:()=>{S.flags.ring=false}}]},
  "2:emissari":{q:()=>"Gli Scarshade hanno scoperto cos'è il pacco?",opts:()=>[
@@ -1479,7 +1498,13 @@ const A={
  "ctr-start":()=>upd(()=>counterStart(15,"manuale")),
  "ctr-close":()=>upd(()=>{S.counter.on=false;log(`Contatore d'Assalto chiuso (era ${S.counter.value})`)}),
  "fear-step":o=>upd(()=>addFear(+o.k,"manuale")),
- "enc-toggle":o=>{const now=encOpen.has(o.k)?encOpen.get(o.k):false;encOpen.set(o.k,!now);picker=null;encResetAsk=null;render()},
+ "enc-toggle":o=>{const now=encOpen.has(o.k)?encOpen.get(o.k):false;encOpen.set(o.k,!now);picker=null;encResetAsk=null;
+  if(!now&&encAutoFill(o.k,ENC[o.k])){const n=S.foes.filter(f=>f.where===o.k).length;toast(`Incontro pronto: ${n} partecipant${n===1?"e":"i"} in scena`);persist()}render()},
+ "pact-yes":()=>{const pc=document.getElementById("pact-pc")?.value;if(!pc){toast("Scegli il PG che accetta il patto");return}
+  upd(()=>{S.flags.pact="yes";S.flags.bargain=pc;S.flags.bargainUsed=false;S.foes.filter(f=>f.where==="1:prezzo"&&f.tmpl==="strixwolf").forEach(f=>f.dead=true);log(`${pcName(pc)} accetta il patto fatato dello Strixwolf`,"fear")})},
+ "pact-no":()=>upd(()=>{S.flags.pact="no";S.flags.bargain="";encAutoFill("1:prezzo",ENC["1:prezzo"]);S.foes.filter(f=>f.where==="1:prezzo").forEach(f=>f.dead=false);encOpen.set("1:prezzo",true);log("Il patto è rifiutato: combattimento contro lo Strixwolf","bad");
+  setTimeout(()=>document.getElementById("enc-1_prezzo")?.scrollIntoView({behavior:"smooth",block:"start"}),40)}),
+ "pact-undo":()=>upd(()=>{if(S.flags.pact==="yes"){S.flags.bargain="";S.foes.filter(f=>f.where==="1:prezzo"&&f.tmpl==="strixwolf").forEach(f=>f.dead=false)}S.flags.pact=null;log("Decisione sul patto annullata")}),
  "enc-plus":o=>{picker=o.k||null;render()},
  "enc-add":o=>upd(()=>{spawn(o.k,+o.n||1,o.w);picker=null;encOpen.set(o.w,true)}),
  "enc-add-sel":o=>{const el=document.getElementById("pick-"+o.w.replace(/[:.]/g,"_"));if(!el)return;upd(()=>{spawn(el.value,1,o.w);picker=null})},
