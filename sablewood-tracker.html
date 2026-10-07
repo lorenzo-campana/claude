@@ -293,17 +293,48 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .sh-tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:6px 12px;font-weight:700;color:var(--muted);cursor:pointer}
 .sh-tabs button.on{color:var(--ink);border-bottom-color:var(--kc)}
 
-/* dadi flottanti */
-.dock{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(370px,calc(100% - 32px));max-height:calc(100vh - 110px);overflow:auto;z-index:45;background:var(--paper);border:1px solid var(--ink);border-radius:var(--r);box-shadow:0 14px 40px rgba(0,0,0,.3);padding:12px;display:flex;flex-direction:column;gap:8px}
-.dock[hidden]{display:none}
-.dice-out{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.die{width:48px;height:48px;display:grid;place-items:center;font-family:var(--f-mono);font-size:1.3rem;font-weight:600;border-radius:8px;border:2px solid}
-.die.h{border-color:var(--hope);background:var(--hope-soft)} .die.f{border-color:var(--fear);background:var(--fear-soft)}
-.die.d6{width:34px;height:34px;font-size:.95rem;border-color:var(--muted)}
-.verdict{font-family:var(--f-display);font-size:1.3rem}
-.verdict.h{color:var(--hope)} .verdict.f{color:var(--fear)} .verdict.c{color:var(--ok)}
-@media (prefers-reduced-motion:no-preference){.die.roll{animation:tumble .4s ease-out}}
-@keyframes tumble{0%{transform:rotate(-90deg) scale(.6)}100%{transform:none}}
+/* dadi: badge, animazione, popup */
+.rb{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--hope);background:var(--hope-soft);color:var(--ink);border-radius:999px;padding:2px 10px 2px 6px;font-weight:700;font-size:.84rem;cursor:pointer;line-height:1.4}
+.rb:hover{background:var(--hope);color:var(--paper)}
+.rb .die-ico{width:16px;height:16px;flex:none;color:var(--hope)}
+.rb:hover .die-ico{color:var(--paper)}
+.rb-dmg{border-color:var(--blood);background:var(--blood-soft)} .rb-dmg .die-ico{color:var(--blood)} .rb-dmg:hover{background:var(--blood)}
+.rb-atk{border-color:var(--fear);background:var(--fear-soft)} .rb-atk .die-ico{color:var(--fear)} .rb-atk:hover{background:var(--fear)}
+.has-die .die-ico{width:14px;height:14px;vertical-align:-2px;margin-right:4px;color:var(--hope)}
+.traits button{position:relative}
+.traits .die-ico{position:absolute;top:2px;right:2px;width:10px;height:10px;color:var(--hope);opacity:.8}
+.traits button:hover{border-color:var(--hope);background:var(--hope-soft)}
+#dice-fx{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:rgba(10,14,12,.35);cursor:pointer}
+#dice-fx[hidden]{display:none}
+.fx-row{position:relative;width:1px;height:1px}
+.fxd{position:absolute;left:-36px;top:-36px;width:72px;height:72px;display:grid;place-items:center;font-family:var(--f-display);font-size:2rem;color:#fff;
+ animation:fx-in .8s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--i)*40ms);filter:drop-shadow(0 8px 14px rgba(0,0,0,.45))}
+.fxd::before{content:"";position:absolute;inset:0;background:var(--fc,#5b665f);clip-path:var(--cp);z-index:-1}
+.fxd.h{--fc:#c48a20} .fxd.f{--fc:#7d4ca0} .fxd.n{--fc:#3a4540}
+.fxd.s12{--cp:polygon(50% 0,95% 33%,78% 100%,22% 100%,5% 33%)}
+.fxd.s20,.fxd.s4{--cp:polygon(50% 0,100% 88%,0 88%)} .fxd.s20 span,.fxd.s4 span{margin-top:14px}
+.fxd.s6{--cp:inset(6% round 14%)}
+.fxd.s8,.fxd.s10{--cp:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+#dice-fx.settled .fxd{animation:fx-settle .35s ease-out both}
+@keyframes fx-in{0%{transform:translate(calc(var(--dx) - 46vw),-30vh) rotate(var(--r)) scale(.5)}70%{transform:translate(calc(var(--dx) + 8px),6px) rotate(-12deg) scale(1.05)}100%{transform:translate(var(--dx),0) rotate(0) scale(1)}}
+@keyframes fx-settle{0%{transform:translate(var(--dx),0) scale(1)}50%{transform:translate(var(--dx),-10px) scale(1.15)}100%{transform:translate(var(--dx),0) scale(1)}}
+#rollpop{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(600px,calc(100% - 32px));z-index:55}
+#rollpop[hidden]{display:none}
+.rp-card{background:var(--paper);border:1.5px solid var(--ink);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.35);padding:12px 14px;display:flex;flex-direction:column;gap:8px;max-height:min(70vh,560px);overflow:auto}
+@media (prefers-reduced-motion:no-preference){.rp-card.fresh{animation:rp-up .25s ease-out}}
+@keyframes rp-up{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.rp-h{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.rp-h b{font-family:var(--f-display);font-weight:400;font-size:1.25rem;display:block;line-height:1.15}
+.rp-dice{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rface{min-width:40px;height:40px;padding:0 6px;display:grid;place-items:center;font-family:var(--f-mono);font-weight:600;font-size:1.15rem;border-radius:8px;border:2px solid var(--muted);background:var(--bg)}
+.rface.h{border-color:var(--hope);background:var(--hope-soft)} .rface.f{border-color:var(--fear);background:var(--fear-soft)}
+.rface.s6{min-width:32px;height:32px;font-size:.95rem} .rface.cancel{opacity:.4;text-decoration:line-through}
+.rmod{font-family:var(--f-mono);font-size:.9rem;padding:2px 8px;border-radius:6px;border:1px solid var(--line)} .rmod.hope{border-color:var(--hope)}
+.rtot{margin-left:auto;font-family:var(--f-display);font-size:2.2rem;line-height:1;display:flex;align-items:baseline;gap:6px}
+.rtot small{font-family:var(--f-body);font-size:.85rem;color:var(--muted)}
+.rp-mods{display:flex;gap:6px;flex-wrap:wrap;align-items:center;border-top:1px dotted var(--line);padding-top:8px}
+.rp-hist-t{background:none;border:0;color:var(--muted);font-size:.8rem;font-weight:700;cursor:pointer;text-align:left;padding:0}
+.rp-hist{margin:0;padding-left:16px;font-size:.85rem}
 
 /* sviluppi IA */
 .gen-btn{align-self:flex-start;border:1px dashed var(--fear);color:var(--fear);background:none;border-radius:999px;padding:3px 12px;cursor:pointer;font-weight:700;font-size:.85rem}
@@ -340,7 +371,8 @@ details summary{cursor:pointer}
   </main>
   <aside class="party-pane" id="party"></aside>
 </div>
-<section class="dock" id="dock" hidden></section>
+<div id="dice-fx" hidden></div>
+<section id="rollpop" aria-live="polite" hidden></section>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -596,39 +628,148 @@ function pcDamage(id,dmg,useArmor){
 }
 function checkDown(id){const r=pcRaw(id),p=P(r);if(r.hp>=p.hpMax){deathFor=id;log(`${p.name} ha segnato l'ultimo PF: Mossa di Morte!`,"bad")}}
 
-/* ================= dadi ================= */
-let R={who:"",mod:0,diff:12,adv:0,dis:0,exp:0,reaction:false,helpers:[],label:"",final:false,res:null};
-let simple={expr:"1d10+4",res:null},foeRoll={res:null};
-function preset(o){Object.assign(R,{mod:0,adv:0,dis:0,exp:0,reaction:false,helpers:[],final:false,label:"",res:null},o);UI.dice=true;renderDock();renderBar()}
-function doDuality(){
-  const r0=pcRaw(R.who),p=P(r0);
-  const helpers=R.helpers.map(pcRaw).filter(Boolean).filter(h=>h!==r0);
-  const spent=[];
-  if(R.exp>0&&r0&&r0.hope<1){toast(`${p.name} non ha Speranza per l'Esperienza`);return}
-  for(const h of helpers)if(h.hope<1){toast(`${P(h).name} non ha Speranza per aiutare`);return}
-  if(R.exp>0&&r0){r0.hope--;spent.push(`${p.name} −1 Speranza (Esperienza)`)}
-  helpers.forEach(h=>{h.hope--;spent.push(`${P(h).name} −1 Speranza (Aiuto)`)});
-  const hope=d(12),fear=d(12),advN=R.adv+helpers.length;
-  const advDice=Array.from({length:advN},()=>d(6)),disDice=Array.from({length:R.dis},()=>d(6));
-  let net=0,netTxt="";
-  if(advN&&R.dis)netTxt="Vantaggio e svantaggio si annullano";
-  else if(advN){net=Math.max(...advDice);netTxt=`Vantaggio +${net}`}
-  else if(R.dis){net=-Math.max(...disDice);netTxt=`Svantaggio ${net}`}
-  const total=hope+fear+(+R.mod)+(+R.exp)+net,crit=hope===fear,success=crit||total>=+R.diff;
-  const kind=crit?"c":hope>fear?"h":"f";
-  const verdict=crit?"Successo critico":`${success?"Successo":"Fallimento"} con ${hope>fear?"Speranza":"Paura"}`;
-  const effects=[...spent];
-  if(!R.reaction){
-    if(crit){if(r0){r0.hope=Math.min(6,r0.hope+1);if(r0.st>0)r0.st--;effects.push(`${p.name}: +1 Speranza, −1 Stress`)}else effects.push("Critico: il PG ottiene 1 Speranza e rimuove 1 Stress")}
-    else if(hope>fear){if(r0){r0.hope=Math.min(6,r0.hope+1);effects.push(`${p.name}: +1 Speranza`)}else effects.push("Il PG ottiene 1 Speranza")}
-    else{S.fear=Math.min(12,S.fear+1);effects.push(`Il GM ottiene 1 Paura (${S.fear})`);if(r0&&r0.id==="garrick"&&!success){r0.hope=Math.min(6,r0.hope+1);effects.push("Coraggio: Garrick ottiene 1 Speranza")}}
-    if(S.pcs.some(x=>x.cond.includes("Annegamento")))effects.push("Annegamento: chi annega segna 1 Stress (pulsante nell'Atto II½)");
-  }else effects.push("Tiro reazione: non genera Speranza né Paura");
-  R.res={hope,fear,advDice,disDice,netTxt,total,crit,success,kind,verdict,effects,diff:R.diff};
-  log(`${R.label?R.label+" — ":""}${p?p.name:"Tiro"}: ${hope}+${fear}${R.mod?" "+sgn(+R.mod):""}${R.exp?` +${R.exp} esp`:""}${net?" "+sgn(net):""} = ${total} vs ${R.diff} → ${verdict}`,kind==="f"?"fear":"hope");
-  if(R.final){S.flags.final=crit?"crit":success?(kind==="h"?"sh":"sf"):(kind==="h"?"fh":"ff");if(S.flags.bargain&&!S.flags.bargainUsed)S.flags.bargainUsed=true}
-  R.exp=0;R.helpers=[];
-  persist();render();
+/* ================= dadi: badge → animazione → popup in basso ================= */
+const DIE_SVG=`<svg class="die-ico" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.6 17.4 6v8L10 18.4 2.6 14V6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 6.2 14 12.6H6z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
+const ra=o=>Object.entries(o).filter(([k,v])=>v!==undefined&&v!==null&&v!=="").map(([k,v])=>`data-${k}="${esc(v)}"`).join(" ");
+const rb=(label,o,kind="dual",cls="")=>`<button class="rb rb-${kind} ${cls}" data-a="r" ${ra(o)}>${DIE_SVG}<span>${label}</span></button>`;
+let foeRoll={res:null};
+let ROLL={cur:null,hist:[],pend:null,showHist:false};let lastShown=null;
+let pendingShow=[];
+function rollShow(expr,label){const x=rollExpr(expr);if(x)pendingShow.push({label,x});return x}
+const dieSides=expr=>{const m=String(expr).match(/d(\d+)/i);return m?+m[1]:6};
+function facesOf(res){
+  if(res.t==="dual")return [{v:res.hope,s:12,c:"h"},{v:res.fear,s:12,c:"f"},...res.adv.map(v=>({v,s:6,c:"n"})),...res.dis.map(v=>({v,s:6,c:"n"}))];
+  if(res.t==="atk")return [{v:res.d20,s:20,c:"n"}];
+  return res.parts.flatMap(pt=>pt.x.rolls.map(v=>({v,s:dieSides(pt.x.expr),c:"n"})));
+}
+function startRoll(o){
+  const r=o.who&&o.who!=="gen"?pcRaw(o.who):null;
+  if(o.t==="dual"&&!o.who){ROLL.pend={o,ask:"who"};renderRoll();return}
+  if(o.t==="dual"&&o.trait==="ask"&&r){ROLL.pend={o,ask:"trait"};renderRoll();return}
+  if(o.t==="atk"&&!o.target){ROLL.pend={o,ask:"target"};renderRoll();return}
+  ROLL.pend=null;
+  const res=o.t==="dual"?rollDual(o):o.t==="atk"?rollAtk(o):rollDmg(o);
+  if(!res)return;
+  persist();showResult(res);
+}
+function rollDual(o){
+  const r=o.who!=="gen"?pcRaw(o.who):null,p=P(r);
+  const trait=o.trait!=null&&o.trait!=="ask"&&o.trait!==""?+o.trait:null;
+  const mod=trait!=null&&p?p.tr[trait]:(+o.mod||0);
+  const res={id:uid(),t:"dual",label:o.label||(trait!=null?`Tiro di ${TRAITS[trait]}`:"Tiro d'azione"),who:r?.id||null,trait,mod,diff:o.diff?+o.diff:null,
+    hope:d(12),fear:d(12),adv:Array.from({length:+o.adv||0},()=>d(6)),dis:Array.from({length:+o.dis||0},()=>d(6)),exps:[],helpers:[],react:!!o.react,final:!!o.final,
+    dmg:o.dmg||"",foe:o.foe||"",effects:[],at:new Date().toTimeString().slice(0,5)};
+  const crit=res.hope===res.fear;
+  if(res.react)res.effects.push("Tiro reazione: non genera Speranza né Paura.");
+  else if(crit){if(r){r.hope=Math.min(6,r.hope+1);if(r.st>0)r.st--}res.effects.push(`${p?p.name:"Il PG"}: +1 Speranza e −1 Stress.`)}
+  else if(res.hope>res.fear){if(r)r.hope=Math.min(6,r.hope+1);res.effects.push(`${p?p.name:"Il PG"}: +1 Speranza.`)}
+  else{S.fear=Math.min(12,S.fear+1);res.effects.push(`Il GM ottiene 1 Paura (${S.fear}).`)}
+  recalc(res);
+  if(!res.react&&!crit&&res.fear>res.hope&&r&&r.id==="garrick"&&res.success===false){r.hope=Math.min(6,r.hope+1);res.effects.push("Coraggio: Garrick ottiene 1 Speranza.")}
+  if(S.pcs.some(x=>x.cond.includes("Annegamento"))&&!res.react)res.effects.push("Chi sta annegando segna 1 Stress.");
+  log(`${res.label} — ${p?p.name:"Tiro"}: ${res.hope}+${res.fear}${mod?" "+sgn(mod):""} = ${res.total}${res.diff?" vs "+res.diff:""} → ${res.verdict}`,res.kind==="f"?"fear":"hope");
+  return res;
+}
+function recalc(res){
+  const net=res.adv.length&&res.dis.length?0:res.adv.length?Math.max(...res.adv):res.dis.length?-Math.max(...res.dis):0;
+  res.net=net;res.total=res.hope+res.fear+res.mod+res.exps.reduce((a,e)=>a+e.v,0)+net;
+  res.crit=res.hope===res.fear;res.kind=res.crit?"c":res.hope>res.fear?"h":"f";
+  res.success=res.diff==null?null:(res.crit||res.total>=res.diff);
+  const w=res.hope>res.fear?"Speranza":"Paura";
+  res.verdict=res.crit?"Successo critico":res.diff==null?`${res.total} con ${w}`:`${res.success?"Successo":"Fallimento"} con ${w}`;
+  if(res.final){S.flags.final=res.crit?"crit":res.success?(res.kind==="h"?"sh":"sf"):(res.kind==="h"?"fh":"ff");if(S.flags.bargain)S.flags.bargainUsed=true}
+}
+function rollAtk(o){
+  const f=foe(o.foe),p=pcById(o.target);if(!f||!p)return null;
+  const v=d(20),total=v+(f.atk||0),hit=v===20||total>=p.eva;f.acted=true;
+  const res={id:uid(),t:"atk",label:`${f.name} attacca ${p.name}`,d20:v,atk:f.atk||0,total,eva:p.eva,hit,crit:v===20,foe:f.id,target:o.target,at:new Date().toTimeString().slice(0,5)};
+  log(`${res.label}: d20 ${v} ${sgn(res.atk)} = ${total} vs Evasione ${p.eva} → ${v===20?"CRITICO":hit?"colpito":"mancato"}`,hit?"bad":"");
+  return res;
+}
+function rollDmg(o){
+  const x=rollExpr(o.x);if(!x)return null;
+  const res={id:uid(),t:"expr",label:o.label||o.x,parts:[{label:o.label||"",x}],total:x.total,tgt:o.tgt||"",foe:o.foe||"",target:o.target||"",at:new Date().toTimeString().slice(0,5)};
+  log(`${res.label}: ${x.text}`);
+  return res;
+}
+function flushShows(){
+  if(!pendingShow.length)return;
+  const list=pendingShow;pendingShow=[];
+  showResult({id:uid(),t:"expr",label:list.length===1?list[0].label:list.map(s=>s.label).join(" · "),parts:list.map(s=>({label:s.label,x:s.x})),total:list.length===1?list[0].x.total:null,at:new Date().toTimeString().slice(0,5)});
+}
+function showResult(res){
+  ROLL.cur=res;ROLL.hist.unshift(res);if(ROLL.hist.length>8)ROLL.hist.length=8;
+  animateDice(facesOf(res),()=>{render();renderRoll()});
+}
+let fxTimer=null,fxTick=null;
+function animateDice(faces,done){
+  const fx=document.getElementById("dice-fx");
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  clearTimeout(fxTimer);clearInterval(fxTick);
+  if(reduce||!faces.length){fx.hidden=true;done();return}
+  const shown=faces.slice(0,8);
+  fx.innerHTML=`<div class="fx-row">${shown.map((f,i)=>`<div class="fxd s${f.s} ${f.c}" style="--i:${i};--dx:${(i-(shown.length-1)/2)*92}px;--r:${(Math.random()>.5?1:-1)*(540+Math.floor(Math.random()*360))}deg"><span>${1+Math.floor(Math.random()*f.s)}</span></div>`).join("")}</div>`;
+  fx.hidden=false;
+  const els=[...fx.querySelectorAll(".fxd span")];
+  fxTick=setInterval(()=>els.forEach((el,i)=>el.textContent=1+Math.floor(Math.random()*shown[i].s)),70);
+  setTimeout(()=>{clearInterval(fxTick);els.forEach((el,i)=>el.textContent=shown[i].v);fx.classList.add("settled")},780);
+  const finish=()=>{clearTimeout(fxTimer);clearInterval(fxTick);fx.hidden=true;fx.classList.remove("settled");fx.onclick=null;done()};
+  fxTimer=setTimeout(finish,1250);
+  fx.onclick=finish;
+}
+function faceHTML(v,s,c,cls=""){return `<span class="rface s${s} ${c} ${cls}" title="d${s}">${v}</span>`}
+function resultHTML(res){
+  if(res.t==="dual"){
+    const r=res.who?pcRaw(res.who):null,p=P(r);
+    const usedExp=res.exps.map(e=>e.n);
+    const others=S.pcs.filter(x=>x.id!==res.who);
+    const foeT=res.foe?foe(res.foe):null;
+    return `<div class="rp-h"><div><span class="lab">${esc(res.at)} · ${p?esc(p.name):"Tiro generico"}${res.react?" · reazione":""}</span><b>${esc(res.label)}</b></div><button class="btn xs" data-a="rp-close" aria-label="Chiudi">×</button></div>
+    <div class="rp-dice">${faceHTML(res.hope,12,"h")}${faceHTML(res.fear,12,"f")}
+     ${res.adv.map(v=>faceHTML(v,6,"n",res.dis.length?"cancel":"plus")).join("")}${res.dis.map(v=>faceHTML("−"+v,6,"n",res.adv.length?"cancel":"minus")).join("")}
+     ${res.mod?`<span class="rmod">${TRAITS[res.trait]?TRAITS[res.trait].slice(0,4)+" ":""}${sgn(res.mod)}</span>`:""}${res.exps.map(e=>`<span class="rmod hope">${esc(e.n)} +${e.v}</span>`).join("")}
+     <span class="rtot">${res.total}${res.diff!=null?`<small>vs ${res.diff}</small>`:""}</span></div>
+    <div class="verdict ${res.kind}">${res.verdict}</div>
+    <ul class="tight small">${res.effects.map(e=>`<li>${esc(e)}</li>`).join("")}${res.helpers.map(h=>`<li>Aiuto di ${esc(h)} (−1 Speranza)</li>`).join("")}</ul>
+    <div class="rp-mods">
+     ${p&&p.exp?p.exp.map((e,i)=>`<button class="btn xs hope" data-a="rm-exp" data-i="${i}" ${usedExp.includes(e[0])||r.hope<1?"disabled":""}>+${e[1]} ${esc(e[0])}</button>`).join(""):""}
+     ${others.map(o=>`<button class="btn xs" data-a="rm-help" data-id="${o.id}" ${o.hope<1||res.helpers.includes(pcName(o.id))?"disabled":""}>Aiuto: ${esc(pcName(o.id).split(" ")[0])}</button>`).join("")}
+     <button class="btn xs" data-a="rm-adv">+ Vantaggio</button><button class="btn xs" data-a="rm-dis">+ Svantaggio</button></div>
+    ${res.dmg&&res.success!==false?`<div class="row">${rb(`Danni ${res.dmg}`,{t:"expr",x:res.dmg,label:`${p?p.name+": ":""}danni`,tgt:"foe",foe:res.foe},"dmg")}${res.crit?`<span class="small muted">Critico: danni massimi dei dadi + tiro.</span>`:""}${foeT?`<span class="small muted">contro ${esc(foeT.name)}</span>`:""}</div>`:""}`;
+  }
+  if(res.t==="atk"){
+    const f=foe(res.foe);
+    return `<div class="rp-h"><div><span class="lab">${esc(res.at)} · attacco avversario</span><b>${esc(res.label)}</b></div><button class="btn xs" data-a="rp-close" aria-label="Chiudi">×</button></div>
+    <div class="rp-dice">${faceHTML(res.d20,20,"n")}<span class="rmod">ATK ${sgn(res.atk)}</span><span class="rtot">${res.total}<small>vs Ev ${res.eva}</small></span></div>
+    <div class="verdict ${res.hit?"f":"h"}">${res.crit?"Critico!":res.hit?"Colpito":"Mancato"}</div>
+    ${res.hit&&f&&f.attack&&/d/.test(f.attack.d)?`<div class="row">${rb(`Danni ${f.attack.d}${res.crit?" (critico)":""}`,{t:"expr",x:f.attack.d,label:`${f.name}: ${f.attack.n}`,tgt:"pc",target:res.target},"dmg")}</div>`:""}`;
+  }
+  const f=res.foe?foe(res.foe):(res.tgt==="foe"&&openFoe?foe(openFoe):null);
+  return `<div class="rp-h"><div><span class="lab">${esc(res.at)}</span><b>${esc(res.label)}</b></div><button class="btn xs" data-a="rp-close" aria-label="Chiudi">×</button></div>
+   ${res.parts.map(pt=>`<div class="rp-dice">${res.parts.length>1?`<span class="small" style="min-width:8em">${esc(pt.label)}</span>`:""}${pt.x.rolls.map(v=>faceHTML(v,dieSides(pt.x.expr),"n")).join("")}${(pt.x.total-pt.x.rolls.reduce((a,b)=>a+b,0))?`<span class="rmod">${sgn(pt.x.total-pt.x.rolls.reduce((a,b)=>a+b,0))}</span>`:""}<span class="rtot">${pt.x.total}</span></div>`).join("")}
+   ${res.tgt==="pc"&&res.total!=null?`<div class="rp-mods"><span class="lab">Applica a</span>${(res.target?[pcRaw(res.target)]:S.pcs).map(r=>{const q=P(r);return `<button class="btn xs bad" data-a="rp-apply-pc" data-id="${r.id}">${esc(q.name.split(" ")[0])} → ${hpFromDamage(res.total,q.major,q.severe)} PF</button><button class="btn xs" data-a="rp-apply-pc" data-id="${r.id}" data-arm="1" ${r.ar>=q.arMax?"disabled":""}>con Armatura</button>`}).join("")}</div>`:""}
+   ${res.tgt==="foe"&&f&&f.hpMax&&res.total!=null?`<div class="rp-mods"><button class="btn xs bad" data-a="rp-apply-foe" data-id="${f.id}">Applica a ${esc(f.name)} → ${f.minion?"sconfitto":hpFromDamage(res.total,f.thr[0],f.thr[1])+" PF"}</button></div>`:""}`;
+}
+function renderRoll(){
+  const el=document.getElementById("rollpop");
+  const P0=ROLL.pend;
+  if(P0){
+    const o=P0.o;let body="";
+    if(P0.ask==="who")body=`<div class="rp-h"><div><span class="lab">Chi tira?</span><b>${esc(o.label||"Tiro d'azione")}${o.diff?` · Diff ${esc(o.diff)}`:""}</b></div><button class="btn xs" data-a="rp-cancel" aria-label="Annulla">×</button></div>
+      <div class="rp-mods">${S.pcs.map(r=>{const q=P(r);const t=o.trait!=null&&o.trait!=="ask"&&o.trait!==""?+o.trait:null;return `<button class="btn" data-a="r-who" data-id="${r.id}">${esc(q.name)}${t!=null?` <span class="mono">${sgn(q.tr[t])}</span>`:""}</button>`}).join("")}<button class="btn" data-a="r-who" data-id="gen">Generico</button></div>`;
+    if(P0.ask==="trait"){const q=pcById(o.who);body=`<div class="rp-h"><div><span class="lab">${esc(q.name)} · con quale tratto?</span><b>${esc(o.label||"Tiro d'azione")}${o.diff?` · Diff ${esc(o.diff)}`:""}</b></div><button class="btn xs" data-a="rp-cancel" aria-label="Annulla">×</button></div>
+      <div class="rp-mods">${TRAITS.map((t,i)=>`<button class="btn" data-a="r-trait" data-i="${i}">${t} <span class="mono">${sgn(q.tr[i])}</span></button>`).join("")}</div>`}
+    if(P0.ask==="target"){const f=foe(o.foe);body=`<div class="rp-h"><div><span class="lab">Chi attacca?</span><b>${esc(f?.name||"")} · d20${sgn(f?.atk||0)}</b></div><button class="btn xs" data-a="rp-cancel" aria-label="Annulla">×</button></div>
+      <div class="rp-mods">${S.pcs.map(r=>{const q=P(r);return `<button class="btn" data-a="r-tgt" data-id="${r.id}">${esc(q.name)} <span class="mono">Ev ${q.eva}</span></button>`}).join("")}</div>`}
+    const fresh=lastShown!=="pend";lastShown="pend";
+    el.innerHTML=`<div class="rp-card ${fresh?"fresh":""}">${body}</div>`;el.hidden=false;return;
+  }
+  if(!ROLL.cur){el.hidden=true;el.innerHTML="";return}
+  const prev=ROLL.hist.filter(h=>h!==ROLL.cur).slice(0,5);
+  const fresh=lastShown!==ROLL.cur.id;lastShown=ROLL.cur.id;
+  el.innerHTML=`<div class="rp-card ${fresh?"fresh":""}">${resultHTML(ROLL.cur)}
+   ${prev.length?`<button class="rp-hist-t" data-a="rp-hist">${ROLL.showHist?"▾":"▸"} Tiri precedenti (${prev.length})</button>${ROLL.showHist?`<ul class="rp-hist">${prev.map(h=>`<li><span class="mono xsmall muted">${esc(h.at)}</span> ${esc(h.label)} — <b>${h.t==="dual"?esc(h.verdict)+" ("+h.total+")":h.t==="atk"?(h.hit?"colpito":"mancato")+" ("+h.total+")":h.total??h.parts.map(p=>p.x.total).join(", ")}</b></li>`).join("")}</ul>`:""}`:""}</div>`;
+  el.hidden=false;
 }
 
 /* ================= avversari ================= */
@@ -649,6 +790,10 @@ function foeDefeated(f){
 }
 const foe=id=>S.foes.find(f=>f.id===id);
 let openFoe=null;
+function foeTakeDamage(f,v){
+  if(f.minion){foeDefeated(f);const extra=Math.floor(v/3);if(extra)log(`${v} danni: sconfiggi altri ${extra} gregari a portata`);return}
+  const hp=hpFromDamage(v,f.thr[0],f.thr[1]);foeMark(f,"hp",hp);log(`${f.name} subisce ${v} danni → ${hp} PF (${f.hpMax-f.hp}/${f.hpMax})`);
+}
 function foeMark(f,k,n){
   if(k==="st"){const over=Math.max(0,f.st+n-f.stMax);f.st=Math.min(f.stMax,f.st+n);if(over&&f.hpMax){f.hp=Math.min(f.hpMax,f.hp+over);log(`${f.name}: Stress pieno → ${over} PF`)}}
   if(k==="hp")f.hp=Math.min(f.hpMax,f.hp+n);
@@ -671,12 +816,11 @@ function miniCard(f){
 function foeSheet(f){
   const a=f.attack,tabs=[["cap",`Capacità · ${f.feats.length}`],["nar","Narrazione"],["info","Info"]];
   const featsHTML=f.feats.length?f.feats.map((x,i)=>{const cost=x.c?x.c.split(":"):null;return `<div class="ftr"><div class="ftr-h"><b>${esc(x.n)}</b><span class="sp"></span><span class="ktag ${x.k}">${x.k}</span>${cost?`<span class="chip ${cost[0]==="fear"?"fear":"bad"}">${cost[1]} ${cost[0]==="fear"?"Paura":"Stress"}</span>`:""}
-     ${cost||x.fx?`<button class="btn xs" data-a="foe-feat" data-id="${f.id}" data-i="${i}">Usa</button>`:""}${x.roll?`<button class="btn xs" data-a="feat-roll" data-k="${x.roll}" data-n="${esc(f.name+": "+x.n)}">${x.roll}</button>`:""}</div><div class="small">${esc(x.x)}</div></div>`}).join(""):`<div class="small muted">Nessuna capacità.</div>`;
+     ${cost||x.fx?`<button class="btn xs" data-a="foe-feat" data-id="${f.id}" data-i="${i}">Usa</button>`:""}${x.roll?rb(x.roll,{t:"expr",x:x.roll,label:f.name+": "+x.n,tgt:"pc"},"dmg"):""}</div><div class="small">${esc(x.x)}</div></div>`}).join(""):`<div class="small muted">Nessuna capacità.</div>`;
   const nar=`${f.desc?`<p><i>${esc(f.desc)}</i></p>`:""}${f.mot?`<div><span class="lab">Motivi e tattiche</span><p>${esc(f.mot)}</p></div>`:""}${f.tips.length?`<div class="note small"><ul class="tight">${f.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:""}${!f.desc&&!f.mot&&!f.tips.length?`<div class="small muted">Nessuna nota.</div>`:""}`;
   const info=`<dl class="kv2">${a?`<dt>ATK</dt><dd class="mono">${sgn(f.atk||0)}</dd>`:""}${f.exp.length?`<dt>Esperienze</dt><dd>${f.exp.map(e=>`${esc(e[0])} ${sgn(e[1])}`).join(", ")}</dd>`:""}<dt>Tier</dt><dd>${f.tier}</dd>${f.sugg?`<dt>Difficoltà</dt><dd>suggerita: il modulo non la indica</dd>`:""}</dl>
    ${a?`<div class="wpn"><b>${esc(a.n)}</b><span class="mono">${esc(a.d)} ${esc(a.ty)}</span><span class="muted small">${esc(a.r)}</span><span></span></div>
-    <div class="row small"><select id="tg-${f.id}" aria-label="Bersaglio">${S.pcs.map(r=>{const q=P(r);return `<option value="${r.id}">${esc(q.name)} (Ev ${q.eva})</option>`}).join("")}</select>
-     <button class="btn xs" data-a="foe-atk" data-id="${f.id}">Attacca d20${sgn(f.atk||0)}</button>${/d/.test(a.d)?`<button class="btn xs" data-a="foe-dmg" data-id="${f.id}">Tira danni</button>`:""}</div>`:`<div class="small muted">Nessun attacco.</div>`}`;
+    <div class="row small">${rb(`Attacco d20${sgn(f.atk||0)}`,{t:"atk",foe:f.id},"atk")}${/d/.test(a.d)?rb(`Danni ${a.d}`,{t:"expr",x:a.d,label:`${f.name}: ${a.n}`,tgt:"pc"},"dmg"):""}</div>`:`<div class="small muted">Nessun attacco.</div>`}`;
   return `<div class="sheet" id="fd-${f.id}">
    <div class="sh-ctl"><b class="sh-name">${esc(f.name)}</b>${f.hpMax?`<span class="xsmall muted">soglie ${f.thr[0]??"—"}/${f.thr[1]??"—"}</span>`:""}<span class="sp"></span>
     ${f.hpMax?`<input type="number" id="fd-in-${f.id}" placeholder="Danni…" min="0" aria-label="Danni"><button class="btn hope" data-a="foe-hit" data-id="${f.id}">Applica</button>`:""}
@@ -797,7 +941,7 @@ const SECTIONS={
   <div class="row" style="margin-top:6px">${S.counter.on?counterChip():`<button class="btn bad" data-a="counter-shades">Avvia a ${15+aliveShades()}</button>`}</div></div>
   <p><b>La scorciatoia.</b> Con questa urgenza, i giocatori potrebbero cercare una scorciatoia attraverso le parti più pericolose del Sablewood.</p>
   <ul class="tight"><li>${luna()?"<b>Luna è con il gruppo:</b> può indicare la strada.":"Luna non c'è: un PG fa un tiro di <b>Istinto</b> a Diff 15 per trovarla."}</li><li>Se proseguono senza scorciatoia, il Contatore sale di <b>2</b>.</li></ul>
-  <div class="row">${luna()?"":`<button class="btn" data-a="roll-preset" data-diff="15" data-label="Istinto: trovare la scorciatoia" data-trait="3">Tiro Istinto (Diff 15)</button>`}
+  <div class="row">${luna()?"":`${rb("Istinto · Diff 15",{t:"dual",trait:3,diff:15,label:"Trovare la scorciatoia"})}`}
   <button class="btn pri" data-a="shortcut" data-k="taken">Prendono la scorciatoia → Atto II½</button>
   <button class="btn" data-a="shortcut" data-k="skip">Niente scorciatoia (+2) → Atto III</button></div>`:""}
  ${S.flags.learned===false?`<div class="row"><button class="btn pri" data-a="goact" data-k="3">Prosegui all'Atto III →</button></div>`:""}`}
@@ -838,11 +982,11 @@ const SECTIONS={
  ${S.counter.on?`<p class="small">Con il Contatore attivo i giocatori possono saltare il riposo e aiutare con la preparazione: passa a «Il rituale inizia».</p>`:""}
  <div class="panel stack"><h4>Riposo breve</h4><p class="small">Ogni PG sceglie fino a due opzioni (anche la stessa due volte).</p>
  ${S.pcs.map(p=>{const used=(S.rest[p.id]||[]).length,dis=used>=2?"disabled":"";return `<div class="row small"><b style="min-width:8.5em">${esc(pcName(p.id))}</b><span class="muted mono">${used}/2</span>
-  <button class="btn xs" data-a="rest" data-k="wounds" data-id="${p.id}" ${dis}>Curare ferite</button><button class="btn xs" data-a="rest" data-k="stress" data-id="${p.id}" ${dis}>Ricomporsi</button>
-  <button class="btn xs" data-a="rest" data-k="armor" data-id="${p.id}" ${dis}>Riparare armatura</button><button class="btn xs" data-a="rest" data-k="prep" data-id="${p.id}" ${dis}>Prepararsi</button></div>`}).join("")}
+  <button class="btn xs has-die" data-a="rest" data-k="wounds" data-id="${p.id}" ${dis}>${DIE_SVG}Curare ferite</button><button class="btn xs has-die" data-a="rest" data-k="stress" data-id="${p.id}" ${dis}>${DIE_SVG}Ricomporsi</button>
+  <button class="btn xs has-die" data-a="rest" data-k="armor" data-id="${p.id}" ${dis}>${DIE_SVG}Riparare armatura</button><button class="btn xs" data-a="rest" data-k="prep" data-id="${p.id}" ${dis}>Prepararsi</button></div>`}).join("")}
  <div class="xsmall muted">Curare ferite: 1d4+1 PF · Ricomporsi: 1d4+1 Stress · Riparare armatura: 1d4+1 slot · Prepararsi: +1 Speranza (+2 a testa se insieme).</div>
  <div class="row small"><button class="btn xs" data-a="rest-group">Prepararsi insieme (+2 Speranza a chi ha mosse libere)</button><button class="btn xs" data-a="rest-reset">Nuovo riposo</button></div>
- <div class="row"><button class="btn fear" data-a="downtime" ${S.flags.rest?"disabled":""}>Benefici del GM: +1d4 Paura${S.counter.on?", Contatore +2":""}</button>${S.counter.on?`<button class="btn" data-a="skip-rest" ${S.flags.rest?"disabled":""}>Saltano il riposo</button>`:""}</div></div>`},
+ <div class="row"><button class="btn fear has-die" data-a="downtime" ${S.flags.rest?"disabled":""}>${DIE_SVG}Benefici del GM: +1d4 Paura${S.counter.on?", Contatore +2":""}</button>${S.counter.on?`<button class="btn" data-a="skip-rest" ${S.flags.rest?"disabled":""}>Saltano il riposo</button>`:""}</div></div>`},
  {id:"rituale",t:"Il Rituale del Rinnovo",f:F.rituale,html:()=>`
  ${read(`<p>Quando siete pronti, l'Arcanista dà inizio al rituale. Il suo corpo e la pietra del sigillo iniziano a brillare, e grida ultraterrene risuonano dai boschi mentre le creature vicine percepiscono l'energia arcana.</p>`)}
  <p>Piazza <b>5 Scheletri Antichi</b> e <b>2 Eroi Dimenticati</b> ai margini della radura, a distanza Lontana. Finché ci sono meno di 8 scheletri, se un giocatore tira con Paura, spendi quella Paura per la Vendetta degli Antichi Dèi. Altrimenti spendi Paura per turni extra in cui attacchi l'Arcanista.</p>
@@ -858,7 +1002,7 @@ const SECTIONS={
  <p>Chiedi <b>un ultimo tiro d'azione</b>. La Difficoltà è il Contatore d'Assalto: <b class="mono">${S.counter.value}</b>.</p>
  <ul class="tight small"><li>1 Speranza: usare un'<b>Esperienza</b> per un bonus.</li><li>1 Speranza: <b>Aiutare</b> (vantaggio, +d6; con più fonti si tiene il più alto).</li><li>3 Speranza ciascuno: <b>Tiro di Squadra</b>, si tiene il migliore.</li><li>Istinti Felini di Varian o Adattabilità di Garrick possono fare la differenza.</li></ul>
  ${bp&&!S.flags.bargainUsed?`<div class="warn"><b>Patto fatato:</b> ${esc(bp.name)} non ha attaccato nessuno ad Hush, quindi sabota gli alleati: il tiro finale ha <b>svantaggio</b>.</div>`:""}
- <div class="row"><button class="btn pri" data-a="final-preset">Prepara il tiro finale</button></div>`}},
+ <div class="stack" style="gap:6px"><span class="lab">Chi fa il tiro finale? (Diff ${S.counter.on?S.counter.value:15}${bp&&!S.flags.bargainUsed?", con svantaggio":""})</span><div class="row">${S.pcs.map(r=>rb(pcName(r.id),{t:"dual",who:r.id,trait:"ask",diff:S.counter.on?S.counter.value:15,final:1,dis:bp&&!S.flags.bargainUsed?1:"",label:"Tiro finale"})).join("")}</div><span class="xsmall muted">Esperienze e Aiuto si aggiungono dal risultato del tiro.</span></div>`}},
  {id:"risolvere",t:"Epilogo",f:F.risolvere,html:()=>{const f=S.flags.final;return `
  ${read(`<p>Vi precipitate al castello, sfrecciando oltre squadroni di soldati che tengono a bada le bestie del Sablewood. Alla fine incastrate la pietra nell'incavo vuoto. Un'altra ondata di magia, molto più potente di quella nella Valle Aperta, investe l'intera città.</p><p>Gli Scarshade vanno in frantumi. Le orso-vespe vengono scagliate in cielo. Gli alberi animati si fermano.</p>`)}
  <div class="stack">${[["ff","Fallimento con Paura","I PNG da proteggere sono stati uccisi. Il re incolpa il gruppo e i PG vengono banditi dal regno."],
@@ -872,7 +1016,7 @@ const ENC={
  "1:inizio":{t:"Corsa tra le Radici",k:"Ambientale",d:"Inseguimento · Diff 12. Distanza e Tempo decidono se il gruppo arriva da Luna in tempo.",env:()=>`
   <div class="grid2"><div><div class="lab">Distanza — a zero raggiungete Luna</div>${pips(3,S.chase.d,"cd","chase-d")} <span class="mono">${S.chase.d}</span></div>
    <div><div class="lab">Tempo — a zero Luna muore</div>${pips(3,S.chase.t,"cd","chase-t")} <span class="mono">${S.chase.t}</span></div></div>
-  <div class="row"><button class="btn" data-a="roll-preset" data-diff="12" data-label="Corsa tra le Radici">Tira (Diff 12)</button>
+  <div class="row">${rb("Tiro d'azione · Diff 12",{t:"dual",trait:"ask",diff:12,label:"Corsa tra le Radici"})}
    <button class="btn ok" data-a="chase" data-k="s">Successo · Distanza −1</button><button class="btn ok" data-a="chase" data-k="c">Critico · Distanza −2</button>
    <button class="btn bad" data-a="chase" data-k="f">Fallimento · Tempo −1</button><button class="btn xs" data-a="chase" data-k="r">Azzera</button></div>
   ${S.chase.d===0?`<div class="note">Il gruppo arriva in tempo: vai a «Un prezzo da pagare».</div>`:S.chase.t===0?`<div class="warn">Il tempo è scaduto: Luna è morta.</div>`:""}
@@ -887,15 +1031,15 @@ const ENC={
  <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
  ${dr.length?`<div class="warn"><b>Annegano:</b> ${dr.map(p=>esc(pcName(p.id))).join(", ")}. Ogni tiro d'azione di un PG fa segnare 1 Stress a tutti quelli che annegano.
   <div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div></div>`:""}
- <div class="row"><button class="btn" data-a="roll-preset" data-diff="13" data-label="Attraversare l'Orfanatore">Tira (Diff 13)</button>
+ <div class="row">${rb("Tiro d'azione · Diff 13",{t:"dual",trait:"ask",diff:13,label:"Attraversare l'Orfanatore"})}
   <button class="btn ok" data-a="river" data-k="s" ${dr.length&&S.river.t<=1?"disabled":""}>Successo · Traversata −1</button>
   <button class="btn bad" data-a="river" data-k="f">Fallimento · azione Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div>
  <div class="grid2 small">
   <div><div class="lab">Dettagli utili (azione riuscita)</div><ul class="tight"><li>Ponte di corda spezzato</li><li>Tratto poco profondo</li><li>Un isolotto</li><li>Liane pendenti</li></ul></div>
   <div><div class="lab">Annegare</div><p>Un PG fa un tiro reazione di <b>Agilità</b>, altrimenti inizia temporaneamente ad <i>Annegare</i>. Si libera con un tiro d'azione.</p>
-   <div class="row"><select id="drownpc" data-f="drownpc" aria-label="PG">${pcOptions(drownPick)}</select><button class="btn xs" data-a="drown-roll">Reazione Agilità</button><button class="btn xs bad" data-a="drown-set">Annega</button></div></div>
+   <div class="row"><select id="drownpc" data-f="drownpc" aria-label="PG">${pcOptions(drownPick)}</select>${rb("Reazione Agilità · 13",{t:"dual",trait:0,diff:13,react:1,label:"Reazione contro l'annegamento"})}<button class="btn xs bad" data-a="drown-set">Annega</button></div></div>
   <div><div class="lab">Risacca — spendi 1 Paura</div><ol class="tight">${UNDERTOW.map(u=>`<li>${u}</li>`).join("")}</ol>
-   <button class="btn fear" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>Spendi 1 Paura: Risacca (d4)</button>
+   <button class="btn fear has-die" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>${DIE_SVG}Spendi 1 Paura: Risacca (d4)</button>
    ${S.undertow?`<div class="note" style="margin-top:6px">${esc(S.undertow)}</div>`:""}</div>
   <div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
    <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
@@ -906,14 +1050,14 @@ const ENC={
   <div><div class="lab">Stress dell'Anziano — a 4 si arrende</div>${pips(4,S.elderSt||0,"st","elder-st")}</div>
   ${luna()?`<div class="note small">Luna garantisce per il gruppo: <b>vantaggio</b> ai tiri.</div>`:""}
   <div class="row small"><select id="elderpc" data-f="elderpc" aria-label="PG che tira">${pcOptions(elderPick,"PG che tira")}</select>
-   <button class="btn xs" data-a="elder-roll">Tira Presenza (Diff 15)</button></div>
+   ${rb("Presenza · Diff 15",{t:"dual",trait:4,diff:15,adv:luna()?1:"",label:"Convincere l'Anziano"})}</div>
   <div class="row small"><button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: il PG segna 1 Stress</button></div>
   ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
  </div>
  <div class="panel stack"><h4>Paesani preoccupati</h4>
   <div class="row"><span class="mono" style="font-size:1.6rem">${S.villagers}</span><span class="muted">presenti</span><button class="btn xs" data-a="vill" data-k="-1">−1</button><button class="btn xs" data-a="vill" data-k="1">+1</button></div>
   <div class="row small"><input type="number" id="villdmg" value="3" min="1" aria-label="Danni"><button class="btn xs" data-a="vill-dmg">Danni a un gregario</button></div>
-  <div class="row small"><button class="btn xs fear" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>Attacco di Gruppo (1 Paura)</button></div>
+  <div class="row small"><button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo (1 Paura)</button></div>
   <div class="xsmall muted">Gregari · Diff 9 · Pugnali Mischia 2 fis · sconfitti da qualsiasi danno; ogni 3 danni un gregario in più.</div>
  </div></div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
  "4:villa":{t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
@@ -1036,7 +1180,7 @@ function devBody(dv){
   return `${frameHTML({luogo:esc(p.luogo||""),posta:esc(p.posta||""),domande:p.domande.map(d=>esc(d.join(" "))),uscita:esc(p.uscita||"")})}
   ${p.leggi?`<div class="read"><span class="cue">Leggi ad alta voce</span><p>${esc(p.leggi)}</p></div>`:""}
   ${p.scena?`<p>${esc(p.scena)}</p>`:""}
-  ${p.tiri.length?`<div><div class="lab">Tiri</div><div class="row">${p.tiri.map(r=>{const ti=TRAITS.findIndex(t=>(r[1]||"").toLowerCase().startsWith(t.toLowerCase().slice(0,4)));return `<button class="btn xs" data-a="roll-preset" data-diff="${parseInt(r[2])||12}" data-label="${esc(r[0])}" ${ti>=0?`data-trait="${ti}"`:""}>${esc(r[0])} · ${esc(r[1]||"")} ${parseInt(r[2])||12}</button>`}).join("")}</div></div>`:""}
+  ${p.tiri.length?`<div><div class="lab">Tiri</div><div class="row">${p.tiri.map(r=>{const ti=TRAITS.findIndex(t=>(r[1]||"").toLowerCase().startsWith(t.toLowerCase().slice(0,4)));return rb(`${esc(r[0])} · ${esc(r[1]||"")} ${parseInt(r[2])||12}`,{t:"dual",trait:ti>=0?ti:"ask",diff:parseInt(r[2])||12,label:r[0]})}).join("")}</div></div>`:""}
   ${p.png.length?`<div><div class="lab">PNG</div><div class="stack" style="gap:6px">${p.png.map((r,i)=>`<div class="row small"><b>${esc(r[0])}</b><span>${esc(r[1]||"")}</span>${r[2]?`<i class="muted">${esc(r[2])}</i>`:""}${r[3]?`<span class="chip fear">Diff ${esc(parseInt(r[3])||r[3])}</span>`:""}</div>`).join("")}</div></div>`:""}
   ${p.avv.length?`<div><div class="lab">Avversari</div><div class="stack" style="gap:6px">${p.avv.map((r,i)=>`<div class="ftr"><div class="ftr-h"><b>${esc(r[0])}${(parseInt(r[2])||1)>1?" ×"+parseInt(r[2]):""}</b><span class="ktag">${esc(r[1]||"")}</span><span class="chip fear">Diff ${esc(r[3]||"?")}</span></div>
    <div class="mono xsmall">Soglie ${esc(r[4]||"—")} · PF ${esc(r[5]||"?")} · Stress ${esc(r[6]||"?")} · ATK ${esc(r[7]||"?")}</div><div class="small">${esc(r[8]||"")}${r[9]?" · "+esc(r[9]):""}</div>${r[10]?`<div class="small"><i>${esc(r.slice(10).join(" | "))}</i></div>`:""}</div>`).join("")}</div></div>`:""}
@@ -1092,7 +1236,7 @@ function renderBar(){
   <nav class="acts">${ACTS.map((a,i)=>`<button class="${a.id===S.act?"on":i<ai?"done":""}" data-a="goact" data-k="${a.id}" title="${a.t}">${a.n}</button>`).join("")}</nav>
   <div class="bar-r"><span class="save-ind" id="save-ind">Salvato su ${saveWhere}</span>
    ${resetAsk?`<span class="small">Azzerare tutta la partita?</span><button class="btn xs bad" data-a="reset-yes">Sì, azzera</button><button class="btn xs" data-a="reset-no">No</button>`:`<button class="tgl" data-a="reset">Reimposta</button>`}
-   <button class="tgl ${UI.dice?"on":""}" data-a="dice-toggle">Dadi</button><button class="tgl ${UI.party?"on":""}" data-a="party-toggle">Gruppo</button></div>`;
+<button class="tgl ${UI.party?"on":""}" data-a="party-toggle">Gruppo</button></div>`;
 }
 function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")}
 
@@ -1109,7 +1253,7 @@ function pcCard(r){
    <div><span class="lab">Stress ${r.st}/${p.stMax}</span>${pips(p.stMax,r.st,"st","pc-pip",`data-id="${r.id}" data-k="st"`)}</div>
    <div><span class="lab" style="color:var(--hope)">Speranza ${r.hope}</span>${pips(6,r.hope,"hope","pc-pip",`data-id="${r.id}" data-k="hope"`)}</div>
    <div><span class="lab">Armatura ${r.ar}/${p.arMax}</span>${pips(p.arMax,r.ar,"ar","pc-pip",`data-id="${r.id}" data-k="ar"`)}</div></div>
-  ${deathFor===r.id||r.hp>=p.hpMax?`<div class="warn small"><b>Mossa di Morte</b><div class="row" style="margin-top:4px"><button class="btn xs" data-a="death" data-k="blaze" data-id="${r.id}">Gloria Finale</button><button class="btn xs" data-a="death" data-k="avoid" data-id="${r.id}">Evitare la Morte</button><button class="btn xs" data-a="death" data-k="risk" data-id="${r.id}">Rischiare Tutto</button></div></div>`:""}
+  ${deathFor===r.id||r.hp>=p.hpMax?`<div class="warn small"><b>Mossa di Morte</b><div class="row" style="margin-top:4px"><button class="btn xs" data-a="death" data-k="blaze" data-id="${r.id}">Gloria Finale</button><button class="btn xs has-die" data-a="death" data-k="avoid" data-id="${r.id}">${DIE_SVG}Evitare la Morte</button><button class="btn xs has-die" data-a="death" data-k="risk" data-id="${r.id}">${DIE_SVG}Rischiare Tutto</button></div></div>`:""}
   <button class="btn xs" data-a="pc-open" data-id="${r.id}" aria-expanded="${x}">${x?"Chiudi scheda":"Scheda completa"}</button>
   ${x?pcDetail(r,p):""}
   </article>`;
@@ -1118,17 +1262,17 @@ function pcDetail(r,p){
   const w=p.wpn;
   return `<div class="pcc-x">
   <div class="small"><i>${esc(p.desc||"")}</i><div class="xsmall muted">${esc(p.cls)} · ${esc(p.sub)} · ${esc(p.dom)} · ${esc(p.pron)}${p.spell?` · tratto Incantesimo: ${esc(p.spell)}`:""}</div></div>
-  <div><div class="lab">Tratti · tocca per tirare</div><div class="traits">${TRAITS.map((t,i)=>`<button data-a="trait-roll" data-id="${r.id}" data-i="${i}" title="Tiro di ${t}"><b>${sgn(p.tr[i])}</b><span>${t.slice(0,4)}</span></button>`).join("")}</div></div>
+  <div><div class="lab">Tratti · tocca per tirare</div><div class="traits">${TRAITS.map((t,i)=>`<button ${ra({a:"r",t:"dual",who:r.id,trait:i,diff:openFoe&&foe(openFoe)?.diff||"",label:`Tiro di ${t}`})} title="Tiro di ${t}">${DIE_SVG}<b>${sgn(p.tr[i])}</b><span>${t.slice(0,4)}</span></button>`).join("")}</div></div>
   <div class="row small"><input type="number" id="dmg-${r.id}" placeholder="danni" min="0" aria-label="Danni subiti"><label class="inl"><input type="checkbox" id="arm-${r.id}"> usa 1 Armatura</label><button class="btn xs bad" data-a="pc-dmg" data-id="${r.id}">Subisci danni</button>
    <button class="btn xs" data-a="pc-armor" data-id="${r.id}" title="Segna 1 slot Armatura e togli 1 PF">Armatura: −1 PF</button></div>
   <div><div class="lab">Arma</div><div class="wpn"><b>${esc(w.n)}</b><span class="mono">${esc(w.d)} ${esc(w.ty)}</span><span class="muted small">${TRAITS[w.t]} · ${esc(w.r)}</span>
-   <span class="row" style="gap:4px;justify-content:flex-end"><button class="btn xs" data-a="pc-attack" data-id="${r.id}">Attacca</button><button class="btn xs" data-a="feat-roll" data-k="${w.d}" data-n="${esc(p.name+": "+w.n)}">Danni</button></span></div></div>
+   <span class="row" style="gap:4px;justify-content:flex-end">${(()=>{const ft=openFoe?foe(openFoe):null;return rb("Attacca",{t:"dual",who:r.id,trait:w.t,diff:ft?.diff||"",label:`${p.name}: ${w.n}${ft?" contro "+ft.name:""}`,dmg:w.d,foe:ft?.id||""})+rb(w.d,{t:"expr",x:w.d,label:`${p.name}: ${w.n}`,tgt:"foe",foe:ft?.id||""},"dmg")})()}</span></div></div>
   <div class="small"><span class="lab">Armatura</span> ${esc(p.arm.n)} · soglie base ${esc(p.arm.b)} · punteggio ${p.arm.s}${p.arm.f?` · ${esc(p.arm.f)}`:""}</div>
-  <div><div class="lab">Esperienze · tocca per usarle al prossimo tiro (1 Speranza)</div><div class="row">${p.exp.map(e=>`<button class="btn xs hope" data-a="exp-use" data-id="${r.id}" data-k="${e[1]}" data-n="${esc(e[0])}">${esc(e[0])} ${sgn(e[1])}</button>`).join("")}</div></div>
+  <div><div class="lab">Esperienze · si aggiungono dal risultato del tiro (1 Speranza)</div><div class="row">${p.exp.map(e=>`<span class="chip hope">${esc(e[0])} ${sgn(e[1])}</span>`).join("")}</div></div>
   <div class="ftr" style="border-color:var(--hope)"><div class="ftr-h"><b>${esc(p.hopeF[0])}</b><span class="ktag">Speranza</span><button class="btn xs hope" data-a="hope-feat" data-id="${r.id}" ${r.hope<3?"disabled":""}>Usa (3 Speranza)</button></div><div>${esc(p.hopeF[1])}</div></div>
   <details><summary class="small"><b>Capacità</b> (${p.feats.length})</summary><div class="stack" style="margin-top:6px;gap:6px">${p.feats.map(f=>`<div class="feat"><b>${esc(f[0])}</b><span class="k">${esc(f[1])}</span><div>${esc(f[2])}</div></div>`).join("")}</div></details>
   <details><summary class="small"><b>Carte dominio</b> (${p.cards.length})</summary><div class="stack" style="margin-top:6px;gap:6px">${p.cards.map(c=>`<div class="feat"><b>${esc(c[0])}</b><span class="k">${esc(c[1])}</span><div>${esc(c[2])}</div></div>`).join("")}</div></details>
-  <div class="row small"><span class="lab">Inventario</span> ${esc(p.item[0])} (${esc(p.item[1])}) ${r.item?`<span class="chip">usata</span>`:`<button class="btn xs" data-a="potion" data-id="${r.id}">Bevi</button>`}</div>
+  <div class="row small"><span class="lab">Inventario</span> ${esc(p.item[0])} (${esc(p.item[1])}) ${r.item?`<span class="chip">usata</span>`:`<button class="btn xs has-die" data-a="potion" data-id="${r.id}">${DIE_SVG}Bevi</button>`}</div>
   <div><div class="lab">Condizioni</div><div class="cond">${PC_COND.map(c=>`<button class="${r.cond.includes(c)?"on":""}" data-a="pc-cond" data-id="${r.id}" data-k="${c}">${c}</button>`).join("")}</div></div>
   <details><summary class="small"><b>Correggi valori</b></summary><div class="row small" style="margin-top:6px">${[["eva","Evasione"],["major","Grave"],["severe","Severa"],["hpMax","PF"],["stMax","Stress"],["arMax","Armatura"]].map(([k,l])=>`<label class="inl">${l}<input type="number" id="ov-${k}-${r.id}" data-f="pc-over" data-k="${k}" data-id="${r.id}" value="${p[k]}"></label>`).join("")}
    <label class="inl"><input type="checkbox" data-a="pc-sage" data-id="${r.id}" ${p.sage?"checked":""}> Saggio di Corte</label></div></details>
@@ -1143,31 +1287,6 @@ function renderParty(){
   el.innerHTML=`<div class="row" style="justify-content:space-between"><h3>Il gruppo</h3><button class="btn xs" data-a="party-toggle">Nascondi</button></div>
    <div class="xsmall muted">Tocca un segmento delle soglie per segnare 1, 2 o 3 PF.</div>
    ${S.pcs.map(pcCard).join("")}`;
-}
-function renderDock(){
-  const el=document.getElementById("dock");el.hidden=!UI.dice;
-  if(!UI.dice){el.innerHTML="";return}
-  const r=R.res;
-  const helpers=S.pcs.filter(p=>p.id!==R.who).map(p=>`<label class="inl small"><input type="checkbox" data-a="helper" data-id="${p.id}" ${R.helpers.includes(p.id)?"checked":""}> ${esc(pcName(p.id).split(" ")[0])} <span class="muted">(${p.hope})</span></label>`).join("");
-  el.innerHTML=`<div class="row" style="justify-content:space-between"><h3>Dadi della Dualità</h3><button class="btn xs" data-a="dice-toggle">Chiudi</button></div>
-   ${R.label?`<div class="small"><b>${esc(R.label)}</b>${R.final?` <span class="chip bad">tiro finale</span>`:""}</div>`:""}
-   <div class="row small"><label class="inl">PG <select id="r-who" data-f="r" data-k="who">${pcOptions(R.who,"— generico —")}</select></label>
-    <label class="inl">Diff <input type="number" id="r-diff" data-f="r" data-k="diff" value="${R.diff}"></label>
-    <label class="inl">Tratto <input type="number" id="r-mod" data-f="r" data-k="mod" value="${R.mod}"></label></div>
-   <div class="row small"><label class="inl">Esperienza +<input type="number" id="r-exp" data-f="r" data-k="exp" value="${R.exp}" min="0"></label>
-    <label class="inl">Vant. <input type="number" id="r-adv" data-f="r" data-k="adv" value="${R.adv}" min="0" max="3"></label>
-    <label class="inl">Svant. <input type="number" id="r-dis" data-f="r" data-k="dis" value="${R.dis}" min="0" max="3"></label>
-    <label class="inl"><input type="checkbox" data-a="r-react" ${R.reaction?"checked":""}> Reazione</label></div>
-   <div class="small"><span class="lab">Aiutano (−1 Speranza ciascuno, +d6)</span><div class="row">${helpers}</div></div>
-   <div class="row"><button class="btn pri" data-a="roll">Tira 2d12</button>${R.label||R.final?`<button class="btn xs" data-a="r-clear">Pulisci</button>`:""}</div>
-   ${r?`<div class="dice-out"><div class="die h roll" title="Speranza">${r.hope}</div><div class="die f roll" title="Paura">${r.fear}</div>
-    ${r.advDice.map(x=>`<div class="die d6 roll">${x}</div>`).join("")}${r.disDice.map(x=>`<div class="die d6 roll">−${x}</div>`).join("")}
-    <div><div class="mono" style="font-size:1.5rem;font-weight:600">${r.total}</div><div class="small muted">vs ${r.diff}</div></div></div>
-    <div class="verdict ${r.kind}">${r.verdict}</div>${r.netTxt?`<div class="small muted">${r.netTxt}</div>`:""}
-    <ul class="tight small">${r.effects.map(e=>`<li>${esc(e)}</li>`).join("")}</ul>`:""}
-   <div class="row small" style="border-top:1px dotted var(--line);padding-top:8px"><input type="text" id="s-expr" data-f="simple" value="${esc(simple.expr)}" style="width:6.5em" aria-label="Espressione dadi"><button class="btn xs" data-a="simple">Tira</button>
-    ${["1d4","1d6","1d8","1d10","1d12","1d20","2d6+3","1d4+1"].map(x=>`<button class="btn xs" data-a="simple" data-k="${x}">${x}</button>`).join("")}</div>
-   ${simple.res?`<div class="mono small">${esc(simple.res)}</div>`:""}`;
 }
 function renderAct(){
   const a=ACTS.find(x=>x.id===S.act),secs=SECTIONS[S.act]();
@@ -1227,20 +1346,19 @@ function renderDiary(){return `<div class="stack"><h2>Diario della sessione</h2>
 <div class="panel"><h4>Registro</h4><div class="log">${S.log.map(l=>`<div><span class="t">${l.t}</span><span>${esc(l.text)}</span></div>`).join("")||`<span class="muted small">Tiri ed eventi compariranno qui.</span>`}</div></div></div></div>`}
 
 function render(){
-  renderBar();renderTabs();renderParty();renderDock();
+  renderBar();renderTabs();renderParty();renderRoll();
   document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct():S.tab==="scontro"?renderCombat():S.tab==="regole"?RULES:renderDiary()}</div>`;
 }
 
 /* ================= azioni ================= */
 function syncElder(){if((S.elderSt||0)>=4&&!S.flags.elderDone){S.flags.elderDone=true;log("L'Anziano Halython si arrende","ok")}const f=S.foes.find(x=>x.tmpl==="elder");if(f)f.st=S.elderSt||0}
-function noHosp(){if((S.elderSt||0)>=4){toast("L'Anziano non ha più Stress da segnare");return}S.elderSt=(S.elderSt||0)+1;const x=rollExpr("2d6");S.villagers+=x.total;log(`Niente ospitalità: ${x.text} paesani arrivano (${S.villagers})`,"fear");syncElder()}
-function peace(){if(S.flags.peaceUsed){toast("CI SARÀ PACE è già stata usata");return}if(S.fear<2){toast("Servono 2 Paura");return}addFear(-2,"CI SARÀ PACE");S.flags.peaceUsed=true;S.pcs.forEach(p=>{p.hope=0;const x=rollExpr("2d4");pcMarkStress(p.id,x.total,"Ci sarà pace, "+x.text)});log("CI SARÀ PACE: tutti i PG perdono la Speranza","bad")}
+function noHosp(){if((S.elderSt||0)>=4){toast("L'Anziano non ha più Stress da segnare");return}S.elderSt=(S.elderSt||0)+1;const x=rollShow("2d6","Niente ospitalità: paesani");S.villagers+=x.total;log(`Niente ospitalità: ${x.text} paesani arrivano (${S.villagers})`,"fear");syncElder()}
+function peace(){if(S.flags.peaceUsed){toast("CI SARÀ PACE è già stata usata");return}if(S.fear<2){toast("Servono 2 Paura");return}addFear(-2,"CI SARÀ PACE");S.flags.peaceUsed=true;S.pcs.forEach(p=>{p.hope=0;const x=rollShow("2d4",`Ci sarà pace: ${pcName(p.id)}`);pcMarkStress(p.id,x.total,"Ci sarà pace, "+x.text)});log("CI SARÀ PACE: tutti i PG perdono la Speranza","bad")}
 const top0=()=>setTimeout(()=>scrollTo({top:0}),0);
 const A={
  tab:o=>{S.tab=o.k;persist();render();top0()},
  goact:o=>upd(()=>{S.act=o.k;S.tab="atto";const a=ACTS.find(x=>x.id===o.k);log(`→ Atto ${a.n}: ${a.t}`);top0()}),
  "party-toggle":()=>{UI.party=!UI.party;saveUI();renderBar();renderParty()},
- "dice-toggle":()=>{UI.dice=!UI.dice;renderBar();renderDock()},
  "fear-set":o=>upd(()=>{const n=+o.i+1;addFear((S.fear===n?n-1:n)-S.fear,"manuale")}),
  ctr:o=>upd(()=>counterAdd(+o.k,"manuale")),
  "ctr-start":()=>upd(()=>counterStart(15,"manuale")),
@@ -1275,51 +1393,41 @@ const A={
   if(o.k==="s"){if(S.pcs.some(p=>p.cond.includes("Annegamento"))&&S.river.t<=1){toast("Qualcuno sta annegando: il conto non può arrivare a zero");return}S.river.t=Math.max(0,S.river.t-1);log(`Traversata −1 → ${S.river.t}`,"ok")}
   if(o.k==="f"){log("Fallimento nella traversata: azione Annegare","bad");toast("Scegli un PG: reazione di Agilità o inizia ad annegare")}}),
  "drown-tick":()=>upd(()=>S.pcs.filter(p=>p.cond.includes("Annegamento")).forEach(p=>pcMarkStress(p.id,1,"annegamento"))),
- "drown-roll":()=>{if(!drownPick){toast("Scegli prima un PG");return}preset({who:drownPick,diff:13,reaction:true,mod:pcById(drownPick).tr[0],label:"Reazione di Agilità contro l'annegamento"})},
  "drown-set":()=>{const r=pcRaw(drownPick);if(!r){toast("Scegli prima un PG");return}upd(()=>{if(!r.cond.includes("Annegamento"))r.cond.push("Annegamento");log(`${pcName(r.id)} sta annegando`,"bad")})},
  undertow:()=>upd(()=>{
   const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));if(!dr.length)return;const r=dr.find(p=>p.id===drownPick)||dr[0];
-  addFear(-1,"Risacca");const k=d(4);let txt=`Risacca su ${pcName(r.id)}: d4 = ${k}. ${UNDERTOW[k-1]}.`;
+  addFear(-1,"Risacca");const k=rollShow("1d4","Risacca").total;let txt=`Risacca su ${pcName(r.id)}: d4 = ${k}. ${UNDERTOW[k-1]}.`;
   if(k===1)pcMarkStress(r.id,1,"risacca");
-  if(k===2){const x=rollExpr("2d6+3");txt+=` ${x.text}.`;pcDamage(r.id,x.total,false)}
+  if(k===2){const x=rollShow("2d6+3","Risacca: danni");txt+=` ${x.text}.`;pcDamage(r.id,x.total,false)}
   S.undertow=txt;log(txt,"fear")}),
  loot:o=>upd(()=>{const t=TREASURES[+o.i][0];S.loot.push(t);log(`Recuperato dal fiume: ${t}`,"ok")}),
  "search-tick":()=>upd(()=>{S.flags.searchTick=true;counterAdd(1,"ricerca nel villaggio")}),
  "elder-st":o=>upd(()=>{const n=+o.i+1;S.elderSt=(S.elderSt||0)===n?n-1:n;syncElder()}),
- "elder-roll":()=>preset({who:elderPick,diff:15,adv:luna()?1:0,mod:elderPick?pcById(elderPick).tr[4]:0,label:"Convincere l'Anziano (Presenza)"}),
  elder:o=>upd(()=>{
   if(o.k==="s"){S.elderSt=Math.min(4,(S.elderSt||0)+1);log(`L'Anziano segna 1 Stress (${S.elderSt}/4)`);syncElder()}
   else{if(!elderPick){toast("Scegli il PG che ha tirato");return}pcMarkStress(elderPick,1,"Diffidente")}}),
  vill:o=>upd(()=>{S.villagers=Math.max(0,S.villagers+(+o.k))}),
  "vill-dmg":()=>upd(()=>{const dmg=+document.getElementById("villdmg").value||0;const k=Math.min(S.villagers,dmg>0?1+Math.floor(dmg/3):0);S.villagers-=k;log(`${dmg} danni ai paesani: ${k} sconfitti (${S.villagers} restano)`)}),
- "vill-attack":()=>upd(()=>{addFear(-1,"Attacco di Gruppo");const r=d(20);foeRoll.res=`Attacco di Gruppo dei Paesani: d20 = ${r}. Se ≥ Evasione: ${2*S.villagers} danni fisici.`;log(foeRoll.res,"fear");toast(foeRoll.res)}),
+ "vill-attack":()=>upd(()=>{addFear(-1,"Attacco di Gruppo");const r=rollShow("1d20","Attacco di Gruppo dei Paesani").total;foeRoll.res=`Attacco di Gruppo dei Paesani: d20 = ${r}. Se ≥ Evasione: ${2*S.villagers} danni fisici.`;log(foeRoll.res,"fear");toast(foeRoll.res)}),
  "bargain-used":()=>upd(()=>{S.flags.bargainUsed=true;log("Il patto fatato è stato riscosso ad Hush","fear")}),
  "ritual-here":o=>upd(()=>{const here=o.k==="1";if(!here&&S.flags.ritualHere!==false)counterAdd(1,"rituale alla Valle Aperta");S.flags.ritualHere=here;if(here)log("I paesani accettano il rituale nel villaggio")}),
- rest:o=>upd(()=>{const r=pcRaw(o.id),p=P(r);const x=rollExpr("1d4+1");(S.rest[r.id]=S.rest[r.id]||[]).push(o.k);
+ rest:o=>upd(()=>{const r=pcRaw(o.id),p=P(r);const x=rollShow("1d4+1",`${pcName(o.id)}: ${{wounds:"Curare ferite",stress:"Ricomporsi",armor:"Riparare armatura",prep:"Prepararsi"}[o.k]}`);if(o.k==="prep")pendingShow.pop();(S.rest[r.id]=S.rest[r.id]||[]).push(o.k);
   if(o.k==="wounds"){r.hp=Math.max(0,r.hp-x.total);log(`${p.name} cura ${x.total} PF (${x.text})`,"ok")}
   if(o.k==="stress"){r.st=Math.max(0,r.st-x.total);log(`${p.name} rimuove ${x.total} Stress (${x.text})`,"ok")}
   if(o.k==="armor"){r.ar=Math.max(0,r.ar-x.total);log(`${p.name} ripara ${x.total} slot Armatura (${x.text})`,"ok")}
   if(o.k==="prep"){r.hope=Math.min(6,r.hope+1);log(`${p.name} si prepara: +1 Speranza`,"hope")}}),
  "rest-group":()=>upd(()=>{const ps=S.pcs.filter(p=>(S.rest[p.id]||[]).length<2);ps.forEach(p=>{(S.rest[p.id]=S.rest[p.id]||[]).push("prep");p.hope=Math.min(6,p.hope+2)});log(`Preparazione di gruppo: +2 Speranza a ${ps.map(p=>pcName(p.id)).join(", ")}`,"hope")}),
  "rest-reset":()=>upd(()=>{S.rest={};S.flags.rest=null}),
- downtime:()=>upd(()=>{const x=rollExpr("1d4");addFear(x.total,"riposo breve ("+x.text+")");counterAdd(2,"riposo breve");S.flags.rest="taken"}),
+ downtime:()=>upd(()=>{const x=rollShow("1d4","Paura del GM per il riposo");addFear(x.total,"riposo breve ("+x.text+")");counterAdd(2,"riposo breve");S.flags.rest="taken"}),
  "skip-rest":()=>upd(()=>{S.flags.rest="skipped";log("Il gruppo salta il riposo per guadagnare tempo")}),
  ritual:o=>upd(()=>{if(o.k==="hit"){S.ritual.v=Math.min(8,S.ritual.v+1);log(`L'Arcanista è colpita: Rituale +1 → ${S.ritual.v}`,"bad")}if(o.k==="kill"){S.ritual.v=Math.max(0,S.ritual.v-1);log(`Rituale −1 → ${S.ritual.v}`,"ok")}}),
  "ritual-pip":o=>upd(()=>{const n=+o.i+1;S.ritual.v=S.ritual.v===n?n-1:n}),
  "ritual-spawn":()=>upd(()=>{spawn("skeleton",5,"4:rituale");spawn("hero",2,"4:rituale")}),
  vengeance:()=>upd(()=>{addFear(-1,"Vendetta degli Antichi Dèi");spawn("skeleton",Math.min(2,10-aliveSkel()),"4:rituale")}),
  "ritual-end":()=>upd(()=>{S.flags.ritualDone=true;S.ritual.v=0;S.foes.filter(f=>f.where==="4:rituale").forEach(f=>f.dead=true);log("Il rituale è completo: i nemici rimasti diventano polvere","ok");if(!S.counter.on)counterStart(15,"fine del rituale")}),
- "final-preset":()=>{const bp=S.flags.bargain&&!S.flags.bargainUsed;preset({diff:S.counter.on?S.counter.value:15,final:true,label:"Tiro finale: arrivare alla statua in tempo",dis:bp?1:0,who:"marlowe"})},
  "home-add":()=>upd(()=>S.home.push({n:"",note:""})),
  "home-del":o=>upd(()=>S.home.splice(+o.i,1)),
  // dadi
- roll:()=>doDuality(),
- "roll-preset":o=>preset({diff:+o.diff,label:o.label||"",adv:+(o.adv||0),who:R.who,mod:o.trait!=null&&R.who?pcById(R.who).tr[+o.trait]:0}),
- "r-react":()=>{R.reaction=!R.reaction;renderDock()},
- "r-clear":()=>{Object.assign(R,{label:"",final:false,res:null,helpers:[],exp:0,adv:0,dis:0,reaction:false});renderDock()},
- helper:o=>{R.helpers=R.helpers.includes(o.id)?R.helpers.filter(x=>x!==o.id):[...R.helpers,o.id];renderDock()},
- simple:o=>{if(o.k)simple.expr=o.k;const x=rollExpr(simple.expr);simple.res=x?x.text:"Formato non valido: usa ad esempio 2d6+3";if(x){log("Tiro: "+x.text);persist()}UI.dice=true;renderBar();renderDock()},
- "feat-roll":o=>{const x=rollExpr(o.k);if(!x)return;simple.expr=o.k;simple.res=`${o.n}: ${x.text}`;log(simple.res);persist();UI.dice=true;renderBar();renderDock()},
  // PG
  "pc-open":o=>{openPc=openPc===o.id?null:o.id;renderParty()},
  "pc-pip":o=>upd(()=>{const r=pcRaw(o.id),k=o.k,n=+o.i+1;r[k]=r[k]===n?n-1:n;if(k==="hp"){if(r.hp<P(r).hpMax&&deathFor===r.id)deathFor=null;checkDown(r.id)}}),
@@ -1328,15 +1436,12 @@ const A={
  "pc-sage":o=>upd(()=>{const r=pcRaw(o.id);r.over.sage=!P(r).sage}),
  "pc-cond":o=>upd(()=>{const r=pcRaw(o.id);r.cond=r.cond.includes(o.k)?r.cond.filter(c=>c!==o.k):[...r.cond,o.k];log(`${pcName(r.id)}: ${o.k} ${r.cond.includes(o.k)?"attivo":"rimosso"}`)}),
  "pc-dmg":o=>{const v=+document.getElementById("dmg-"+o.id).value;if(!(v>0)){toast("Inserisci i danni");return}const arm=document.getElementById("arm-"+o.id).checked;upd(()=>pcDamage(o.id,v,arm))},
- "trait-roll":o=>{const p=pcById(o.id);preset({who:o.id,mod:p.tr[+o.i],diff:R.diff||12,label:`${p.name}: tiro di ${TRAITS[+o.i]}`})},
- "pc-attack":o=>{const p=pcById(o.id);const f=S.foes.find(x=>x.id===openFoe&&!x.dead);preset({who:o.id,mod:p.tr[p.wpn.t],diff:f?.diff||12,label:`${p.name} attacca con ${p.wpn.n}${f?" "+f.name:""}`})},
- "exp-use":o=>{const p=pcById(o.id);if(R.who!==o.id){R.who=o.id;R.mod=0}R.exp=+o.k;R.label=`${p.name}: Esperienza «${o.n}»`;UI.dice=true;renderBar();renderDock();toast(`Esperienza pronta: +${o.k} al prossimo tiro di ${p.name}`)},
  "hope-feat":o=>upd(()=>{const r=pcRaw(o.id),p=P(r);if(r.hope<3)return;r.hope-=3;log(`${p.name} usa ${p.hopeF[0]} (−3 Speranza)`,"hope");if(r.id==="khari")r.ar=Math.max(0,r.ar-2)}),
- potion:o=>upd(()=>{const r=pcRaw(o.id),p=P(r);const x=rollExpr("1d4");r.item=true;if(p.item[2]==="hp")r.hp=Math.max(0,r.hp-x.total);else r.st=Math.max(0,r.st-x.total);log(`${p.name} beve ${p.item[0]}: −${x.total} ${p.item[2]==="hp"?"PF":"Stress"}`,"ok")}),
+ potion:o=>upd(()=>{const r=pcRaw(o.id),p=P(r);const x=rollShow("1d4",`${p.name}: ${p.item[0]}`);r.item=true;if(p.item[2]==="hp")r.hp=Math.max(0,r.hp-x.total);else r.st=Math.max(0,r.st-x.total);log(`${p.name} beve ${p.item[0]}: −${x.total} ${p.item[2]==="hp"?"PF":"Stress"}`,"ok")}),
  death:o=>upd(()=>{const r=pcRaw(o.id),p=P(r);deathFor=null;
   if(o.k==="blaze")log(`${p.name} sceglie la Gloria Finale: un'ultima azione con successo critico, poi muore`,"bad");
-  if(o.k==="avoid"){const h=d(12);if(!r.cond.includes("Incosciente"))r.cond.push("Incosciente");log(`${p.name} evita la morte e perde i sensi. Dado Speranza ${h}${h<=1?": ottiene una cicatrice":": nessuna cicatrice"}`,"bad")}
-  if(o.k==="risk"){const h=d(12),f=d(12);
+  if(o.k==="avoid"){const h=rollShow("1d12",`${p.name}: dado Speranza`).total;if(!r.cond.includes("Incosciente"))r.cond.push("Incosciente");log(`${p.name} evita la morte e perde i sensi. Dado Speranza ${h}${h<=1?": ottiene una cicatrice":": nessuna cicatrice"}`,"bad")}
+  if(o.k==="risk"){const h=rollShow("1d12","Rischiare Tutto: Speranza").total,f=rollShow("1d12","Rischiare Tutto: Paura").total;
    if(h===f){r.hp=0;r.st=0;log(`${p.name} rischia tutto: ${h}/${f}, critico! Recupera tutti PF e Stress`,"ok")}
    else if(h>f){let c=h;const hp=Math.min(r.hp,c);r.hp-=hp;c-=hp;r.st=Math.max(0,r.st-c);log(`${p.name} rischia tutto: Speranza ${h} > Paura ${f}. Recupera ${h} tra PF e Stress`,"ok")}
    else log(`${p.name} rischia tutto: Paura ${f} > Speranza ${h}. Il personaggio muore`,"bad")}}),
@@ -1350,15 +1455,20 @@ const A={
   if(x.fx==="no-hosp"){noHosp();f.acted=true;return}if(x.fx==="peace"){peace();f.acted=true;return}
   if(x.c){const [k,n]=x.c.split(":");if(k==="fear"){if(S.fear<+n){toast("Paura insufficiente");return}addFear(-n,`${f.name}: ${x.n}`)}else{foeMark(f,"st",+n);log(`${f.name} segna ${n} Stress per ${x.n}`)}}
   f.acted=true;log(`${f.name} usa ${x.n}`,"fear")}),
- "foe-atk":o=>upd(()=>{const f=foe(o.id);const p=pcById(document.getElementById("tg-"+o.id)?.value);const r=d(20),t=r+(f.atk||0);
-  const hit=p?(r===20||t>=p.eva):null;f.acted=true;
-  foeRoll.res=`${f.name} attacca${p?" "+p.name:""}: d20 ${r} ${sgn(f.atk||0)} = ${t}${p?` vs Evasione ${p.eva} → ${r===20?"CRITICO":hit?"COLPITO":"mancato"}`:""}`;log(foeRoll.res,hit?"bad":"");toast(foeRoll.res)}),
- "foe-dmg":o=>{const f=foe(o.id);const x=rollExpr(f.attack.d);if(!x)return;const tid=document.getElementById("tg-"+o.id)?.value;foeRoll.res=`${f.name} danni: ${x.text}`;log(foeRoll.res,"bad");toast(foeRoll.res);
-  if(tid){openPc=tid;if(!UI.party){UI.party=true;saveUI()}}persist();render();
-  if(tid){const e=document.getElementById("dmg-"+tid);if(e){e.value=x.total;e.scrollIntoView({block:"nearest"})}}},
- "foe-hit":o=>upd(()=>{const f=foe(o.id);const v=+document.getElementById("fd-in-"+o.id).value||0;if(!v)return;
-  if(f.minion){foeDefeated(f);const extra=Math.floor(v/3);if(extra)log(`${v} danni: sconfiggi altri ${extra} gregari a portata`);return}
-  const hp=hpFromDamage(v,f.thr[0],f.thr[1]);foeMark(f,"hp",hp);log(`${f.name} subisce ${v} danni → ${hp} PF (${f.hpMax-f.hp}/${f.hpMax})`)}),
+ "foe-hit":o=>upd(()=>{const f=foe(o.id);const v=+document.getElementById("fd-in-"+o.id).value||0;if(!v)return;foeTakeDamage(f,v)}),
+ r:o=>startRoll({...o}),
+ "r-who":o=>{if(ROLL.pend)startRoll({...ROLL.pend.o,who:o.id})},
+ "r-trait":o=>{if(ROLL.pend)startRoll({...ROLL.pend.o,trait:o.i})},
+ "r-tgt":o=>{if(ROLL.pend)startRoll({...ROLL.pend.o,target:o.id})},
+ "rp-cancel":()=>{ROLL.pend=null;renderRoll()},
+ "rp-close":()=>{ROLL.cur=null;ROLL.showHist=false;renderRoll()},
+ "rp-hist":()=>{ROLL.showHist=!ROLL.showHist;renderRoll()},
+ "rm-exp":o=>{const res=ROLL.cur,r=pcRaw(res?.who);if(!r)return;const e=P(r).exp[+o.i];if(r.hope<1){toast("Speranza esaurita");return}r.hope--;res.exps.push({n:e[0],v:e[1]});res.effects.push(`${pcName(r.id)}: −1 Speranza per l'Esperienza.`);recalc(res);log(`${res.label}: +${e[1]} «${e[0]}» → ${res.total} (${res.verdict})`);persist();render()},
+ "rm-help":o=>{const res=ROLL.cur,h=pcRaw(o.id);if(!res||!h||h.hope<1)return;h.hope--;res.helpers.push(pcName(h.id));res.adv.push(d(6));recalc(res);log(`${res.label}: aiuto di ${pcName(h.id)} → ${res.total} (${res.verdict})`);persist();render()},
+ "rm-adv":()=>{const res=ROLL.cur;if(!res)return;res.adv.push(d(6));recalc(res);persist();render()},
+ "rm-dis":()=>{const res=ROLL.cur;if(!res)return;res.dis.push(d(6));recalc(res);persist();render()},
+ "rp-apply-pc":o=>upd(()=>{const res=ROLL.cur;if(!res||res.total==null)return;pcDamage(o.id,res.total,!!o.arm);res.applied=true;toast(`${pcName(o.id)} subisce ${res.total} danni`)}),
+ "rp-apply-foe":o=>upd(()=>{const res=ROLL.cur,f=foe(o.id);if(!res||!f||res.total==null)return;foeTakeDamage(f,res.total);toast(`${f.name} subisce ${res.total} danni`)}),
  "foe-kill":o=>upd(()=>{const f=foe(o.id);if(f.dead){f.dead=false;f.hp=Math.min(f.hp,Math.max(0,f.hpMax-1))}else{f.hp=f.hpMax;foeDefeated(f)}}),
  "foe-del":o=>upd(()=>{S.foes=S.foes.filter(f=>f.id!==o.id);if(openFoe===o.id)openFoe=null}),
  "new-round":o=>upd(()=>{S.foes.filter(f=>!o.w||f.where===o.w).forEach(f=>f.acted=false);log("Nuovo giro di riflettori")}),
@@ -1395,14 +1505,14 @@ const A={
  "dev-cd":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);const c=parseDev(dv.raw).conti[+o.i];if(!c)return;const m=clamp(parseInt(c[1])||4,1,12);S.cds.push({id:uid(),name:c[0],max:m,v:m,note:c[2]||""});toast("Conto aggiunto nella scheda Scontro")}),
  reset:()=>{resetAsk=true;renderBar()},
  "reset-no":()=>{resetAsk=false;renderBar()},
- "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;Object.assign(R,{who:"",mod:0,diff:12,adv:0,dis:0,exp:0,reaction:false,helpers:[],label:"",final:false,res:null});simple.res=null;foeRoll.res=null;top0();persist();render();toast("Nuova campagna pronta")}
+ "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;ROLL={cur:null,hist:[],pend:null,showHist:false};foeRoll.res=null;top0();persist();render();toast("Nuova campagna pronta")}
 };
 
 document.addEventListener("click",e=>{
   const sum=e.target.closest("details.scn>summary");
   if(sum){const d=sum.parentElement,key=d.dataset.scn||"dev:"+d.dataset.dev;setTimeout(()=>scnOpen.set(key,d.open),0);return}
   const b=e.target.closest("[data-a]");if(!b)return;
-  const f=A[b.dataset.a];if(f)f(b.dataset,b);
+  const f=A[b.dataset.a];if(f){f(b.dataset,b);flushShows()}
 });
 document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".mc[data-a],.enc[data-a]")){e.preventDefault();A[e.target.dataset.a](e.target.dataset)}});
 document.addEventListener("change",e=>{
@@ -1411,7 +1521,6 @@ document.addEventListener("change",e=>{
     case "pc-over":{const r=pcRaw(o.id);r.over[o.k]=clamp(+v||0,0,o.k.endsWith("Max")?12:40);const p=P(r);r.hp=Math.min(r.hp,p.hpMax);r.st=Math.min(r.st,p.stMax);r.ar=Math.min(r.ar,p.arMax);persist();render();return}
     case "foe-cond-add":{const f=foe(o.id);if(v&&f&&!f.cond.includes(v)){f.cond.push(v);log(`${f.name}: ${v}`);persist();render()}return}
     case "pc-notes":pcRaw(o.id).notes=v;persist();return;
-    case "r":R[o.k]=o.k==="who"?v:(+v||0);if(o.k==="who")R.helpers=R.helpers.filter(x=>x!==v);renderDock();return;
     case "critter":S.critters[+o.i]=v;persist();render();return;
     case "bargain":S.flags.bargain=v;log(v?`${pcName(v)} accetta il patto dello Strixwolf`:"Nessun patto fatato","fear");persist();render();return;
     case "drownpc":drownPick=v;return;
@@ -1419,7 +1528,6 @@ document.addEventListener("change",e=>{
     case "home-n":S.home[+o.i].n=v;persist();return;
     case "home-note":S.home[+o.i].note=v;persist();return;
     case "notes":S.notes=v;persist();return;
-    case "simple":simple.expr=v;return;
   }
 });
 render();
