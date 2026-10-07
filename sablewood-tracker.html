@@ -330,6 +330,12 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .sh-stats b{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1.1}
 .sh-stats small{font-size:.85rem;color:var(--muted)}
 .sh-pad{padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.big-trk{gap:10px;padding-block:14px}
+.bt-row{display:grid;grid-template-columns:4.2em minmax(0,1fr) auto;gap:10px;align-items:center}
+.bt-row .lab{font-size:.75rem}
+.bt-row .mono{font-size:1rem;font-weight:600}
+.big-trk .pips{gap:6px}
+.big-trk .pip.hp,.big-trk .pip.st{width:30px;height:22px;border-radius:6px;border-width:2px}
 .sh-r{padding:10px 14px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .sh-tabs{display:flex;gap:2px;border-bottom:1px solid var(--line)}
 .sh-tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:6px 12px;font-weight:700;color:var(--muted);cursor:pointer}
@@ -905,9 +911,10 @@ function foeSheet(f){
      <div class="sh-id"><span class="ava lg">${initial(f.name)}</span><div><b>${esc(f.name)}</b><div class="row" style="gap:6px"><span class="tbadge t-${esc(f.type).replace(/\W/g,"")}">${esc(f.type)}</span><span class="small muted">Tier ${f.tier}${f.sub?" · "+esc(f.sub):""}</span></div></div></div>
      <div class="sh-stats"><div><span class="lab">Difficoltà</span><b>${f.diff??"—"}${f.sugg?"*":""}</b>${condMark(f.cond)}</div><div><span class="lab">Soglie</span><b>${f.minion?"—":`${f.thr[0]??"—"}/${f.thr[1]??"—"}`}</b></div>
       <div><span class="lab">PF</span><b>${f.hpMax?`${f.hpMax-f.hp}<small>/${f.hpMax}</small>`:"—"}</b></div><div><span class="lab">Stress</span><b>${f.stMax?`${f.st}<small>/${f.stMax}</small>`:"—"}</b></div></div>
-     ${f.hpMax?`<div class="sh-pad">${thrStrip(f.thr[0],f.thr[1],{a:"foe-thr",id:f.id,minion:f.minion})}
-      <div class="row"><span class="lab" style="width:3.6em">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>
-      ${f.stMax?`<div class="row"><span class="lab" style="width:3.6em">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}</div>`:""}
+     ${f.hpMax||f.stMax?`<div class="sh-pad big-trk">
+      ${f.minion?`<div class="minion-note">Gregario · qualsiasi danno lo sconfigge</div>`:""}
+      ${f.hpMax?`<div class="bt-row"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}<span class="mono">${f.hpMax-f.hp}/${f.hpMax}</span></div>`:""}
+      ${f.stMax?`<div class="bt-row"><span class="lab">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}<span class="mono">${f.st}/${f.stMax}</span></div>`:""}</div>`:""}
      ${f.cond.length?`<div class="sh-pad">${f.cond.map(c=>`<div class="row small"><button class="chip bad cchip" data-a="foe-cond" data-id="${f.id}" data-k="${esc(c)}">${esc(c)} ×</button><span class="muted">${esc(COND_INFO[c]?.fx||"")}</span></div>`).join("")}</div>`:""}
     </div>
     <div class="sh-r"><div class="sh-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" class="${sheetTab===k?"on":""}" data-a="sheet-tab" data-k="${k}">${l}</button>`).join("")}</div>
