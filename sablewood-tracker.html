@@ -77,7 +77,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
 .panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:14px}
 .panel>h4{margin-bottom:6px}
-.scn{border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+.scn{border:1px solid var(--line);border-radius:var(--r);background:var(--paper);scroll-margin-top:84px}
 .scn>summary{list-style:none;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding:10px 14px;cursor:pointer}
 .scn>summary::-webkit-details-marker{display:none}
 .scn>summary::before{content:"▸";color:var(--muted);font-size:.8rem}
@@ -132,6 +132,10 @@ details.alt[open]>summary{margin-bottom:8px}
 .outopt span{font-size:.85rem;color:var(--muted)}
 .outopt i{font-size:.7rem;font-weight:800;font-style:normal;text-transform:uppercase;letter-spacing:.06em;color:var(--hope)}
 .outopt.sug{border-color:var(--hope);box-shadow:inset 3px 0 0 var(--hope)}
+.outopt .go{font-size:.75rem;font-weight:700;color:var(--moss)}
+.outopt.imp{border-style:dashed;border-color:var(--fear);background:var(--fear-soft)}
+.outopt.imp b{color:var(--fear)}
+.outq .composer{border:0;padding:0;background:none}
 
 /* box di regole (inseguimento, fiume, rituale) */
 .stat{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--paper)}
@@ -983,7 +987,7 @@ const SECTIONS={
   <div class="panel stack"><h4>Patto fatato</h4>
   ${read(`<p>«Una vita per una vita: questo è il prezzo che chiedo. Eppure vedo fuoco nella tua anima, e mi fa credere che potresti saziare la mia fame con la <i>sorpresa</i> invece che con il sangue.</p><p>Concedimi un solo momento del tuo tempo, e lo userò per metterti alla prova. Prima che il tuo viaggio finisca reclamerò quel momento, e ti farò minacciare la vita che mi è dovuta. Cosa accadrà dopo, sono curioso di scoprirlo.»</p>`,"Se viene chiesto")}
   <p class="small muted">Poi: ad Hush il PG attacca un PNG (se è drammatico), <i>oppure</i> nel tiro finale sabota gli alleati dando svantaggio.</p></div>`;
-  return branch(S.flags.luna==="saved"?"a":S.flags.luna==="dead"?"b":null,["Se Luna è viva",saved],["Se Luna è morta",dead],"Concludi la scena 1: in base all'inseguimento qui resterà solo il ramo giusto.")}},
+  return branch(S.flags.luna==="saved"?"a":S.flags.luna==="dead"?"b":null,["Se Luna è viva",saved],["Se Luna è morta",dead],S.out["1:inizio"]==="Deviazione improvvisata"?"Si decide alla fine della scena improvvisata: quando torni alla trama qui resterà solo il ramo giusto.":"Concludi la scena 1: in base all'inseguimento qui resterà solo il ramo giusto.")}},
 ],
 '2':()=>[
  {id:"emissari",t:"Emissari degli Antichi Dèi",f:F.emissari,html:()=>`
@@ -996,7 +1000,7 @@ const SECTIONS={
  <p>Gli Scarshade sono resti degli Antichi Dèi, con un odio infinito per chi adora i Nuovi Dèi, compreso il regno dei PG. Proveranno lo <b>Scavo nella Memoria</b>.</p>`},
  {id:"polvere",t:"Al bivio",f:F.polvere,html:()=>{
   const L=S.flags.learned;
-  if(L==null)return pendNote("Concludi la scena 3: se gli Scarshade hanno scoperto il pacco, qui comparirà il bivio della scorciatoia.");
+  if(L==null)return pendNote(S.out["2:emissari"]==="Deviazione improvvisata"?"Si decide alla fine della scena improvvisata: torna alla trama dicendo se gli Scarshade hanno scoperto il pacco.":"Concludi la scena 3: se gli Scarshade hanno scoperto il pacco, qui comparirà il bivio della scorciatoia.");
   if(L===false)return `<div class="note">Gli Scarshade non hanno scoperto nulla: nessuna urgenza e nessun bivio. Il gruppo prosegue verso Hush.</div>`;
   return `<div class="warn">Gli Scarshade sanno del pacco. Contatore d'Assalto alla Città: <b>${S.counter.on?S.counter.value:"—"}</b>, la Difficoltà del tiro finale.</div>
   <p><b>La scorciatoia.</b> Con questa urgenza, i giocatori potrebbero cercare una scorciatoia attraverso le parti più pericolose del Sablewood.</p>
@@ -1169,15 +1173,29 @@ const OUT={
 const SKIP={"2.5:fiume":()=>S.flags.learned===false?"gli Scarshade non sanno nulla: nessuna scorciatoia":S.flags.shortcut==="skip"?"il gruppo ha preso il sentiero lungo":null};
 const skipReason=key=>SKIP[key]?SKIP[key]():null;
 let endAsk=null;
+const DEFAULT_OUT={q:()=>"Com'è andata?",opts:()=>[{k:"cont",l:"Si prosegue come previsto",d:"",apply:()=>{}}]};
+// ctx: chiave della scena prevista, oppure "dev:<id>" per una scena improvvisata nata da quella scena
+function outqHTML(key,ctx){
+  const o=OUT[key]||DEFAULT_OUT,opts=o.opts(),pick=opts.some(x=>x.pick),isDev=ctx.startsWith("dev:");
+  const nx=nextScene(...key.split(":"));
+  if(composer&&composer.where===key&&composer.from===ctx)return `<div class="outq"><span class="lab">Com'è finita la scena?</span>${composerForm(key,"")}</div>`;
+  return `<div class="outq"><span class="lab">${isDev?"Com'è finita la scena improvvisata?":"Com'è finita la scena?"}</span><b>${isDev?"Si torna alla trama, oppure un altro imprevisto?":o.q()}</b>
+   ${pick?`<label class="inl small">PG che accetta il patto <select id="out-pc" aria-label="PG che accetta il patto">${pcOptions("","— scegli —")}</select></label>`:""}
+   <div class="outs">${opts.map(x=>`<button class="outopt ${x.sug?"sug":""}" data-a="scn-out" data-k="${key}" data-c="${ctx}" data-o="${x.k}"><b>${isDev&&OUT[key]?"Si torna alla trama: ":""}${esc(x.l)}</b>${x.d?`<span>${esc(x.d)}</span>`:""}<span class="go">→ ${nx?`Scena ${nx.n}: ${esc(nx.s.t)}`:"fine dell'avventura"}</span>${x.sug?`<i>suggerito dal tracker</i>`:""}</button>`).join("")}
+    <button class="outopt imp" data-a="out-imp" data-k="${key}" data-c="${ctx}" ${G.busy?"disabled":""}><b>I PG hanno fatto qualcosa di inaspettato</b><span>Racconta cosa è successo: Claude crea una scena improvvisata che poi riporta alla trama.</span></button></div>
+   <div class="row"><button class="btn xs" data-a="scn-end-no">Annulla</button><span class="xsmall muted">L'esito aggiorna la campagna e ti porta alla scena successiva.</span></div></div>`;
+}
 function sceneFoot(key){
-  const done=!!S.scn[key],o=OUT[key];
+  const done=!!S.scn[key];
   if(done)return `<div class="scn-foot"><span class="chip ok">Scena conclusa</span>${S.out[key]?`<span class="small">Esito: <b>${esc(S.out[key])}</b></span>`:""}<button class="btn xs" data-a="scn-reopen" data-k="${key}">Riapri</button></div>`;
-  if(endAsk===key&&o){const opts=o.opts(),pick=opts.some(x=>x.pick);
-    return `<div class="outq"><span class="lab">Com'è finita la scena?</span><b>${o.q()}</b>
-     ${pick?`<label class="inl small">PG che accetta il patto <select id="out-pc" aria-label="PG che accetta il patto">${pcOptions("","— scegli —")}</select></label>`:""}
-     <div class="outs">${opts.map(x=>`<button class="outopt ${x.sug?"sug":""}" data-a="scn-out" data-k="${key}" data-o="${x.k}"><b>${esc(x.l)}</b>${x.d?`<span>${esc(x.d)}</span>`:""}${x.sug?`<i>suggerito dal tracker</i>`:""}</button>`).join("")}</div>
-     <div class="row"><button class="btn xs" data-a="scn-end-no">Annulla</button><span class="xsmall muted">L'esito aggiorna i flag della campagna e le scene successive.</span></div></div>`}
+  if(endAsk===key)return outqHTML(key,key);
   return `<div class="scn-foot"><button class="btn pri" data-a="scn-end-ask" data-k="${key}">Concludi scena</button><span class="xsmall muted">Ti chiederò com'è finita e adatterò le scene successive.</span></div>`;
+}
+function goToScene(key){
+  const [a,id]=key.split(":");scnOpen.set(key,true);
+  if(a!==S.act){S.act=a;S.tab="atto";const x=ACTS.find(z=>z.id===a);log(`→ Atto ${x.n}: ${x.t}`)}
+  persist();render();
+  setTimeout(()=>document.getElementById(`scn-${a.replace(".","_")}-${id}`)?.scrollIntoView({behavior:"smooth",block:"start"}),40);
 }
 function homeEditor(){return `<div class="stack">${S.home.map((h,i)=>`<div class="row"><input type="text" id="hn${i}" data-f="home-n" data-i="${i}" value="${esc(h.n)}" placeholder="Nome PNG" style="flex:0 1 180px" aria-label="Nome PNG"><input type="text" id="ht${i}" data-f="home-note" data-i="${i}" value="${esc(h.note)}" placeholder="Legame, alleato o rivale" style="flex:1 1 200px" aria-label="Legame"><button class="btn xs" data-a="home-del" data-i="${i}" aria-label="Rimuovi">×</button></div>`).join("")}<div><button class="btn xs" data-a="home-add">+ PNG</button></div></div>`}
 
@@ -1307,7 +1325,7 @@ function devCard(dv,num){
    ${editing?composerForm("re:"+dv.id,dv.user||""):(G.err["re:"+dv.id]?`<div class="warn small">${esc(G.err["re:"+dv.id])}</div>`:"")}
    <div class="stack" style="gap:10px" id="devb-${dv.id}">${devBody(dv)}</div>
    ${!streaming&&dv.raw&&(here.length||parseDev(dv.raw).avv.length||parseDev(dv.raw).png.length)?encounterCard(dv.act+":dev:"+dv.id,devEnc(dv)):""}
-   ${streaming?"":`<div class="scn-foot">${dv.done?`<span class="chip ok">Scena conclusa</span><button class="btn xs" data-a="dev-reopen" data-id="${dv.id}">Riapri</button>`:`<button class="btn pri" data-a="dev-done" data-id="${dv.id}">Concludi scena</button>`}</div>`}
+   ${streaming||!dv.raw?"":dv.done?`<div class="scn-foot"><span class="chip ok">Scena conclusa</span>${dv.outL?`<span class="small">Esito: <b>${esc(dv.outL)}</b></span>`:""}<button class="btn xs" data-a="dev-reopen" data-id="${dv.id}">Riapri</button></div>`:endAsk==="dev:"+dv.id?outqHTML(dv.where,"dev:"+dv.id):`<div class="scn-foot"><button class="btn pri" data-a="dev-end-ask" data-id="${dv.id}">Concludi scena</button><span class="xsmall muted">Potrai tornare alla trama o improvvisare ancora.</span></div>`}
   </div></details>`;
 }
 function composerForm(w,prefill){
@@ -1317,14 +1335,6 @@ function composerForm(w,prefill){
    <div class="row"><button class="btn pri" data-a="gen-go" data-w="${w}">${w.startsWith("re:")?"Rigenera la scena":"Crea la scena improvvisata"}</button><button class="btn xs" data-a="gen-close">Annulla</button></div>
    <div class="xsmall muted">Claude legge la scena appena giocata, le scene improvvisate precedenti, la prossima scena prevista e lo stato della partita.</div>
    ${G.err[w]?`<div class="warn small">${esc(G.err[w])}</div>`:""}</div>`;
-}
-function sceneEnd(act,s,key,n,cls){
-  const nx=nextScene(act,s.id);
-  const asking=composer&&composer.where===key;
-  return `<div class="scn-end ${cls}" id="end-${key.replace(/[:.]/g,"_")}"><div class="row"><b>Fine della scena ${n}.</b><span class="small">Come prosegue la storia?</span></div>
-   <div class="row">${nx?`<button class="btn ok" data-a="scn-next" data-k="${nx.act}:${nx.s.id}">Come previsto → Scena ${nx.n}: ${nx.s.t}${nx.actN?` (Atto ${nx.actN})`:""}</button>`:`<span class="small muted">È l'ultima scena dell'avventura.</span>`}
-   ${asking?"":`<button class="gen-btn" data-a="gen-open" data-w="${key}" ${G.busy?"disabled":""}>I PG hanno fatto qualcosa di inaspettato? Improvvisa una scena</button>`}</div>
-   ${asking?composerForm(key,""):(G.err[key]?`<div class="warn small">${esc(G.err[key])}</div>`:"")}</div>`;
 }
 
 /* ================= viste ================= */
@@ -1401,14 +1411,13 @@ function renderAct(){
     if(why)return `<div class="scn skipped"><span class="scn-n">Scena ${n}</span><span class="scn-k">${s.f.k}</span><span class="scn-t">${s.t}</span><span class="chip">saltata</span><span class="small muted">${why}</span></div>`;
     const open=scnOpen.has(key)?scnOpen.get(key):!done;
     const devs=S.devs.filter(x=>x.where===key);
-    const chainDone=done&&(!devs.length||devs[devs.length-1].done);
     return `<details class="scn ${done?"done":""} ${cur===s?"cur":""}" data-scn="${key}" id="scn-${S.act.replace(".","_")}-${s.id}" ${open?"open":""}><summary><span class="scn-n">Scena ${n}</span><span class="scn-k">${s.f.k}</span><span class="scn-t">${s.t}</span>${done?`<span class="chip ok">conclusa</span>`:cur===s?`<span class="chip hope">in corso</span>`:""}</summary>
     <div class="scn-b">${frameHTML(s.f)}${s.html()}
     ${ENC[key]&&!(ENC[key].hide&&ENC[key].hide())?encounterCard(key,ENC[key]):""}
     ${sceneFoot(key)}
     </div></details>
     ${devs.map((dv,i)=>devCard(dv,`${n}.${i+1}`)).join("")}
-    ${chainDone?sceneEnd(S.act,s,key,devs.length?`${n}.${devs.length}`:n,devs.length?"imp-end":""):""}`;
+`;
   }).join("");
 }
 function renderCombat(){
@@ -1588,12 +1597,18 @@ const A={
  // generatore
  "scn-done":o=>upd(()=>{S.scn[o.k]=true;scnOpen.delete(o.k);const [a,id]=o.k.split(":");log(`Scena ${sceneNum(a,id)} conclusa`);setTimeout(()=>document.getElementById("end-"+o.k.replace(/[:.]/g,"_"))?.scrollIntoView({behavior:"smooth",block:"center"}),0)}),
  "scn-reopen":o=>upd(()=>{delete S.scn[o.k];scnOpen.set(o.k,true);toast("Scena riaperta: gli effetti dell'esito precedente restano applicati")}),
- "scn-end-ask":o=>{if(OUT[o.k]){endAsk=o.k;render()}else A["scn-done"](o)},
- "scn-end-no":()=>{endAsk=null;render()},
- "scn-out":o=>{const opt=OUT[o.k].opts().find(x=>x.k===o.o);if(!opt)return;let pc="";
+ "scn-end-ask":o=>{endAsk=o.k;composer=null;render()},
+ "scn-end-no":()=>{endAsk=null;composer=null;render()},
+ "scn-out":o=>{const opt=(OUT[o.k]||DEFAULT_OUT).opts().find(x=>x.k===o.o);if(!opt)return;let pc="";
   if(opt.pick){pc=document.getElementById("out-pc")?.value||"";if(!pc){toast("Scegli il PG che accetta il patto");return}}
-  upd(()=>{opt.apply(pc);S.out[o.k]=opt.l+(pc?` (${pcName(pc)})`:"");S.scn[o.k]=true;endAsk=null;scnOpen.delete(o.k);const [a,id]=o.k.split(":");log(`Scena ${sceneNum(a,id)} conclusa: ${S.out[o.k]}`,"ok")});
-  setTimeout(()=>document.getElementById("end-"+o.k.replace(/[:.]/g,"_"))?.scrollIntoView({behavior:"smooth",block:"center"}),30)},
+  opt.apply(pc);const label=opt.l+(pc?` (${pcName(pc)})`:"");
+  S.out[o.k]=label;S.scn[o.k]=true;endAsk=null;composer=null;scnOpen.delete(o.k);
+  const [a,id]=o.k.split(":");
+  if(o.c&&o.c.startsWith("dev:")){const dv=S.devs.find(x=>x.id===o.c.slice(4));if(dv){dv.done=true;dv.outL="Si torna alla trama: "+label;scnOpen.delete(o.c)}}
+  log(`Scena ${sceneNum(a,id)} conclusa: ${label}`,"ok");
+  const nx=nextScene(a,id);if(nx)goToScene(nx.act+":"+nx.s.id);else{persist();render();toast("Fine dell'avventura")}},
+ "out-imp":o=>{composer={where:o.k,from:o.c};render();setTimeout(()=>document.getElementById("gen-txt")?.focus(),0)},
+ "dev-end-ask":o=>{endAsk="dev:"+o.id;render()},
  "scn-fold":o=>{scnOpen.set(o.k,false);render()},
  "scn-next":o=>{const [a,id]=o.k.split(":");scnOpen.set(o.k,true);if(a!==S.act){A.goact({k:a})}else{render()}setTimeout(()=>document.getElementById(`scn-${a.replace(".","_")}-${id}`)?.scrollIntoView({behavior:"smooth",block:"start"}),30)},
  "dev-done":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);dv.done=true;scnOpen.delete("dev:"+dv.id);log(`Scena improvvisata conclusa: ${parseDev(dv.raw).titolo||""}`);setTimeout(()=>document.getElementById("end-"+dv.where.replace(/[:.]/g,"_"))?.scrollIntoView({behavior:"smooth",block:"center"}),0)}),
@@ -1602,7 +1617,12 @@ const A={
  "gen-open":o=>{composer={where:o.w};render();setTimeout(()=>document.getElementById("gen-txt")?.focus(),0)},
  "gen-close":()=>{composer=null;render()},
  "g-kind":o=>{const t=document.getElementById("gen-txt")?.value;G.kind=o.k;render();const e=document.getElementById("gen-txt");if(e&&t!=null)e.value=t},
- "gen-go":o=>{const t=(document.getElementById("gen-txt")?.value||"").trim();if(o.w.startsWith("re:")){const dv=S.devs.find(x=>x.id===o.w.slice(3));if(dv)generate(dv.where,t,G.kind,dv.id)}else generate(o.w,t,G.kind)},
+ "gen-go":o=>{const t=(document.getElementById("gen-txt")?.value||"").trim();
+  if(!o.w.startsWith("re:")&&composer&&composer.from){const from=composer.from;
+   if(from.startsWith("dev:")){const dv=S.devs.find(x=>x.id===from.slice(4));if(dv){dv.done=true;dv.outL="Altro imprevisto";scnOpen.delete(from)}}
+   else if(!S.scn[o.w]){S.scn[o.w]=true;S.out[o.w]="Deviazione improvvisata";scnOpen.delete(o.w)}
+   endAsk=null}
+  if(o.w.startsWith("re:")){const dv=S.devs.find(x=>x.id===o.w.slice(3));if(dv)generate(dv.where,t,G.kind,dv.id)}else generate(o.w,t,G.kind)},
  "gen-stop":()=>G.ctrl?.abort(),
  "dev-regen":o=>{const dv=S.devs.find(x=>x.id===o.id);if(dv&&!G.busy)generate(dv.where,dv.user,dv.kind,dv.id)},
  "dev-del":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);S.devs=S.devs.filter(x=>x!==dv);if(dv)S.foes=S.foes.filter(f=>f.where!==dv.act+":dev:"+dv.id)}),
