@@ -288,6 +288,12 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .fearbox{border-color:var(--fear)} .fearbox b{color:var(--fear)}
 .enc-env{border:1px dashed var(--line);border-radius:8px;padding:8px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
 .enc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;align-items:start}
+.enc-split{display:grid;grid-template-columns:fit-content(620px) minmax(210px,250px);justify-content:start;gap:10px;align-items:start}
+.enc-split .env-compact{grid-template-columns:repeat(2,minmax(0,290px))}
+@media (max-width:980px){.enc-split .env-compact{grid-template-columns:minmax(0,1fr)}}
+.enc-split .enc-grid{grid-template-columns:minmax(0,1fr)}
+.enc-split .enc-plus{min-height:44px;font-size:1.6rem}
+@media (max-width:760px){.enc-split{grid-template-columns:minmax(0,1fr)}}
 .mc{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:9px 10px;display:flex;flex-direction:column;gap:5px;cursor:pointer}
 .mc:hover{border-color:var(--ink)}
 .mc.sel{border:2px solid var(--kc);padding:8px 9px;background:var(--paper)}
@@ -332,12 +338,6 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 .ec-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .ec-n{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1;min-width:1.4em;text-align:center}
 .ec-full{grid-column:1/-1}
-.enc-grid{container-type:inline-size}
-.mc.side{cursor:default;background:var(--paper);gap:6px}
-.mc.side .row{gap:5px}
-.mc.side input[type=number]{width:4em}
-.mc.side select{max-width:8em}
-@container (min-width:460px){.mc.side{grid-column:span 2}}
 .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
 .choice{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;background:var(--paper)}
 .choice.on{border-color:var(--ok);box-shadow:inset 3px 0 0 var(--ok)} .choice.off{opacity:.5}
@@ -1100,8 +1100,9 @@ function encounterCard(key,def,forceOpen){
      <button class="btn" data-a="new-round" data-w="${key}">Nuovo giro GM</button>
      ${encResetAsk===key?`<button class="btn bad" data-a="enc-reset" data-k="${key}">Conferma reimposta</button><button class="btn xs" data-a="enc-reset-no">No</button>`:`<button class="btn" data-a="enc-reset-ask" data-k="${key}">Reimposta</button>`}
      ${forceOpen?"":`<button class="btn" data-a="enc-toggle" data-k="${key}">Chiudi</button>`}</div></div>
-   ${def.env?`<div class="enc-env">${def.env()}</div>`:""}
-   <div class="enc-grid">${parts.map(miniCard).join("")}${def.side?def.side():""}${pick}</div>
+   ${def.env&&parts.length&&parts.length<=2 // pochi partecipanti: le loro card accanto all'ambiente invece che in una riga quasi vuota
+    ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div></div>`
+    :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div>`}
    ${sel?foeSheet(sel):""}
   </div>`;
 }
@@ -1283,11 +1284,15 @@ const ENC={
    <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
  `},reset:()=>{S.river.t=4;S.undertow=null;S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}},
  "3:arcanista":{hide:()=>luna(),auto:[["fidget",1],["lausa",1],["octavio",1]],t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
- "3:anziano":{auto:[["elder",1]],t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",side:()=>`<div class="mc side">
- <div class="ec-h"><span class="lab">Convincere · cede a 4 Stress</span>${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}${luna()?`<span class="chip hope">Luna: vantaggio</span>`:""}</div>
- <div class="row small">${rb("Presenza 15",{t:"dual",trait:4,diff:15,adv:luna()?1:"",label:"Convincere l'Anziano"})}<button class="btn xs ok" data-a="elder" data-k="s" title="L'Anziano segna 1 Stress">Riuscito</button><select id="elderpc" data-f="elderpc" aria-label="PG che ha fallito">${pcOptions(elderPick,"PG…")}</select><button class="btn xs bad" data-a="elder" data-k="f" title="Il PG scelto segna 1 Stress">Fallito</button></div>
- <div class="ec-h"><span class="lab" title="Gregari · Diff 9 · Pugnali Mischia 2 fis · ogni 3 danni un gregario in più">Paesani</span><b class="ec-n">${S.villagers}</b><button class="btn xs" data-a="vill" data-k="-1" aria-label="Un paesano in meno">−</button><button class="btn xs" data-a="vill" data-k="1" aria-label="Un paesano in più">+</button><input type="number" id="villdmg" value="3" min="1" aria-label="Danni ai paesani"><button class="btn xs" data-a="vill-dmg">Danni</button><button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo · 1 Paura</button></div>
- ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small"><b>Patto:</b> con più di 10 paesani, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Riscosso</button></div>`:""}
+ "3:anziano":{auto:[["elder",1]],t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",env:()=>`<div class="env-compact">
+ <div class="ec"><div class="ec-h"><span class="lab">Convincere l'Anziano · cede a 4 Stress (${S.elderSt||0}/4)</span>${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}${luna()?`<span class="chip hope">Luna garantisce: vantaggio</span>`:""}</div>
+  <div class="row small">${rb("Presenza · Diff 15",{t:"dual",trait:4,diff:15,adv:luna()?1:"",label:"Convincere l'Anziano"})}<button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button></div>
+  <div class="row small"><select id="elderpc" data-f="elderpc" aria-label="PG che ha fallito">${pcOptions(elderPick,"PG che fallisce")}</select><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: PG +1 Stress</button></div></div>
+ <div class="ec"><div class="ec-h"><span class="lab">Paesani preoccupati</span><span class="xsmall muted">Gregari · Diff 9 · Pugnali Mischia 2 fis · ogni 3 danni un gregario in più</span></div>
+  <div class="row"><b class="ec-n">${S.villagers}</b><button class="btn xs" data-a="vill" data-k="-1" aria-label="Un paesano in meno">−1</button><button class="btn xs" data-a="vill" data-k="1" aria-label="Un paesano in più">+1</button>
+   <input type="number" id="villdmg" value="3" min="1" aria-label="Danni"><button class="btn xs" data-a="vill-dmg">Danni</button>
+   <button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo (1 Paura)</button></div></div>
+ ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small ec-full"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
  </div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
  "4:villa":{auto:[["arcanist",1]],t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
  "4:rituale":{auto:[["skeleton",5],["hero",2]],t:"Il Rituale del Rinnovo",k:"Combattimento",d:"Proteggete l'Arcanista finché il conto del Rituale arriva a zero. Ogni nemico sconfitto lo abbassa di 1.",env:()=>`
