@@ -315,6 +315,11 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .csel{font-size:.74rem;padding:0 4px;height:20px;border-radius:999px;border:1px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer;max-width:9em}
 .shield.boosted .sv{background:var(--hope)} .shield.boosted .sl{background:var(--hope)}
 .mc-h b{flex:1;min-width:0;font-weight:800;line-height:1.15}
+.mc.pcm{cursor:default;border-color:var(--hope);background:var(--paper)}
+.mc.pcm .mc-r .lab{width:4.8em}
+.ava.pc{background:var(--hope);color:#fff}
+.lnk{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.lnk:hover{text-decoration:underline}
 .mc-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .mc-r .lab{width:3.6em;font-size:.6rem}
 .ava{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--plate);color:var(--plate-fg);font-family:var(--f-display);font-size:1.1rem}
@@ -1031,6 +1036,17 @@ const initial=n=>esc(String(n||"?").trim().charAt(0).toUpperCase());
 const condMark=list=>{const v=list.includes("Vulnerabile"),h=list.includes("Nascosto");return v&&!h?`<span class="cmark up" title="I tiri contro hanno vantaggio">▲ vant.</span>`:h&&!v?`<span class="cmark down" title="I tiri contro hanno svantaggio">▼ svant.</span>`:""};
 const condChips=(list,a,id)=>list.map(c=>`<button class="chip bad cchip" data-a="${a}" data-id="${id}" data-k="${esc(c)}" title="${esc(COND_INFO[c]?.fx||"")} · tocca per rimuovere">${esc(c)} ×</button>`).join("");
 const condSelect=(list,all,f,id)=>{const opts=all.filter(c=>!list.includes(c)&&!(list.includes("Inarrestabile")&&(c==="Vulnerabile"||c==="Trattenuto")));return opts.length?`<select class="csel" data-f="${f}" data-id="${id}" aria-label="Aggiungi condizione"><option value="">+ cond.</option>${opts.map(c=>`<option>${esc(c)}</option>`).join("")}</select>`:""};
+// anteprima di un PG negli incontri ambientali: PF, Stress, Speranza e condizioni modificabili sul posto
+function pcMini(r){
+  const p=P(r),down=r.hp>=p.hpMax;
+  return `<div class="mc pcm ${down?"dead":""}">
+   <div class="mc-h"><span class="ava pc">${initial(p.name)}</span><b><button class="lnk" data-a="pc-show" data-id="${r.id}" title="Apri la scheda nel pannello Gruppo">${esc(p.name)}</button></b><span class="mc-d">${shield(p.eva,"EV","xs"+(p.eva!==p.evaBase?" boosted":""))}${condMark(r.cond)}</span></div>
+   <div class="mc-r"><span class="lab">PF</span>${pips(p.hpMax,r.hp,"hp","pc-pip",`data-id="${r.id}" data-k="hp"`)}</div>
+   <div class="mc-r"><span class="lab">Stress</span>${pips(p.stMax,r.st,"st","pc-pip",`data-id="${r.id}" data-k="st"`)}</div>
+   <div class="mc-r"><span class="lab" style="color:var(--hope)">Speranza</span>${pips(6,r.hope,"hope","pc-pip",`data-id="${r.id}" data-k="hope"`)}</div>
+   <div class="mc-r">${down?`<span class="chip ko">KO</span>`:""}${condChips(r.cond,"pc-cond",r.id)}${condSelect(r.cond,pcConds(r.id),"pc-cond-add",r.id)}</div>
+  </div>`;
+}
 function miniCard(f){
   const sel=openFoe===f.id;
   return `<div class="mc ${sel?"sel":""} ${f.dead?"dead":""}" data-a="foe-open" data-id="${f.id}" tabindex="0" role="button" aria-expanded="${sel}">
@@ -1103,8 +1119,8 @@ function encounterCard(key,def,forceOpen){
      ${encResetAsk===key?`<button class="btn bad" data-a="enc-reset" data-k="${key}">Conferma reimposta</button><button class="btn xs" data-a="enc-reset-no">No</button>`:`<button class="btn" data-a="enc-reset-ask" data-k="${key}">Reimposta</button>`}
      ${forceOpen?"":`<button class="btn" data-a="enc-toggle" data-k="${key}">Chiudi</button>`}</div></div>
    ${def.env&&parts.length&&parts.length<=2 // pochi partecipanti: le loro card accanto all'ambiente invece che in una riga quasi vuota
-    ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div></div>`
-    :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div>`}
+    ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div></div>`
+    :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div>`}
    ${sel?foeSheet(sel):""}
   </div>`;
 }
@@ -1984,6 +2000,7 @@ const A={
  // dadi
  // PG
  "pc-open":o=>{openPc=openPc===o.id?null:o.id;renderParty()},
+ "pc-show":o=>{openPc=o.id;UI.party=true;saveUI();renderBar();renderParty()},
  "pc-pip":o=>upd(()=>{const r=pcRaw(o.id),k=o.k,n=+o.i+1;r[k]=r[k]===n?n-1:n;if(k==="hp"){if(r.hp<P(r).hpMax&&deathFor===r.id)deathFor=null;checkDown(r.id)}}),
  "pc-thr":o=>upd(()=>pcMarkHp(o.id,+o.k,`danni ${["","minori","gravi","severi"][+o.k]}`)),
  "pc-armor":o=>upd(()=>{const r=pcRaw(o.id),p=P(r);if(r.ar>=p.arMax){toast("Nessuno slot Armatura libero");return}if(r.hp<1){toast("Nessun PF da togliere");return}r.ar++;r.hp--;if(deathFor===r.id)deathFor=null;log(`${p.name} segna 1 slot Armatura: −1 PF`)}),
