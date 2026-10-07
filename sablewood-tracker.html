@@ -1273,7 +1273,15 @@ function devPrompt(where,userText,kind,excludeId){
   const sec=SECTIONS[act]().find(s=>s.id===secId),nx=nextScene(act,secId),a=ACTS.find(x=>x.id===act);
   const chain=S.devs.filter(x=>x.where===where&&x.raw&&x.id!==excludeId).map((x,i)=>{const p=parseDev(x.raw);return `${i+1}) «${p.titolo||"?"}» — al tavolo: ${x.user||"—"}; posta: ${p.posta||"—"}; uscita: ${p.uscita||"—"}`.slice(0,300)}).join("\n");
   const party=S.pcs.map(r=>{const q=P(r);return `${q.name} (${q.cls}${q.sage?", Saggio di Corte":""}; PF ${q.hpMax-r.hp}/${q.hpMax}, Stress ${r.st}/${q.stMax}, Speranza ${r.hope}${r.cond.length?", "+r.cond.join("/"):""})`}).join("; ");
-  return `Sei il co-GM di una partita di Daggerheart (Tier 1, PG di livello 1), avventura "The Sablewood Messengers". I giocatori hanno appena concluso una scena facendo qualcosa di inaspettato. Crea la NUOVA SCENA IMPROVVISATA che ne deriva, seguendo le linee guida di Daggerheart per le scene: inquadrala (dove siamo, chi c'è, cosa è in gioco), dai ai PG qualcosa a cui reagire, fai domande ai giocatori per coinvolgerli nella narrazione, usa la Paura con parsimonia e prevedi un'uscita chiara che riporti la storia verso la prossima scena prevista, senza forzature. Scrivi in italiano, conciso ed evocativo.
+  return `Sei il co-GM di una partita di Daggerheart (Tier 1, PG di livello 1), avventura "The Sablewood Messengers". I giocatori hanno appena concluso una scena facendo qualcosa di inaspettato. Crea la NUOVA SCENA IMPROVVISATA che ne deriva, seguendo le linee guida di Daggerheart per le scene: inquadrala (dove siamo, chi c'è, cosa è in gioco), dai ai PG qualcosa a cui reagire, fai domande ai giocatori per coinvolgerli nella narrazione, usa la Paura con parsimonia e prevedi un'uscita chiara che riporti la storia verso la prossima scena prevista, senza forzature.
+
+STILE (importante): scrivi come il modulo originale, in un italiano naturale da GM al tavolo, non da romanzo fantasy generico.
+- Dettagli concreti e sensoriali presi dal Sablewood (radici alte come torri, buio a mezzogiorno, animali ibridi precisi, odori, rumori), non aggettivi vaghi.
+- Vietati i cliché: «antico», «oscuro», «misterioso», «sinistro», «arcano», «destino», «potere primordiale», «un'aura di…», «sembra quasi», «non è ciò che sembra», entità astratte con la maiuscola (la Memoria, l'Ombra, il Patto della…).
+- Il tono del modulo è fiabesco con ironia leggera: i PNG parlano come persone vere, a volte buffe o scorbutiche (Luna che dice «oh, bastoncini», l'Arcanista che chiede del «piccolo Emeris»). Usa PNG, luoghi e creature già esistenti quando possibile.
+- Frasi brevi e attive, niente elenchi di tre aggettivi, niente trattini drammatici, niente frasi a effetto finali.
+- Il testo da leggere ai giocatori descrive ciò che vedono e sentono, non cosa provano, e finisce lasciando loro la scelta.
+- Il titolo è un'etichetta semplice e concreta (es. «Il ponte di liane», «Lausa vuole un'ascia»), non un titolo epico.
 
 CAMPAGNA: il Saggio di Corte (Marlowe) e il gruppo portano in segreto la pietra del sigillo della loro città (ora indifesa) all'Arcanista Fuocobianco nel villaggio nascosto di Hush, nel Sablewood: foresta buia di alberi alti centinaia di metri e creature ibride (lemuri-rospo, alci-tigre, orso-vespe, ragni-gatto), dove i Nuovi Dèi uccisero gli Antichi. Nemici: Scarshade (squarci nella realtà, emissari degli Antichi Dèi), Strixwolf (lupo-gufo guardiano), Scheletri Antichi, Eroi Dimenticati. Hush è ostile agli estranei (Anziano Halython). Il Contatore d'Assalto alla Città è la Difficoltà del tiro finale: ogni perdita di tempo lo alza.
 SCENA APPENA CONCLUSA: Scena ${sceneNum(act,secId)} (Atto ${a.n}) «${sec.t}». Posta in gioco: ${typeof sec.f.posta==="function"?sec.f.posta():sec.f.posta}. ${strip(sec.html()).slice(0,550)}
@@ -1285,7 +1293,7 @@ COSA HANNO FATTO I PG DI INASPETTATO (racconto del GM): ${userText||"nessuna ind
 TIPO DI SCENA DESIDERATO: ${kind}
 
 Rispondi SOLO con queste righe CHIAVE: valore, in quest'ordine, senza markdown né altro testo:
-TITOLO: massimo 6 parole
+TITOLO: massimo 5 parole, concreto
 TIPO: Combattimento / Sociale / Esplorazione / Traversata / Evento
 LUOGO: dove si svolge, una frase
 POSTA: cosa è in gioco, una frase
