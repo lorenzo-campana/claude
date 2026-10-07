@@ -963,11 +963,11 @@ const F={
  emissari:{k:"Combattimento",luogo:"Il sentiero, avvolto da un silenzio innaturale.",posta:"Il segreto del pacco: se gli Scarshade leggono il Saggio di Corte, la città è in pericolo.",domande:["Come usate i due minuti di silenzio per prepararvi?","Quale ricordo d'infanzia affiora quando uno Scarshade vi tocca la fronte?"],uscita:"Gli Scarshade cadono o svaniscono; si stabilisce se hanno scoperto la verità."},
  polvere:{k:"Scelta",luogo:"Il sentiero dopo lo scontro, tra le tracce degli Scarshade.",posta:"Il tempo: ogni ora persa avvicina l'assalto alla città.",domande:["Chi vuole rischiare la scorciatoia, e chi preferisce il sentiero sicuro?"],uscita:"Scorciatoia (Atto II½) oppure sentiero lungo, con il Contatore +2 (Atto III)."},
  fiume:{k:"Traversata",luogo:"Le rive del fiume Orfanatore, una cascata orizzontale di acqua bianca.",posta:"Attraversare senza perdere nessuno, né l'equipaggiamento.",domande:[],uscita:"Traversata a 0 senza nessuno che annega."},
- arcanista:{k:"Esplorazione · Sociale",luogo:"Hush, oltre la barriera del cippo silenzioso: capanne di legno e sguardi ostili.",posta:"Trovare l'Arcanista senza farsi cacciare dal villaggio.",domande:["Chi di voi prova a rompere il ghiaccio, e come?"],uscita:"Un paesano accetta di guidarli: arriva l'Anziano Halython."},
+ arcanista:{k:"Esplorazione · Sociale",luogo:"Hush, oltre la barriera del cippo silenzioso: capanne di legno e sguardi ostili.",posta:()=>luna()?"Farsi accettare: Luna garantisce per il gruppo.":"Trovare l'Arcanista senza farsi cacciare dal villaggio.",domande:()=>luna()?[]:["Chi di voi prova a rompere il ghiaccio, e come?"],uscita:()=>luna()?"Luna li guida verso l'Arcanista: arriva l'Anziano Halython.":"Un paesano accetta di guidarli: arriva l'Anziano Halython."},
  anziano:{k:"Sociale",luogo:"La piazza di Hush, con i paesani che si radunano attorno.",posta:"Essere accolti o cacciati, e la pace del villaggio.",domande:["Cosa dite per guadagnarvi la fiducia dell'Anziano?"],uscita:"Con 4 Stress l'Anziano si arrende e indica la villa."},
  villa:{k:"Sociale",luogo:"Il viale dei volti intagliati e la villa sull'albero più alto.",posta:"Capire cosa serve al rituale, e quanto tempo resta.",domande:["Cosa chiedete a un'arcanista vecchia di millenni?"],uscita:"L'Arcanista propone la Valle Aperta (o il villaggio) per il rituale."},
- preparare:{k:"Riposo",luogo:"La Valle Aperta, l'unico punto del Sablewood da cui si vede il cielo.",posta:"Recuperare le forze, al prezzo di tempo e Paura.",domande:["Come passate l'ultima ora sotto le stelle?"],uscita:"Il rituale inizia."},
- rituale:{k:"Combattimento · Evento",luogo:"La radura del rituale, mentre la foresta urla.",posta:"Proteggere l'Arcanista finché il sigillo non è rinnovato.",domande:["Come vi disponete attorno all'Arcanista?"],uscita:"Rituale a 0: i nemici diventano polvere e i PG diventano libellule."},
+ preparare:{k:"Riposo",luogo:()=>S.flags.ritualHere?"Hush, ai piedi dell'albero della villa.":"La Valle Aperta, l'unico punto del Sablewood da cui si vede il cielo.",posta:"Recuperare le forze, al prezzo di tempo e Paura.",domande:["Come passate l'ultima ora sotto le stelle?"],uscita:"Il rituale inizia."},
+ rituale:{k:"Combattimento · Evento",luogo:()=>S.flags.ritualHere?"Hush, mentre la foresta attorno al villaggio urla.":"La Valle Aperta, mentre la foresta urla.",posta:"Proteggere l'Arcanista finché il sigillo non è rinnovato.",domande:["Come vi disponete attorno all'Arcanista?"],uscita:"Rituale a 0: i nemici diventano polvere e i PG diventano libellule."},
  finale:{k:"Evento",luogo:"Il cielo sopra la città assediata.",posta:"Le persone care ai PG e il regno stesso.",domande:["Chi cercate con lo sguardo tra le mura?"],uscita:"Il tiro finale decide l'esito."},
  risolvere:{k:"Epilogo",luogo:"Il castello e la statua di re Emeris II.",posta:"Come verrete ricordati.",domande:["Cosa fate il giorno dopo?"],uscita:"Fine dell'avventura."}
 };
@@ -1028,10 +1028,10 @@ const SECTIONS={
  ${read(`<p>Sentite una piccola sensazione, come lo scoppio di una bolla, e il brusio si fa più forte. Oltre questa barriera magica si rivela il villaggio di Hush, con decine di capanne di legno e gli sguardi di qualche dozzina di volti diffidenti. </p>`,"Quando superano il cippo")}
  ${ask("Ditemi tre cose che vedete e che vi fanno capire quanto questo posto sia ostile.")}
  ${luna()?`<div class="note">Luna è con il gruppo: passa direttamente all'<b>Anziano Halython</b>.</div>`:""}
- <h4>Trovare l'Arcanista</h4>
- <div class="row">${counterChip()}</div>
+ ${luna()?"":`<h4>Trovare l'Arcanista</h4>
+ ${S.counter.on?`<div class="row">${counterChip()}<span class="small muted">qualche minuto di ricerca costa +1, applicato alla fine della scena</span></div>`:""}
  <p>Quasi tutti rifiutano di parlare con i PG: bisbigliano, fissano, sputano a terra, se ne vanno. La posizione dell'Arcanista dovrebbe restare segreta: temono che il gruppo sia un intruso.</p>
- <p class="small">Dopo un po' trovano gli unici disposti a parlare: Fidget, Lausa e Octavio.${S.flags.ring?" <b>Il gruppo ha l'anello di Luna: indica Octavio.</b>":""}</p>`},
+ <p class="small">Dopo un po' trovano gli unici disposti a parlare: Fidget, Lausa e Octavio.${S.flags.ring?" <b>Il gruppo ha la fede di Luna: indica Octavio, suo marito.</b>":""}</p>`}`},
  {id:"anziano",t:"L'Anziano Halython",f:F.anziano,html:()=>`
  ${read(`<p>D'improvviso sentite un tonfo alle vostre spalle. Un uomo anziano, alto poco più di un metro, ha appena sbattuto a terra la punta del suo bastone, pretendendo attenzione e rispetto.</p><p>La persona con cui stavate parlando balbetta: «Anziano Halython? Non stavo cercando di…»</p><p>Il vecchio halfling la interrompe: «Non un'altra parola. Hai già detto troppo. Quanto a voi, dovete lasciare questo villaggio. Subito.»</p>`,"Quando un paesano accetta di guidarli")}
  `}
@@ -1054,9 +1054,11 @@ const SECTIONS={
  ${read(`<p>Quando siete pronti, l'Arcanista dà inizio al rituale. Il suo corpo e la pietra del sigillo iniziano a brillare, e grida ultraterrene risuonano dai boschi mentre le creature vicine percepiscono l'energia arcana.</p>`)}
  <p>Piazza <b>5 Scheletri Antichi</b> e <b>2 Eroi Dimenticati</b> ai margini della radura, a distanza Lontana. Finché ci sono meno di 8 scheletri, se un giocatore tira con Paura, spendi quella Paura per la Vendetta degli Antichi Dèi. Altrimenti spendi Paura per turni extra in cui attacchi l'Arcanista.</p>
  
+ ${S.flags.ritualDone||S.ritual.v===0?"":`<details class="alt"><summary>Il rituale termina (quando il conto arriva a zero)</summary>`}
  <h4>Il rituale termina</h4>
  ${read(`<p>Un'onda di magia riduce in polvere tutti i nemici rimasti.</p><p>L'Arcanista Fuocobianco vi ringrazia, ma vi esorta a riportare a casa la pietra il prima possibile… perché ora gli Antichi Dèi lo sanno di sicuro.</p>`,"Quando il conto arriva a zero")}
- ${read(`<p>Lancia un incantesimo che vi trasforma tutti in libellule con la testa umanoide. «L'insetto più veloce della natura, con qualche miglioria mia. Dovrebbe aiutarvi a tornare a casa. Buona fortuna, e salutatemi il piccolo Emeris!»</p>`,"Quando i giocatori accettano")}`}
+ ${read(`<p>Lancia un incantesimo che vi trasforma tutti in libellule con la testa umanoide. «L'insetto più veloce della natura, con qualche miglioria mia. Dovrebbe aiutarvi a tornare a casa. Buona fortuna, e salutatemi il piccolo Emeris!»</p>`,"Quando i giocatori accettano")}
+ ${S.flags.ritualDone||S.ritual.v===0?"":"</details>"}`}
 ],
 '5':()=>[
  {id:"finale",t:"La città sotto assedio",f:F.finale,html:()=>{const bp=pcById(S.flags.bargain);return `
@@ -1066,7 +1068,7 @@ const SECTIONS={
  ${bp&&!S.flags.bargainUsed?`<div class="warn"><b>Patto fatato:</b> ${esc(bp.name)} non ha attaccato nessuno ad Hush, quindi sabota gli alleati: il tiro finale ha <b>svantaggio</b>.</div>`:""}
  <div class="stack" style="gap:6px"><span class="lab">Chi fa il tiro finale? (Diff ${S.counter.on?S.counter.value:15}${bp&&!S.flags.bargainUsed?", con svantaggio":""})</span><div class="row">${S.pcs.map(r=>rb(pcName(r.id),{t:"dual",who:r.id,trait:"ask",diff:S.counter.on?S.counter.value:15,final:1,dis:bp&&!S.flags.bargainUsed?1:"",label:"Tiro finale"})).join("")}</div><span class="xsmall muted">Esperienze e Aiuto si aggiungono dal risultato del tiro.</span></div>`}},
  {id:"risolvere",t:"Epilogo",f:F.risolvere,html:()=>{const f=S.flags.final;return `
- ${read(`<p>Vi precipitate al castello, sfrecciando oltre squadroni di soldati che tengono a bada le bestie del Sablewood. Alla fine incastrate la pietra nell'incavo vuoto. Un'altra ondata di magia, molto più potente di quella nella Valle Aperta, investe l'intera città.</p><p>Gli Scarshade vanno in frantumi. Le orso-vespe vengono scagliate in cielo. Gli alberi animati si fermano.</p>`)}
+ ${read(`<p>Vi precipitate al castello, sfrecciando oltre squadroni di soldati che tengono a bada le bestie del Sablewood. Alla fine incastrate la pietra nell'incavo vuoto. Un'altra ondata di magia, molto più potente di quella ${S.flags.ritualHere?"del rituale a Hush":"nella Valle Aperta"}, investe l'intera città.</p><p>Gli Scarshade vanno in frantumi. Le orso-vespe vengono scagliate in cielo. Gli alberi animati si fermano.</p>`)}
  <div class="stack">${[["ff","Fallimento con Paura","I PNG da proteggere sono stati uccisi. Il re incolpa il gruppo e i PG vengono banditi dal regno."],
  ["fh","Fallimento con Speranza","I PNG da proteggere sono morti. Una cerimonia acclama i PG come eroi, con un minuto di silenzio per chi non ce l'ha fatta."],
  ["sf","Successo con Paura","I PNG da proteggere sono feriti ma vivi. Un rivale odiato dai PG viene acclamato per aver protetto re Emeris: il suo rango sale."],
@@ -1168,16 +1170,16 @@ const OUT={
   {k:"noring",l:"No",d:"Ad Hush dovranno cercare da soli.",apply:()=>{S.flags.ring=false}}]},
  "2:emissari":{q:()=>"Gli Scarshade hanno scoperto cos'è il pacco?",opts:()=>[
   {k:"yes",l:"Sì, hanno letto il Saggio di Corte",d:`Parte il Contatore d'Assalto: 15 + Scarshade sopravvissuti (${aliveShades()}).`,apply:()=>{S.flags.learned=true;if(!S.counter.on)counterStart(15+aliveShades(),"gli Scarshade sanno del pacco")}},
-  {k:"no",l:"No, non hanno scoperto nulla",d:"Nessuna urgenza: si prosegue verso Hush.",apply:()=>{S.flags.learned=false}}]},
+  {k:"no",l:"No, non hanno scoperto nulla",d:"Nessuna urgenza né bivio: si prosegue verso Hush (Atto III).",apply:()=>{S.flags.learned=false;S.flags.shortcut="skip"}}]},
  "2:polvere":{q:()=>S.flags.learned?"Quale strada prende il gruppo?":"Il gruppo riprende il cammino",opts:()=>S.flags.learned?[
   {k:"taken",l:"La scorciatoia",d:"Si passa per il fiume Orfanatore (Atto II½).",apply:()=>{S.flags.shortcut="taken"}},
-  {k:"skip",l:"Il sentiero lungo",d:"Contatore +2, si arriva a Hush (Atto III).",apply:()=>{S.flags.shortcut="skip";counterAdd(2,"nessuna scorciatoia")}}]:[
+  {k:"skip",l:luna()?"Il sentiero lungo":"Il sentiero lungo (o non trovano la scorciatoia)",d:"Contatore +2, si arriva a Hush (Atto III).",apply:()=>{S.flags.shortcut="skip";counterAdd(2,"nessuna scorciatoia")}}]:[
   {k:"go",l:"Proseguono verso Hush",d:"Atto III.",apply:()=>{S.flags.shortcut="skip"}}]},
  "2.5:fiume":{q:()=>"Com'è andata la traversata?",opts:()=>[{k:"ok",l:"Il gruppo ha attraversato",d:S.loot.length?"Bottino: "+S.loot.join(", "):"Nessun tesoro recuperato.",apply:()=>{S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}}]},
  "3:arcanista":{q:()=>"Come trovano la strada per l'Arcanista?",opts:()=>luna()?[{k:"luna",l:"Luna li guida",d:"Si passa subito all'Anziano.",apply:()=>{}}]:[
   {k:"search",l:"Cercano nel villaggio",d:S.counter.on?"Qualche minuto di ricerca: Contatore +1.":"Trovano Fidget, Lausa e Octavio.",apply:()=>{S.flags.searchTick=true;counterAdd(1,"ricerca nel villaggio")}}]},
  "3:anziano":{q:()=>"Com'è finita con l'Anziano?",opts:()=>[
-  {k:"yield",l:"L'Anziano cede",d:"Indica la villa dell'Arcanista.",apply:()=>{S.flags.elderDone=true}},
+  {k:"yield",l:"L'Anziano cede",d:"Indica la villa dell'Arcanista.",sug:!!S.flags.elderDone||(S.elderSt||0)>=4,apply:()=>{S.flags.elderDone=true}},
   ...(S.flags.bargain&&!S.flags.bargainUsed?[{k:"pact",l:`Il patto si compie: ${pcName(S.flags.bargain)} attacca un paesano`,d:"Il patto è riscosso: nel tiro finale non ci sarà sabotaggio.",apply:()=>{S.flags.bargainUsed=true;S.flags.elderDone=true}}]:[])]},
  "4:villa":{q:()=>S.counter.on?"Dove si farà il rituale?":"L'Arcanista è pronta a partire",opts:()=>S.counter.on?[
   {k:"here",l:"Nel villaggio",d:"I paesani accettano: niente viaggio, si risparmia tempo.",apply:()=>{S.flags.ritualHere=true}},
@@ -1187,9 +1189,11 @@ const OUT={
   {k:"rest",l:"Sì, riposo breve",d:`Il GM ottiene 1d4 Paura${S.counter.on?" e il Contatore sale di 2":""}.`,apply:()=>{if(!S.flags.rest){const x=rollShow("1d4","Paura del GM per il riposo");addFear(x.total,"riposo breve");counterAdd(2,"riposo breve");S.flags.rest="taken"}}},
   ...(S.counter.on?[{k:"skip",l:"No, aiutano con la preparazione",d:"Nessun recupero, nessun tempo perso.",apply:()=>{S.flags.rest="skipped"}}]:[])]},
  "4:rituale":{q:()=>"Il rituale è completo?",opts:()=>[{k:"done",l:"Sì, il sigillo è rinnovato",d:S.counter.on?"I nemici rimasti diventano polvere.":"I nemici diventano polvere e parte il Contatore a 15.",sug:S.ritual.v===0,apply:()=>{if(!S.flags.ritualDone)ritualEnd()}}]},
+ "5:risolvere":{q:()=>"La storia è conclusa",opts:()=>[{k:"end",l:"Fine dell'avventura",d:"I PG tornano a casa: annota nel Diario cosa è cambiato per loro.",apply:()=>{}}]},
  "5:finale":{q:()=>"Com'è andato il tiro finale?",opts:()=>[["crit","Successo critico"],["sh","Successo con Speranza"],["sf","Successo con Paura"],["fh","Fallimento con Speranza"],["ff","Fallimento con Paura"]].map(([k,l])=>({k,l,d:"",sug:S.flags.final===k,apply:()=>{S.flags.final=k}}))}
 };
-const SKIP={"2.5:fiume":()=>S.flags.learned===false?"gli Scarshade non sanno nulla: nessuna scorciatoia":S.flags.shortcut==="skip"?"il gruppo ha preso il sentiero lungo":null};
+const SKIP={"2:polvere":()=>S.flags.learned===false?"gli Scarshade non sanno nulla: nessuna urgenza, nessun bivio":null,
+ "2.5:fiume":()=>S.flags.learned===false?"gli Scarshade non sanno nulla: nessuna scorciatoia":S.flags.shortcut==="skip"?"il gruppo ha preso il sentiero lungo":null};
 const skipReason=key=>SKIP[key]?SKIP[key]():null;
 let endAsk=null;
 const DEFAULT_OUT={q:()=>"Com'è andata?",opts:()=>[{k:"cont",l:"Si prosegue come previsto",d:"",apply:()=>{}}]};
@@ -1253,8 +1257,8 @@ function devPrompt(where,userText,kind,excludeId){
   return `Sei il co-GM di una partita di Daggerheart (Tier 1, PG di livello 1), avventura "The Sablewood Messengers". I giocatori hanno appena concluso una scena facendo qualcosa di inaspettato. Crea la NUOVA SCENA IMPROVVISATA che ne deriva, seguendo le linee guida di Daggerheart per le scene: inquadrala (dove siamo, chi c'è, cosa è in gioco), dai ai PG qualcosa a cui reagire, fai domande ai giocatori per coinvolgerli nella narrazione, usa la Paura con parsimonia e prevedi un'uscita chiara che riporti la storia verso la prossima scena prevista, senza forzature. Scrivi in italiano, conciso ed evocativo.
 
 CAMPAGNA: il Saggio di Corte (Marlowe) e il gruppo portano in segreto la pietra del sigillo della loro città (ora indifesa) all'Arcanista Fuocobianco nel villaggio nascosto di Hush, nel Sablewood: foresta buia di alberi alti centinaia di metri e creature ibride (lemuri-rospo, alci-tigre, orso-vespe, ragni-gatto), dove i Nuovi Dèi uccisero gli Antichi. Nemici: Scarshade (squarci nella realtà, emissari degli Antichi Dèi), Strixwolf (lupo-gufo guardiano), Scheletri Antichi, Eroi Dimenticati. Hush è ostile agli estranei (Anziano Halython). Il Contatore d'Assalto alla Città è la Difficoltà del tiro finale: ogni perdita di tempo lo alza.
-SCENA APPENA CONCLUSA: Scena ${sceneNum(act,secId)} (Atto ${a.n}) «${sec.t}». Posta in gioco: ${sec.f.posta}. ${strip(sec.html()).slice(0,550)}
-${chain?`SCENE IMPROVVISATE GIÀ GIOCATE DOPO QUELLA SCENA (in ordine):\n${chain}\n`:""}PROSSIMA SCENA PREVISTA: ${nx?`Scena ${nx.n} «${nx.s.t}»${nx.actN?` (Atto ${nx.actN})`:""}: ${nx.s.f.posta}. ${strip(nx.s.html()).slice(0,260)}`:"fine dell'avventura"}
+SCENA APPENA CONCLUSA: Scena ${sceneNum(act,secId)} (Atto ${a.n}) «${sec.t}». Posta in gioco: ${typeof sec.f.posta==="function"?sec.f.posta():sec.f.posta}. ${strip(sec.html()).slice(0,550)}
+${chain?`SCENE IMPROVVISATE GIÀ GIOCATE DOPO QUELLA SCENA (in ordine):\n${chain}\n`:""}PROSSIMA SCENA PREVISTA: ${nx?`Scena ${nx.n} «${nx.s.t}»${nx.actN?` (Atto ${nx.actN})`:""}: ${typeof nx.s.f.posta==="function"?nx.s.f.posta():nx.s.f.posta}. ${strip(nx.s.html()).slice(0,260)}`:"fine dell'avventura"}
 STATO: Paura del GM ${S.fear}/12; Contatore ${S.counter.on?S.counter.value:"non attivo"}; Luna ${S.flags.luna==="saved"?"viva, col gruppo":S.flags.luna==="dead"?"morta":"sorte non decisa"}; patto fatato: ${S.flags.bargain?pcName(S.flags.bargain)+(S.flags.bargainUsed?" (riscosso)":""):"nessuno"}; Scarshade sanno del pacco: ${S.flags.learned===true?"sì":S.flags.learned===false?"no":"?"}; bottino: ${S.loot.join(", ")||"nessuno"}.
 GRUPPO: ${party}
 EVENTI RECENTI: ${S.log.slice(0,8).map(l=>l.text).join(" | ")||"—"}
@@ -1306,8 +1310,10 @@ async function generate(where,userText,kind,regenId){
   }
   G.busy=null;G.ctrl=null;persist();render();
 }
-function frameHTML(f){
-  if(!f)return "";
+function frameHTML(f0){
+  if(!f0)return "";
+  const v=x=>typeof x==="function"?x():x;
+  const f={luogo:v(f0.luogo),posta:v(f0.posta),uscita:v(f0.uscita),domande:v(f0.domande)};
   const dom=(f.domande||[]).filter(Boolean);
   return `<div class="frame">
    ${f.luogo?`<div><span class="lab">Luogo</span><p>${f.luogo}</p></div>`:""}
@@ -1424,7 +1430,7 @@ function renderParty(){
 function renderAct(){
   const a=ACTS.find(x=>x.id===S.act),secs=SECTIONS[S.act]();
   const cur=secs.find(s=>!S.scn[S.act+":"+s.id]&&!skipReason(S.act+":"+s.id));
-  return `<div class="act-h"><span class="num">ATTO ${a.n}</span><h2>${a.t}</h2><span class="small muted">${secs.filter(s=>S.scn[S.act+":"+s.id]).length}/${secs.length} scene concluse</span></div>`+secs.map(s=>{
+  return `<div class="act-h"><span class="num">ATTO ${a.n}</span><h2>${a.t}</h2><span class="small muted">${(()=>{const live=secs.filter(s=>!skipReason(S.act+":"+s.id));return live.length?`${live.filter(s=>S.scn[S.act+":"+s.id]).length}/${live.length} scene concluse`:"atto saltato"})()}</span></div>`+secs.map(s=>{
     const key=S.act+":"+s.id,n=sceneNum(S.act,s.id),done=!!S.scn[key];
     const why=skipReason(key);
     if(why)return `<div class="scn skipped"><span class="scn-n">Scena ${n}</span><span class="scn-k">${s.f.k}</span><span class="scn-t">${s.t}</span><span class="chip">saltata</span><span class="small muted">${why}</span></div>`;
