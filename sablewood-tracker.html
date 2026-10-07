@@ -315,6 +315,14 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .csel{font-size:.74rem;padding:0 4px;height:20px;border-radius:999px;border:1px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer;max-width:9em}
 .shield.boosted .sv{background:var(--hope)} .shield.boosted .sl{background:var(--hope)}
 .mc-h b{flex:1;min-width:0;font-weight:800;line-height:1.15}
+.mc.pcm{cursor:default;border-color:var(--hope);background:var(--paper)}
+.mc.pcm .mc-r .lab{width:4.8em}
+.enc-grid.with-pcs{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));grid-auto-rows:1fr;align-items:stretch}
+.mc.pcm .pips{flex-wrap:nowrap}
+.mc.pcm .mc-h b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ava.pc{background:var(--hope);color:#fff}
+.lnk{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.lnk:hover{text-decoration:underline}
 .mc-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .mc-r .lab{width:3.6em;font-size:.6rem}
 .ava{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--plate);color:var(--plate-fg);font-family:var(--f-display);font-size:1.1rem}
@@ -1031,6 +1039,17 @@ const initial=n=>esc(String(n||"?").trim().charAt(0).toUpperCase());
 const condMark=list=>{const v=list.includes("Vulnerabile"),h=list.includes("Nascosto");return v&&!h?`<span class="cmark up" title="I tiri contro hanno vantaggio">▲ vant.</span>`:h&&!v?`<span class="cmark down" title="I tiri contro hanno svantaggio">▼ svant.</span>`:""};
 const condChips=(list,a,id)=>list.map(c=>`<button class="chip bad cchip" data-a="${a}" data-id="${id}" data-k="${esc(c)}" title="${esc(COND_INFO[c]?.fx||"")} · tocca per rimuovere">${esc(c)} ×</button>`).join("");
 const condSelect=(list,all,f,id)=>{const opts=all.filter(c=>!list.includes(c)&&!(list.includes("Inarrestabile")&&(c==="Vulnerabile"||c==="Trattenuto")));return opts.length?`<select class="csel" data-f="${f}" data-id="${id}" aria-label="Aggiungi condizione"><option value="">+ cond.</option>${opts.map(c=>`<option>${esc(c)}</option>`).join("")}</select>`:""};
+// anteprima di un PG negli incontri ambientali: PF, Stress, Speranza e condizioni modificabili sul posto
+function pcMini(r){
+  const p=P(r),down=r.hp>=p.hpMax;
+  return `<div class="mc pcm ${down?"dead":""}">
+   <div class="mc-h"><span class="ava pc">${initial(p.name)}</span><b><button class="lnk" data-a="pc-show" data-id="${r.id}" title="Apri la scheda nel pannello Gruppo">${esc(p.name)}</button></b><span class="mc-d">${shield(p.eva,"EV","xs"+(p.eva!==p.evaBase?" boosted":""))}${condMark(r.cond)}</span></div>
+   <div class="mc-r"><span class="lab">PF</span>${pips(p.hpMax,r.hp,"hp","pc-pip",`data-id="${r.id}" data-k="hp"`)}</div>
+   <div class="mc-r"><span class="lab">Stress</span>${pips(p.stMax,r.st,"st","pc-pip",`data-id="${r.id}" data-k="st"`)}</div>
+   <div class="mc-r"><span class="lab" style="color:var(--hope)">Speranza</span>${pips(6,r.hope,"hope","pc-pip",`data-id="${r.id}" data-k="hope"`)}</div>
+   <div class="mc-r">${down?`<span class="chip ko">KO</span>`:""}${condChips(r.cond,"pc-cond",r.id)}${condSelect(r.cond,pcConds(r.id),"pc-cond-add",r.id)}</div>
+  </div>`;
+}
 function miniCard(f){
   const sel=openFoe===f.id;
   return `<div class="mc ${sel?"sel":""} ${f.dead?"dead":""}" data-a="foe-open" data-id="${f.id}" tabindex="0" role="button" aria-expanded="${sel}">
@@ -1087,7 +1106,8 @@ function encounterCard(key,def,forceOpen){
    <div class="enc-main"><span class="enc-kind">Incontro ${def.k.toLowerCase()}</span><b>${esc(def.t)}</b><p>${def.d}</p></div>
    <div class="enc-meta">${parts.length?`<span class="chip">${up}/${parts.length} in piedi</span>${parts.slice(0,5).map(f=>`<span class="ava sm" title="${esc(f.name)}">${initial(f.name)}</span>`).join("")}`:`<span class="xsmall muted">${def.env?"Ambiente e conti":"Nessun partecipante"}</span>`}<span class="enc-go">Apri ›</span></div></div>`;
   const sugs=encSugs(def);
-  const pick=picker===key?`<div class="mc pick"><div class="lab">Aggiungi partecipante</div>
+  const pick=def.k==="Ambientale"?"":picker===key? // negli incontri ambientali niente + : ci sono le card dei PG
+   `<div class="mc pick"><div class="lab">Aggiungi partecipante</div>
     ${sugs.length?`<div class="row">${sugs.map(([k,n,label])=>`<button class="btn xs ok" data-a="enc-add" data-k="${k}" data-n="${n}" data-w="${key}">${label||`${n>1?n+"× ":""}${esc(T[k].name)}`}</button>`).join("")}</div>`:""}
     ${def.devSug?def.devSug():""}
     <div class="row"><select id="pick-${key.replace(/[:.]/g,"_")}" aria-label="Avversario o PNG">${Object.entries(T).map(([k,t])=>`<option value="${k}">${esc(t.name)} · ${t.type}</option>`).join("")}</select>
@@ -1103,8 +1123,8 @@ function encounterCard(key,def,forceOpen){
      ${encResetAsk===key?`<button class="btn bad" data-a="enc-reset" data-k="${key}">Conferma reimposta</button><button class="btn xs" data-a="enc-reset-no">No</button>`:`<button class="btn" data-a="enc-reset-ask" data-k="${key}">Reimposta</button>`}
      ${forceOpen?"":`<button class="btn" data-a="enc-toggle" data-k="${key}">Chiudi</button>`}</div></div>
    ${def.env&&parts.length&&parts.length<=2 // pochi partecipanti: le loro card accanto all'ambiente invece che in una riga quasi vuota
-    ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div></div>`
-    :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div>`}
+    ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div></div>`
+    :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div>`}
    ${sel?foeSheet(sel):""}
   </div>`;
 }
@@ -1254,7 +1274,12 @@ const SECTIONS={
  <h4>PNG di casa da proteggere</h4><p class="small muted">Li hai annotati in «Prima di iniziare», all'inizio dell'Atto I.</p>${homeEditor()}`}}
 ]};
 const ENC={
- "1:inizio":{t:"Corsa tra le Radici",k:"Ambientale",d:"Inseguimento · Diff 12. Distanza e Tempo decidono se il gruppo arriva da Luna in tempo.",env:()=>`
+ "1:inizio":{
+  rules:()=>`<ul class="tight small">
+   <li><b>Inseguimento · Diff 12.</b> Due conti: <b>Distanza 3</b> (a 0 raggiungono Luna) e <b>Tempo 3</b> (a 0 Luna muore prima che arrivino).</li>
+   <li><b>Tiri d'azione:</b> ogni PG descrive come supera un ostacolo. Successo: Distanza −1 (−2 con un critico). Fallimento: Tempo −1.</li>
+   <li><b>Ostacoli:</b> descrivine 1 o 2 alla volta per dare spunti ai giocatori. Serve a insegnare i tiri d'azione.</li>
+   <li><b>Complicazioni (1 Paura):</b> il prossimo tiro d'azione dei PG ha svantaggio.</li></ul>`,t:"Corsa tra le Radici",k:"Ambientale",d:"Inseguimento · Diff 12. Distanza e Tempo decidono se il gruppo arriva da Luna in tempo.",env:()=>`
   <div class="grid2"><div><div class="lab">Distanza — a zero raggiungete Luna</div>${pips(3,S.chase.d,"cd","chase-d")} <span class="mono">${S.chase.d}</span></div>
    <div><div class="lab">Tempo — a zero Luna muore</div>${pips(3,S.chase.t,"cd","chase-t")} <span class="mono">${S.chase.t}</span></div></div>
   <div class="row">${rb("Tiro d'azione · Diff 12",{t:"dual",trait:"ask",diff:12,label:"Corsa tra le Radici"})}
@@ -1266,9 +1291,28 @@ const ENC={
    <button class="btn fear" data-a="complication" ${S.fear<1?"disabled":""}>Spendi 1 Paura: complicazione casuale</button>
    <div class="muted">Il prossimo tiro d'azione dei PG ha svantaggio.</div></div></div>
  `,reset:()=>{S.chase={d:3,t:3}}},
- "1:prezzo":{hide:()=>S.flags.luna==="dead"||S.flags.pact==="yes",auto:[["strixwolf",1],["luna",1]],t:"Lo Strixwolf",k:"Combattimento",d:"Lo spirito guardiano pretende la vita di Luna. Si può combattere o trattare un patto fatato.",sug:[["strixwolf",1],["luna",1]]},
- "2:emissari":{auto:()=>[["scarshade",nShades()]],t:"Emissari degli Antichi Dèi",k:"Combattimento",d:"Gli Scarshade vogliono sapere cosa contiene il pacco. Finché i PG non attaccano, lo Scavo nella Memoria non fa danni.",sug:()=>[["scarshade",nShades(),`${nShades()}× Scarshade`],["scarshade",1]]},
- "2.5:fiume":{t:"Il fiume Orfanatore",k:"Ambientale",d:"Traversata · Diff 13. Annegamento, Risacca e tesori sommersi.",env:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
+ "1:prezzo":{
+  rules:()=>`<ul class="tight small">
+   <li><b>Si può trattare:</b> lo Strixwolf chiede «una vita per una vita», ma accetta un momento del tempo di un PG. Chi accetta il patto, ad Hush attaccherà un PNG (se è drammatico) oppure darà svantaggio al tiro finale.</li>
+   <li><b>Se si combatte:</b> su un fallimento dei PG usa la mossa GM e fai attaccare lo Strixwolf. Su un tiro con Paura, spendi quella Paura per una mossa in più e fai attaccare Luna.</li>
+   <li><b>Caduta Letale:</b> dopo il Morso Primordiale vola a distanza Vicina e lascia cadere il bersaglio. Se nessuno lo impedisce nella prossima azione dei PG, all'atterraggio subisce 1d10+4 danni fisici.</li>
+   <li><b>Fulmine a Catena (1 Stress):</b> attacco a distanza Vicina, 1d10+4 magici, poi si ripete contro un bersaglio non ancora colpito.</li>
+   <li><b>Fine:</b> se muore un PG o Luna, annuncia «il prezzo è pagato» e cerca di andarsene.</li></ul>`,hide:()=>S.flags.luna==="dead"||S.flags.pact==="yes",auto:[["strixwolf",1],["luna",1]],t:"Lo Strixwolf",k:"Combattimento",d:"Lo spirito guardiano pretende la vita di Luna. Si può combattere o trattare un patto fatato.",sug:[["strixwolf",1],["luna",1]]},
+ "2:emissari":{
+  rules:()=>`<ul class="tight small">
+   <li><b>Quanti:</b> 2 Scarshade, 3 se il gruppo ha 4 o più PG.</li>
+   <li><b>Preparazione:</b> i PG hanno un paio di minuti. Possono nascondersi, ma gli shade cercano con Percepire la Magia +4.</li>
+   <li><b>Curiosità:</b> finché i PG non attaccano uno shade, lo Scavo nella Memoria non fa danni.</li>
+   <li><b>Scavo nella Memoria:</b> tiro d'attacco contro un bersaglio Vicino. Se riesce, il giocatore descrive un momento terrificante dell'infanzia del PG; 3d4+3 magici e Vulnerabile temporaneo.</li>
+   <li><b>Cosa scoprono:</b> riuscendo su un PG qualsiasi capiscono che il Saggio di Corte sa cos'è il pacco e puntano a lui. Riuscendo sul Saggio scoprono che la città è indifesa e se ne vanno: parte il Contatore a 15 + gli shade sopravvissuti.</li></ul>`,auto:()=>[["scarshade",nShades()]],t:"Emissari degli Antichi Dèi",k:"Combattimento",d:"Gli Scarshade vogliono sapere cosa contiene il pacco. Finché i PG non attaccano, lo Scavo nella Memoria non fa danni.",sug:()=>[["scarshade",nShades(),`${nShades()}× Scarshade`],["scarshade",1]]},
+ "2.5:fiume":{
+  rules:()=>`<ul class="tight small">
+   <li><b>Traversata · Diff 13.</b> Conto <b>Traversata 4</b>: a 0 il gruppo attraversa. Non può arrivare a 0 finché qualcuno annega.</li>
+   <li><b>Tiri d'azione:</b> successo, Traversata −1. Fallimento: azione <i>Annegare</i>.</li>
+   <li><b>Annegare:</b> un PG fa un tiro reazione di Agilità; se fallisce inizia ad <i>Annegare</i>. Finché annega, ogni tiro d'azione di un PG gli fa segnare 1 Stress. Si libera con un tiro d'azione riuscito.</li>
+   <li><b>Risacca (1 Paura):</b> un PG che annega sbatte su una roccia: tira 1d4 sulla tabella qui sotto.</li>
+   <li><b>Tesori sommersi:</b> un PG che annega può fare un tiro di Forza per recuperare un oggetto dal fondo.</li>
+   <li><b>Tiri reazione:</b> non generano Speranza né Paura.</li></ul>`,t:"Il fiume Orfanatore",k:"Ambientale",d:"Traversata · Diff 13. Annegamento, Risacca e tesori sommersi.",env:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
  <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
  ${dr.length?`<div class="warn"><b>Annegano:</b> ${dr.map(p=>esc(pcName(p.id))).join(", ")}. Ogni tiro d'azione di un PG fa segnare 1 Stress a tutti quelli che annegano.
   <div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div>
@@ -1278,7 +1322,7 @@ const ENC={
   <button class="btn bad" data-a="river" data-k="f">Fallimento · azione Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div>
  <div class="grid2 small">
   <div><div class="lab">Dettagli utili (azione riuscita)</div><ul class="tight"><li>Ponte di corda spezzato</li><li>Tratto poco profondo</li><li>Un isolotto</li><li>Liane pendenti</li></ul></div>
-  <div><div class="lab">Annegare</div><p>Un PG fa un tiro reazione di <b>Agilità</b>, altrimenti inizia temporaneamente ad <i>Annegare</i>. Si libera con un tiro d'azione.</p>
+  <div><div class="lab">Annegare</div><p class="small muted">Scegli il PG: reazione di Agilità, se fallisce annega.</p>
    <div class="row"><select id="drownpc" data-f="drownpc" aria-label="PG">${pcOptions(drownPick)}</select>${rb("Reazione Agilità · 13",{t:"dual",trait:0,diff:13,react:1,label:"Reazione contro l'annegamento"})}<button class="btn xs bad" data-a="drown-set">Annega</button></div></div>
   <div><div class="lab">Risacca — spendi 1 Paura</div><ol class="tight">${UNDERTOW.map(u=>`<li>${u}</li>`).join("")}</ol>
    <button class="btn fear has-die" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>${DIE_SVG}Spendi 1 Paura: Risacca (d4)</button>
@@ -1286,7 +1330,12 @@ const ENC={
   <div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
    <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
  `},reset:()=>{S.river.t=4;S.undertow=null;S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}},
- "3:arcanista":{hide:()=>luna(),auto:[["fidget",1],["lausa",1],["octavio",1]],t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
+ "3:arcanista":{
+  rules:()=>`<ul class="tight small">
+   <li><b>Nessuno vuole parlare:</b> i paesani bisbigliano, sputano a terra e se ne vanno. La posizione dell'Arcanista è un segreto.</li>
+   <li><b>Contatore:</b> se è attivo, qualche minuto di ricerca lo alza di 1.</li>
+   <li><b>Chi parla:</b> solo Fidget, Lausa e Octavio.${S.flags.ring?" Il gruppo ha la fede di Luna: indica Octavio, suo marito.":""}</li>
+   <li><b>Fine:</b> appena un paesano accetta di guidarli, arriva l'Anziano Halython.</li></ul>`,hide:()=>luna(),auto:[["fidget",1],["lausa",1],["octavio",1]],t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
  "3:anziano":{auto:[["elder",1]],t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",
   rules:()=>`<ul class="tight small">
    <li><b>Anziano · Diffidente:</b> quando un PG fallisce un tiro d'azione contro di lui, il PG segna 1 Stress; altrimenti l'Anziano segna 1 Stress. A 4 Stress si arrende.${luna()?" Luna garantisce per il gruppo: vantaggio.":""}</li>
@@ -1304,8 +1353,18 @@ const ENC={
    <button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo (1 Paura)</button></div></div>
  ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small ec-full"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
  </div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
- "4:villa":{auto:[["arcanist",1]],t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
- "4:rituale":{auto:[["skeleton",5],["hero",2]],t:"Il Rituale del Rinnovo",k:"Combattimento",d:"Proteggete l'Arcanista finché il conto del Rituale arriva a zero. Ogni nemico sconfitto lo abbassa di 1.",env:()=>`
+ "4:villa":{
+  rules:()=>`<ul class="tight small">
+   <li><b>Incontro di sola conversazione:</b> l'Arcanista è cordiale, non servono tiri per farla parlare.</li>
+   <li><b>Cosa sa:</b> ha creato il cippo e lo rinnova ogni paio di secoli in cambio della promessa del regno di evitare il Sablewood.</li>
+   ${S.counter.on?`<li><b>Contatore attivo:</b> i PG possono convincere i paesani a fare il rituale nel villaggio; se vanno alla Valle Aperta, Contatore +1.</li>`:""}</ul>`,auto:[["arcanist",1]],t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
+ "4:rituale":{
+  rules:()=>`<ul class="tight small">
+   <li><b>Conto Rituale 8:</b> a 0 il rituale riesce. Ogni nemico sconfitto: −1. Ogni volta che l'Arcanista viene colpita (Diff 11): +1. Non ha PF: i danni sono solo narrativi.</li>
+   <li><b>Nemici:</b> 5 Scheletri Antichi e 2 Eroi Dimenticati ai margini della radura, a distanza Lontana.</li>
+   <li><b>Vendetta degli Antichi Dèi (1 Paura):</b> finché ci sono meno di 8 scheletri, quando un PG tira con Paura spendi quella Paura per evocare 2 scheletri a distanza Molto Vicina da un PG. Altrimenti spendi Paura per turni extra contro l'Arcanista.</li>
+   <li><b>Eroe Dimenticato:</b> Tormenta (1 Stress) lancia gli scheletri Vicini in un attacco condiviso da 4 danni ciascuno; Possessione (1 Stress) prende un PG Vicino se fallisce una reazione di Presenza.</li>
+   <li><b>Fine:</b> a 0 i nemici diventano polvere. Se il Contatore non è attivo, parte da 15.</li></ul>`,auto:[["skeleton",5],["hero",2]],t:"Il Rituale del Rinnovo",k:"Combattimento",d:"Proteggete l'Arcanista finché il conto del Rituale arriva a zero. Ogni nemico sconfitto lo abbassa di 1.",env:()=>`
   <div><div class="lab">Rituale — a zero il rituale riesce</div>${pips(8,S.ritual.v,"cd","ritual-pip")} <span class="mono">${S.ritual.v}</span></div>
   <p class="small">Ogni nemico sconfitto: −1 (automatico). Arcanista colpita (Diff 11): +1.</p>
   <div class="row"><button class="btn bad" data-a="ritual" data-k="hit">Arcanista colpita: +1</button><button class="btn ok" data-a="ritual" data-k="kill">Nemico sconfitto: −1</button>
@@ -1945,6 +2004,7 @@ const A={
  // dadi
  // PG
  "pc-open":o=>{openPc=openPc===o.id?null:o.id;renderParty()},
+ "pc-show":o=>{openPc=o.id;UI.party=true;saveUI();renderBar();renderParty()},
  "pc-pip":o=>upd(()=>{const r=pcRaw(o.id),k=o.k,n=+o.i+1;r[k]=r[k]===n?n-1:n;if(k==="hp"){if(r.hp<P(r).hpMax&&deathFor===r.id)deathFor=null;checkDown(r.id)}}),
  "pc-thr":o=>upd(()=>pcMarkHp(o.id,+o.k,`danni ${["","minori","gravi","severi"][+o.k]}`)),
  "pc-armor":o=>upd(()=>{const r=pcRaw(o.id),p=P(r);if(r.ar>=p.arMax){toast("Nessuno slot Armatura libero");return}if(r.hp<1){toast("Nessun PF da togliere");return}r.ar++;r.hp--;if(deathFor===r.id)deathFor=null;log(`${p.name} segna 1 slot Armatura: −1 PF`)}),
