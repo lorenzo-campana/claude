@@ -231,6 +231,68 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .ktag.Azione{background:var(--ink);color:var(--paper)} .ktag.Reazione{background:var(--moss);color:var(--paper)}
 .fd-f{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--line);background:var(--bg)}
 
+.enc{border:1px solid var(--line);border-radius:10px;background:var(--paper);position:relative;overflow:hidden}
+.enc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--kc)}
+.enc.k-Combattimento{--kc:var(--blood)} .enc.k-Sociale{--kc:var(--hope)} .enc.k-Ambientale{--kc:var(--moss)}
+.enc:not(.open){display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 16px 12px 20px;cursor:pointer;box-shadow:0 1px 0 var(--line)}
+.enc:not(.open):hover{border-color:var(--kc);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.enc-ico{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-size:1.3rem;background:var(--bg);border:1px solid var(--kc);color:var(--kc)}
+.enc-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.enc-main b{font-family:var(--f-display);font-weight:400;font-size:1.35rem;line-height:1.1}
+.enc-main p{font-size:.92rem;color:var(--muted)}
+.enc-kind{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--kc)}
+.enc-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.enc-go{font-weight:800;color:var(--kc);margin-left:6px}
+@media (max-width:640px){.enc:not(.open){grid-template-columns:auto minmax(0,1fr)}.enc-meta{grid-column:1/-1;justify-content:flex-start}}
+.enc.open{border-color:var(--kc);padding:14px 16px 16px 20px;display:flex;flex-direction:column;gap:14px}
+.enc-head{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.enc-head .enc-main{flex:1 1 280px}
+.enc-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:4px 10px;background:var(--bg)}
+.box b{font-family:var(--f-display);font-size:1.5rem;font-weight:400;line-height:1}
+.box small{font-size:.8rem;color:var(--muted)}
+.fearbox{border-color:var(--fear)} .fearbox b{color:var(--fear)}
+.enc-env{border:1px dashed var(--line);border-radius:8px;padding:10px 12px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
+.enc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;align-items:start}
+.mc{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:9px 10px;display:flex;flex-direction:column;gap:5px;cursor:pointer}
+.mc:hover{border-color:var(--ink)}
+.mc.sel{border:2px solid var(--kc);padding:8px 9px;background:var(--paper)}
+.mc.dead{opacity:.5}
+.mc.pick{cursor:default;border-style:dashed;gap:8px}
+.mc-h{display:flex;gap:8px;align-items:center}
+.mc-h b{flex:1;min-width:0;font-weight:800;line-height:1.15}
+.mc-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.mc-r .lab{width:3.6em;font-size:.6rem}
+.ava{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--plate);color:var(--plate-fg);font-family:var(--f-display);font-size:1.1rem}
+.ava.sm{width:24px;height:24px;font-size:.8rem;border-radius:6px}
+.ava.lg{width:58px;height:58px;font-size:1.9rem;border-radius:12px}
+.shield.xs .sv{width:30px;height:33px;font-size:1rem;padding:2px}
+.shield.xs .sl{font-size:.5rem;margin-top:-6px;padding:0 4px}
+.enc-plus{min-height:110px;border:2px dashed var(--kc);border-radius:10px;background:none;color:var(--kc);font-size:2.2rem;font-weight:300;cursor:pointer}
+.enc-plus:hover{background:var(--bg)}
+.sheet{border:1px solid var(--kc);border-radius:10px;overflow:hidden;background:var(--paper)}
+.sh-ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--bg)}
+.sh-ctl input[type=number]{width:6em}
+.sh-name{font-family:var(--f-display);font-weight:400;font-size:1.2rem}
+.sp{flex:1}
+.sh-b{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)}
+@media (max-width:820px){.sh-b{grid-template-columns:minmax(0,1fr)}}
+.sh-l{border-right:1px solid var(--line);display:flex;flex-direction:column}
+.sh-id{display:flex;gap:12px;align-items:center;padding:14px}
+.sh-id b{font-family:var(--f-display);font-weight:400;font-size:1.5rem;display:block;line-height:1.1}
+.tbadge{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:1px 7px;border-radius:4px;background:var(--plate);color:var(--plate-fg)}
+.tbadge.t-Social,.tbadge.t-PNG{background:var(--hope)} .tbadge.t-Solo,.tbadge.t-Bruiser,.tbadge.t-Leader{background:var(--blood)} .tbadge.t-Minion,.tbadge.t-Standard{background:var(--moss)}
+.sh-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sh-stats>div{display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-right:1px solid var(--line)}
+.sh-stats>div:last-child{border-right:0}
+.sh-stats b{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1.1}
+.sh-stats small{font-size:.85rem;color:var(--muted)}
+.sh-pad{padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.sh-r{padding:10px 14px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.sh-tabs{display:flex;gap:2px;border-bottom:1px solid var(--line)}
+.sh-tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:6px 12px;font-weight:700;color:var(--muted);cursor:pointer}
+.sh-tabs button.on{color:var(--ink);border-bottom-color:var(--kc)}
+
 /* dadi flottanti */
 .dock{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(370px,calc(100% - 32px));max-height:calc(100vh - 110px);overflow:auto;z-index:45;background:var(--paper);border:1px solid var(--ink);border-radius:var(--r);box-shadow:0 14px 40px rgba(0,0,0,.3);padding:12px;display:flex;flex-direction:column;gap:8px}
 .dock[hidden]{display:none}
@@ -593,53 +655,79 @@ function foeMark(f,k,n){
   if(f.tmpl==="elder"){S.elderSt=f.st;syncElder()}
   if(f.hpMax&&f.hp>=f.hpMax)foeDefeated(f);
 }
-function foeCard(f){
-  const isOpen=openFoe===f.id;
-  return `<div class="fc ${isOpen?"open":""} ${f.dead?"dead":""} ${f.acted?"acted":""}" data-a="foe-open" data-id="${f.id}" tabindex="0" role="button" aria-expanded="${isOpen}">
-   <div class="fc-h"><div class="nm"><b>${esc(f.name)}</b><span class="xsmall muted">Tier ${f.tier} · ${esc(f.type)}${f.sub?" · "+esc(f.sub):""}</span></div>
-    ${shield(f.diff,"DIFF","diff sm")}</div>
-   ${f.hpMax?`<div class="fc-row"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>`:""}
-   ${f.stMax?`<div class="fc-row"><span class="lab">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}
-   <div class="fc-row"><button class="act-b ${f.acted?"done":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Non ha agito"}</button>
-    ${f.dead?`<span class="chip ok">sconfitto</span>`:""}${f.cond.map(c=>`<span class="chip bad">${c}</span>`).join("")}</div>
-  </div>${isOpen?foeDetail(f):""}`;
-}
-function foeDetail(f){
-  const a=f.attack;
-  return `<div class="fd" id="fd-${f.id}">
-  <div class="fd-h"><div class="t"><span class="tier">Tier ${f.tier} · ${esc(f.type)}${f.sub?" · "+esc(f.sub):""}</span><b>${esc(f.name)}</b>${f.desc?`<i>${esc(f.desc)}</i>`:""}</div>
-   ${shield(f.diff,f.sugg?"DIFF*":"DIFFICOLTÀ","diff lg")}</div>
-  <div class="fd-b">
-   <div class="fd-c"><h5>Difesa e salute</h5>
-    ${f.hpMax?thrStrip(f.thr[0],f.thr[1],{a:"foe-thr",id:f.id,minion:f.minion}):`<div class="small muted">Nessun PF tracciato: i danni sono narrativi.</div>`}
-    ${f.hpMax?`<div class="row"><span class="lab" style="width:3.4em">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}<span class="mono small">${f.hpMax-f.hp}/${f.hpMax}</span></div>`:""}
-    ${f.stMax?`<div class="row"><span class="lab" style="width:3.4em">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}<span class="mono small">${f.st}/${f.stMax}</span></div>`:""}
-    ${f.hpMax?`<div class="row small"><input type="number" id="fd-in-${f.id}" placeholder="danni" min="0" aria-label="Danni"><button class="btn xs bad" data-a="foe-hit" data-id="${f.id}">Infliggi danni</button></div>`:""}
-    <div><div class="lab">Condizioni</div><div class="cond">${FOE_COND.map(c=>`<button class="${f.cond.includes(c)?"on":""}" data-a="foe-cond" data-id="${f.id}" data-k="${c}">${c}</button>`).join("")}</div></div>
-    ${f.sugg?`<div class="xsmall muted">* Difficoltà suggerita: il modulo non la indica.</div>`:""}
-   </div>
-   <div class="fd-c"><h5>Profilo</h5>
-    <dl class="kv2">${f.mot?`<dt>Motivi</dt><dd><i>${esc(f.mot)}</i></dd>`:""}
-     ${a?`<dt>ATK</dt><dd class="mono">${sgn(f.atk||0)}</dd>`:""}
-     ${f.exp.length?`<dt>Esperienze</dt><dd>${f.exp.map(e=>`${esc(e[0])} ${sgn(e[1])}`).join(", ")}</dd>`:""}</dl>
-    ${a?`<div class="wpn"><b>${esc(a.n)}</b><span class="mono">${esc(a.d)} ${esc(a.ty)}</span><span class="muted small">${esc(a.r)}</span><span></span></div>
-     <div class="row small"><select id="tg-${f.id}" aria-label="Bersaglio">${S.pcs.map(r=>{const q=P(r);return `<option value="${r.id}">${esc(q.name)} (Ev ${q.eva})</option>`}).join("")}</select>
-      <button class="btn xs" data-a="foe-atk" data-id="${f.id}">Attacca d20${sgn(f.atk||0)}</button>
-      ${/d/.test(a.d)?`<button class="btn xs" data-a="foe-dmg" data-id="${f.id}">Tira danni</button>`:""}</div>`:""}
-    ${f.tips.length?`<div class="note small"><ul class="tight">${f.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:""}
-   </div>
-   <div class="fd-c"><h5>Caratteristiche</h5>
-    ${f.feats.length?f.feats.map((x,i)=>{const cost=x.c?x.c.split(":"):null;return `<div class="ftr"><div class="ftr-h"><b>${esc(x.n)}</b><span class="ktag ${x.k}">${x.k}</span>${cost?`<span class="chip ${cost[0]==="fear"?"fear":""}">${cost[1]} ${cost[0]==="fear"?"Paura":"Stress"}</span>`:""}
-     ${cost||x.fx?`<button class="btn xs" data-a="foe-feat" data-id="${f.id}" data-i="${i}">Usa</button>`:""}${x.roll?`<button class="btn xs" data-a="feat-roll" data-k="${x.roll}" data-n="${esc(f.name+": "+x.n)}">${x.roll}</button>`:""}</div><div>${esc(x.x)}</div></div>`}).join(""):`<div class="small muted">Nessuna.</div>`}
-   </div>
-  </div>
-  <div class="fd-f"><button class="btn xs ${f.acted?"ok":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Segna che ha agito"}</button>
-   <button class="btn xs" data-a="foe-kill" data-id="${f.id}">${f.dead?"Rimetti in gioco":"Sconfitto"}</button>
-   <button class="btn xs" data-a="foe-del" data-id="${f.id}">Togli dalla scena</button>
-   <button class="btn xs" data-a="foe-open" data-id="${f.id}">Chiudi</button></div>
+/* ---- incontri: card dell'incontro → card dei partecipanti → scheda dettagliata ---- */
+const encOpen=new Map();let picker=null,encResetAsk=null,sheetTab="cap";
+const KIND_ICON={Combattimento:"⚔",Sociale:"❝",Ambientale:"✧"};
+const initial=n=>esc(String(n||"?").trim().charAt(0).toUpperCase());
+function miniCard(f){
+  const sel=openFoe===f.id;
+  return `<div class="mc ${sel?"sel":""} ${f.dead?"dead":""}" data-a="foe-open" data-id="${f.id}" tabindex="0" role="button" aria-expanded="${sel}">
+   <div class="mc-h"><span class="ava">${initial(f.name)}</span><b>${esc(f.name)}</b>${shield(f.diff,"DIFF","diff xs")}</div>
+   ${f.hpMax?`<div class="mc-r"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>`:`<div class="mc-r xsmall muted">${esc(f.type)} · nessun PF</div>`}
+   ${f.stMax?`<div class="mc-r"><span class="lab">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}
+   <div class="mc-r"><button class="act-b ${f.acted?"done":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Non ha agito"}</button>${f.dead?`<span class="chip ok">sconfitto</span>`:""}${f.cond.map(c=>`<span class="chip bad">${c}</span>`).join("")}</div>
   </div>`;
 }
-const sceneHTML=(list,empty)=>list.length?`<div class="scene">${list.map(foeCard).join("")}</div>`:(empty?`<div class="small muted">${empty}</div>`:"");
+function foeSheet(f){
+  const a=f.attack,tabs=[["cap",`Capacità · ${f.feats.length}`],["nar","Narrazione"],["info","Info"]];
+  const featsHTML=f.feats.length?f.feats.map((x,i)=>{const cost=x.c?x.c.split(":"):null;return `<div class="ftr"><div class="ftr-h"><b>${esc(x.n)}</b><span class="sp"></span><span class="ktag ${x.k}">${x.k}</span>${cost?`<span class="chip ${cost[0]==="fear"?"fear":"bad"}">${cost[1]} ${cost[0]==="fear"?"Paura":"Stress"}</span>`:""}
+     ${cost||x.fx?`<button class="btn xs" data-a="foe-feat" data-id="${f.id}" data-i="${i}">Usa</button>`:""}${x.roll?`<button class="btn xs" data-a="feat-roll" data-k="${x.roll}" data-n="${esc(f.name+": "+x.n)}">${x.roll}</button>`:""}</div><div class="small">${esc(x.x)}</div></div>`}).join(""):`<div class="small muted">Nessuna capacità.</div>`;
+  const nar=`${f.desc?`<p><i>${esc(f.desc)}</i></p>`:""}${f.mot?`<div><span class="lab">Motivi e tattiche</span><p>${esc(f.mot)}</p></div>`:""}${f.tips.length?`<div class="note small"><ul class="tight">${f.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:""}${!f.desc&&!f.mot&&!f.tips.length?`<div class="small muted">Nessuna nota.</div>`:""}`;
+  const info=`<dl class="kv2">${a?`<dt>ATK</dt><dd class="mono">${sgn(f.atk||0)}</dd>`:""}${f.exp.length?`<dt>Esperienze</dt><dd>${f.exp.map(e=>`${esc(e[0])} ${sgn(e[1])}`).join(", ")}</dd>`:""}<dt>Tier</dt><dd>${f.tier}</dd>${f.sugg?`<dt>Difficoltà</dt><dd>suggerita: il modulo non la indica</dd>`:""}</dl>
+   ${a?`<div class="wpn"><b>${esc(a.n)}</b><span class="mono">${esc(a.d)} ${esc(a.ty)}</span><span class="muted small">${esc(a.r)}</span><span></span></div>
+    <div class="row small"><select id="tg-${f.id}" aria-label="Bersaglio">${S.pcs.map(r=>{const q=P(r);return `<option value="${r.id}">${esc(q.name)} (Ev ${q.eva})</option>`}).join("")}</select>
+     <button class="btn xs" data-a="foe-atk" data-id="${f.id}">Attacca d20${sgn(f.atk||0)}</button>${/d/.test(a.d)?`<button class="btn xs" data-a="foe-dmg" data-id="${f.id}">Tira danni</button>`:""}</div>`:`<div class="small muted">Nessun attacco.</div>`}`;
+  return `<div class="sheet" id="fd-${f.id}">
+   <div class="sh-ctl"><b class="sh-name">${esc(f.name)}</b>${f.hpMax?`<span class="xsmall muted">soglie ${f.thr[0]??"—"}/${f.thr[1]??"—"}</span>`:""}<span class="sp"></span>
+    ${f.hpMax?`<input type="number" id="fd-in-${f.id}" placeholder="Danni…" min="0" aria-label="Danni"><button class="btn hope" data-a="foe-hit" data-id="${f.id}">Applica</button>`:""}
+    <select id="cond-${f.id}" data-f="foe-cond-add" data-id="${f.id}" aria-label="Aggiungi condizione"><option value="">+ condizione</option>${FOE_COND.filter(c=>!f.cond.includes(c)).map(c=>`<option>${c}</option>`).join("")}</select>
+    <button class="btn ${f.acted?"ok":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Riflettore"}</button>
+    <button class="btn" data-a="foe-kill" data-id="${f.id}">${f.dead?"Rimetti in gioco":"Sconfitto"}</button>
+    <button class="btn" data-a="foe-del" data-id="${f.id}">Togli</button><button class="btn" data-a="foe-open" data-id="${f.id}">Chiudi</button></div>
+   <div class="sh-b">
+    <div class="sh-l">
+     <div class="sh-id"><span class="ava lg">${initial(f.name)}</span><div><b>${esc(f.name)}</b><div class="row" style="gap:6px"><span class="tbadge t-${esc(f.type).replace(/\W/g,"")}">${esc(f.type)}</span><span class="small muted">Tier ${f.tier}${f.sub?" · "+esc(f.sub):""}</span></div></div></div>
+     <div class="sh-stats"><div><span class="lab">Difficoltà</span><b>${f.diff??"—"}${f.sugg?"*":""}</b></div><div><span class="lab">Soglie</span><b>${f.minion?"—":`${f.thr[0]??"—"}/${f.thr[1]??"—"}`}</b></div>
+      <div><span class="lab">PF</span><b>${f.hpMax?`${f.hpMax-f.hp}<small>/${f.hpMax}</small>`:"—"}</b></div><div><span class="lab">Stress</span><b>${f.stMax?`${f.st}<small>/${f.stMax}</small>`:"—"}</b></div></div>
+     ${f.hpMax?`<div class="sh-pad">${thrStrip(f.thr[0],f.thr[1],{a:"foe-thr",id:f.id,minion:f.minion})}
+      <div class="row"><span class="lab" style="width:3.6em">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>
+      ${f.stMax?`<div class="row"><span class="lab" style="width:3.6em">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}</div>`:""}
+     ${f.cond.length?`<div class="sh-pad row">${f.cond.map(c=>`<button class="chip bad" data-a="foe-cond" data-id="${f.id}" data-k="${c}" title="Rimuovi">${c} ×</button>`).join("")}</div>`:""}
+    </div>
+    <div class="sh-r"><div class="sh-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" class="${sheetTab===k?"on":""}" data-a="sheet-tab" data-k="${k}">${l}</button>`).join("")}</div>
+     <div class="stack" style="gap:8px">${sheetTab==="cap"?featsHTML:sheetTab==="nar"?nar:info}</div></div>
+   </div></div>`;
+}
+function encSugs(def){const s=typeof def.sug==="function"?def.sug():(def.sug||[]);return s}
+function encounterCard(key,def,forceOpen){
+  const parts=S.foes.filter(f=>f.where===key),up=parts.filter(f=>!f.dead).length;
+  const open=forceOpen||(encOpen.has(key)?encOpen.get(key):false);
+  const kc="k-"+def.k;
+  if(!open)return `<div class="enc ${kc}" data-a="enc-toggle" data-k="${key}" role="button" tabindex="0" aria-expanded="false">
+   <span class="enc-ico" aria-hidden="true">${KIND_ICON[def.k]||"✦"}</span>
+   <div class="enc-main"><span class="enc-kind">Incontro ${def.k.toLowerCase()}</span><b>${esc(def.t)}</b><p>${def.d}</p></div>
+   <div class="enc-meta">${parts.length?`<span class="chip">${up}/${parts.length} in piedi</span>${parts.slice(0,5).map(f=>`<span class="ava sm" title="${esc(f.name)}">${initial(f.name)}</span>`).join("")}`:`<span class="xsmall muted">${def.env?"Ambiente e conti":"Nessun partecipante"}</span>`}<span class="enc-go">Apri ›</span></div></div>`;
+  const sugs=encSugs(def);
+  const pick=picker===key?`<div class="mc pick"><div class="lab">Aggiungi partecipante</div>
+    ${sugs.length?`<div class="row">${sugs.map(([k,n,label])=>`<button class="btn xs ok" data-a="enc-add" data-k="${k}" data-n="${n}" data-w="${key}">${label||`${n>1?n+"× ":""}${esc(T[k].name)}`}</button>`).join("")}</div>`:""}
+    ${def.devSug?def.devSug():""}
+    <div class="row"><select id="pick-${key.replace(/[:.]/g,"_")}" aria-label="Avversario o PNG">${Object.entries(T).map(([k,t])=>`<option value="${k}">${esc(t.name)} · ${t.type}</option>`).join("")}</select>
+     <button class="btn xs pri" data-a="enc-add-sel" data-w="${key}">Aggiungi</button><button class="btn xs" data-a="enc-plus" data-k="">Annulla</button></div></div>`
+   :`<button class="enc-plus" data-a="enc-plus" data-k="${key}" aria-label="Aggiungi partecipante" title="Aggiungi partecipante">+</button>`;
+  const sel=parts.find(f=>f.id===openFoe);
+  return `<div class="enc open ${kc}" id="enc-${key.replace(/[:.]/g,"_")}">
+   <div class="enc-head"><div class="enc-main"><span class="enc-kind">${KIND_ICON[def.k]||"✦"} Incontro ${def.k.toLowerCase()}</span><b>${esc(def.t)}</b><p>${def.d}</p></div>
+    <div class="enc-tools">
+     <div class="box fearbox"><span class="lab">Paura</span><b>${S.fear}</b><button class="btn xs" data-a="fear-step" data-k="-1" aria-label="Paura −1">−</button><button class="btn xs fear" data-a="fear-step" data-k="1" aria-label="Paura +1">+</button></div>
+     ${parts.length?`<div class="box"><span class="lab">In piedi</span><b>${up}<small>/${parts.length}</small></b></div>`:""}
+     <button class="btn" data-a="new-round" data-w="${key}">Nuovo giro GM</button>
+     ${encResetAsk===key?`<button class="btn bad" data-a="enc-reset" data-k="${key}">Conferma reimposta</button><button class="btn xs" data-a="enc-reset-no">No</button>`:`<button class="btn" data-a="enc-reset-ask" data-k="${key}">Reimposta</button>`}
+     ${forceOpen?"":`<button class="btn" data-a="enc-toggle" data-k="${key}">Chiudi</button>`}</div></div>
+   ${def.env?`<div class="enc-env">${def.env()}</div>`:""}
+   <div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div>
+   ${sel?foeSheet(sel):""}
+  </div>`;
+}
 
 /* ================= sezioni degli atti ================= */
 const read=(html,cue="Leggi ad alta voce")=>`<div class="read"><span class="cue">${cue}</span>${html}</div>`;
@@ -677,18 +765,7 @@ const SECTIONS={
  <p>Da un paio d'ore aspettate Luna, una cacciatrice del villaggio di Hush che, secondo le lettere scambiate, dovrebbe guidarvi. È <i>molto</i> in ritardo.</p>
  <p>Poi, in lontananza, delle grida. Qualcuno chiede aiuto, e potrebbe essere lei. Le urla vengono da un centinaio di metri, e il terreno è così impervio che non siete sicuri di arrivare in tempo, se non date tutto. Cosa fate?</p>`)}
  <p class="small muted">Questo incontro insegna i tiri d'azione. Descrivi 1 o 2 ostacoli alla volta.</p>
- <div class="stat"><div class="stat-h"><b>Corsa tra le Radici</b><span>Tier 1 Inseguimento · Diff 12</span></div><div class="stat-b">
-  <div class="grid2"><div><div class="lab">Distanza — a zero raggiungete Luna</div>${pips(3,S.chase.d,"cd","chase-d")} <span class="mono">${S.chase.d}</span></div>
-   <div><div class="lab">Tempo — a zero Luna muore</div>${pips(3,S.chase.t,"cd","chase-t")} <span class="mono">${S.chase.t}</span></div></div>
-  <div class="row"><button class="btn" data-a="roll-preset" data-diff="12" data-label="Corsa tra le Radici">Tira (Diff 12)</button>
-   <button class="btn ok" data-a="chase" data-k="s">Successo · Distanza −1</button><button class="btn ok" data-a="chase" data-k="c">Critico · Distanza −2</button>
-   <button class="btn bad" data-a="chase" data-k="f">Fallimento · Tempo −1</button><button class="btn xs" data-a="chase" data-k="r">Azzera</button></div>
-  ${S.chase.d===0?`<div class="note">Il gruppo arriva in tempo: vai a «Un prezzo da pagare».</div>`:S.chase.t===0?`<div class="warn">Il tempo è scaduto: Luna è morta.</div>`:""}
-  <div class="grid2 small"><div><div class="lab">Ostacoli</div><ul class="tight">${OBSTACLES.map(o=>`<li>${o}</li>`).join("")}</ul></div>
-  <div><div class="lab">Complicazioni — spendi 1 Paura</div><ul class="tight">${COMPLICATIONS.map(o=>`<li>${o}</li>`).join("")}</ul>
-   <button class="btn fear" data-a="complication" ${S.fear<1?"disabled":""}>Spendi 1 Paura: complicazione casuale</button>
-   <div class="muted">Il prossimo tiro d'azione dei PG ha svantaggio.</div></div></div>
- </div></div>`},
+ `},
  {id:"prezzo",t:"Un prezzo da pagare",f:F.prezzo,html:()=>`
  <div class="row"><button class="btn ${S.flags.luna==="saved"?"pri":""}" data-a="luna" data-k="saved">Inseguimento riuscito</button><button class="btn ${S.flags.luna==="dead"?"pri":""}" data-a="luna" data-k="dead">Inseguimento fallito</button>
   ${S.flags.luna?`<span class="chip ${luna()?"ok":"bad"}">Luna ${luna()?"viva":"morta"}</span>`:""}</div>
@@ -702,8 +779,7 @@ const SECTIONS={
   <div class="panel stack"><h4>Patto fatato</h4>
   ${read(`<p>«Una vita per una vita: questo è il prezzo che chiedo. Eppure vedo fuoco nella tua anima, e mi fa credere che potresti saziare la mia fame con la <i>sorpresa</i> invece che con il sangue.</p><p>Concedimi un solo momento del tuo tempo, e lo userò per metterti alla prova. Prima che il tuo viaggio finisca reclamerò quel momento, e ti farò minacciare la vita che mi è dovuta. Cosa accadrà dopo, sono curioso di scoprirlo.»</p>`,"Se viene chiesto")}
   <div class="row"><span class="lab">PG che accetta</span><select id="bargain" data-f="bargain" aria-label="PG che accetta il patto">${pcOptions(S.flags.bargain)}</select></div>
-  <p class="small muted">Poi: ad Hush il PG attacca un PNG (se è drammatico), <i>oppure</i> nel tiro finale sabota gli alleati dando svantaggio.</p></div>`:""}`,
-  cast:()=>[castBtn("luna","Luna",1,"1:prezzo"),castBtn("strixwolf","Strixwolf",1,"1:prezzo")]},
+  <p class="small muted">Poi: ad Hush il PG attacca un PNG (se è drammatico), <i>oppure</i> nel tiro finale sabota gli alleati dando svantaggio.</p></div>`:""}`},
 ],
 '2':()=>[
  {id:"emissari",t:"Emissari degli Antichi Dèi",f:F.emissari,html:()=>`
@@ -713,8 +789,7 @@ const SECTIONS={
  <h4>Arrivano gli emissari</h4>
  ${read(`<p>Sagome gigantesche e distorte emergono dalla boscaglia. Sono come buchi nel tessuto della realtà: puoi vederci attraverso, ma ciò che vedi è un'altra foresta.</p><p>Gli alberi sono più verdi, più sottili, non così assurdamente alti. È come se dentro questi squarci a forma umana ci fosse la visione di com'era la foresta in un passato lontano, prima che gli Antichi Dèi venissero uccisi qui.</p>`)}
  ${read(`<p>Uno di loro tende un braccio verso il pacco. E capite subito cosa questa cosa ha detto senza parole: pretende di sapere cos'è.</p>`,"Se vedono il pacco")}
- <p>Gli Scarshade sono resti degli Antichi Dèi, con un odio infinito per chi adora i Nuovi Dèi, compreso il regno dei PG. Proveranno lo <b>Scavo nella Memoria</b>.</p>`,
-  cast:()=>[castBtn("scarshade",`${nShades()} Scarshade`,nShades(),"2:emissari"),`<span class="xsmall muted">3 se il gruppo ha 4+ PG</span>`]},
+ <p>Gli Scarshade sono resti degli Antichi Dèi, con un odio infinito per chi adora i Nuovi Dèi, compreso il regno dei PG. Proveranno lo <b>Scavo nella Memoria</b>.</p>`},
  {id:"polvere",t:"Al bivio",f:F.polvere,html:()=>`
  <div class="row"><span class="lab">Gli Scarshade hanno scoperto cos'è il pacco?</span>
   <button class="btn ${S.flags.learned===true?"pri":""}" data-a="learned" data-k="1">Sì</button><button class="btn ${S.flags.learned===false?"pri":""}" data-a="learned" data-k="0">No</button></div>
@@ -731,23 +806,7 @@ const SECTIONS={
  {id:"fiume",t:"Il fiume Orfanatore",f:F.fiume,html:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
  ${read(`<p>Il fragore incessante del famigerato fiume Orfanatore minaccia di assordarvi molto prima che lo vediate.</p><p>L'acqua è così turbolenta che sembra una cascata orizzontale.</p><p>Ognuno di voi mi dica una cosa che vede sporgere dall'acqua.</p>`)}
  ${S.pcs.some(p=>p.id==="barnacle")?`<div class="note small">Barnacle è anfibio, ma ha paura dell'acqua e non nuota.</div>`:""}
- <div class="stat"><div class="stat-h"><b>Fiume Orfanatore</b><span>Tier 1 Traversata · Diff 13</span></div><div class="stat-b">
- <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
- ${dr.length?`<div class="warn"><b>Annegano:</b> ${dr.map(p=>esc(pcName(p.id))).join(", ")}. Ogni tiro d'azione di un PG fa segnare 1 Stress a tutti quelli che annegano.
-  <div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div></div>`:""}
- <div class="row"><button class="btn" data-a="roll-preset" data-diff="13" data-label="Attraversare l'Orfanatore">Tira (Diff 13)</button>
-  <button class="btn ok" data-a="river" data-k="s" ${dr.length&&S.river.t<=1?"disabled":""}>Successo · Traversata −1</button>
-  <button class="btn bad" data-a="river" data-k="f">Fallimento · azione Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div>
- <div class="grid2 small">
-  <div><div class="lab">Dettagli utili (azione riuscita)</div><ul class="tight"><li>Ponte di corda spezzato</li><li>Tratto poco profondo</li><li>Un isolotto</li><li>Liane pendenti</li></ul></div>
-  <div><div class="lab">Annegare</div><p>Un PG fa un tiro reazione di <b>Agilità</b>, altrimenti inizia temporaneamente ad <i>Annegare</i>. Si libera con un tiro d'azione.</p>
-   <div class="row"><select id="drownpc" data-f="drownpc" aria-label="PG">${pcOptions(drownPick)}</select><button class="btn xs" data-a="drown-roll">Reazione Agilità</button><button class="btn xs bad" data-a="drown-set">Annega</button></div></div>
-  <div><div class="lab">Risacca — spendi 1 Paura</div><ol class="tight">${UNDERTOW.map(u=>`<li>${u}</li>`).join("")}</ol>
-   <button class="btn fear" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>Spendi 1 Paura: Risacca (d4)</button>
-   ${S.undertow?`<div class="note" style="margin-top:6px">${esc(S.undertow)}</div>`:""}</div>
-  <div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
-   <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
- </div></div></div>
+ 
  <div class="note small"><b>Glossario:</b> una condizione temporanea come Annegamento si rimuove con un tiro d'azione. I tiri reazione non generano Speranza né Paura. Le carte nel deposito non si possono usare: tornano nella dotazione con un riposo, oppure segni Stress pari al costo di richiamo per scambiarle con una carta della dotazione.</div>
  ${S.river.t===0?`<div class="note">Il gruppo ha attraversato il fiume.</div>`:""}
  <div class="row"><button class="btn pri" data-a="goact" data-k="3">Prosegui all'Atto III →</button></div>`}}
@@ -762,35 +821,18 @@ const SECTIONS={
  <div class="row">${counterChip()}</div>
  <p>Quasi tutti rifiutano di parlare con i PG: bisbigliano, fissano, sputano a terra, se ne vanno. La posizione dell'Arcanista dovrebbe restare segreta: temono che il gruppo sia un intruso.</p>
  ${S.counter.on?`<div class="row"><button class="btn bad" data-a="search-tick" ${S.flags.searchTick?"disabled":""}>Qualche minuto di ricerca: Contatore +1</button></div>`:""}
- <p class="small">Dopo un po' trovano gli unici disposti a parlare: Fidget, Lausa e Octavio.${S.flags.ring?" <b>Il gruppo ha l'anello di Luna: indica Octavio.</b>":""}</p>`,
-  cast:()=>[castBtn("fidget","Fidget",1,"3:arcanista"),castBtn("lausa","Lausa",1,"3:arcanista"),castBtn("octavio","Octavio",1,"3:arcanista")]},
+ <p class="small">Dopo un po' trovano gli unici disposti a parlare: Fidget, Lausa e Octavio.${S.flags.ring?" <b>Il gruppo ha l'anello di Luna: indica Octavio.</b>":""}</p>`},
  {id:"anziano",t:"L'Anziano Halython",f:F.anziano,html:()=>`
  ${read(`<p>D'improvviso sentite un tonfo alle vostre spalle. Un uomo anziano, alto poco più di un metro, ha appena sbattuto a terra la punta del suo bastone, pretendendo attenzione e rispetto.</p><p>La persona con cui stavate parlando balbetta: «Anziano Halython? Non stavo cercando di…»</p><p>Il vecchio halfling la interrompe: «Non un'altra parola. Hai già detto troppo. Quanto a voi, dovete lasciare questo villaggio. Subito.»</p>`,"Quando un paesano accetta di guidarli")}
- <div class="grid2">
- <div class="panel stack"><h4>Convincere l'Anziano ${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}</h4>
-  <div><div class="lab">Stress dell'Anziano — a 4 si arrende</div>${pips(4,S.elderSt||0,"st","elder-st")}</div>
-  ${luna()?`<div class="note small">Luna garantisce per il gruppo: <b>vantaggio</b> ai tiri.</div>`:""}
-  <div class="row small"><select id="elderpc" data-f="elderpc" aria-label="PG che tira">${pcOptions(elderPick,"PG che tira")}</select>
-   <button class="btn xs" data-a="elder-roll">Tira Presenza (Diff 15)</button></div>
-  <div class="row small"><button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: il PG segna 1 Stress</button></div>
-  ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
- </div>
- <div class="panel stack"><h4>Paesani preoccupati</h4>
-  <div class="row"><span class="mono" style="font-size:1.6rem">${S.villagers}</span><span class="muted">presenti</span><button class="btn xs" data-a="vill" data-k="-1">−1</button><button class="btn xs" data-a="vill" data-k="1">+1</button></div>
-  <div class="row small"><input type="number" id="villdmg" value="3" min="1" aria-label="Danni"><button class="btn xs" data-a="vill-dmg">Danni a un gregario</button></div>
-  <div class="row small"><button class="btn xs fear" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>Attacco di Gruppo (1 Paura)</button></div>
-  <div class="xsmall muted">Gregari · Diff 9 · Pugnali Mischia 2 fis · sconfitti da qualsiasi danno; ogni 3 danni un gregario in più.</div>
- </div></div>
- <div class="row"><button class="btn pri" data-a="goact" data-k="4">L'Anziano cede → Atto IV</button></div>`,
-  cast:()=>[castBtn("elder","Anziano Halython",1,"3:anziano")]}
+ 
+ <div class="row"><button class="btn pri" data-a="goact" data-k="4">L'Anziano cede → Atto IV</button></div>`}
 ],
 '4':()=>[
  {id:"villa",t:"Villa Fuocobianco",f:F.villa,html:()=>`
  ${read(`<p>Superando le case notate che qui gli alberi hanno centinaia di volti intagliati su ogni lato, con gli occhi che scrutano in ogni direzione. Quando passate accanto a un intaglio, la bocca si apre ed emette piccole fiamme bianche che illuminano il sentiero.</p><p>Un albero, più alto degli altri, regge tra i rami una villa di legno. Rune blu dipinte nella corteccia si accendono, il ramo si anima e l'intera struttura scende lentamente fino a terra.</p><p>Al posto della porta c'è un bocciolo gigante, largo forse tre metri, che si schiude rivelando petali colorati. Al centro c'è un'apertura da cui esce una figura alta più di due metri: un misto tra un umanoide e una lucciola, in vesti da maga bianca, carica di libri e pozioni.</p><p>«Vi stavo aspettando. Spero che nessuno abbia scoperto cosa trasportavate. L'ultima volta che la vostra città è rimasta indifesa così, i seguaci degli Antichi Dèi l'hanno quasi rasa al suolo. Comunque, come sta il piccolo Emeris? È ancora vivo?»</p>`)}
  <p class="small">L'Arcanista ha diverse migliaia di anni. Parla di Emeris IV; il re che ha assunto il gruppo è Emeris VIII. Ha creato il sigillo e ha un accordo con la stirpe reale: ogni paio di secoli lo rinnova, e il Regno in cambio evita il Sablewood. Se le chiedono perché i paesani non sapessero della consegna: «Oh, l'avevo detto… mi pare 12 o 13 anni fa?»</p>
  ${read(`<p>«Dovremmo andare nella Valle Aperta per il rituale. È solo a un paio di miglia. Un incantesimo del genere attirerà creature pericolose dagli angoli più oscuri del Sablewood: dalle vostre facce capisco che ne avete già incontrate alcune. …E preferirei che succedesse fuori dal villaggio. Quel ragazzino Lylython è un tipo lunatico, si mette a urlarmi contro ogni volta che un esperimento va storto.»</p>`,"Quando ha parlato abbastanza")}
- ${S.counter.on?`<div class="row"><span class="lab">Contatore attivo</span><button class="btn ${S.flags.ritualHere===true?"pri":""}" data-a="ritual-here" data-k="1">Convincono i paesani a fare il rituale qui</button><button class="btn ${S.flags.ritualHere===false?"pri":""}" data-a="ritual-here" data-k="0">Vanno alla Valle Aperta (+1)</button></div>`:""}`,
-  cast:()=>[castBtn("arcanist","Arcanista Fuocobianco",1,"4:villa")]},
+ ${S.counter.on?`<div class="row"><span class="lab">Contatore attivo</span><button class="btn ${S.flags.ritualHere===true?"pri":""}" data-a="ritual-here" data-k="1">Convincono i paesani a fare il rituale qui</button><button class="btn ${S.flags.ritualHere===false?"pri":""}" data-a="ritual-here" data-k="0">Vanno alla Valle Aperta (+1)</button></div>`:""}`},
  {id:"preparare",t:"La quiete prima",f:F.preparare,html:()=>`
  ${S.flags.ritualHere!==true?read(`<p>Entrate in una radura larga un paio di centinaia di metri, così perfettamente circolare da sembrare innaturale. Per quanto ne sapete, è l'unico posto del Sablewood dove si vede il cielo.</p><p>L'Arcanista inizia a preparare il rituale: «Mi serve un'ora per prepararmi. Godetevi l'aria della notte finché potete. Presto saremo molto occupati.»</p>`,"Se vanno alla Valle Aperta"):""}
  ${S.counter.on?`<p class="small">Con il Contatore attivo i giocatori possono saltare il riposo e aiutare con la preparazione: passa a «Il rituale inizia».</p>`:""}
@@ -804,17 +846,11 @@ const SECTIONS={
  {id:"rituale",t:"Il Rituale del Rinnovo",f:F.rituale,html:()=>`
  ${read(`<p>Quando siete pronti, l'Arcanista dà inizio al rituale. Il suo corpo e la pietra del sigillo iniziano a brillare, e grida ultraterrene risuonano dai boschi mentre le creature vicine percepiscono l'energia arcana.</p>`)}
  <p>Piazza <b>5 Scheletri Antichi</b> e <b>2 Eroi Dimenticati</b> ai margini della radura, a distanza Lontana. Finché ci sono meno di 8 scheletri, se un giocatore tira con Paura, spendi quella Paura per la Vendetta degli Antichi Dèi. Altrimenti spendi Paura per turni extra in cui attacchi l'Arcanista.</p>
- <div class="stat"><div class="stat-h"><b>Il Rituale del Rinnovo</b><span>Tier 1 Evento</span></div><div class="stat-b">
-  <div><div class="lab">Rituale — a zero il rituale riesce</div>${pips(8,S.ritual.v,"cd","ritual-pip")} <span class="mono">${S.ritual.v}</span></div>
-  <p class="small">Ogni nemico sconfitto: −1 (automatico). Arcanista colpita (Diff 11): +1.</p>
-  <div class="row"><button class="btn bad" data-a="ritual" data-k="hit">Arcanista colpita: +1</button><button class="btn ok" data-a="ritual" data-k="kill">Nemico sconfitto: −1</button>
-   <button class="btn fear" data-a="vengeance" ${S.fear<1||aliveSkel()>=10?"disabled":""}>Vendetta degli Antichi Dèi (1 Paura): +2 Scheletri</button>
-   <span class="small muted">Scheletri vivi: ${aliveSkel()}</span></div></div></div>
+ 
  <h4>Il rituale termina</h4>
  ${read(`<p>Un'onda di magia riduce in polvere tutti i nemici rimasti.</p><p>L'Arcanista Fuocobianco vi ringrazia, ma vi esorta a riportare a casa la pietra il prima possibile… perché ora gli Antichi Dèi lo sanno di sicuro.</p>`,"Quando il conto arriva a zero")}
  ${read(`<p>Lancia un incantesimo che vi trasforma tutti in libellule con la testa umanoide. «L'insetto più veloce della natura, con qualche miglioria mia. Dovrebbe aiutarvi a tornare a casa. Buona fortuna, e salutatemi il piccolo Emeris!»</p>`,"Quando i giocatori accettano")}
- <div class="row"><button class="btn pri" data-a="ritual-end" ${S.flags.ritualDone?"disabled":""}>Il rituale è completo${S.counter.on?"":" (Contatore a 15)"}</button><button class="btn" data-a="goact" data-k="5">Atto V →</button></div>`,
-  cast:()=>[`<button class="btn xs ok" data-a="ritual-spawn">+ 5 Scheletri e 2 Eroi</button>`,castBtn("skeleton","1 Scheletro",1,"4:rituale")]}
+ <div class="row"><button class="btn pri" data-a="ritual-end" ${S.flags.ritualDone?"disabled":""}>Il rituale è completo${S.counter.on?"":" (Contatore a 15)"}</button><button class="btn" data-a="goact" data-k="5">Atto V →</button></div>`}
 ],
 '5':()=>[
  {id:"finale",t:"La città sotto assedio",f:F.finale,html:()=>{const bp=pcById(S.flags.bargain);return `
@@ -832,6 +868,68 @@ const SECTIONS={
  ["crit","Successo critico","Come un successo con Speranza, ma un rivale odiato dai giocatori ha trovato la fine durante l'attacco."]].map(([k,t,x])=>`<div class="out-card ${f===k?"hit":""}"><b>${t}</b>${f===k?` <span class="chip hope">risultato</span>`:""}<div class="small">${x}</div></div>`).join("")}</div>
  <h4>PNG di casa da proteggere</h4><p class="small muted">Annota i PNG nominati nelle domande di background all'inizio della partita.</p>${homeEditor()}`}}
 ]};
+const ENC={
+ "1:inizio":{t:"Corsa tra le Radici",k:"Ambientale",d:"Inseguimento · Diff 12. Distanza e Tempo decidono se il gruppo arriva da Luna in tempo.",env:()=>`
+  <div class="grid2"><div><div class="lab">Distanza — a zero raggiungete Luna</div>${pips(3,S.chase.d,"cd","chase-d")} <span class="mono">${S.chase.d}</span></div>
+   <div><div class="lab">Tempo — a zero Luna muore</div>${pips(3,S.chase.t,"cd","chase-t")} <span class="mono">${S.chase.t}</span></div></div>
+  <div class="row"><button class="btn" data-a="roll-preset" data-diff="12" data-label="Corsa tra le Radici">Tira (Diff 12)</button>
+   <button class="btn ok" data-a="chase" data-k="s">Successo · Distanza −1</button><button class="btn ok" data-a="chase" data-k="c">Critico · Distanza −2</button>
+   <button class="btn bad" data-a="chase" data-k="f">Fallimento · Tempo −1</button><button class="btn xs" data-a="chase" data-k="r">Azzera</button></div>
+  ${S.chase.d===0?`<div class="note">Il gruppo arriva in tempo: vai a «Un prezzo da pagare».</div>`:S.chase.t===0?`<div class="warn">Il tempo è scaduto: Luna è morta.</div>`:""}
+  <div class="grid2 small"><div><div class="lab">Ostacoli</div><ul class="tight">${OBSTACLES.map(o=>`<li>${o}</li>`).join("")}</ul></div>
+  <div><div class="lab">Complicazioni — spendi 1 Paura</div><ul class="tight">${COMPLICATIONS.map(o=>`<li>${o}</li>`).join("")}</ul>
+   <button class="btn fear" data-a="complication" ${S.fear<1?"disabled":""}>Spendi 1 Paura: complicazione casuale</button>
+   <div class="muted">Il prossimo tiro d'azione dei PG ha svantaggio.</div></div></div>
+ `,reset:()=>{S.chase={d:3,t:3}}},
+ "1:prezzo":{t:"Lo Strixwolf",k:"Combattimento",d:"Lo spirito guardiano pretende la vita di Luna. Si può combattere o trattare un patto fatato.",sug:[["strixwolf",1],["luna",1]]},
+ "2:emissari":{t:"Emissari degli Antichi Dèi",k:"Combattimento",d:"Gli Scarshade vogliono sapere cosa contiene il pacco. Finché i PG non attaccano, lo Scavo nella Memoria non fa danni.",sug:()=>[["scarshade",nShades(),`${nShades()}× Scarshade`],["scarshade",1]]},
+ "2.5:fiume":{t:"Il fiume Orfanatore",k:"Ambientale",d:"Traversata · Diff 13. Annegamento, Risacca e tesori sommersi.",env:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
+ <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
+ ${dr.length?`<div class="warn"><b>Annegano:</b> ${dr.map(p=>esc(pcName(p.id))).join(", ")}. Ogni tiro d'azione di un PG fa segnare 1 Stress a tutti quelli che annegano.
+  <div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div></div>`:""}
+ <div class="row"><button class="btn" data-a="roll-preset" data-diff="13" data-label="Attraversare l'Orfanatore">Tira (Diff 13)</button>
+  <button class="btn ok" data-a="river" data-k="s" ${dr.length&&S.river.t<=1?"disabled":""}>Successo · Traversata −1</button>
+  <button class="btn bad" data-a="river" data-k="f">Fallimento · azione Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div>
+ <div class="grid2 small">
+  <div><div class="lab">Dettagli utili (azione riuscita)</div><ul class="tight"><li>Ponte di corda spezzato</li><li>Tratto poco profondo</li><li>Un isolotto</li><li>Liane pendenti</li></ul></div>
+  <div><div class="lab">Annegare</div><p>Un PG fa un tiro reazione di <b>Agilità</b>, altrimenti inizia temporaneamente ad <i>Annegare</i>. Si libera con un tiro d'azione.</p>
+   <div class="row"><select id="drownpc" data-f="drownpc" aria-label="PG">${pcOptions(drownPick)}</select><button class="btn xs" data-a="drown-roll">Reazione Agilità</button><button class="btn xs bad" data-a="drown-set">Annega</button></div></div>
+  <div><div class="lab">Risacca — spendi 1 Paura</div><ol class="tight">${UNDERTOW.map(u=>`<li>${u}</li>`).join("")}</ol>
+   <button class="btn fear" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>Spendi 1 Paura: Risacca (d4)</button>
+   ${S.undertow?`<div class="note" style="margin-top:6px">${esc(S.undertow)}</div>`:""}</div>
+  <div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
+   <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
+ `},reset:()=>{S.river.t=4;S.undertow=null;S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}},
+ "3:arcanista":{t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
+ "3:anziano":{t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",env:()=>`<div class="grid2">
+ <div class="panel stack"><h4>Convincere l'Anziano ${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}</h4>
+  <div><div class="lab">Stress dell'Anziano — a 4 si arrende</div>${pips(4,S.elderSt||0,"st","elder-st")}</div>
+  ${luna()?`<div class="note small">Luna garantisce per il gruppo: <b>vantaggio</b> ai tiri.</div>`:""}
+  <div class="row small"><select id="elderpc" data-f="elderpc" aria-label="PG che tira">${pcOptions(elderPick,"PG che tira")}</select>
+   <button class="btn xs" data-a="elder-roll">Tira Presenza (Diff 15)</button></div>
+  <div class="row small"><button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: il PG segna 1 Stress</button></div>
+  ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
+ </div>
+ <div class="panel stack"><h4>Paesani preoccupati</h4>
+  <div class="row"><span class="mono" style="font-size:1.6rem">${S.villagers}</span><span class="muted">presenti</span><button class="btn xs" data-a="vill" data-k="-1">−1</button><button class="btn xs" data-a="vill" data-k="1">+1</button></div>
+  <div class="row small"><input type="number" id="villdmg" value="3" min="1" aria-label="Danni"><button class="btn xs" data-a="vill-dmg">Danni a un gregario</button></div>
+  <div class="row small"><button class="btn xs fear" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>Attacco di Gruppo (1 Paura)</button></div>
+  <div class="xsmall muted">Gregari · Diff 9 · Pugnali Mischia 2 fis · sconfitti da qualsiasi danno; ogni 3 danni un gregario in più.</div>
+ </div></div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
+ "4:villa":{t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
+ "4:rituale":{t:"Il Rituale del Rinnovo",k:"Combattimento",d:"Proteggete l'Arcanista finché il conto del Rituale arriva a zero. Ogni nemico sconfitto lo abbassa di 1.",env:()=>`
+  <div><div class="lab">Rituale — a zero il rituale riesce</div>${pips(8,S.ritual.v,"cd","ritual-pip")} <span class="mono">${S.ritual.v}</span></div>
+  <p class="small">Ogni nemico sconfitto: −1 (automatico). Arcanista colpita (Diff 11): +1.</p>
+  <div class="row"><button class="btn bad" data-a="ritual" data-k="hit">Arcanista colpita: +1</button><button class="btn ok" data-a="ritual" data-k="kill">Nemico sconfitto: −1</button>
+   <button class="btn fear" data-a="vengeance" ${S.fear<1||aliveSkel()>=10?"disabled":""}>Vendetta degli Antichi Dèi (1 Paura): +2 Scheletri</button>
+   <span class="small muted">Scheletri vivi: ${aliveSkel()}</span></div>`,sug:[["skeleton",5,"5× Scheletro Antico"],["hero",2,"2× Eroe Dimenticato"],["skeleton",1]],reset:()=>{S.ritual.v=8;S.flags.ritualDone=false}}
+};
+function devEnc(dv){
+  const p=parseDev(dv.raw);
+  const kind=/combatt/i.test(p.tipo||"")||p.avv.length?"Combattimento":/social/i.test(p.tipo||"")?"Sociale":"Ambientale";
+  return {t:p.titolo||"Incontro improvvisato",k:kind,d:esc(p.posta||"Scena improvvisata."),
+   devSug:()=>(p.avv.length||p.png.length)?`<div class="row">${p.avv.map((r,i)=>`<button class="btn xs ok" data-a="dev-foe" data-id="${dv.id}" data-i="${i}">${(parseInt(r[2])||1)>1?parseInt(r[2])+"× ":""}${esc(r[0])}</button>`).join("")}${p.png.map((r,i)=>`<button class="btn xs ok" data-a="dev-npc" data-id="${dv.id}" data-i="${i}">${esc(r[0])} · PNG</button>`).join("")}</div>`:""};
+}
 function homeEditor(){return `<div class="stack">${S.home.map((h,i)=>`<div class="row"><input type="text" id="hn${i}" data-f="home-n" data-i="${i}" value="${esc(h.n)}" placeholder="Nome PNG" style="flex:0 1 180px" aria-label="Nome PNG"><input type="text" id="ht${i}" data-f="home-note" data-i="${i}" value="${esc(h.note)}" placeholder="Legame, alleato o rivale" style="flex:1 1 200px" aria-label="Legame"><button class="btn xs" data-a="home-del" data-i="${i}" aria-label="Rimuovi">×</button></div>`).join("")}<div><button class="btn xs" data-a="home-add">+ PNG</button></div></div>`}
 
 /* ================= scene improvvisate con Claude ================= */
@@ -939,8 +1037,8 @@ function devBody(dv){
   ${p.leggi?`<div class="read"><span class="cue">Leggi ad alta voce</span><p>${esc(p.leggi)}</p></div>`:""}
   ${p.scena?`<p>${esc(p.scena)}</p>`:""}
   ${p.tiri.length?`<div><div class="lab">Tiri</div><div class="row">${p.tiri.map(r=>{const ti=TRAITS.findIndex(t=>(r[1]||"").toLowerCase().startsWith(t.toLowerCase().slice(0,4)));return `<button class="btn xs" data-a="roll-preset" data-diff="${parseInt(r[2])||12}" data-label="${esc(r[0])}" ${ti>=0?`data-trait="${ti}"`:""}>${esc(r[0])} · ${esc(r[1]||"")} ${parseInt(r[2])||12}</button>`}).join("")}</div></div>`:""}
-  ${p.png.length?`<div><div class="lab">PNG</div><div class="stack" style="gap:6px">${p.png.map((r,i)=>`<div class="row small"><b>${esc(r[0])}</b><span>${esc(r[1]||"")}</span>${r[2]?`<i class="muted">${esc(r[2])}</i>`:""}${r[3]?`<span class="chip fear">Diff ${esc(parseInt(r[3])||r[3])}</span>`:""}${streaming?"":`<button class="btn xs ok" data-a="dev-npc" data-id="${dv.id}" data-i="${i}">+ In scena</button>`}</div>`).join("")}</div></div>`:""}
-  ${p.avv.length?`<div><div class="lab">Avversari</div><div class="stack" style="gap:6px">${p.avv.map((r,i)=>`<div class="ftr"><div class="ftr-h"><b>${esc(r[0])}${(parseInt(r[2])||1)>1?" ×"+parseInt(r[2]):""}</b><span class="ktag">${esc(r[1]||"")}</span><span class="chip fear">Diff ${esc(r[3]||"?")}</span>${streaming?"":`<button class="btn xs ok" data-a="dev-foe" data-id="${dv.id}" data-i="${i}">+ In scena</button>`}</div>
+  ${p.png.length?`<div><div class="lab">PNG</div><div class="stack" style="gap:6px">${p.png.map((r,i)=>`<div class="row small"><b>${esc(r[0])}</b><span>${esc(r[1]||"")}</span>${r[2]?`<i class="muted">${esc(r[2])}</i>`:""}${r[3]?`<span class="chip fear">Diff ${esc(parseInt(r[3])||r[3])}</span>`:""}</div>`).join("")}</div></div>`:""}
+  ${p.avv.length?`<div><div class="lab">Avversari</div><div class="stack" style="gap:6px">${p.avv.map((r,i)=>`<div class="ftr"><div class="ftr-h"><b>${esc(r[0])}${(parseInt(r[2])||1)>1?" ×"+parseInt(r[2]):""}</b><span class="ktag">${esc(r[1]||"")}</span><span class="chip fear">Diff ${esc(r[3]||"?")}</span></div>
    <div class="mono xsmall">Soglie ${esc(r[4]||"—")} · PF ${esc(r[5]||"?")} · Stress ${esc(r[6]||"?")} · ATK ${esc(r[7]||"?")}</div><div class="small">${esc(r[8]||"")}${r[9]?" · "+esc(r[9]):""}</div>${r[10]?`<div class="small"><i>${esc(r.slice(10).join(" | "))}</i></div>`:""}</div>`).join("")}</div></div>`:""}
   ${p.conti.length?`<div class="row small">${p.conti.map((c,i)=>`<b>${esc(c[0])}</b> (${parseInt(c[1])||4}) <span class="muted">${esc(c[2]||"")}</span>${streaming?"":`<button class="btn xs" data-a="dev-cd" data-id="${dv.id}" data-i="${i}">Aggiungi conto</button>`}`).join("")}</div>`:""}
   ${p.paura.length?`<div><div class="lab" style="color:var(--fear)">Mosse con Paura</div><ul class="tight small">${p.paura.map(x=>`<li>${esc(x.join(" "))}</li>`).join("")}</ul></div>`:""}
@@ -960,7 +1058,7 @@ function devCard(dv,num){
     <span class="row" style="margin-left:auto;gap:4px"><button class="btn xs" data-a="dev-regen" data-id="${dv.id}" ${G.busy?"disabled":""}>Rigenera</button><button class="btn xs" data-a="dev-edit" data-id="${dv.id}" ${G.busy?"disabled":""}>Modifica e rigenera</button><button class="btn xs" data-a="dev-del" data-id="${dv.id}" ${streaming?"disabled":""}>Elimina</button><button class="btn xs" data-a="scn-fold" data-k="${key}">Chiudi</button></span></div>
    ${editing?composerForm("re:"+dv.id,dv.user||""):(G.err["re:"+dv.id]?`<div class="warn small">${esc(G.err["re:"+dv.id])}</div>`:"")}
    <div class="stack" style="gap:10px" id="devb-${dv.id}">${devBody(dv)}</div>
-   ${here.length?`<div class="stack" style="gap:8px"><div class="row"><span class="lab">In scena</span><button class="btn xs" data-a="new-round" data-w="${dv.act}:dev:${dv.id}">Nuovo giro: azzera «ha agito»</button></div>${sceneHTML(here)}</div>`:""}
+   ${!streaming&&dv.raw&&(here.length||parseDev(dv.raw).avv.length||parseDev(dv.raw).png.length)?encounterCard(dv.act+":dev:"+dv.id,devEnc(dv)):""}
    ${streaming?"":`<div class="scn-foot">${dv.done?`<span class="chip ok">Scena conclusa</span><button class="btn xs" data-a="dev-reopen" data-id="${dv.id}">Riapri</button>`:`<button class="btn pri" data-a="dev-done" data-id="${dv.id}">Concludi scena</button>`}</div>`}
   </div></details>`;
 }
@@ -990,9 +1088,10 @@ function renderBar(){
   <div class="meter"><span class="lab" style="color:var(--fear)">Paura</span><span class="mono" style="font-weight:600;color:var(--fear)">${S.fear}</span>
    <div class="fear-pips">${Array.from({length:12},(_,i)=>`<button class="fp ${i<S.fear?"on":""}" data-a="fear-set" data-i="${i}" aria-label="Paura ${i+1}"></button>`).join("")}</div></div>
   <div class="counter ${S.counter.on?"live":""}"><span class="lab">Assalto alla Città</span>
-   ${S.counter.on?`<button class="btn xs" data-a="ctr" data-k="-1" aria-label="Contatore −1">−</button><span class="v">${S.counter.value}</span><button class="btn xs" data-a="ctr" data-k="1" aria-label="Contatore +1">+</button>`:`<button class="btn xs" data-a="ctr-start">Avvia (15)</button>`}</div>
+   ${S.counter.on?`<button class="btn xs" data-a="ctr" data-k="-1" aria-label="Contatore −1">−</button><span class="v">${S.counter.value}</span><button class="btn xs" data-a="ctr" data-k="1" aria-label="Contatore +1">+</button><button class="btn xs" data-a="ctr-close" title="Chiudi il Contatore" aria-label="Chiudi il Contatore">×</button>`:`<button class="btn xs" data-a="ctr-start">Avvia (15)</button>`}</div>
   <nav class="acts">${ACTS.map((a,i)=>`<button class="${a.id===S.act?"on":i<ai?"done":""}" data-a="goact" data-k="${a.id}" title="${a.t}">${a.n}</button>`).join("")}</nav>
   <div class="bar-r"><span class="save-ind" id="save-ind">Salvato su ${saveWhere}</span>
+   ${resetAsk?`<span class="small">Azzerare tutta la partita?</span><button class="btn xs bad" data-a="reset-yes">Sì, azzera</button><button class="btn xs" data-a="reset-no">No</button>`:`<button class="tgl" data-a="reset">Reimposta</button>`}
    <button class="tgl ${UI.dice?"on":""}" data-a="dice-toggle">Dadi</button><button class="tgl ${UI.party?"on":""}" data-a="party-toggle">Gruppo</button></div>`;
 }
 function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")}
@@ -1076,13 +1175,11 @@ function renderAct(){
   return `<div class="act-h"><span class="num">ATTO ${a.n}</span><h2>${a.t}</h2><span class="small muted">${secs.filter(s=>S.scn[S.act+":"+s.id]).length}/${secs.length} scene concluse</span></div>`+secs.map(s=>{
     const key=S.act+":"+s.id,n=sceneNum(S.act,s.id),done=!!S.scn[key];
     const open=scnOpen.has(key)?scnOpen.get(key):!done;
-    const here=S.foes.filter(f=>f.where===key);
-    const cast=s.cast?s.cast():[];
     const devs=S.devs.filter(x=>x.where===key);
     const chainDone=done&&(!devs.length||devs[devs.length-1].done);
     return `<details class="scn ${done?"done":""} ${cur===s?"cur":""}" data-scn="${key}" id="scn-${S.act.replace(".","_")}-${s.id}" ${open?"open":""}><summary><span class="scn-n">Scena ${n}</span><span class="scn-k">${s.f.k}</span><span class="scn-t">${s.t}</span>${done?`<span class="chip ok">conclusa</span>`:cur===s?`<span class="chip hope">in corso</span>`:""}</summary>
     <div class="scn-b">${frameHTML(s.f)}${s.html()}
-    ${cast.length||here.length?`<div class="stack" style="gap:8px"><div class="row"><span class="lab">In scena</span>${cast.join("")}${here.length?`<button class="btn xs" data-a="new-round" data-w="${key}">Nuovo giro: azzera «ha agito»</button>`:""}</div>${sceneHTML(here)}</div>`:""}
+    ${ENC[key]?encounterCard(key,ENC[key]):""}
     <div class="scn-foot">${done?`<span class="chip ok">Scena conclusa</span><button class="btn xs" data-a="scn-reopen" data-k="${key}">Riapri</button>`:`<button class="btn pri" data-a="scn-done" data-k="${key}">Concludi scena</button><span class="xsmall muted">Alla fine della scena potrai proseguire come previsto o improvvisarne una nuova.</span>`}</div>
     </div></details>
     ${devs.map((dv,i)=>devCard(dv,`${n}.${i+1}`)).join("")}
@@ -1090,14 +1187,11 @@ function renderAct(){
   }).join("");
 }
 function renderCombat(){
-  const here=S.foes.filter(f=>f.where&&f.where.startsWith(S.act+":"));
-  const other=S.foes.filter(f=>!here.includes(f));
-  return `<div class="stack"><div class="row" style="justify-content:space-between"><h2>Scontro</h2>
-   <div class="row"><select id="add-tmpl" aria-label="Avversario">${Object.entries(T).map(([k,t])=>`<option value="${k}">${esc(t.name)}</option>`).join("")}</select><input type="number" id="add-n" value="1" min="1" max="12" aria-label="Quantità"><button class="btn pri" data-a="add-foe">Aggiungi</button>
-   <button class="btn" data-a="new-round">Nuovo giro</button><button class="btn" data-a="clear-dead">Rimuovi sconfitti</button><button class="btn bad" data-a="clear-foes">Svuota</button></div></div>
+  const keys=[...new Set(S.foes.map(f=>f.where))];
+  const cards=keys.map(k=>{if(ENC[k])return encounterCard(k,ENC[k],true);const m=k.match(/^[^:]+:dev:(.+)$/);const dv=m&&S.devs.find(x=>x.id===m[1]);return dv?encounterCard(k,devEnc(dv),true):""}).join("");
+  return `<div class="stack"><h2>Scontro</h2>
   ${foeRoll.res?`<div class="note mono small">${esc(foeRoll.res)}</div>`:""}
-  <div class="lab">Atto attuale</div>${sceneHTML(here,"Nessuno in scena in questo atto. Usa i pulsanti «In scena» nelle sezioni o «Aggiungi».")}
-  ${other.length?`<div class="lab">Da altri atti</div>${sceneHTML(other)}`:""}
+  ${cards||`<div class="panel muted small">Nessun incontro con partecipanti. Apri un incontro in una scena e usa il pulsante +.</div>`}
   <h3>Conti alla rovescia</h3>
   <div class="stack">${S.cds.map(c=>`<div class="row"><b>${esc(c.name)}</b>${pips(c.max,c.v,"cd","cd-pip",`data-id="${c.id}"`)}<span class="mono">${c.v}</span><button class="btn xs" data-a="cd-tick" data-id="${c.id}" data-k="-1">−1</button><button class="btn xs" data-a="cd-tick" data-id="${c.id}" data-k="1">+1</button><button class="btn xs" data-a="cd-del" data-id="${c.id}" aria-label="Rimuovi">×</button>${c.note?`<span class="small muted">${esc(c.note)}</span>`:""}</div>`).join("")}
   <div class="row small"><input type="text" id="cd-name" placeholder="Nome del conto" aria-label="Nome del conto"><input type="number" id="cd-max" value="4" min="1" max="12" aria-label="Valore"><button class="btn xs" data-a="cd-add">+ Conto</button></div></div>
@@ -1129,7 +1223,7 @@ function renderDiary(){return `<div class="stack"><h2>Diario della sessione</h2>
 <li>Scene concluse: <b>${Object.keys(S.scn).length}</b> · improvvisate: <b>${S.devs.length}</b></li></ul>
 <div class="lab">PNG di casa</div>${homeEditor()}
 <label class="lab" for="notes">Note libere</label><textarea id="notes" data-f="notes" rows="6">${esc(S.notes)}</textarea>
-<div class="row">${resetAsk?`<span class="small">Cancellare tutto e ricominciare?</span><button class="btn bad" data-a="reset-yes">Sì, azzera</button><button class="btn" data-a="reset-no">Annulla</button>`:`<button class="btn bad xs" data-a="reset">Nuova campagna…</button>`}</div></div>
+</div>
 <div class="panel"><h4>Registro</h4><div class="log">${S.log.map(l=>`<div><span class="t">${l.t}</span><span>${esc(l.text)}</span></div>`).join("")||`<span class="muted small">Tiri ed eventi compariranno qui.</span>`}</div></div></div></div>`}
 
 function render(){
@@ -1150,6 +1244,16 @@ const A={
  "fear-set":o=>upd(()=>{const n=+o.i+1;addFear((S.fear===n?n-1:n)-S.fear,"manuale")}),
  ctr:o=>upd(()=>counterAdd(+o.k,"manuale")),
  "ctr-start":()=>upd(()=>counterStart(15,"manuale")),
+ "ctr-close":()=>upd(()=>{S.counter.on=false;log(`Contatore d'Assalto chiuso (era ${S.counter.value})`)}),
+ "fear-step":o=>upd(()=>addFear(+o.k,"manuale")),
+ "enc-toggle":o=>{const now=encOpen.has(o.k)?encOpen.get(o.k):false;encOpen.set(o.k,!now);picker=null;encResetAsk=null;render()},
+ "enc-plus":o=>{picker=o.k||null;render()},
+ "enc-add":o=>upd(()=>{spawn(o.k,+o.n||1,o.w);picker=null;encOpen.set(o.w,true)}),
+ "enc-add-sel":o=>{const el=document.getElementById("pick-"+o.w.replace(/[:.]/g,"_"));if(!el)return;upd(()=>{spawn(el.value,1,o.w);picker=null})},
+ "enc-reset-ask":o=>{encResetAsk=o.k;render()},
+ "enc-reset-no":()=>{encResetAsk=null;render()},
+ "enc-reset":o=>upd(()=>{encResetAsk=null;S.foes.filter(f=>f.where===o.k).forEach(f=>{f.hp=0;f.st=0;f.cond=[];f.acted=false;f.dead=false});if(ENC[o.k]?.reset)ENC[o.k].reset();if(o.k==="3:anziano")syncElder();log("Incontro reimpostato")}),
+ "sheet-tab":o=>{sheetTab=o.k;render()},
  "chase-d":o=>upd(()=>{const n=+o.i+1;S.chase.d=S.chase.d===n?n-1:n}),
  "chase-t":o=>upd(()=>{const n=+o.i+1;S.chase.t=S.chase.t===n?n-1:n}),
  chase:o=>upd(()=>{
@@ -1237,7 +1341,7 @@ const A={
    else if(h>f){let c=h;const hp=Math.min(r.hp,c);r.hp-=hp;c-=hp;r.st=Math.max(0,r.st-c);log(`${p.name} rischia tutto: Speranza ${h} > Paura ${f}. Recupera ${h} tra PF e Stress`,"ok")}
    else log(`${p.name} rischia tutto: Paura ${f} > Speranza ${h}. Il personaggio muore`,"bad")}}),
  // avversari
- "foe-open":o=>{openFoe=openFoe===o.id?null:o.id;render();if(openFoe)setTimeout(()=>document.getElementById("fd-"+o.id)?.scrollIntoView({behavior:"smooth",block:"nearest"}),0)},
+ "foe-open":o=>{openFoe=openFoe===o.id?null:o.id;sheetTab="cap";render();if(openFoe)setTimeout(()=>document.getElementById("fd-"+o.id)?.scrollIntoView({behavior:"smooth",block:"nearest"}),0)},
  "foe-pip":o=>upd(()=>{const f=foe(o.id),n=+o.i+1;f[o.k]=f[o.k]===n?n-1:n;if(o.k==="st"&&f.tmpl==="elder"){S.elderSt=f.st;syncElder()}if(o.k==="hp"){if(f.hp>=f.hpMax)foeDefeated(f);else f.dead=false}}),
  "foe-thr":o=>upd(()=>{const f=foe(o.id);foeMark(f,"hp",+o.k);log(`${f.name} segna ${o.k} PF (${f.hpMax-f.hp}/${f.hpMax} rimasti)`)}),
  "foe-acted":o=>upd(()=>{const f=foe(o.id);f.acted=!f.acted}),
@@ -1280,18 +1384,18 @@ const A={
  "gen-stop":()=>G.ctrl?.abort(),
  "dev-regen":o=>{const dv=S.devs.find(x=>x.id===o.id);if(dv&&!G.busy)generate(dv.where,dv.user,dv.kind,dv.id)},
  "dev-del":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);S.devs=S.devs.filter(x=>x!==dv);if(dv)S.foes=S.foes.filter(f=>f.where!==dv.act+":dev:"+dv.id)}),
- "dev-foe":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);const r=parseDev(dv.raw).avv[+o.i];if(!r)return;const thr=String(r[4]||"").split("/").map(x=>parseInt(x));
+ "dev-foe":o=>upd(()=>{picker=null;const dv=S.devs.find(x=>x.id===o.id);const r=parseDev(dv.raw).avv[+o.i];if(!r)return;const thr=String(r[4]||"").split("/").map(x=>parseInt(x));
   const dmg=(String(r[9]||"").match(/\d*d\d+\s*[+-]?\s*\d*/)||[""])[0].replace(/\s/g,"");
   const src={name:r[0],tier:1,type:r[1]||"Standard",diff:parseInt(r[3])||12,thr:[isNaN(thr[0])?null:thr[0],isNaN(thr[1])?null:thr[1]],hp:clamp(parseInt(r[5])||3,1,12),st:clamp(parseInt(r[6])||1,0,6),atk:parseInt(r[7])||0,
    attack:{n:(r[8]||"Attacco").split(/[·,(]/)[0].trim(),r:((r[8]||"").match(/Molto Vicina|Molto Lontana|Mischia|Vicina|Lontana/i)||["Mischia"])[0],d:dmg||"1d6+2",ty:/mag/i.test(r[9]||"")?"mag":"fis"},
    feats:r.slice(10).filter(Boolean).map(x=>{const [n,...rest]=x.split(":");return {n:n.trim(),k:"Azione",x:rest.join(":").trim()||x}}),minion:/minion|gregar/i.test(r[1]||""),desc:parseDev(dv.raw).titolo||""};
   const n=clamp(parseInt(r[2])||1,1,10);for(let i=0;i<n;i++)S.foes.push(mkFoe(src,dv.act+":dev:"+dv.id,n>1?` #${i+1}`:""));log(`In scena: ${n>1?n+"× ":""}${src.name}`)}),
- "dev-npc":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);const r=parseDev(dv.raw).png[+o.i];if(!r)return;
+ "dev-npc":o=>upd(()=>{picker=null;const dv=S.devs.find(x=>x.id===o.id);const r=parseDev(dv.raw).png[+o.i];if(!r)return;
   S.foes.push(mkFoe({name:r[0],type:"PNG",desc:r[1]||"",mot:r[2]||"",diff:parseInt(r[3])||12,feats:[]},dv.act+":dev:"+dv.id,""));log(`In scena: ${r[0]}`)}),
  "dev-cd":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);const c=parseDev(dv.raw).conti[+o.i];if(!c)return;const m=clamp(parseInt(c[1])||4,1,12);S.cds.push({id:uid(),name:c[0],max:m,v:m,note:c[2]||""});toast("Conto aggiunto nella scheda Scontro")}),
- reset:()=>{resetAsk=true;render()},
- "reset-no":()=>{resetAsk=false;render()},
- "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();persist();render();toast("Nuova campagna pronta")}
+ reset:()=>{resetAsk=true;renderBar()},
+ "reset-no":()=>{resetAsk=false;renderBar()},
+ "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;Object.assign(R,{who:"",mod:0,diff:12,adv:0,dis:0,exp:0,reaction:false,helpers:[],label:"",final:false,res:null});simple.res=null;foeRoll.res=null;top0();persist();render();toast("Nuova campagna pronta")}
 };
 
 document.addEventListener("click",e=>{
@@ -1300,11 +1404,12 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("[data-a]");if(!b)return;
   const f=A[b.dataset.a];if(f)f(b.dataset,b);
 });
-document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList?.contains("fc")){e.preventDefault();A["foe-open"](e.target.dataset)}});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".mc[data-a],.enc[data-a]")){e.preventDefault();A[e.target.dataset.a](e.target.dataset)}});
 document.addEventListener("change",e=>{
   const el=e.target,o=el.dataset;if(!o.f)return;const v=el.value;
   switch(o.f){
     case "pc-over":{const r=pcRaw(o.id);r.over[o.k]=clamp(+v||0,0,o.k.endsWith("Max")?12:40);const p=P(r);r.hp=Math.min(r.hp,p.hpMax);r.st=Math.min(r.st,p.stMax);r.ar=Math.min(r.ar,p.arMax);persist();render();return}
+    case "foe-cond-add":{const f=foe(o.id);if(v&&f&&!f.cond.includes(v)){f.cond.push(v);log(`${f.name}: ${v}`);persist();render()}return}
     case "pc-notes":pcRaw(o.id).notes=v;persist();return;
     case "r":R[o.k]=o.k==="who"?v:(+v||0);if(o.k==="who")R.helpers=R.helpers.filter(x=>x!==v);renderDock();return;
     case "critter":S.critters[+o.i]=v;persist();render();return;
