@@ -288,9 +288,14 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .fearbox{border-color:var(--fear)} .fearbox b{color:var(--fear)}
 .enc-env{border:1px dashed var(--line);border-radius:8px;padding:8px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
 .enc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;align-items:start}
-.enc-rules{margin-top:6px;border-left:3px solid var(--kc);padding:4px 10px;background:var(--bg);border-radius:0 var(--r) var(--r) 0}
-.enc-rules ul{margin:0}
-.enc-main .enc-rules b{font-family:var(--f-body);font-weight:700;font-size:inherit;line-height:inherit;display:inline}
+.enc-rules{border:1px solid var(--line);border-left:4px solid var(--kc);border-radius:var(--r);background:var(--bg);padding:6px 12px}
+.enc-rules>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+.enc-rules>summary::-webkit-details-marker{display:none}
+.enc-rules>summary::before{content:"▸";color:var(--kc);font-size:.8rem}
+.enc-rules[open]>summary::before{content:"▾"}
+.enc-rules[open]>summary{margin-bottom:4px}
+.enc-rules ul{margin:0;columns:2 340px;column-gap:24px}
+.enc-rules li{break-inside:avoid}
 .enc-split{display:grid;grid-template-columns:fit-content(620px) minmax(210px,250px);justify-content:start;gap:10px;align-items:start}
 .enc-split .env-compact{grid-template-columns:repeat(2,minmax(0,290px))}
 @media (max-width:980px){.enc-split .env-compact{grid-template-columns:minmax(0,1fr)}}
@@ -1125,7 +1130,7 @@ function foeMark(f,k,n){
   if(f.hpMax&&f.hp>=f.hpMax)foeDefeated(f);
 }
 /* ---- incontri: card dell'incontro → card dei partecipanti → scheda dettagliata ---- */
-const encOpen=new Map();let picker=null,encResetAsk=null,sheetTab="cap";
+const encOpen=new Map(),rulesOpen=new Map(); // rulesOpen: specchietto regole chiuso a manolet picker=null,encResetAsk=null,sheetTab="cap";
 const KIND_ICON={Combattimento:"⚔",Sociale:"❝",Ambientale:"✧"};
 const initial=n=>esc(String(n||"?").trim().charAt(0).toUpperCase());
 const condMark=list=>{const v=list.includes("Vulnerabile"),h=list.includes("Nascosto");return v&&!h?`<span class="cmark up" title="I tiri contro hanno vantaggio">▲ vant.</span>`:h&&!v?`<span class="cmark down" title="I tiri contro hanno svantaggio">▼ svant.</span>`:""};
@@ -1207,13 +1212,14 @@ function encounterCard(key,def,forceOpen){
    :`<button class="enc-plus" data-a="enc-plus" data-k="${key}" aria-label="Aggiungi partecipante" title="Aggiungi partecipante">+</button>`;
   const sel=parts.find(f=>f.id===openFoe);
   return `<div class="enc open ${kc}" id="enc-${key.replace(/[:.]/g,"_")}">
-   <div class="enc-head"><div class="enc-main"><span class="enc-kind">${KIND_ICON[def.k]||"✦"} Incontro ${def.k.toLowerCase()}</span><b>${esc(def.t)}</b><p>${def.d}</p>${def.rules?`<div class="enc-rules">${def.rules()}</div>`:""}</div>
+   <div class="enc-head"><div class="enc-main"><span class="enc-kind">${KIND_ICON[def.k]||"✦"} Incontro ${def.k.toLowerCase()}</span><b>${esc(def.t)}</b><p>${def.d}</p></div>
     <div class="enc-tools">
      <div class="box fearbox"><span class="lab">Paura</span><b>${S.fear}</b><button class="btn xs" data-a="fear-step" data-k="-1" aria-label="Paura −1">−</button><button class="btn xs fear" data-a="fear-step" data-k="1" aria-label="Paura +1">+</button></div>
      ${parts.length?`<div class="box"><span class="lab">In piedi</span><b>${up}<small>/${parts.length}</small></b></div>`:""}
      <button class="btn" data-a="new-round" data-w="${key}">Nuovo giro GM</button>
      ${encResetAsk===key?`<button class="btn bad" data-a="enc-reset" data-k="${key}">Conferma reimposta</button><button class="btn xs" data-a="enc-reset-no">No</button>`:`<button class="btn" data-a="enc-reset-ask" data-k="${key}">Reimposta</button>`}
      ${forceOpen?"":`<button class="btn" data-a="enc-toggle" data-k="${key}">Chiudi</button>`}</div></div>
+   ${def.rules?`<details class="enc-rules" data-k="${key}" ${rulesOpen.get(key)===false?"":"open"}><summary><span class="lab">Regole dell'incontro</span></summary>${def.rules()}</details>`:""}
    ${def.env&&parts.length&&parts.length<=2 // pochi partecipanti: le loro card accanto all'ambiente invece che in una riga quasi vuota
     ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div></div>`
     :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div>`}
@@ -2220,6 +2226,7 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("[data-a]");if(!b)return;
   const f=A[b.dataset.a];if(f){f(b.dataset,b);flushShows()}
 });
+document.addEventListener("toggle",e=>{const d=e.target;if(d.matches?.("details.enc-rules"))rulesOpen.set(d.dataset.k,d.open)},true);
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&VIEW.mode!=="gm"&&VIEW.canGM&&!document.fullscreenElement){A["view-mode"]({k:"gm"});return}if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".mc[data-a],.enc[data-a]")){e.preventDefault();A[e.target.dataset.a](e.target.dataset)}});
 document.addEventListener("change",e=>{
   const el=e.target,o=el.dataset;if(!o.f)return;const v=el.value;
