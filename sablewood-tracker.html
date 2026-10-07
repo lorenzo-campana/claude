@@ -1615,26 +1615,38 @@ function nextScene(act,id){
   for(let j=i+1;j<all.length;j++){const x=all[j];if(skipReason(x.act+":"+x.s.id))continue;return {act:x.act,s:x.s,n:sceneNum(x.act,x.s.id),actN:x.act!==act?x.actN:null}}
   return null;
 }
+const AI_WORDS="«antico», «oscuro», «misterioso», «sinistro», «arcano», «destino», «potere primordiale», «un'aura di…», «intricato», «palpabile», «tangibile», «avvolto», «intriso», «pervade», «si staglia», «si erge», «danza», «tessuto», «sinfonia», «arazzo», «sussurra», «echeggia», «riecheggia», «vibrante», «un velo di», «senza tempo», «testimonianza di», «nel cuore di», «carico di tensione», «un mix di», «crocevia», «cruciale», «fondamentale», «innegabile», «in bilico»";
+const AI_PHRASES="«non è X, è Y», «non solo… ma anche», «sembra quasi», «non è ciò che sembra», «come se il mondo stesso», «il tempo sembra fermarsi», «e poi, all'improvviso», «ed è qui che», «ma non è tutto», «ecco che», «tuttavia», «inoltre», «del resto», «d'altronde», «in fondo», «in definitiva», «la scelta è vostra», «il destino è nelle vostre mani»";
 function devPrompt(where,userText,kind,excludeId){
   const [act,secId]=where.split(":");
   const sec=SECTIONS[act]().find(s=>s.id===secId),nx=nextScene(act,secId),a=ACTS.find(x=>x.id===act);
-  const chain=S.devs.filter(x=>x.where===where&&x.raw&&x.id!==excludeId).map((x,i)=>{const p=parseDev(x.raw);return `${i+1}) «${p.titolo||"?"}» — al tavolo: ${x.user||"—"}; posta: ${p.posta||"—"}; uscita: ${p.uscita||"—"}`.slice(0,300)}).join("\n");
+  const chain=S.devs.filter(x=>x.where===where&&x.raw&&x.id!==excludeId).map((x,i)=>{const p=parseDev(x.raw);return `${i+1}) «${p.titolo||"?"}»; al tavolo: ${x.user||"?"}; posta: ${p.posta||"?"}; uscita: ${p.uscita||"?"}`.slice(0,300)}).join("\n");
   const party=S.pcs.map(r=>{const q=P(r);return `${q.name} (${q.cls}${q.sage?", Saggio di Corte":""}; PF ${q.hpMax-r.hp}/${q.hpMax}, Stress ${r.st}/${q.stMax}, Speranza ${r.hope}${r.cond.length?", "+r.cond.join("/"):""})`}).join("; ");
   return `Sei il co-GM di una partita di Daggerheart (Tier 1, PG di livello 1), avventura "The Sablewood Messengers". I giocatori hanno appena concluso una scena facendo qualcosa di inaspettato. Crea la NUOVA SCENA IMPROVVISATA che ne deriva, seguendo le linee guida di Daggerheart per le scene: inquadrala (dove siamo, chi c'è, cosa è in gioco), dai ai PG qualcosa a cui reagire, fai domande ai giocatori per coinvolgerli nella narrazione, usa la Paura con parsimonia e prevedi un'uscita chiara che riporti la storia verso la prossima scena prevista, senza forzature.
 
-PRIMA DI SCRIVERE (non scriverlo nella risposta): chiediti cosa è appena successo, chi reagisce per primo, cosa vogliono i PG adesso e cosa può andare storto. Solo dopo scrivi le righe.
+PROCESSO (lavora per fasi e non scrivere le fasi nella risposta):
+1) Prima di scrivere. Chi legge è il GM al tavolo: legge LEGGI ad alta voce e scorre il resto mentre gioca. Chiediti cosa è appena successo, chi reagisce per primo, cosa vogliono i PG adesso, cosa può andare storto, quale PNG o creatura del modulo entra in scena e quali due strade diverse hanno i PG.
+2) Stesura. Compila le righe nell'ordine richiesto. LEGGI si scrive per l'orecchio, con frasi che si dicono in un fiato. SCENA si scrive per l'occhio del GM: fatti, reazioni dei PNG e mosse possibili.
+3) Rilettura. Prima di rispondere rileggi ogni riga contro le regole di STILE, togli le parole che non servono e controlla che formato ed EFFETTI siano esatti.
 
 STILE (importante): scrivi come il modulo originale, in un italiano naturale da GM al tavolo, non da romanzo fantasy generico.
+Parole:
 - Dettagli concreti e sensoriali presi dal Sablewood (radici alte come torri, buio a mezzogiorno, animali ibridi precisi, odori, rumori), non aggettivi vaghi.
-- Vietati i cliché: «antico», «oscuro», «misterioso», «sinistro», «arcano», «destino», «potere primordiale», «un'aura di…», «sembra quasi», «non è ciò che sembra», entità astratte con la maiuscola (la Memoria, l'Ombra, il Patto della…).
-- Vietate anche le parole tipiche dei testi scritti da un'IA: «intricato», «palpabile», «tangibile», «avvolto», «si staglia», «danza», «tessuto», «sinfonia», «arazzo», «testimonianza di», «nel cuore di», «carico di tensione», «un mix di», «crocevia», «cruciale», «fondamentale», «in bilico».
-- Il tono del modulo è fiabesco con ironia leggera: i PNG parlano come persone vere, a volte buffe o scorbutiche (Luna che dice «oh, bastoncini», l'Arcanista che chiede del «piccolo Emeris»). Usa PNG, luoghi e creature già esistenti quando possibile.
+- Parole vietate, cliché o tipiche dei testi scritti da un'IA: ${AI_WORDS}. Vietate anche le entità astratte con la maiuscola (la Memoria, l'Ombra, il Patto della…).
+- Frasi fatte e transizioni vietate: ${AI_PHRASES}.
+- Pochi «forse», «sembra», «quasi»: se una cosa c'è, dilla.
+Frasi:
 - Frasi brevi e attive. Mai la lineetta (— o –): usa il punto o la virgola.
 - Niente terne automatiche: non mettere in fila tre aggettivi, tre suoni o tre azioni. Uno o due dettagli bastano.
-- Niente formule del tipo «non è X, è Y», «non solo… ma anche», «e poi, all'improvviso», «tuttavia», «inoltre», «in definitiva».
+- Varia la lunghezza delle frasi e non costruirle tutte con lo stesso schema.
+- Ogni valore è testo semplice: niente elenchi, grassetti o titoletti dentro le righe.
+Scena (sono i segni che restano anche dopo aver tolto le parole vietate):
 - Il testo da leggere non apre con l'atmosfera («l'aria è densa», «un silenzio cala»): apre con un fatto o con qualcuno che fa qualcosa.
-- Niente frasi a effetto finali, niente morale, niente frase che spiega cosa significa la scena. Il testo da leggere descrive ciò che i PG vedono e sentono, non cosa provano, e finisce lasciando loro la scelta.
+- Il testo da leggere descrive ciò che i PG vedono e sentono, non cosa provano. Finisce su un dettaglio concreto o su qualcosa che un PNG fa o dice, senza frase a effetto e senza annunciare che tocca ai PG.
+- Nessuna riga spiega cosa significa la scena, cosa devono capire i PG o qual è la morale.
+- Niente chiusura fabbricata: la scena non deve risolvere ogni filo né finire con tutti d'accordo. USCITA e RACCORDO dicono come si esce, non come tutto si sistema.
 - Non c'è un'unica strada giusta: nella SCENA indica almeno due modi diversi in cui i PG possono affrontarla.
+- Il tono del modulo è fiabesco con ironia leggera: i PNG parlano come persone vere, a volte buffe o scorbutiche (Luna che dice «oh, bastoncini», l'Arcanista che chiede del «piccolo Emeris»). Usa PNG, luoghi e creature già esistenti quando possibile.
 - Il titolo è un'etichetta semplice e concreta (es. «Il ponte di liane», «Lausa vuole un'ascia»), non un titolo epico.
 
 CAMPAGNA: il Saggio di Corte (Marlowe) e il gruppo portano in segreto la pietra del sigillo della loro città (ora indifesa) all'Arcanista Fuocobianco nel villaggio nascosto di Hush, nel Sablewood: foresta buia di alberi alti centinaia di metri e creature ibride (lemuri-rospo, alci-tigre, orso-vespe, ragni-gatto), dove i Nuovi Dèi uccisero gli Antichi. Nemici: Scarshade (squarci nella realtà, emissari degli Antichi Dèi), Strixwolf (lupo-gufo guardiano), Scheletri Antichi, Eroi Dimenticati. Hush è ostile agli estranei (Anziano Halython). Il Contatore d'Assalto alla Città è la Difficoltà del tiro finale: ogni perdita di tempo lo alza.
@@ -1645,11 +1657,11 @@ PERTINENZA (importante):
 - È una scena breve (10-20 minuti di gioco) che finisce riportando il gruppo verso la prossima scena prevista.
 - Rispetta lo stato attuale: chi è morto resta morto, ciò che è già successo non si annulla.
 
-SCENA APPENA CONCLUSA: Scena ${sceneNum(act,secId)} (Atto ${a.n}) «${sec.t}». Posta in gioco: ${typeof sec.f.posta==="function"?sec.f.posta():sec.f.posta}. Esito registrato: ${S.out[where]||"—"}. Testo della scena: ${strip(sec.html()).slice(0,1100)}
+SCENA APPENA CONCLUSA: Scena ${sceneNum(act,secId)} (Atto ${a.n}) «${sec.t}». Posta in gioco: ${typeof sec.f.posta==="function"?sec.f.posta():sec.f.posta}. Esito registrato: ${S.out[where]||"nessuno"}. Testo della scena: ${strip(sec.html()).slice(0,1100)}
 ${chain?`SCENE IMPROVVISATE GIÀ GIOCATE DOPO QUELLA SCENA (in ordine):\n${chain}\n`:""}PROSSIMA SCENA PREVISTA: ${nx?`Scena ${nx.n} «${nx.s.t}»${nx.actN?` (Atto ${nx.actN})`:""}: ${typeof nx.s.f.posta==="function"?nx.s.f.posta():nx.s.f.posta}. ${strip(nx.s.html()).slice(0,260)}`:"fine dell'avventura"}
 STATO: Paura del GM ${S.fear}/12; Contatore ${S.counter.on?S.counter.value:"non attivo"}; Luna ${S.flags.luna==="saved"?"viva, col gruppo":S.flags.luna==="dead"?"morta":"sorte non decisa"}; patto fatato: ${S.flags.bargain?pcName(S.flags.bargain)+(S.flags.bargainUsed?" (riscosso)":""):"nessuno"}; Scarshade sanno del pacco: ${S.flags.learned===true?"sì":S.flags.learned===false?"no":"?"}; bottino: ${S.loot.join(", ")||"nessuno"}.
 GRUPPO: ${party}
-EVENTI RECENTI: ${S.log.slice(0,8).map(l=>l.text).join(" | ")||"—"}
+EVENTI RECENTI: ${S.log.slice(0,8).map(l=>l.text).join(" | ")||"nessuno"}
 COSA HANNO FATTO I PG DI INASPETTATO (racconto del GM): ${userText||"nessuna indicazione: proponi la deviazione più naturale"}
 TIPO DI SCENA DESIDERATO: ${kind}
 
@@ -1678,9 +1690,14 @@ CONTATORE +N · CONTATORE -N · PAURA +N · PAURA -N · SPERANZA PG +N · SPERAN
 Usa valori piccoli (1-2) e coerenti con Daggerheart Tier 1.`;
 }
 function polishPrompt(raw){
-  return `Sei il revisore dei testi di una partita di Daggerheart in italiano. Qui sotto c'è una scena improvvisata scritta da un co-GM. Rivedila in due tempi.
-1) Controllo (non scriverlo nella risposta): cerca i segni di un testo scritto da un'IA. Parole vuote o cliché («antico», «oscuro», «misterioso», «sinistro», «arcano», «intricato», «palpabile», «avvolto», «si staglia», «danza», «tessuto», «nel cuore di», «carico di tensione», «cruciale»); lineette (— o –); terne di aggettivi, suoni o azioni; formule come «non è X, è Y», «non solo… ma anche», «tuttavia», «inoltre»; aperture d'atmosfera («l'aria è densa», «un silenzio cala»); frasi finali a effetto, morali o che spiegano il senso della scena; emozioni attribuite ai PG nel testo da leggere; entità astratte con la maiuscola; una sola strada possibile per i PG.
-2) Riscrittura: correggi solo il testo dove trovi questi problemi. Frasi brevi e attive, dettagli concreti, PNG che parlano come persone vere, tono fiabesco con ironia leggera. Se una frase va già bene lasciala com'è.
+  return `Sei il revisore dei testi di una partita di Daggerheart in italiano, un editor severo. Qui sotto c'è una scena improvvisata scritta da un co-GM. Rivedila in tre tempi.
+1) Diagnosi (non scriverla nella risposta). Rileggi riga per riga e segna ogni problema di queste quattro categorie.
+a) Parole vietate: ${AI_WORDS}; entità astratte con la maiuscola.
+b) Frasi fatte e transizioni: ${AI_PHRASES}.
+c) Strutture: lineette (— o –); terne di aggettivi, suoni o azioni; frasi tutte della stessa lunghezza o costruite con lo stesso schema; elenchi, grassetti o titoletti dentro i valori; troppi «forse», «sembra», «quasi».
+d) Segni a livello di discorso: aperture d'atmosfera («l'aria è densa», «un silenzio cala»); frasi finali a effetto, morali o che spiegano il senso della scena; chiusure fabbricate (ogni filo risolto, tutti d'accordo, la scelta annunciata ai PG); emozioni attribuite ai PG nel testo da leggere; una sola strada possibile per i PG.
+2) Riscrittura. Correggi solo dove hai segnato un problema: frasi brevi e attive, dettagli concreti, PNG che parlano come persone vere, tono fiabesco con ironia leggera. Se la SCENA offre una sola strada, aggiungine una seconda usando elementi già presenti nella scena. Se una riga va già bene lasciala identica.
+3) Verifica (non scriverla nella risposta). Rileggi il risultato contro le categorie del punto 1 e contro le REGOLE FERREE. Se trovi ancora un problema, correggilo prima di rispondere.
 
 REGOLE FERREE:
 - Mantieni le stesse righe CHIAVE: valore, nello stesso ordine e nello stesso numero. Nessun markdown, nessun commento, nessuna riga in più.
