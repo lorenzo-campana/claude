@@ -288,6 +288,10 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .fearbox{border-color:var(--fear)} .fearbox b{color:var(--fear)}
 .enc-env{border:1px dashed var(--line);border-radius:8px;padding:8px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
 .enc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;align-items:start}
+.enc-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,250px);gap:10px;align-items:start}
+.enc-split .enc-grid{grid-template-columns:minmax(0,1fr)}
+.enc-split .enc-plus{min-height:44px;font-size:1.6rem}
+@media (max-width:760px){.enc-split{grid-template-columns:minmax(0,1fr)}}
 .mc{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:9px 10px;display:flex;flex-direction:column;gap:5px;cursor:pointer}
 .mc:hover{border-color:var(--ink)}
 .mc.sel{border:2px solid var(--kc);padding:8px 9px;background:var(--paper)}
@@ -1094,8 +1098,9 @@ function encounterCard(key,def,forceOpen){
      <button class="btn" data-a="new-round" data-w="${key}">Nuovo giro GM</button>
      ${encResetAsk===key?`<button class="btn bad" data-a="enc-reset" data-k="${key}">Conferma reimposta</button><button class="btn xs" data-a="enc-reset-no">No</button>`:`<button class="btn" data-a="enc-reset-ask" data-k="${key}">Reimposta</button>`}
      ${forceOpen?"":`<button class="btn" data-a="enc-toggle" data-k="${key}">Chiudi</button>`}</div></div>
-   ${def.env?`<div class="enc-env">${def.env()}</div>`:""}
-   <div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div>
+   ${def.env&&parts.length&&parts.length<=2 // pochi partecipanti: le loro card accanto all'ambiente invece che in una riga quasi vuota
+    ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div></div>`
+    :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid">${parts.map(miniCard).join("")}${pick}</div>`}
    ${sel?foeSheet(sel):""}
   </div>`;
 }
