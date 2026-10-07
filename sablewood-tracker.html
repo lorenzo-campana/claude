@@ -9,7 +9,7 @@
   --hope:#a8741a; --hope-soft:#f0e2c2;
   --fear:#6a3f86; --fear-soft:#e5daee;
   --blood:#9b2f2a; --blood-soft:#f1d9d5;
-  --ok:#2f6d43; --plate:#2a312d; --plate-fg:#f1f2ec;
+  --ok:#2f6d43; --plate:#2a312d; --plate-fg:#f1f2ec; --ask:#1f6f8b; --ask-soft:#d9ebf0;
   --f-display:"IM Fell English SC", "Iowan Old Style", Georgia, serif;
   --f-read:"IM Fell English", "Iowan Old Style", Georgia, serif;
   --f-body:"Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
@@ -20,12 +20,12 @@
   --bg:#111613; --paper:#192019; --ink:#e3e7df; --muted:#9aa69c; --line:#2f3a32;
   --moss:#8fb79a; --moss-soft:#24332a; --hope:#e0aa4c; --hope-soft:#3a2e17;
   --fear:#b892d6; --fear-soft:#2f2339; --blood:#e0786e; --blood-soft:#3b1f1c; --ok:#7cc293;
-  --plate:#cfd6cc; --plate-fg:#161b18; color-scheme:dark }}
+  --plate:#cfd6cc; --plate-fg:#161b18; --ask:#6cc3df; --ask-soft:#14303a; color-scheme:dark }}
 :root[data-theme="dark"]{
   --bg:#111613; --paper:#192019; --ink:#e3e7df; --muted:#9aa69c; --line:#2f3a32;
   --moss:#8fb79a; --moss-soft:#24332a; --hope:#e0aa4c; --hope-soft:#3a2e17;
   --fear:#b892d6; --fear-soft:#2f2339; --blood:#e0786e; --blood-soft:#3b1f1c; --ok:#7cc293;
-  --plate:#cfd6cc; --plate-fg:#161b18; color-scheme:dark }
+  --plate:#cfd6cc; --plate-fg:#161b18; --ask:#6cc3df; --ask-soft:#14303a; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);margin:0}
@@ -109,6 +109,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .warn{border-left:3px solid var(--blood);padding:8px 12px;background:var(--blood-soft);border-radius:0 var(--r) var(--r) 0}
 ul.tight,ol.tight{margin:4px 0;padding-left:20px} .tight li{margin:2px 0}
 p{margin:0}
+
+.ask{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;background:var(--ask-soft);border:1.5px solid var(--ask);border-radius:14px 14px 14px 3px;padding:10px 14px 12px 10px;position:relative}
+.ask-ico{width:34px;height:34px;border-radius:50%;background:var(--ask);color:var(--paper);display:grid;place-items:center;font-family:var(--f-display);font-size:1.35rem;line-height:1;flex:none}
+.ask-cue{display:block;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ask);margin-bottom:2px}
+.ask p{font-size:1.05rem;font-weight:500;line-height:1.4}
+.ask .ask-x{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.asks{display:flex;flex-direction:column;gap:8px}
 
 /* box di regole (inseguimento, fiume, rituale) */
 .stat{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--paper)}
@@ -874,6 +881,7 @@ function encounterCard(key,def,forceOpen){
 }
 
 /* ================= sezioni degli atti ================= */
+const ask=(q,extra="",cue="Chiedi ai giocatori")=>`<div class="ask"><span class="ask-ico" aria-hidden="true">?</span><div><span class="ask-cue">${cue}</span><p>${q}</p>${extra?`<div class="ask-x">${extra}</div>`:""}</div></div>`;
 const read=(html,cue="Leggi ad alta voce")=>`<div class="read"><span class="cue">${cue}</span>${html}</div>`;
 const hybrid=()=>{const [a,b]=S.critters;return a&&b?`${esc(a)}-${esc(b)}`:"[ibrido delle due creature]"};
 const luna=()=>S.flags.luna==="saved";
@@ -885,12 +893,12 @@ let drownPick="",elderPick="";
 const castBtn=(key,label,n,where)=>`<button class="btn xs ok" data-a="spawn" data-k="${key}" data-n="${n}" data-w="${where}">+ ${label}</button>`;
 
 const F={
- inizio:{k:"Inseguimento",luogo:"Un bivacco nel Sablewood, sotto alberi alti centinaia di metri: è giorno, ma sembra notte fonda.",posta:"Raggiungere Luna prima che sia troppo tardi.",domande:["Nominate due creature della foresta: che ibrido formano?","Cosa vi tiene svegli mentre aspettate Luna?"],uscita:"Distanza a 0: Luna è viva. Tempo a 0: Luna è morta. In entrambi i casi si arriva alla radura."},
+ inizio:{k:"Inseguimento",luogo:"Un bivacco nel Sablewood, sotto alberi alti centinaia di metri: è giorno, ma sembra notte fonda.",posta:"Raggiungere Luna prima che sia troppo tardi.",domande:["Cosa vi tiene svegli mentre aspettate Luna?"],uscita:"Distanza a 0: Luna è viva. Tempo a 0: Luna è morta. In entrambi i casi si arriva alla radura."},
  prezzo:{k:"Sociale · Combattimento",luogo:"Una piccola radura tra radici enormi.",posta:"La vita di Luna, e forse un debito con uno spirito antico.",domande:["Chi di voi parla per primo allo Strixwolf?","Cosa sareste disposti a offrire a uno spirito della foresta?"],uscita:"Patto accettato, Strixwolf in fuga o Luna morta: il gruppo riprende il cammino verso Hush."},
  emissari:{k:"Combattimento",luogo:"Il sentiero, avvolto da un silenzio innaturale.",posta:"Il segreto del pacco: se gli Scarshade leggono il Saggio di Corte, la città è in pericolo.",domande:["Come usate i due minuti di silenzio per prepararvi?","Quale ricordo d'infanzia affiora quando uno Scarshade vi tocca la fronte?"],uscita:"Gli Scarshade cadono o svaniscono; si stabilisce se hanno scoperto la verità."},
  polvere:{k:"Scelta",luogo:"Il sentiero dopo lo scontro, tra le tracce degli Scarshade.",posta:"Il tempo: ogni ora persa avvicina l'assalto alla città.",domande:["Chi vuole rischiare la scorciatoia, e chi preferisce il sentiero sicuro?"],uscita:"Scorciatoia (Atto II½) oppure sentiero lungo, con il Contatore +2 (Atto III)."},
- fiume:{k:"Traversata",luogo:"Le rive del fiume Orfanatore, una cascata orizzontale di acqua bianca.",posta:"Attraversare senza perdere nessuno, né l'equipaggiamento.",domande:["Ognuno di voi: cosa vedete sporgere dall'acqua?"],uscita:"Traversata a 0 senza nessuno che annega."},
- arcanista:{k:"Esplorazione · Sociale",luogo:"Hush, oltre la barriera del cippo silenzioso: capanne di legno e sguardi ostili.",posta:"Trovare l'Arcanista senza farsi cacciare dal villaggio.",domande:["Ditemi tre cose che vi fanno capire quanto questo posto sia ostile.","Chi di voi prova a rompere il ghiaccio, e come?"],uscita:"Un paesano accetta di guidarli: arriva l'Anziano Halython."},
+ fiume:{k:"Traversata",luogo:"Le rive del fiume Orfanatore, una cascata orizzontale di acqua bianca.",posta:"Attraversare senza perdere nessuno, né l'equipaggiamento.",domande:[],uscita:"Traversata a 0 senza nessuno che annega."},
+ arcanista:{k:"Esplorazione · Sociale",luogo:"Hush, oltre la barriera del cippo silenzioso: capanne di legno e sguardi ostili.",posta:"Trovare l'Arcanista senza farsi cacciare dal villaggio.",domande:["Chi di voi prova a rompere il ghiaccio, e come?"],uscita:"Un paesano accetta di guidarli: arriva l'Anziano Halython."},
  anziano:{k:"Sociale",luogo:"La piazza di Hush, con i paesani che si radunano attorno.",posta:"Essere accolti o cacciati, e la pace del villaggio.",domande:["Cosa dite per guadagnarvi la fiducia dell'Anziano?"],uscita:"Con 4 Stress l'Anziano si arrende e indica la villa."},
  villa:{k:"Sociale",luogo:"Il viale dei volti intagliati e la villa sull'albero più alto.",posta:"Capire cosa serve al rituale, e quanto tempo resta.",domande:["Cosa chiedete a un'arcanista vecchia di millenni?"],uscita:"L'Arcanista propone la Valle Aperta (o il villaggio) per il rituale."},
  preparare:{k:"Riposo",luogo:"La Valle Aperta, l'unico punto del Sablewood da cui si vede il cielo.",posta:"Recuperare le forze, al prezzo di tempo e Paura.",domande:["Come passate l'ultima ora sotto le stelle?"],uscita:"Il rituale inizia."},
@@ -901,9 +909,7 @@ const F={
 const SECTIONS={
 '1':()=>[
  {id:"inizio",t:"Grida nel buio",f:F.inizio,html:()=>`
- <div class="row small"><span class="lab">Due creature scelte dai giocatori</span>
-  <input type="text" id="cr0" data-f="critter" data-i="0" value="${esc(S.critters[0])}" placeholder="es. tasso" aria-label="Prima creatura">
-  <input type="text" id="cr1" data-f="critter" data-i="1" value="${esc(S.critters[1])}" placeholder="es. falena" aria-label="Seconda creatura"></div>
+ ${ask("Nominate due creature della foresta: si fonderanno in un ibrido che brulica nel sottobosco.",`<input type="text" id="cr0" data-f="critter" data-i="0" value="${esc(S.critters[0])}" placeholder="es. tasso" aria-label="Prima creatura"><span>+</span><input type="text" id="cr1" data-f="critter" data-i="1" value="${esc(S.critters[1])}" placeholder="es. falena" aria-label="Seconda creatura"><b>= ${hybrid()}</b>`,"Prima di leggere")}
  ${read(`<p>Siete attorno a un fuoco. Dovrebbe essere giorno, ma gli alberi del Sablewood salgono per centinaia di metri e coprono il cielo intero: sembra piena notte.</p>
  <p>Tutto intorno sentite il gracidare dei lemuri-rospo e il brulicare di sciami di <b>${hybrid()}</b> nel sottobosco.</p>
  <p>Da un paio d'ore aspettate Luna, una cacciatrice del villaggio di Hush che, secondo le lettere scambiate, dovrebbe guidarvi. È <i>molto</i> in ritardo.</p>
@@ -948,7 +954,8 @@ const SECTIONS={
 ],
 '2.5':()=>[
  {id:"fiume",t:"Il fiume Orfanatore",f:F.fiume,html:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
- ${read(`<p>Il fragore incessante del famigerato fiume Orfanatore minaccia di assordarvi molto prima che lo vediate.</p><p>L'acqua è così turbolenta che sembra una cascata orizzontale.</p><p>Ognuno di voi mi dica una cosa che vede sporgere dall'acqua.</p>`)}
+ ${read(`<p>Il fragore incessante del famigerato fiume Orfanatore minaccia di assordarvi molto prima che lo vediate.</p><p>L'acqua è così turbolenta che sembra una cascata orizzontale.</p>`)}
+ ${ask("Ognuno di voi mi dica una cosa che vede sporgere dall'acqua.","","Chiedi a ogni giocatore")}
  ${S.pcs.some(p=>p.id==="barnacle")?`<div class="note small">Barnacle è anfibio, ma ha paura dell'acqua e non nuota.</div>`:""}
  
  <div class="note small"><b>Glossario:</b> una condizione temporanea come Annegamento si rimuove con un tiro d'azione. I tiri reazione non generano Speranza né Paura. Le carte nel deposito non si possono usare: tornano nella dotazione con un riposo, oppure segni Stress pari al costo di richiamo per scambiarle con una carta della dotazione.</div>
@@ -959,7 +966,8 @@ const SECTIONS={
  {id:"arcanista",t:"Il villaggio che non vuole ospiti",f:F.arcanista,html:()=>`
  ${read(`<p>Dopo un altro paio d'ore nel Sablewood trovate un cippo di pietra a terra, scolpito come un volto accigliato con un dito premuto in verticale sulle labbra corrugate.</p><p>Sembra che i suoi occhi seguano i vostri movimenti, anche se siete <i>quasi certi</i> che la statua sia immobile.</p>`)}
  ${luna()?read(`<p>Luna gli svolazza accanto con disinvoltura… e scompare.</p>`,"Luna è con il gruppo"):""}
- ${read(`<p>Sentite una piccola sensazione, come lo scoppio di una bolla, e il brusio si fa più forte. Oltre questa barriera magica si rivela il villaggio di Hush, con decine di capanne di legno e gli sguardi di qualche dozzina di volti diffidenti. Ditemi tre cose che vedete e che vi fanno capire quanto questo posto sia ostile.</p>`,"Quando superano il cippo")}
+ ${read(`<p>Sentite una piccola sensazione, come lo scoppio di una bolla, e il brusio si fa più forte. Oltre questa barriera magica si rivela il villaggio di Hush, con decine di capanne di legno e gli sguardi di qualche dozzina di volti diffidenti. </p>`,"Quando superano il cippo")}
+ ${ask("Ditemi tre cose che vedete e che vi fanno capire quanto questo posto sia ostile.")}
  ${luna()?`<div class="note">Luna è con il gruppo: passa direttamente all'<b>Anziano Halython</b>.</div>`:""}
  <h4>Trovare l'Arcanista</h4>
  <div class="row">${counterChip()}</div>
@@ -1171,8 +1179,8 @@ function frameHTML(f){
   return `<div class="frame">
    ${f.luogo?`<div><span class="lab">Luogo</span><p>${f.luogo}</p></div>`:""}
    ${f.posta?`<div><span class="lab">Posta in gioco</span><p>${f.posta}</p></div>`:""}
-   ${dom.length?`<div><span class="lab">Domande ai giocatori</span><ul class="tight">${dom.map(q=>`<li>${q}</li>`).join("")}</ul></div>`:""}
-   ${f.uscita?`<div><span class="lab">Come si chiude</span><p>${f.uscita}</p></div>`:""}</div>`;
+   ${f.uscita?`<div><span class="lab">Come si chiude</span><p>${f.uscita}</p></div>`:""}</div>
+   ${dom.length?`<div class="asks">${dom.map(q=>ask(q)).join("")}</div>`:""}`;
 }
 function devBody(dv){
   const p=parseDev(dv.raw),streaming=G.busy===dv.id;
@@ -1276,7 +1284,7 @@ function pcDetail(r,p){
   <div><div class="lab">Condizioni</div><div class="cond">${PC_COND.map(c=>`<button class="${r.cond.includes(c)?"on":""}" data-a="pc-cond" data-id="${r.id}" data-k="${c}">${c}</button>`).join("")}</div></div>
   <details><summary class="small"><b>Correggi valori</b></summary><div class="row small" style="margin-top:6px">${[["eva","Evasione"],["major","Grave"],["severe","Severa"],["hpMax","PF"],["stMax","Stress"],["arMax","Armatura"]].map(([k,l])=>`<label class="inl">${l}<input type="number" id="ov-${k}-${r.id}" data-f="pc-over" data-k="${k}" data-id="${r.id}" value="${p[k]}"></label>`).join("")}
    <label class="inl"><input type="checkbox" data-a="pc-sage" data-id="${r.id}" ${p.sage?"checked":""}> Saggio di Corte</label></div></details>
-  ${p.q?`<div class="small"><span class="lab">Domanda di background</span><div><i>${esc(p.q)}</i></div></div>`:""}
+  ${p.q?ask(esc(p.q),"","Domanda di background"):""}
   <textarea id="nt-${r.id}" data-f="pc-notes" data-id="${r.id}" rows="2" placeholder="Note e risposta alla domanda" aria-label="Note">${esc(r.notes)}</textarea>
   </div>`;
 }
