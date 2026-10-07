@@ -701,7 +701,7 @@ function fresh(){
 function migrate(s){
   if(!s||typeof s!=="object")return fresh();
   if(s.v===2){
-    s.scn=s.scn||{};s.out=s.out||{};if(s.flags&&s.flags.pact===undefined)s.flags.pact=null;
+    s.scn=s.scn||{};s.out=s.out||{};s.home=Array.from(s.home||[],h=>h||{n:"",note:""});if(s.flags&&s.flags.pact===undefined)s.flags.pact=null;
     const moved={"2:silenzio":"2:emissari","3:ingresso":"3:arcanista","4:fine":"4:rituale"};
     (s.devs||[]).forEach(x=>{if(moved[x.where])x.where=moved[x.where];if(x.done==null)x.done=false});
     (s.foes||[]).forEach(f=>{if(moved[f.where])f.where=moved[f.where]});
@@ -1240,24 +1240,24 @@ let drownPick="",elderPick="";
 const castBtn=(key,label,n,where)=>`<button class="btn xs ok" data-a="spawn" data-k="${key}" data-n="${n}" data-w="${where}">+ ${label}</button>`;
 
 /* ---- testi finali da leggere: usano i PNG di casa e il rivale annotati all'inizio ---- */
-const homeNames=()=>{const n=S.home.map(h=>h.n.trim()).filter(Boolean).map(esc);return n.length?n.length>1?n.slice(0,-1).join(", ")+" e "+n[n.length-1]:n[0]:""};
+const homeNames=()=>{const n=S.home.filter(Boolean).map(h=>(h.n||"").trim()).filter(Boolean).map(esc);return n.length?n.length>1?n.slice(0,-1).join(", ")+" e "+n[n.length-1]:n[0]:""};
 const rivalName=()=>S.rival&&S.rival.trim()?esc(S.rival.trim()):"";
 function ending(k){
-  const npc=homeNames(),one=S.home.filter(h=>h.n.trim()).length===1,riv=rivalName()||"il vostro rivale",Riv=rivalName()||"Il vostro rivale";
+  const npc=homeNames(),one=S.home.filter(h=>h&&(h.n||"").trim()).length===1,riv=rivalName()||"il vostro rivale",Riv=rivalName()||"Il vostro rivale";
   const who=npc||"le persone che speravate di proteggere",Who=npc||"Le persone che speravate di proteggere";
   const letter=luna()?`<p>Una settimana dopo arriva una lettera da Hush, scritta con una calligrafia minuscola. Luna vi saluta, vi ringrazia, e vi fa notare che siete comunque arrivati in ritardo.</p>`
    :`<p>Una settimana dopo arriva una lettera da Hush, con un sigillo di cera bianca. L'Arcanista vi ringrazia e chiede, ancora una volta, come sta il piccolo Emeris.</p>`;
   const crowd=`<p>L'onda di magia passa sopra i tetti e la città si ferma di colpo. Le orso-vespe cadono come foglie secche, gli alberi animati tornano legno. Per un momento non si sente niente. Poi qualcuno, giù in piazza, grida i vostri nomi, e la piazza li ripete.</p>`;
   return {
    ff:`<p>Quando la luce si spegne, il silenzio pesa più dell'assedio. Le mura esterne sono annerite e metà dei tetti del quartiere basso non c'è più.</p>
-    <p>Cercate ${who} tra la folla, e non ${one?"lo trovate":"li trovate"}. ${one?"Lo":"Li"} ritrovate più tardi, sotto un lenzuolo, nel cortile del tempio.</p>
+    <p>Cercate ${who} tra la folla, ma la folla non vi restituisce ${one?"quel volto":"quei volti"}. Più tardi un sacerdote vi accompagna nel cortile del tempio, dove i lenzuoli sono allineati sull'erba.</p>
     <p>Re Emeris VIII vi riceve in piedi, senza farvi sedere. «Vi ho affidato la città, e me l'avete riportata a pezzi.» Non vuole spiegazioni. Prima di sera un araldo legge il bando in piazza: avete tre giorni per lasciare il regno.</p>
     <p>All'alba vi incamminate verso il confine. Alle vostre spalle qualcuno ha già cominciato a ricostruire, e nessuno si volta a guardarvi andare via.</p>`,
-   fh:`<p>L'ultima onda di magia si spegne e la città riprende fiato. Non tutta. ${Who} non ${one?"ce l'ha fatta":"ce l'hanno fatta"}: ${one?"lo trovate":"li trovate"} quando il fumo si è ormai diradato.</p>
+   fh:`<p>L'ultima onda di magia si spegne e la città riprende fiato. Non tutta. ${Who} non ${one?"ce l'ha fatta":"ce l'hanno fatta"}: ve lo dicono quando il fumo si è ormai diradato.</p>
     <p>Tre giorni dopo, davanti alla statua di Emeris II, il re vi appunta sul petto una spilla d'argento. La folla applaude, i bambini salgono sulle spalle dei genitori per vedervi meglio.</p>
     <p>Poi il re alza una mano, e la piazza resta zitta per un minuto intero, per chi non è tornato a casa.</p>
     <p>Il cippo brilla di nuovo nella corona di pietra. La città è salva, e voi sapete esattamente quanto è costata.</p>`,
-   sf:`<p>Gli Scarshade vanno in frantumi come vetro e quel che resta dell'assedio scappa verso il Sablewood. ${Who} vi ${one?"viene":"vengono"} incontro zoppicando, con le bende sporche e graffi dappertutto, ma ${one?"vivo":"vivi"}.</p>
+   sf:`<p>Gli Scarshade vanno in frantumi come vetro e quel che resta dell'assedio scappa verso il Sablewood. ${Who} vi ${one?"viene":"vengono"} incontro zoppicando, con le bende sporche e graffi dappertutto, ma ${one?"ce l'ha fatta":"ce l'hanno fatta"}.</p>
     <p>Nella sala del trono, però, non si parla di voi. ${Riv} è in piedi accanto al re, con il mantello strappato ad arte, e racconta a tutti di come ha fatto da scudo a Emeris VIII sulle scale del castello. Il re annuncia per ${riv} un titolo nuovo e un posto nel consiglio.</p>
     <p>Quando uscite, ${riv} vi fa un cenno con la testa e sorride. D'ora in poi conterà molto più di prima.</p>`,
    sh:`${crowd}<p>${Who} si ${one?"fa":"fanno"} largo tra la gente per abbracciarvi, senza un graffio.</p>
@@ -1289,7 +1289,7 @@ const SECTIONS={
  ${read(`<p>Siete attorno a un fuoco. Dovrebbe essere giorno, ma gli alberi del Sablewood salgono per centinaia di metri e coprono il cielo intero: sembra piena notte.</p>
  <p>Tutto intorno sentite il gracidare dei lemuri-rospo e il brulicare di sciami di <b>${hybrid()}</b> nel sottobosco.</p>
  <p>Da un paio d'ore aspettate Luna, una cacciatrice del villaggio di Hush che, secondo le lettere scambiate, dovrebbe guidarvi. È <i>molto</i> in ritardo.</p>`)}
- ${ask("Cosa fate per ingannare l'attesa attorno al fuoco?","","Facoltativa · prima delle grida")}
+ ${campfire()}
  ${read(`<p>Poi, in lontananza, delle grida. Qualcuno chiede aiuto, e potrebbe essere lei. Le urla vengono da un centinaio di metri, e il terreno è così impervio che non siete sicuri di arrivare in tempo, se non date tutto. Cosa fate?</p>`)}
  <p class="small muted">Questo incontro insegna i tiri d'azione. Descrivi 1 o 2 ostacoli alla volta.</p>
  `},
@@ -1385,7 +1385,7 @@ const SECTIONS={
 '5':()=>[
  {id:"finale",t:"La città sotto assedio",f:F.finale,html:()=>{const bp=pcById(S.flags.bargain);return `
  ${read(`<p>Dopo aver volato per centinaia di chilometri in un paio d'ore, vedete finalmente la vostra città all'orizzonte: tre cerchi concentrici di mura, ognuno più alto del precedente, e un enorme castello al centro.</p><p>E in questo momento la città è sotto assedio: orso-vespe giganti attaccano dal cielo, alberi animati del Sablewood colpiscono le mura con le radici, e alcuni degli Scarshade di prima seminano il caos per le strade.</p><p>Ora sapete esattamente dove va la pietra: l'avete vista decine di volte, come uno dei gioielli della corona della statua di re Emeris II, davanti al castello. Tutto si riduce a questo: riuscirete ad arrivarci in tempo?</p>`)}
- ${ask(`Chi cercate con lo sguardo tra le mura?${S.home.filter(h=>h.n).length?` <span class="small muted">(PNG di casa: ${esc(S.home.filter(h=>h.n).map(h=>h.n).join(", "))})</span>`:""}`,"","Prima del tiro finale")}
+ ${ask(`Chi cercate con lo sguardo tra le mura?${S.home.filter(h=>h&&h.n).length?` <span class="small muted">(PNG di casa: ${esc(S.home.filter(h=>h&&h.n).map(h=>h.n).join(", "))})</span>`:""}`,"","Prima del tiro finale")}
  <p>Chiedi <b>un ultimo tiro d'azione</b>. La Difficoltà è il Contatore d'Assalto: <b class="mono">${S.counter.value}</b>.</p>
  <ul class="tight small"><li>1 Speranza: usare un'<b>Esperienza</b> per un bonus.</li><li>1 Speranza: <b>Aiutare</b> (vantaggio, +d6; con più fonti si tiene il più alto).</li><li>3 Speranza ciascuno: <b>Tiro di Squadra</b>, si tiene il migliore.</li><li>Istinti Felini di Varian o Adattabilità di Garrick possono fare la differenza.</li></ul>
  ${bp&&!S.flags.bargainUsed?`<div class="warn"><b>Patto fatato:</b> ${esc(bp.name)} non ha attaccato nessuno ad Hush, quindi sabota gli alleati: il tiro finale ha <b>svantaggio</b>.</div>`:""}
@@ -1398,7 +1398,7 @@ const SECTIONS={
  ["sh","Successo con Speranza","I PNG da proteggere sono salvi. I PG sono acclamati come eroi e re Emeris offre ricompense."],
  ["crit","Successo critico","Come un successo con Speranza, ma un rivale odiato dai giocatori ha trovato la fine durante l'attacco."]].filter(([k])=>!f||f===k).map(([k,t,x])=>f===k?read(ending(k),`Leggi ad alta voce · ${t}`):`<div class="out-card"><b>${t}</b><div class="small">${x}</div><details class="small"><summary>Testo da leggere</summary>${read(ending(k),"Anteprima")}</details></div>`).join("")}</div>${f?"":pendNote("Concludi la scena 11 con l'esito del tiro finale: qui resterà solo il finale giusto.")}
  ${f?ask("Cosa fate il giorno dopo?","","Per chiudere"):""}
- <h4>PNG di casa da proteggere</h4><p class="small muted">Li hai annotati in «Prima di iniziare», all'inizio dell'Atto I: i testi dei finali usano i loro nomi.</p>${homeEditor()}${rivalInput()}`}}
+ <h4>PNG di casa da proteggere</h4><p class="small muted">Li hai chiesti attorno al fuoco, nella scena 1: i testi dei finali usano i loro nomi.</p>${homeEditor()}${rivalInput()}`}}
 ]};
 const ENC={
  "1:inizio":{
@@ -1582,6 +1582,15 @@ function goToScene(key){
   persist();render();
   setTimeout(()=>document.getElementById(`scn-${a.replace(".","_")}-${id}`)?.scrollIntoView({behavior:"smooth",block:"start"}),40);
 }
+// attorno al fuoco, prima delle grida: chi aspetta i PG in città e chi spera che falliscano (tornano nei finali)
+function campfire(){
+  const row=(r,i)=>{const h=S.home[i]||{n:"",note:""};return `<div class="row small"><b class="ec-who">${esc(pcName(r.id).split(" ")[0])}</b><input type="text" data-f="home-n" data-i="${i}" value="${esc(h.n)}" placeholder="Chi?" style="flex:0 1 150px" aria-label="Persona cara di ${esc(pcName(r.id))}"><input type="text" data-f="home-note" data-i="${i}" value="${esc(h.note)}" placeholder="Cosa le hai promesso, o cosa ti ha detto partendo" style="flex:1 1 220px" aria-label="Promessa"></div>`};
+  return `<div class="asks">
+   ${ask("Mentre fissate il fuoco, a chi state pensando in città? Ognuno nomini una persona che spera di rivedere, e mi dica cosa le ha promesso prima di partire.",`<div class="stack" style="gap:4px;width:100%">${S.pcs.map(row).join("")}</div>`,"Attorno al fuoco · a ogni giocatore")}
+   ${ask("E c'è qualcuno, in città, che sarebbe felicissimo di vedervi tornare con le mani vuote? Decidetelo insieme: chi è, e cosa vi ha fatto?",`<input type="text" data-f="rival" value="${esc(S.rival||"")}" placeholder="Chi?" style="flex:0 1 180px" aria-label="Rivale"><input type="text" data-f="rival-note" value="${esc(S.rivalNote||"")}" placeholder="Cosa vi ha fatto" style="flex:1 1 220px" aria-label="Cosa ha fatto il rivale">`,"Attorno al fuoco · al gruppo")}
+   <p class="xsmall muted">Le persone care e il rivale tornano nel tiro finale e nel testo dell'epilogo.</p></div>`;
+}
+function homeAt(i){for(let k=0;k<=i;k++)if(!S.home[k])S.home[k]={n:"",note:""};return S.home[i]}
 function homeEditor(){return `<div class="stack">${S.home.map((h,i)=>`<div class="row"><input type="text" id="hn${i}" data-f="home-n" data-i="${i}" value="${esc(h.n)}" placeholder="Nome PNG" style="flex:0 1 180px" aria-label="Nome PNG"><input type="text" id="ht${i}" data-f="home-note" data-i="${i}" value="${esc(h.note)}" placeholder="Legame, alleato o rivale" style="flex:1 1 200px" aria-label="Legame"><button class="btn xs" data-a="home-del" data-i="${i}" aria-label="Rimuovi">×</button></div>`).join("")}<div><button class="btn xs" data-a="home-add">+ PNG</button></div></div>`}
 
 /* ================= scene improvvisate con Claude ================= */
@@ -1855,7 +1864,7 @@ function preGame(){
     ${read(SECRET,`In segreto, solo al Saggio di Corte${sage?` (${esc(sage.name)})`:""}`)}
     <div class="lab">Domande di background · una per giocatore, annota le risposte</div>
     ${S.pcs.map(r=>{const p=P(r);return p.q?`${ask(esc(p.q),`<textarea id="pre-nt-${r.id}" data-f="pc-notes" data-id="${r.id}" rows="2" placeholder="Risposta, e i PNG che nomina" aria-label="Risposta di ${esc(p.name)}">${esc(r.notes)}</textarea>`,`A ${esc(p.name)}`)}`:""}).join("")}
-    <div class="lab">PNG di casa nominati nelle risposte · tornano nel finale</div>${homeEditor()}${rivalInput()}
+    <div class="note small">Le persone care in città e il rivale si chiedono nella scena 1, attorno al fuoco, prima delle grida.</div>
    </div></details>`;
 }
 function renderAct(){
@@ -2263,10 +2272,11 @@ document.addEventListener("change",e=>{
     case "bargain":S.flags.bargain=v;log(v?`${pcName(v)} accetta il patto dello Strixwolf`:"Nessun patto fatato","fear");persist();render();return;
     case "drownpc":drownPick=v;return;
     case "elderpc":elderPick=v;return;
-    case "home-n":S.home[+o.i].n=v;persist();return;
-    case "home-note":S.home[+o.i].note=v;persist();return;
+    case "home-n":homeAt(+o.i).n=v;persist();return;
+    case "home-note":homeAt(+o.i).note=v;persist();return;
+    case "rival-note":S.rivalNote=v;persist();return;
     case "notes":S.notes=v;persist();return;
-    case "rival":S.rival=v;persist();render();return;
+    case "rival":S.rival=v;persist();return;
     case "scr-cap":setScreen({caption:v.trim()});return;
     case "gal-title":{const g=VIEW.gallery.find(x=>x.gid===o.k);if(g){g.title=v.trim()||g.title;saveGallery()}return}
     case "gal-up":{const fs=[...el.files];el.value="";if(fs.length)uploadImages(fs);return}
