@@ -288,7 +288,9 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .fearbox{border-color:var(--fear)} .fearbox b{color:var(--fear)}
 .enc-env{border:1px dashed var(--line);border-radius:8px;padding:8px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
 .enc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;align-items:start}
-.enc-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,250px);gap:10px;align-items:start}
+.enc-split{display:grid;grid-template-columns:fit-content(620px) minmax(210px,250px);justify-content:start;gap:10px;align-items:start}
+.enc-split .env-compact{grid-template-columns:repeat(2,minmax(0,290px))}
+@media (max-width:980px){.enc-split .env-compact{grid-template-columns:minmax(0,1fr)}}
 .enc-split .enc-grid{grid-template-columns:minmax(0,1fr)}
 .enc-split .enc-plus{min-height:44px;font-size:1.6rem}
 @media (max-width:760px){.enc-split{grid-template-columns:minmax(0,1fr)}}
