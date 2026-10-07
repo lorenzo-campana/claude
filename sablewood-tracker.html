@@ -663,7 +663,7 @@ const UNDERTOW=["Il PG segna 1 Stress","Il PG subisce 2d6+3 danni fisici","Il PG
 const TREASURES=[["Stivali del Camminalago","cammini sull'acqua come su terreno soffice"],["Pietra del Fascino","spendi 1 Speranza per camuffarti magicamente da qualcuno che hai già visto"],["Verga Sospesa","mentre è attiva non può essere spostata e ignora la gravità"]];
 const COND_INFO={
  Vulnerabile:{fx:"I tiri contro hanno vantaggio"},Nascosto:{fx:"I tiri contro hanno svantaggio"},Trattenuto:{fx:"Non può muoversi, ma può agire"},
- Annegamento:{fx:"Segna 1 Stress a ogni tiro d'azione del gruppo; si libera con un tiro d'azione"},Posseduto:{fx:"Può solo cercare di liberarsi"},
+ Annegamento:{fx:"Segna 1 Stress a ogni tiro d'azione del gruppo; si libera con un tiro d'azione riuscito"},Posseduto:{fx:"Può solo cercare di liberarsi"},
  Incosciente:{fx:"Non può agire"},Inarrestabile:{fx:"Danni fisici ridotti di una soglia; immune a Vulnerabile e Trattenuto"},
  "Schivata del Ladro":{fx:"+2 Evasione finché un attacco non va a segno"}
 };
@@ -1188,7 +1188,7 @@ const SECTIONS={
  ${ask("Ognuno di voi mi dica una cosa che vede sporgere dall'acqua.","","Chiedi a ogni giocatore")}
  ${S.pcs.some(p=>p.id==="barnacle")?`<div class="note small">Barnacle è anfibio, ma ha paura dell'acqua e non nuota.</div>`:""}
  
- <div class="note small"><b>Glossario:</b> una condizione temporanea come Annegamento si rimuove con un tiro d'azione. I tiri reazione non generano Speranza né Paura. Le carte nel deposito non si possono usare: tornano nella dotazione con un riposo, oppure segni Stress pari al costo di richiamo per scambiarle con una carta della dotazione.</div>
+ <div class="note small"><b>Glossario:</b> una condizione temporanea come Annegamento si rimuove con un tiro d'azione riuscito: qui contro la Difficoltà 13 del fiume. Finché non riesce, ogni tiro d'azione di un PG (anche il suo tentativo di liberarsi) fa segnare 1 Stress a chi annega. I tiri reazione non generano Speranza né Paura. Le carte nel deposito non si possono usare: tornano nella dotazione con un riposo, oppure segni Stress pari al costo di richiamo per scambiarle con una carta della dotazione.</div>
  ${S.river.t===0?`<div class="note">Il gruppo ha attraversato il fiume.</div>`:""}`}}
 ],
 '3':()=>[
@@ -1271,7 +1271,8 @@ const ENC={
  "2.5:fiume":{t:"Il fiume Orfanatore",k:"Ambientale",d:"Traversata · Diff 13. Annegamento, Risacca e tesori sommersi.",env:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
  <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
  ${dr.length?`<div class="warn"><b>Annegano:</b> ${dr.map(p=>esc(pcName(p.id))).join(", ")}. Ogni tiro d'azione di un PG fa segnare 1 Stress a tutti quelli che annegano.
-  <div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div></div>`:""}
+  <div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div>
+  ${dr.map(p=>`<div class="row small" style="margin-top:6px"><b>${esc(pcName(p.id))}</b>${rb("Liberarsi · Diff 13",{t:"dual",who:p.id,trait:"ask",diff:13,label:"Liberarsi dall'annegamento"})}<button class="btn xs ok" data-a="drown-free" data-id="${p.id}">Riuscito: si libera</button></div>`).join("")}</div>`:""}
  <div class="row">${rb("Tiro d'azione · Diff 13",{t:"dual",trait:"ask",diff:13,label:"Attraversare l'Orfanatore"})}
   <button class="btn ok" data-a="river" data-k="s" ${dr.length&&S.river.t<=1?"disabled":""}>Successo · Traversata −1</button>
   <button class="btn bad" data-a="river" data-k="f">Fallimento · azione Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div>
@@ -1905,6 +1906,7 @@ const A={
   if(o.k==="r"){S.river.t=4;return}
   if(o.k==="s"){if(S.pcs.some(p=>p.cond.includes("Annegamento"))&&S.river.t<=1){toast("Qualcuno sta annegando: il conto non può arrivare a zero");return}S.river.t=Math.max(0,S.river.t-1);log(`Traversata −1 → ${S.river.t}`,"ok")}
   if(o.k==="f"){log("Fallimento nella traversata: azione Annegare","bad");toast("Scegli un PG: reazione di Agilità o inizia ad annegare")}}),
+ "drown-free":o=>upd(()=>{const r=pcRaw(o.id);r.cond=r.cond.filter(c=>c!=="Annegamento");log(`${pcName(r.id)} si libera dall'annegamento`,"ok")}),
  "drown-tick":()=>upd(()=>S.pcs.filter(p=>p.cond.includes("Annegamento")).forEach(p=>pcMarkStress(p.id,1,"annegamento"))),
  "drown-set":()=>{const r=pcRaw(drownPick);if(!r){toast("Scegli prima un PG");return}upd(()=>{if(!r.cond.includes("Annegamento"))r.cond.push("Annegamento");log(`${pcName(r.id)} sta annegando`,"bad")})},
  undertow:()=>upd(()=>{
