@@ -905,7 +905,7 @@ function foeSheet(f){
     <select id="cond-${f.id}" data-f="foe-cond-add" data-id="${f.id}" aria-label="Aggiungi condizione"><option value="">+ condizione</option>${FOE_COND.filter(c=>!f.cond.includes(c)).map(c=>`<option>${c}</option>`).join("")}</select>
     <button class="btn ${f.acted?"ok":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Riflettore"}</button>
     <button class="btn" data-a="foe-kill" data-id="${f.id}">${f.dead?"Rimetti in gioco":"Sconfitto"}</button>
-    <button class="btn" data-a="foe-del" data-id="${f.id}">Togli</button><button class="btn" data-a="foe-open" data-id="${f.id}">Chiudi</button></div>
+    <button class="btn" data-a="foe-open" data-id="${f.id}">Chiudi</button></div>
    <div class="sh-b">
     <div class="sh-l">
      <div class="sh-id"><span class="ava lg">${initial(f.name)}</span><div><b>${esc(f.name)}</b><div class="row" style="gap:6px"><span class="tbadge t-${esc(f.type).replace(/\W/g,"")}">${esc(f.type)}</span><span class="small muted">Tier ${f.tier}${f.sub?" · "+esc(f.sub):""}</span></div></div></div>
