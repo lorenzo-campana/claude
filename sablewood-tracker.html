@@ -1336,7 +1336,7 @@ const homeNames=()=>{const n=S.home.filter(Boolean).map(h=>(h.n||"").trim()).fil
 const rivalName=()=>S.rival&&S.rival.trim()?esc(S.rival.trim()):"";
 function ending(k){
   const npc=homeNames(),one=S.home.filter(h=>h&&(h.n||"").trim()).length===1,riv=rivalName()||"il vostro rivale",Riv=rivalName()||"Il vostro rivale";
-  const who=npc||"le persone che speravate di proteggere",Who=npc||"Le persone che speravate di proteggere";
+  const who=npc||"le persone che speravate di proteggere",Who=npc?npc.charAt(0).toUpperCase()+npc.slice(1):"Le persone che speravate di proteggere";
   const letter=luna()?`<p>Una settimana dopo arriva una lettera da Hush, scritta con una calligrafia minuscola. Luna vi saluta, vi ringrazia, e vi fa notare che siete comunque arrivati in ritardo.</p>`
    :`<p>Una settimana dopo arriva una lettera da Hush, con un sigillo di cera bianca. L'Arcanista vi ringrazia e chiede, ancora una volta, come sta il piccolo Emeris.</p>`;
   const crowd=`<p>L'onda di magia passa sopra i tetti e la città si ferma di colpo. Le orso-vespe cadono come foglie secche, gli alberi animati tornano legno. Per un momento non si sente niente. Poi qualcuno, giù in piazza, grida i vostri nomi, e la piazza li ripete.</p>`;
@@ -2241,7 +2241,7 @@ function logByAct(){ // registro in ordine cronologico, diviso per atto
   S.log.slice().reverse().forEach(l=>{const m=l.text.match(/^→ Atto ([^:]+):/);if(m){const a=ACTS.find(x=>x.n===m[1]);if(a)act=a.id;return}(out[act]=out[act]||[]).push(l.text)});
   return out;
 }
-function critOf(lines){const c=(lines||[]).find(t=>/Successo critico/.test(t)&&/ — /.test(t));if(!c)return "";const m=c.match(/^(.+?) — (.+?):/);return m?`${esc(m[2].split(" ")[0])} e i dadi gemelli: successo critico.`:""}
+function critOf(lines){const c=(lines||[]).find(t=>/Successo critico/.test(t)&&/^.+?(?: — |, ).+?:/.test(t));if(!c)return "";const m=c.match(/^(.+?)(?: — |, )(.+?):/);return m?`${esc(m[2].split(" ")[0])} e i dadi gemelli: successo critico.`:""}
 function devsIn(keys){
   return S.devs.filter(d=>keys.includes(d.where)&&d.raw).map(d=>{const p=parseDev(d.raw),c=d.choice!=null?p.scelte[d.choice]:null;
     return {t:p.titolo||"un imprevisto",u:d.user||"",ch:c?c[0]:"",res:d.res==="s"?"ci è andata bene":d.res==="f"?"ci è andata male":""}});
@@ -2260,7 +2260,7 @@ function diaryChapters(){
   const homes=S.pcs.map((r,i)=>({r,h:plainHome(i)})).filter(x=>x.h),rival=S.rival&&S.rival.trim()?esc(S.rival.trim()):"";
   const rivalNote=S.rivalNote&&S.rivalNote.trim()?esc(S.rivalNote.trim().replace(/\.$/,"")):"";
   const drowned=[...new Set((L["2.5"]||[]).map(t=>(t.match(/^(.+?) sta annegando/)||[])[1]).filter(Boolean))].map(n=>esc(n.split(" ")[0]));
-  const finalRoll=(L["5"]||[]).concat(L["4"]||[]).find(t=>/^Tiro finale — /.test(t));const roller=finalRoll?esc(finalRoll.match(/^Tiro finale — (.+?):/)[1].split(" ")[0]):"";
+  const finalRoll=(L["5"]||[]).concat(L["4"]||[]).find(t=>/^Tiro finale(?: — |, )/.test(t));const roller=finalRoll?esc(finalRoll.match(/^Tiro finale(?: — |, )(.+?):/)[1].split(" ")[0]):"";
   const list=a=>a.length>1?a.slice(0,-1).join(", ")+" e "+a[a.length-1]:a[0]||"";
   const names=list(homes.map(x=>esc(x.h.n.trim()))),many=homes.length>1;
   const kills=w=>{const n=fallen(w);return n?(n===1?"Uno l'abbiamo abbattuto":`Ne abbiamo abbattuti ${numIt(n)}`):""};
@@ -2275,12 +2275,12 @@ function diaryChapters(){
    {key:"bosco",n:"Il bosco e la partenza",img:1,deco:"fern",paras:[
      `Il Saggio di Corte${sage?`, ${sageN},`:""} ci ha riuniti due giorni fa con un incarico che sembrava semplice: portare un pacco all'Arcanista Fuocobianco, a Hush. Il guaio era la strada. Hush sta dall'altra parte del Sablewood, e nel Sablewood si entra solo con un buon motivo. Cosa ci fosse nel pacco lo sapeva solo ${sage?(sage.pron==="lei"?"lei":sage.pron==="lui"?"lui":sageN):"il Saggio"}.`,
      `Ci siamo fermati dove comincia la foresta vera ad aspettare Luna, la cacciatrice di Hush che doveva farci da guida. Lì gli alberi salgono per centinaia di metri e chiudono il cielo, e a mezzogiorno accendi il fuoco come fosse sera. Sopra le fiamme giravano sciami di ${hyb}. Luna non arrivava.`,
-     homes.length||rival?`Per ammazzare l'attesa abbiamo parlato di casa. ${homes.map(x=>`${firstName(x.r.id)} ha parlato di ${esc(x.h.n.trim())}${x.h.note&&x.h.note.trim()?` («${esc(x.h.note.trim().replace(/\.$/,""))}»)`:""}.`).join(" ")}${rival?` Poi è venuto fuori il nome di ${rival}${rivalNote?`, che ${rivalNote}`:""}. Se tornassimo a mani vuote, ${rival} brinderebbe.`:""}`:"",
+     homes.length||rival?`Per ammazzare l'attesa abbiamo parlato di casa. ${homes.map(x=>`A ${firstName(x.r.id)} manca ${esc(x.h.n.trim())}${x.h.note&&x.h.note.trim()?` («${esc(x.h.note.trim().replace(/\.$/,""))}»)`:""}.`).join(" ")}${rival?` Poi è venuto fuori il nome di ${rival}${rivalNote?`, che ${rivalNote}`:""}. Se tornassimo a mani vuote, ${rival} brinderebbe.`:""}`:"",
      F.luna==="saved"?`Le grida sono arrivate all'improvviso, dal buio. Abbiamo lasciato il fuoco e siamo corsi tra radici alte come muri, nel fango fino alle caviglie. Siamo arrivati in tempo.`
       :F.luna==="dead"?`Le grida sono arrivate all'improvviso, dal buio. Abbiamo lasciato il fuoco e siamo corsi più che potevamo, ma ogni radice ci rubava un passo. A metà strada le grida si sono fermate.`
       :`Le grida sono arrivate all'improvviso, dal buio, e abbiamo lasciato il fuoco di corsa.`,
      ...devs(["1:inizio"])],
-    aside:critOf(L["1"])||`I ${hyb} sopra il fuoco. Poi il grido.`},
+    aside:critOf(L["1"])||`Sciami di ${hyb} sopra il fuoco. Poi il grido.`},
    {key:"luna",n:"Luna e il guardiano",img:2,deco:"moon",paras:F.luna==="saved"?[
      `Luna era a terra in una radura, ferita: una fata grande come due mele, con una pelle d'ornitorinco addosso a fare da mantello. Sopra di lei stava lo Strixwolf, un lupo bianco con la testa di gufo. Non ha aperto il becco, eppure l'abbiamo sentito tutti, dentro la testa: Luna aveva cacciato un cucciolo del suo branco e doveva pagare.`,
      F.pact==="yes"?`Chiedeva una vita per una vita. Poi ha cambiato idea, o ha finto di cambiarla: gli bastava un momento del tempo di uno di noi, da riscuotere prima della fine del viaggio. ${bargain} ha accettato prima che potessimo discuterne. Lo Strixwolf ha lasciato andare Luna ed è sparito tra gli alberi.`
