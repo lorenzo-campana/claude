@@ -323,6 +323,7 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 @media (max-width:820px){.sh-b{grid-template-columns:minmax(0,1fr)}}
 .sh-l{border-right:1px solid var(--line);display:flex;flex-direction:column}
 .sh-id{display:flex;gap:12px;align-items:center;padding:14px}
+.sh-atk{margin-top:6px;gap:6px}
 .sh-id b{font-family:var(--f-display);font-weight:400;font-size:1.5rem;display:block;line-height:1.1}
 .tbadge{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:1px 7px;border-radius:4px;background:var(--plate);color:var(--plate-fg)}
 .tbadge.t-Social,.tbadge.t-PNG{background:var(--hope)} .tbadge.t-Solo,.tbadge.t-Bruiser,.tbadge.t-Leader{background:var(--blood)} .tbadge.t-Minion,.tbadge.t-Standard{background:var(--moss)}
@@ -910,7 +911,8 @@ function foeSheet(f){
     <button class="btn" data-a="foe-open" data-id="${f.id}">Chiudi</button></div>
    <div class="sh-b">
     <div class="sh-l">
-     <div class="sh-id"><span class="ava lg">${initial(f.name)}</span><div><b>${esc(f.name)}</b><div class="row" style="gap:6px"><span class="tbadge t-${esc(f.type).replace(/\W/g,"")}">${esc(f.type)}</span><span class="small muted">Tier ${f.tier}${f.sub?" · "+esc(f.sub):""}</span></div></div></div>
+     <div class="sh-id"><span class="ava lg">${initial(f.name)}</span><div><b>${esc(f.name)}</b><div class="row" style="gap:6px"><span class="tbadge t-${esc(f.type).replace(/\W/g,"")}">${esc(f.type)}</span><span class="small muted">Tier ${f.tier}${f.sub?" · "+esc(f.sub):""}</span></div>
+      ${a?`<div class="row sh-atk">${rb(`${esc(a.n)} · d20${sgn(f.atk||0)}`,{t:"atk",foe:f.id},"atk")}${/d/.test(a.d)?rb(`${a.d} ${a.ty}`,{t:"expr",x:a.d,label:`${f.name}: ${a.n}`,tgt:"pc"},"dmg"):""}</div>`:""}</div></div>
      <div class="sh-stats"><div><span class="lab">Difficoltà</span><b>${f.diff??"—"}${f.sugg?"*":""}</b>${condMark(f.cond)}</div><div><span class="lab">Soglie</span><b>${f.minion?"—":`${f.thr[0]??"—"}/${f.thr[1]??"—"}`}</b></div>
       <div><span class="lab">PF</span><b>${f.hpMax?`${f.hpMax-f.hp}<small>/${f.hpMax}</small>`:"—"}</b></div><div><span class="lab">Stress</span><b>${f.stMax?`${f.st}<small>/${f.stMax}</small>`:"—"}</b></div></div>
      ${f.hpMax||f.stMax?`<div class="sh-pad big-trk">
