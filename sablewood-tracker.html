@@ -426,6 +426,75 @@ details.dev[open]>summary::before{content:"▾"}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:var(--r);font-size:.9rem;z-index:60;max-width:calc(100% - 32px)}
 details summary{cursor:pointer}
 .save-ind{font-size:.72rem;color:var(--muted)}
+
+/* viste alternative: giocatore e schermo */
+#alt{display:none}
+body.alt #alt{display:block}
+body.alt .bar,body.alt .page,body.alt #rollpop,body.alt #dice-fx{display:none!important}
+.alt-wait{min-height:60vh;display:grid;place-items:center;color:var(--muted);font-family:var(--f-display);font-size:1.4rem}
+.pips.ro .pip{display:inline-block;cursor:default}
+.pv-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:8px 16px}
+.pv{max-width:780px;margin:0 auto;padding:16px 16px 60px;display:flex;flex-direction:column;gap:14px}
+.pv-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.pv-who{text-align:left;border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.pv-who:hover{border-color:var(--hope)}
+.pv-who b{font-family:var(--f-display);font-weight:400;font-size:1.35rem;line-height:1.1}
+.pv-who span{font-size:.85rem;color:var(--muted)} .pv-who i{font-size:.85rem}
+.pv-id{display:flex;gap:14px;align-items:center}
+.pv-name{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.pv-name h1{font-size:clamp(1.7rem,6vw,2.4rem)}
+.pv-name>span:first-of-type{font-size:.95rem}
+.pv-trk{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.pv-trk>div{display:flex;flex-direction:column;gap:4px}
+.pv-trk .pip.hp,.pv-trk .pip.st{width:22px;height:16px}
+.pv-trk .pip.hope{width:15px;height:15px;margin:3px 4px}
+.pv-trk .pip.ar{width:18px;height:20px}
+.pv-sec{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.pv-sec>h3{font-size:1.15rem}
+details.pv-sec>summary{font-size:.95rem}
+.pv-traits{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}
+.pv-traits>div{border:1px solid var(--line);background:var(--bg);border-radius:4px;padding:4px 0;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.pv-traits b{font-family:var(--f-display);font-weight:400;font-size:1.5rem}
+.pv-traits span{font-size:.62rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.pv .feat{font-size:.95rem}
+.pv-q{font-size:1.05rem;font-weight:500;color:var(--ask)}
+.pv-scr{width:100%;border-radius:4px;margin-top:8px;background:#000}
+.pv-secret{border-color:var(--hope)}
+/* lo schermo è sempre scuro, come una sala buia */
+.stage{--ink:#e9ece5;--muted:#9aa69c;--line:#3a463d;--paper:#141a16;--blood:#e0786e;--fear:#b892d6;--hope:#e0aa4c;--moss:#8fb79a;
+ position:fixed;inset:0;background:#060807;color:var(--ink);overflow:hidden;display:grid;place-items:center;container-type:size}
+.stage.mini{position:relative;inset:auto;width:100%;aspect-ratio:16/9;border-radius:var(--r);border:1px solid var(--line)}
+.st-img{width:100%;height:100%;object-fit:contain;display:block}
+.st-title{display:flex;flex-direction:column;align-items:center;gap:1.5cqh;text-align:center;padding:0 6cqw}
+.st-title span{font-family:var(--f-body);font-size:max(10px,2.6cqh);letter-spacing:.3em;text-transform:uppercase;color:var(--hope)}
+.st-title b{font-family:var(--f-display);font-weight:400;font-size:min(13cqh,9cqw);line-height:1.05;text-wrap:balance}
+@media (prefers-reduced-motion:no-preference){.st-img.fresh,.st-title.fresh{animation:st-in .9s ease-out}}
+@keyframes st-in{from{opacity:0;transform:scale(1.03)}to{opacity:1;transform:none}}
+.st-cap{position:absolute;left:0;right:0;bottom:0;padding:8cqh 6cqw 4cqh;background:linear-gradient(transparent,rgba(0,0,0,.85));font-family:var(--f-read);font-size:max(10px,4.6cqh);text-align:center;text-wrap:balance}
+.stage:has(.st-party) .st-cap{bottom:15cqh}
+.st-fear{position:absolute;top:3cqh;right:3cqw;display:flex;flex-direction:column;align-items:flex-end;gap:.8cqh;font-size:max(8px,1.8cqh);letter-spacing:.2em;text-transform:uppercase;color:var(--fear);font-weight:800}
+.st-fear div{display:flex;gap:.7cqh}
+.st-fear i{width:2.2cqh;height:2.2cqh;transform:rotate(45deg);border:max(1px,.25cqh) solid var(--fear);border-radius:2px}
+.st-fear i.on{background:var(--fear)}
+.st-party{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:1.5cqw;padding:1.5cqh 2cqw;background:rgba(6,8,7,.82);border-top:1px solid var(--line)}
+.st-party>div{display:flex;flex-direction:column;gap:.4cqh;min-width:0}
+.st-party>div.down b{color:var(--blood)}
+.st-party b{font-family:var(--f-display);font-weight:400;font-size:max(9px,2.8cqh);line-height:1}
+.st-party span{display:flex;align-items:center;gap:.6cqw}
+.st-party em{font-style:normal;font-size:max(6px,1.3cqh);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);width:6.5cqh}
+.st-party .pips{gap:.3cqh;flex-wrap:nowrap}
+.st-party .pip.hp,.st-party .pip.st{width:2.2cqh;height:1.6cqh;border-width:max(1px,.2cqh)}
+.st-party .pip.hope{width:1.4cqh;height:1.4cqh;margin:.2cqh .35cqh;border-width:max(1px,.2cqh)}
+.scr-ctl{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;opacity:0;transition:opacity .3s}
+.scr-ctl:hover,.scr-ctl:focus-within{opacity:1}
+@media (hover:none){.scr-ctl{opacity:.6}}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:10px}
+.gal-i{margin:0;border:1px solid var(--line);border-radius:var(--r);padding:6px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.gal-i.on{border:2px solid var(--ok);padding:5px}
+.gal-th{border:0;padding:0;background:#060807;border-radius:4px;aspect-ratio:16/10;overflow:hidden;cursor:pointer;display:block;width:100%}
+.gal-th img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-i input{width:100%}
+.gal-up{display:inline-flex;align-items:center}
 </style>
 
 <header class="bar"><div class="bar-in" id="bar"></div></header>
@@ -439,6 +508,7 @@ details summary{cursor:pointer}
 <div id="dice-fx" hidden></div>
 <section id="rollpop" aria-live="polite" hidden></section>
 <div class="toast" id="toast" hidden></div>
+<div id="alt"></div>
 
 <script>
 /* ================= personaggi pregenerati (Quickstart Adventure) ================= */
@@ -618,11 +688,50 @@ let UI={party:innerWidth>1100,dice:false};
 try{const u=JSON.parse(localStorage.getItem(UIKEY));if(u&&typeof u.party==="boolean")UI.party=u.party}catch(e){}
 const saveUI=()=>{try{localStorage.setItem(UIKEY,JSON.stringify({party:UI.party}))}catch(e){}};
 
+/* ================= viste: GM, giocatore, schermo =================
+   Il GM pubblica tavolo/live (stato dei PG), tavolo/schermo (cosa si proietta) e tavolo/galleria (immagini caricate);
+   giocatori e schermo li leggono in tempo reale. Senza claude.ai le finestre dello stesso browser si parlano via localStorage. */
+const VIEWKEY="sablewood-view",SCRKEY="sablewood-screen";
+const VIEW={mode:"gm",pc:null,canGM:!window.claude?.use,ready:!window.claude?.use,tdb:null,assets:null,live:null,screen:null,gallery:[],lastTs:null,delAsk:null,busy:false};
+try{const m=JSON.parse(localStorage.getItem(VIEWKEY)||"null");if(m){VIEW.mode=m.mode||"gm";VIEW.pc=PREGEN[m.pc]?m.pc:null}}catch(e){}
+{const h=decodeURIComponent(location.hash.slice(1));if(/^giocatore/.test(h)){VIEW.mode="player";const p=h.split("=")[1];if(PREGEN[p])VIEW.pc=p}else if(h==="schermo")VIEW.mode="screen";else if(h==="gm")VIEW.mode="gm"}
+const saveView=()=>{try{localStorage.setItem(VIEWKEY,JSON.stringify({mode:VIEW.mode,pc:VIEW.pc}))}catch(e){}};
+function loadLocalScreen(){try{const x=JSON.parse(localStorage.getItem(SCRKEY)||"null");if(x){VIEW.screen=x.screen||null;VIEW.gallery=x.gallery||[]}}catch(e){}}
+if(!window.claude?.use)loadLocalScreen();
+const buildLive=()=>({act:S.act,fear:S.fear,counter:S.counter.on?S.counter.value:null,
+  pcs:S.pcs.map(r=>({id:r.id,hp:r.hp,st:r.st,hope:r.hope,ar:r.ar,cond:r.cond,item:r.item,over:r.over,pact:S.flags.bargain===r.id?(S.flags.bargainUsed?"used":"yes"):""}))});
+const liveData=()=>VIEW.live||(VIEW.canGM?buildLive():null);
+const wq={};
+function dbWrite(path,data){ // una scrittura alla volta per documento
+  const p=(wq[path]||Promise.resolve()).then(()=>VIEW.tdb.doc(path).set(data)).catch(()=>toast("Sincronizzazione con il tavolo non riuscita"));
+  return wq[path]=p;
+}
+let liveTimer=null,liveSent="";
+function pushLive(){
+  if(!VIEW.tdb||!VIEW.canGM)return;
+  const j=JSON.stringify(buildLive());if(j===liveSent)return;
+  liveSent=j;dbWrite("tavolo/live",{json:j,at:Date.now()});
+}
+function saveScreen(){
+  if(VIEW.tdb){dbWrite("tavolo/schermo",{json:JSON.stringify(VIEW.screen)});return}
+  try{localStorage.setItem(SCRKEY,JSON.stringify({screen:VIEW.screen,gallery:VIEW.gallery}))}catch(e){toast("Spazio del browser esaurito: elimina qualche immagine")}
+}
+function saveGallery(){
+  if(VIEW.tdb){dbWrite("tavolo/galleria",{json:JSON.stringify(VIEW.gallery)});return}
+  saveScreen();
+}
+function setScreen(patch){VIEW.screen=Object.assign({kind:"splash",caption:"",party:false,fear:false},VIEW.screen||{},patch,{ts:Date.now()});saveScreen();render()}
+addEventListener("storage",e=>{
+  if(e.key===SCRKEY){loadLocalScreen();if(VIEW.mode!=="gm"||S.tab==="schermo")render()}
+  else if(e.key===KEY&&VIEW.mode!=="gm"){try{S=migrate(JSON.parse(e.newValue))}catch(x){}render()}
+});
+
 let dbDoc=null,saving=false,pending=false,saveTimer=null,saveWhere="questo browser";
 function persist(){
   S.savedAt=Date.now();
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
   if(dbDoc){clearTimeout(saveTimer);saveTimer=setTimeout(pushDb,1500)}
+  if(VIEW.tdb){clearTimeout(liveTimer);liveTimer=setTimeout(pushLive,600)}
 }
 async function pushDb(){
   if(saving){pending=true;return}
@@ -635,14 +744,26 @@ async function pushDb(){
   try{
     if(!window.claude?.use)return;
     const [db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
-    if(!db||!user)return;
+    VIEW.canGM=user?await user.canEdit():false;
+    if(!VIEW.canGM&&VIEW.mode==="gm")VIEW.mode="player";
+    VIEW.ready=true;
+    if(db){
+      VIEW.tdb=db;
+      const sub=(path,fn)=>db.doc(path).onSnapshot(s=>{try{fn(s.exists?JSON.parse(s.data().json):null)}catch(e){}if(VIEW.mode!=="gm"||(S.tab==="schermo"&&!document.activeElement?.matches?.("input[type=text],textarea")))render()},()=>{});
+      sub("tavolo/live",v=>{VIEW.live=v});
+      sub("tavolo/schermo",v=>{VIEW.screen=v});
+      sub("tavolo/galleria",v=>{VIEW.gallery=Array.isArray(v)?v:[]});
+    }
+    if(VIEW.canGM)VIEW.assets=await claude.use("assets");
+    render();
+    if(!db||!user||!VIEW.canGM)return;
     const id=await user.id();if(!id)return;
     dbDoc=db.collection("data/users/"+id).doc("tracker");
     const snap=await dbDoc.get();
     if(snap.exists){const d=snap.data();
       if(d&&d.savedAt>(S.savedAt||0)){try{S=migrate(JSON.parse(d.json));toast("Partita caricata dal tuo account")}catch(e){}}}
-    saveWhere="il tuo account";render();
-  }catch(e){}
+    saveWhere="il tuo account";render();pushLive();
+  }catch(e){VIEW.ready=true;render()}
 })();
 
 /* ================= utilità ================= */
@@ -1154,7 +1275,7 @@ const ENC={
   <div><div class="lab">Rituale — a zero il rituale riesce</div>${pips(8,S.ritual.v,"cd","ritual-pip")} <span class="mono">${S.ritual.v}</span></div>
   <p class="small">Ogni nemico sconfitto: −1 (automatico). Arcanista colpita (Diff 11): +1.</p>
   <div class="row"><button class="btn bad" data-a="ritual" data-k="hit">Arcanista colpita: +1</button><button class="btn ok" data-a="ritual" data-k="kill">Nemico sconfitto: −1</button>
-   <button class="btn fear" data-a="vengeance" ${S.fear<1||aliveSkel()>=10?"disabled":""}>Vendetta degli Antichi Dèi (1 Paura): +2 Scheletri</button>
+   <button class="btn fear" data-a="vengeance" ${S.fear<1||aliveSkel()>=8?"disabled":""} title="Solo finché ci sono meno di 8 scheletri">Vendetta degli Antichi Dèi (1 Paura): +2 Scheletri</button>
    <span class="small muted">Scheletri vivi: ${aliveSkel()}</span></div>`,sug:[["skeleton",5,"5× Scheletro Antico"],["hero",2,"2× Eroe Dimenticato"],["skeleton",1]],reset:()=>{S.ritual.v=8;S.flags.ritualDone=false}}
 };
 function devEnc(dv){
@@ -1445,7 +1566,7 @@ function composerForm(w,prefill){
 }
 
 /* ================= viste ================= */
-const TABS=[["atto","Atto"],["scontro","Scontro"],["regole","Regole"],["diario","Diario"]];
+const TABS=[["atto","Atto"],["scontro","Scontro"],["regole","Regole"],["diario","Diario"],["schermo","Schermo e giocatori"]];
 function renderBar(){
   const ai=ACTS.findIndex(a=>a.id===S.act);
   document.getElementById("bar").innerHTML=`
@@ -1567,9 +1688,128 @@ function renderDiary(){return `<div class="stack"><h2>Diario della sessione</h2>
 </div>
 <div class="panel"><h4>Registro</h4><div class="log">${S.log.map(l=>`<div><span class="t">${l.t}</span><span>${esc(l.text)}</span></div>`).join("")||`<span class="muted small">Tiri ed eventi compariranno qui.</span>`}</div></div></div></div>`}
 
+/* ================= vista giocatore e schermo ================= */
+const roPips=(n,v,cls)=>`<span class="pips ro">${Array.from({length:n},(_,i)=>`<span class="pip ${cls} ${i<v?"on":""}"></span>`).join("")}</span>`;
+const SECRET=`<p>La vostra città è di solito protetta da un cippo magico. Ma ogni paio di secoli l'Arcanista Fuocobianco, che lo ha creato, deve compiere un rituale per ricaricarlo: è questo il pacco che trasportate.</p><p>È importante che nessuno scopra che portate il cippo della città, perché vorrebbe dire che ora la città è indifesa.</p>`;
+const imgSrc=g=>{if(!g)return "";const x=(g.gid&&VIEW.gallery.find(y=>y.gid===g.gid))||g;return x.url||(x.id?"/_blob/"+x.id:"")};
+function curSceneTitle(){const a=ACTS.find(x=>x.id===S.act),s=SECTIONS[S.act]().find(x=>!S.scn[S.act+":"+x.id]&&!skipReason(S.act+":"+x.id));return {act:`Atto ${a.n} · ${a.t}`,scene:s?s.t:a.t}}
+function viewSwitch(){
+  const b=(m,l)=>`<button class="tgl ${VIEW.mode===m?"on":""}" data-a="view-mode" data-k="${m}">${l}</button>`;
+  return `<div class="row" style="gap:4px">${VIEW.canGM?b("gm","GM"):""}${b("player","Giocatore")}${b("screen","Schermo")}</div>`;
+}
+function renderAlt(){
+  const el=document.getElementById("alt");
+  if(!VIEW.ready){el.innerHTML=`<div class="alt-wait">Apro il tavolo…</div>`;return}
+  if(VIEW.mode!=="screen"){el.innerHTML=renderPlayer();return}
+  const old=el.querySelector(".stage .st-img");el.innerHTML=renderScreen();
+  const nw=el.querySelector(".stage .st-img"); // stessa immagine: tieni il nodo già caricato, niente sfarfallio
+  if(old&&nw&&old.getAttribute("src")===nw.getAttribute("src")){old.classList.remove("fresh");nw.replaceWith(old)}
+}
+function renderPlayer(){
+  const L=liveData(),head=`<header class="pv-bar"><div class="brand"><b>Sablewood</b><span>I MESSAGGERI · SCHEDA DEL GIOCATORE</span></div><div class="row" style="margin-left:auto">${VIEW.pc?`<button class="btn xs" data-a="view-pc" data-k="">Cambia personaggio</button>`:""}${viewSwitch()}</div></header>`;
+  const status=!VIEW.tdb&&window.claude?.use?`<div class="note small">Accedi a claude.ai per vedere la scheda aggiornata dal GM in tempo reale.</div>`:L?"":`<div class="note small">Il GM non ha ancora aperto il tracker: i valori si aggiorneranno appena lo fa.</div>`;
+  if(!VIEW.pc)return `${head}<main class="pv">${status}<h2>Chi interpreti?</h2><div class="pv-pick">${Object.entries(PREGEN).map(([k,p])=>`<button class="pv-who" data-a="view-pc" data-k="${k}"><b>${esc(p.name)}</b><span>${esc(p.her)} · ${esc(p.cls)}</span><i>${esc(p.desc)}</i></button>`).join("")}</div></main>`;
+  const r=(L&&L.pcs.find(x=>x.id===VIEW.pc))||mkPC(VIEW.pc),p=P(Object.assign({cond:[],over:{}},r)),w=p.wpn,scr=VIEW.screen;
+  const conds=(r.cond||[]).map(c=>`<div class="row small"><span class="chip bad">${esc(c)}</span><span class="muted">${esc(COND_INFO[c]?.fx||"")}</span></div>`).join("");
+  const sec=(t,body)=>`<section class="pv-sec"><h3>${t}</h3>${body}</section>`;
+  return `${head}<main class="pv">${status}
+  <section class="pv-id">${shield(p.eva,"EVASIONE","lg"+(p.eva!==p.evaBase?" boosted":""))}
+   <div class="pv-name"><h1>${esc(p.name)}</h1><span>${esc(p.her)} · ${esc(p.cls)} · ${esc(p.sub)}</span><span class="xsmall muted">${esc(p.dom)} · ${esc(p.pron)}${p.spell?` · tratto Incantesimo: ${esc(p.spell)}`:""}</span>
+    <div class="row" style="gap:4px;margin-top:4px">${p.sage?`<span class="chip hope">Saggio di Corte</span>`:""}${r.pact?`<span class="chip fear">Patto con lo Strixwolf${r.pact==="used"?" · riscosso":""}</span>`:""}</div></div>
+   ${shield(p.arMax,"ARMATURA","lg arm")}</section>
+  ${thrStrip(p.major,p.severe)}
+  <section class="pv-trk">
+   <div><span class="lab">PF segnati ${r.hp}/${p.hpMax}</span>${roPips(p.hpMax,r.hp,"hp")}</div>
+   <div><span class="lab">Stress ${r.st}/${p.stMax}</span>${roPips(p.stMax,r.st,"st")}</div>
+   <div><span class="lab" style="color:var(--hope)">Speranza ${r.hope}/6</span>${roPips(6,r.hope,"hope")}</div>
+   <div><span class="lab">Armatura ${r.ar}/${p.arMax}</span>${roPips(p.arMax,r.ar,"ar")}</div></section>
+  ${r.hp>=p.hpMax?`<div class="warn"><b>Hai segnato l'ultimo PF:</b> scegli una Mossa di Morte (Gloria Finale, Evitare la Morte, Rischiare Tutto).</div>`:""}
+  ${conds?sec("Condizioni",conds):""}
+  ${scr&&scr.kind==="img"&&imgSrc(scr)?`<details class="pv-sec"><summary><b>Sullo schermo</b>${scr.title?` · ${esc(scr.title)}`:""}</summary><img class="pv-scr" src="${esc(imgSrc(scr))}" alt="${esc(scr.title||"Immagine proiettata")}">${scr.caption?`<div class="small">${esc(scr.caption)}</div>`:""}</details>`:""}
+  ${sec("Tratti",`<div class="traits pv-traits">${TRAITS.map((t,i)=>`<div><b>${sgn(p.tr[i])}</b><span>${t}</span></div>`).join("")}</div>`)}
+  ${sec("Equipaggiamento",`<div class="wpn"><b>${esc(w.n)}</b><span class="mono">${esc(w.d)} ${esc(w.ty)}</span><span class="muted small">${TRAITS[w.t]} · ${esc(w.r)}</span><span></span></div>
+   <div class="small"><b>${esc(p.arm.n)}</b> · soglie base ${esc(p.arm.b)} · punteggio ${p.arm.s}${p.arm.f?` · ${esc(p.arm.f)}`:""}</div>
+   <div class="small"><b>${esc(p.item[0])}</b>: ${esc(p.item[1])} ${r.item?`<span class="chip">usata</span>`:""}</div>`)}
+  ${sec("Esperienze",`<div class="row">${p.exp.map(e=>`<span class="chip hope">${esc(e[0])} ${sgn(e[1])}</span>`).join("")}</div><div class="xsmall muted">Spendi 1 Speranza per aggiungerne una a un tiro pertinente.</div>`)}
+  ${sec("Capacità della Speranza",`<div class="ftr" style="border-color:var(--hope)"><div class="ftr-h"><b>${esc(p.hopeF[0])}</b><span class="ktag">3 Speranza</span></div><div>${esc(p.hopeF[1])}</div></div>`)}
+  ${sec("Capacità",`<div class="stack" style="gap:8px">${p.feats.map(f=>`<div class="feat"><b>${esc(f[0])}</b><span class="k">${esc(f[1])}</span><div>${esc(f[2])}</div></div>`).join("")}</div>`)}
+  ${sec("Carte dominio",`<div class="stack" style="gap:8px">${p.cards.map(c=>`<div class="feat"><b>${esc(c[0])}</b><span class="k">${esc(c[1])}</span><div>${esc(c[2])}</div></div>`).join("")}</div>`)}
+  ${p.q?sec("Domanda di background",`<p class="pv-q">${esc(p.q)}</p>`):""}
+  ${p.sage?`<details class="pv-sec pv-secret"><summary><b>Solo per il Saggio di Corte</b> · cosa c'è nel pacco</summary><div class="read">${SECRET}</div></details>`:""}
+  <p class="xsmall muted">La scheda si aggiorna da sola quando il GM segna PF, Stress, Speranza o Armatura.</p>
+  </main>`;
+}
+function screenStage(scr,L,mini){
+  scr=scr||{kind:"splash"};const src=scr.kind==="img"?imgSrc(scr):"";
+  const fresh=!mini&&scr.ts&&scr.ts!==VIEW.lastTs;if(!mini)VIEW.lastTs=scr.ts;
+  const main=src?`<img class="st-img ${fresh?"fresh":""}" src="${esc(src)}" alt="${esc(scr.title||"Immagine proiettata")}">`
+   :scr.kind==="title"?`<div class="st-title ${fresh?"fresh":""}"><span>${esc(scr.sub||"")}</span><b>${esc(scr.title||"")}</b></div>`
+   :scr.kind==="blank"?""
+   :`<div class="st-title"><span>I Messaggeri del</span><b>Sablewood</b></div>`;
+  return `<div class="stage ${mini?"mini":""}">${main}
+   ${scr.caption?`<div class="st-cap">${esc(scr.caption)}</div>`:""}
+   ${scr.fear&&L?`<div class="st-fear"><span>Paura</span><div>${Array.from({length:12},(_,i)=>`<i class="${i<L.fear?"on":""}"></i>`).join("")}</div></div>`:""}
+   ${scr.party&&L?`<div class="st-party">${L.pcs.map(r=>{const p=P(Object.assign({cond:[],over:{}},r));return `<div class="${r.hp>=p.hpMax?"down":""}"><b>${esc(p.name.split(" ")[0])}</b><span><em>PF</em>${roPips(p.hpMax,r.hp,"hp")}</span><span><em>Stress</em>${roPips(p.stMax,r.st,"st")}</span><span><em>Speranza</em>${roPips(6,r.hope,"hope")}</span></div>`}).join("")}</div>`:""}
+  </div>`;
+}
+function renderScreen(){
+  return `${screenStage(VIEW.screen,liveData(),false)}<div class="scr-ctl"><button class="tgl" data-a="fullscreen">Schermo intero</button>${viewSwitch()}</div>`;
+}
+function renderScreenCtl(){
+  const scr=VIEW.screen||{kind:"splash"},cur=curSceneTitle(),db=!!VIEW.tdb,canUp=db?!!VIEW.assets:true;
+  return `<div class="stack"><h2>Schermo e giocatori</h2>
+  <div class="grid2">
+   <div class="panel stack" style="gap:10px"><h4>Ora sullo schermo</h4>
+    ${screenStage(scr,buildLive(),true)}
+    <div class="row"><input type="text" id="scr-cap" data-f="scr-cap" value="${esc(scr.caption||"")}" placeholder="Testo sullo schermo, es. «Il fiume Orfanatore»" style="flex:1 1 220px" aria-label="Testo sullo schermo">${scr.caption?`<button class="btn xs" data-a="scr-cap-clear">Togli testo</button>`:""}</div>
+    <div class="row small"><label class="inl"><input type="checkbox" data-a="scr-opt" data-k="party" ${scr.party?"checked":""}> Mostra PF, Stress e Speranza del gruppo</label><label class="inl"><input type="checkbox" data-a="scr-opt" data-k="fear" ${scr.fear?"checked":""}> Mostra la Paura</label></div>
+    <div class="row"><button class="btn" data-a="scr-title">Titolo: ${esc(cur.scene)}</button><button class="btn" data-a="scr-splash">Copertina</button><button class="btn" data-a="scr-blank">Schermo nero</button></div>
+   </div>
+   <div class="panel stack" style="gap:10px"><h4>Aprire le viste</h4>
+    <p class="small"><b>Schermo:</b> sul dispositivo collegato al proiettore apri questo stesso artifact e scegli <i>Schermo</i>. Se usi un secondo monitor, basta aprire l'artifact in un'altra finestra.</p>
+    <p class="small"><b>Giocatori:</b> condividi il link dell'artifact (Condividi → chiunque abbia il link, oppure invito via email). Chi non è editor vede solo la vista giocatore: sceglie il suo PG e legge la scheda completa, aggiornata mentre segni PF, Stress e Speranza.</p>
+    ${db?`<div class="note small">Sincronizzazione attiva tramite il tuo account claude.ai.</div>`:`<div class="note small">Fuori da claude.ai le viste si aggiornano solo tra finestre di questo browser.</div>`}
+    <div class="row"><button class="btn pri" data-a="view-mode" data-k="screen">Passa alla vista Schermo</button><button class="btn" data-a="view-mode" data-k="player">Prova la vista Giocatore</button></div>
+   </div>
+  </div>
+  <div class="panel stack" style="gap:10px"><div class="row" style="justify-content:space-between"><h4>Immagini da proiettare</h4>
+    ${canUp?`<label class="btn pri gal-up">${VIEW.busy?"Carico…":"+ Carica immagini"}<input type="file" accept="image/*" multiple data-f="gal-up" ${VIEW.busy?"disabled":""} hidden></label>`:`<span class="small muted">Il caricamento richiede i permessi di editor.</span>`}</div>
+   ${db?"":`<div class="xsmall muted">Fuori da claude.ai le immagini restano in questo browser, ridotte per stare nello spazio disponibile.</div>`}
+   ${VIEW.gallery.length?`<div class="gal">${VIEW.gallery.map(g=>{const on=scr.kind==="img"&&scr.gid===g.gid;return `<figure class="gal-i ${on?"on":""}"><button class="gal-th" data-a="gal-show" data-k="${g.gid}" title="Proietta"><img src="${esc(imgSrc(g))}" alt="${esc(g.title)}" loading="lazy"></button>
+     <input type="text" data-f="gal-title" data-k="${g.gid}" value="${esc(g.title)}" aria-label="Nome dell'immagine">
+     <div class="row" style="gap:4px">${on?`<span class="chip ok">sullo schermo</span>`:`<button class="btn xs pri" data-a="gal-show" data-k="${g.gid}">Proietta</button>`}
+      ${VIEW.delAsk===g.gid?`<button class="btn xs bad" data-a="gal-del" data-k="${g.gid}">Conferma</button><button class="btn xs" data-a="gal-del-no">No</button>`:`<button class="btn xs" data-a="gal-del-ask" data-k="${g.gid}" aria-label="Elimina ${esc(g.title)}">Elimina</button>`}</div></figure>`}).join("")}</div>`
+    :`<p class="small muted">Carica mappe, ritratti di PNG o illustrazioni delle scene: con un tocco li proietti sullo schermo dei giocatori.</p>`}
+  </div></div>`;
+}
+async function shrinkImage(file,max){
+  if(!/^image\/(png|jpeg|webp)$/.test(file.type))return file;
+  try{const bmp=await createImageBitmap(file),k=Math.min(1,max/Math.max(bmp.width,bmp.height));
+   if(k===1&&file.size<1.5e6)return file;
+   const c=document.createElement("canvas");c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);
+   return await new Promise(res=>c.toBlob(b=>res(b||file),"image/jpeg",.85))}catch(e){return file}
+}
+const asDataURL=b=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(b)});
+async function uploadImages(files){
+  VIEW.busy=true;render();let n=0;
+  for(const f of files){
+    if(!f.type.startsWith("image/"))continue;
+    const title=f.name.replace(/\.[^.]+$/,"").replace(/[_-]+/g," ").trim()||"Immagine";
+    try{
+      if(VIEW.tdb){const b=await shrinkImage(f,2400),up=await VIEW.assets.upload(b);VIEW.gallery=VIEW.gallery.concat({gid:uid(),id:up.id,url:up.url,title})}
+      else{const b=await shrinkImage(f,1280);VIEW.gallery=VIEW.gallery.concat({gid:uid(),url:await asDataURL(b),title})}
+      n++;
+    }catch(e){toast(e&&e.code==="quota_or_state"?"Spazio per le immagini esaurito: eliminane qualcuna":`Non sono riuscito a caricare «${title}»`)}
+  }
+  if(n)saveGallery();VIEW.busy=false;render();if(n)toast(n===1?"Immagine caricata":`${n} immagini caricate`);
+}
+
 function render(){
+  const alt=!VIEW.ready||VIEW.mode!=="gm";document.body.classList.toggle("alt",alt);
+  if(alt){renderAlt();return}
+  document.getElementById("alt").innerHTML="";
   renderBar();renderTabs();renderParty();renderRoll();
-  document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct():S.tab==="scontro"?renderCombat():S.tab==="regole"?RULES:renderDiary()}</div>`;
+  document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct():S.tab==="scontro"?renderCombat():S.tab==="regole"?RULES:S.tab==="schermo"?renderScreenCtl():renderDiary()}</div>`;
 }
 
 /* ================= azioni ================= */
@@ -1651,7 +1891,7 @@ const A={
  ritual:o=>upd(()=>{if(o.k==="hit"){S.ritual.v=Math.min(8,S.ritual.v+1);log(`L'Arcanista è colpita: Rituale +1 → ${S.ritual.v}`,"bad")}if(o.k==="kill"){S.ritual.v=Math.max(0,S.ritual.v-1);log(`Rituale −1 → ${S.ritual.v}`,"ok")}}),
  "ritual-pip":o=>upd(()=>{const n=+o.i+1;S.ritual.v=S.ritual.v===n?n-1:n}),
  "ritual-spawn":()=>upd(()=>{spawn("skeleton",5,"4:rituale");spawn("hero",2,"4:rituale")}),
- vengeance:()=>upd(()=>{addFear(-1,"Vendetta degli Antichi Dèi");spawn("skeleton",Math.min(2,10-aliveSkel()),"4:rituale")}),
+ vengeance:()=>upd(()=>{addFear(-1,"Vendetta degli Antichi Dèi");spawn("skeleton",2,"4:rituale")}),
  "ritual-end":()=>upd(ritualEnd),
  "home-add":()=>upd(()=>S.home.push({n:"",note:""})),
  "home-del":o=>upd(()=>S.home.splice(+o.i,1)),
@@ -1751,6 +1991,23 @@ const A={
  "dev-npc":o=>upd(()=>{picker=null;const dv=S.devs.find(x=>x.id===o.id);const r=parseDev(dv.raw).png[+o.i];if(!r)return;
   S.foes.push(mkFoe({name:r[0],type:"PNG",desc:r[1]||"",mot:r[2]||"",diff:parseInt(r[3])||12,feats:[]},dv.act+":dev:"+dv.id,""));log(`In scena: ${r[0]}`)}),
  "dev-cd":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);const c=parseDev(dv.raw).conti[+o.i];if(!c)return;const m=clamp(parseInt(c[1])||4,1,12);S.cds.push({id:uid(),name:c[0],max:m,v:m,note:c[2]||""});toast("Conto aggiunto nella scheda Scontro")}),
+ // viste e schermo
+ "view-mode":o=>{if(o.k==="gm"&&!VIEW.canGM)return;VIEW.mode=o.k;saveView();render();top0()},
+ "view-pc":o=>{VIEW.pc=o.k||null;saveView();render();top0()},
+ fullscreen:()=>{if(document.fullscreenElement){document.exitFullscreen?.();return}
+  const p=document.documentElement.requestFullscreen?.();if(p?.catch)p.catch(()=>toast("Usa lo schermo intero del browser (F11)"));else if(!p)toast("Usa lo schermo intero del browser (F11)")},
+ "scr-opt":(o,b)=>setScreen({[o.k]:b.checked}),
+ "scr-title":()=>{const c=curSceneTitle();setScreen({kind:"title",title:c.scene,sub:c.act,gid:null,caption:""})},
+ "scr-splash":()=>setScreen({kind:"splash",gid:null}),
+ "scr-blank":()=>setScreen({kind:"blank",gid:null}),
+ "scr-cap-clear":()=>setScreen({caption:""}),
+ "gal-show":o=>{const g=VIEW.gallery.find(x=>x.gid===o.k);if(g)setScreen({kind:"img",gid:g.gid,id:g.id||null,url:VIEW.tdb?g.url:"",title:g.title})},
+ "gal-del-ask":o=>{VIEW.delAsk=o.k;render()},
+ "gal-del-no":()=>{VIEW.delAsk=null;render()},
+ "gal-del":o=>{const g=VIEW.gallery.find(x=>x.gid===o.k);VIEW.delAsk=null;if(!g)return;
+  VIEW.gallery=VIEW.gallery.filter(x=>x!==g);saveGallery();
+  if(VIEW.tdb&&g.id&&VIEW.assets)VIEW.assets.delete(g.id).catch(()=>{});
+  if(VIEW.screen?.gid===g.gid)setScreen({kind:"splash",gid:null});else render()},
  reset:()=>{resetAsk=true;renderBar()},
  "reset-no":()=>{resetAsk=false;renderBar()},
  "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;ROLL={cur:null,hist:[],pend:null,showHist:false};foeRoll.res=null;top0();persist();render();toast("Nuova campagna pronta")}
@@ -1778,6 +2035,9 @@ document.addEventListener("change",e=>{
     case "home-n":S.home[+o.i].n=v;persist();return;
     case "home-note":S.home[+o.i].note=v;persist();return;
     case "notes":S.notes=v;persist();return;
+    case "scr-cap":setScreen({caption:v.trim()});return;
+    case "gal-title":{const g=VIEW.gallery.find(x=>x.gid===o.k);if(g){g.title=v.trim()||g.title;saveGallery()}return}
+    case "gal-up":{const fs=[...el.files];el.value="";if(fs.length)uploadImages(fs);return}
   }
 });
 render();
