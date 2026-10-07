@@ -488,9 +488,10 @@ details.pv-sec>summary{font-size:.95rem}
 .st-party .pips{gap:.3cqh;flex-wrap:nowrap}
 .st-party .pip.hp,.st-party .pip.st{width:2.2cqh;height:1.6cqh;border-width:max(1px,.2cqh)}
 .st-party .pip.hope{width:1.4cqh;height:1.4cqh;margin:.2cqh .35cqh;border-width:max(1px,.2cqh)}
-.scr-ctl{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;opacity:0;transition:opacity .3s}
+.scr-ctl{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;opacity:.35;transition:opacity .3s}
+.tgl.back{background:var(--hope-soft);border-color:var(--hope)}
 .scr-ctl:hover,.scr-ctl:focus-within{opacity:1}
-@media (hover:none){.scr-ctl{opacity:.6}}
+@media (hover:none){.scr-ctl{opacity:.7}}
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:10px}
 .gal-i{margin:0;border:1px solid var(--line);border-radius:var(--r);padding:6px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
 .gal-i.on{border:2px solid var(--ok);padding:5px}
@@ -1723,7 +1724,7 @@ const imgSrc=g=>{if(!g)return "";const x=(g.gid&&VIEW.gallery.find(y=>y.gid===g.
 function curSceneTitle(){const a=ACTS.find(x=>x.id===S.act),s=SECTIONS[S.act]().find(x=>!S.scn[S.act+":"+x.id]&&!skipReason(S.act+":"+x.id));return {act:`Atto ${a.n} · ${a.t}`,scene:s?s.t:a.t}}
 function viewSwitch(){
   const b=(m,l)=>`<button class="tgl ${VIEW.mode===m?"on":""}" data-a="view-mode" data-k="${m}">${l}</button>`;
-  return `<div class="row" style="gap:4px">${VIEW.canGM?b("gm","GM"):""}${b("player","Giocatore")}${b("screen","Schermo")}</div>`;
+  return `<div class="row" style="gap:4px">${VIEW.canGM?`<button class="tgl back" data-a="view-mode" data-k="gm">← Torna al GM</button>`:""}${b("player","Giocatore")}${b("screen","Schermo")}</div>`;
 }
 function renderAlt(){
   const el=document.getElementById("alt");
@@ -2048,7 +2049,7 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("[data-a]");if(!b)return;
   const f=A[b.dataset.a];if(f){f(b.dataset,b);flushShows()}
 });
-document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".mc[data-a],.enc[data-a]")){e.preventDefault();A[e.target.dataset.a](e.target.dataset)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&VIEW.mode!=="gm"&&VIEW.canGM&&!document.fullscreenElement){A["view-mode"]({k:"gm"});return}if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".mc[data-a],.enc[data-a]")){e.preventDefault();A[e.target.dataset.a](e.target.dataset)}});
 document.addEventListener("change",e=>{
   const el=e.target,o=el.dataset;if(!o.f)return;const v=el.value;
   switch(o.f){
