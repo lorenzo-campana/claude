@@ -266,7 +266,18 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .mc.sel{border:2px solid var(--kc);padding:8px 9px;background:var(--paper)}
 .mc.dead{opacity:.5}
 .mc.pick{cursor:default;border-style:dashed;gap:8px}
-.mc-h{display:flex;gap:8px;align-items:center}
+.mc{position:relative}
+.mc-h{display:flex;gap:8px;align-items:center;padding-right:16px}
+.mc-x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--muted);font-size:.9rem;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.mc-x:hover{border-color:var(--blood);color:var(--blood)}
+.mc-d{display:flex;flex-direction:column;align-items:center;gap:2px}
+.cmark{font-size:.6rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:3px;padding:0 4px;white-space:nowrap}
+.cmark.up{background:var(--blood);color:var(--paper)} .cmark.down{background:var(--moss);color:var(--paper)}
+.sh-stats .cmark{margin-top:2px}
+.cchip{cursor:pointer;background:var(--blood-soft)}
+.cchip:hover{background:var(--blood);color:var(--paper)}
+.csel{font-size:.74rem;padding:0 4px;height:20px;border-radius:999px;border:1px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer;max-width:9em}
+.shield.boosted .sv{background:var(--hope)} .shield.boosted .sl{background:var(--hope)}
 .mc-h b{flex:1;min-width:0;font-weight:800;line-height:1.15}
 .mc-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .mc-r .lab{width:3.6em;font-size:.6rem}
@@ -520,8 +531,15 @@ const OBSTACLES=["Una pozza di fango","Radici giganti alte sei metri","Una chiaz
 const COMPLICATIONS=["Rampicanti animati afferrano la gamba di un PG","Un albero grida di dolore quando un PG ci salta sopra, cogliendolo di sorpresa","Una nube di spore luccicanti si alza dai funghi giganti, accecando il gruppo"];
 const UNDERTOW=["Il PG segna 1 Stress","Il PG subisce 2d6+3 danni fisici","Il PG mette nel deposito una carta dominio a scelta (ritira se non ne ha)","Un oggetto del PG affonda sul fondo del fiume (ritira se non ne ha)"];
 const TREASURES=[["Stivali del Camminalago","cammini sull'acqua come su terreno soffice"],["Pietra del Fascino","spendi 1 Speranza per camuffarti magicamente da qualcuno che hai già visto"],["Verga Sospesa","mentre è attiva non può essere spostata e ignora la gravità"]];
-const PC_COND=["Vulnerabile","Trattenuto","Nascosto","Annegamento","Posseduto","Incosciente","Inarrestabile"];
-const FOE_COND=["Vulnerabile","Trattenuto","Nascosto","Spaventato"];
+const COND_INFO={
+ Vulnerabile:{fx:"I tiri contro hanno vantaggio"},Nascosto:{fx:"I tiri contro hanno svantaggio"},Trattenuto:{fx:"Non può muoversi, ma può agire"},
+ Annegamento:{fx:"Segna 1 Stress a ogni tiro d'azione del gruppo; si libera con un tiro d'azione"},Posseduto:{fx:"Può solo cercare di liberarsi"},
+ Incosciente:{fx:"Non può agire"},Inarrestabile:{fx:"Danni fisici ridotti di una soglia; immune a Vulnerabile e Trattenuto"},
+ "Schivata del Ladro":{fx:"+2 Evasione finché un attacco non va a segno"}
+};
+const PC_COND_BASE=["Vulnerabile","Nascosto","Trattenuto","Annegamento","Posseduto","Incosciente"];
+const pcConds=id=>PC_COND_BASE.concat(id==="khari"?["Inarrestabile"]:[],id==="barnacle"?["Schivata del Ladro"]:[]);
+const FOE_COND=["Vulnerabile","Nascosto","Trattenuto"];
 const ACTS=[{id:'1',n:'I',t:"Il peccato di Luna"},{id:'2',n:'II',t:"Gli Scarshade"},{id:'2.5',n:'II½',t:"La scorciatoia"},{id:'3',n:'III',t:"Hush"},{id:'4',n:'IV',t:"Il rinnovo del sigillo"},{id:'5',n:'V',t:"Ritorno a casa"}];
 
 /* ================= stato ================= */
@@ -595,7 +613,7 @@ function rollExpr(expr){
 function log(text,kind=""){S.log.unshift({t:new Date().toTimeString().slice(0,5),text,kind});if(S.log.length>250)S.log.length=250}
 let toastT;function toast(m){const el=document.getElementById("toast");el.textContent=m;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2800)}
 function upd(fn){fn();persist();render()}
-const P=r=>r?Object.assign({},PREGEN[r.id]||{},r.over||{}):null; // dati della scheda + correzioni
+const P=r=>{if(!r)return null;const q=Object.assign({},PREGEN[r.id]||{},r.over||{});q.evaBase=q.eva;if(r.cond.includes("Schivata del Ladro"))q.eva+=2;return q}; // scheda + correzioni + condizioni
 const pcRaw=id=>S.pcs.find(p=>p.id===id);
 const pcById=id=>P(pcRaw(id));
 const pcName=id=>pcById(id)?.name||"PG";
@@ -628,9 +646,18 @@ function hpFromDamage(dmg,major,severe){
   return 1;
 }
 function pcMarkHp(id,hp,why){const r=pcRaw(id),p=P(r);r.hp=Math.min(p.hpMax,r.hp+hp);log(`${p.name} segna ${hp} PF${why?" ("+why+")":""}`,"bad");checkDown(id)}
+function toggleCond(list,c,who){
+  if(list.includes(c))return list.filter(x=>x!==c);
+  if(who==="khari"&&list.includes("Inarrestabile")&&(c==="Vulnerabile"||c==="Trattenuto")){toast("Khari è Inarrestabile: non può essere Vulnerabile né Trattenuta");return list}
+  let out=[...list,c];
+  if(c==="Inarrestabile")out=out.filter(x=>x!=="Vulnerabile"&&x!=="Trattenuto");
+  return out;
+}
+const pcHpPreview=(r,dmg)=>{const q=P(r);return Math.max(0,hpFromDamage(dmg,q.major,q.severe)-(r.cond.includes("Inarrestabile")?1:0))};
 function pcDamage(id,dmg,useArmor){
   const r=pcRaw(id),p=P(r);let hp=hpFromDamage(dmg,p.major,p.severe);let note="";
-  if(useArmor&&hp>0&&r.ar<p.arMax){r.ar++;hp--;note=", −1 con 1 slot Armatura"}
+  if(r.cond.includes("Inarrestabile")&&hp>0){hp--;note+=", −1 Inarrestabile"}
+  if(useArmor&&hp>0&&r.ar<p.arMax){r.ar++;hp--;note+=", −1 con 1 slot Armatura"}
   r.hp=Math.min(p.hpMax,r.hp+hp);log(`${p.name} subisce ${dmg} danni → ${hp} PF${note}`,"bad");checkDown(id);
 }
 function checkDown(id){const r=pcRaw(id),p=P(r);if(r.hp>=p.hpMax){deathFor=id;log(`${p.name} ha segnato l'ultimo PF: Mossa di Morte!`,"bad")}}
@@ -666,6 +693,9 @@ function rollDual(o){
   const res={id:uid(),t:"dual",label:o.label||(trait!=null?`Tiro di ${TRAITS[trait]}`:"Tiro d'azione"),who:r?.id||null,trait,mod,diff:o.diff?+o.diff:null,
     hope:d(12),fear:d(12),adv:Array.from({length:+o.adv||0},()=>d(6)),dis:Array.from({length:+o.dis||0},()=>d(6)),exps:[],helpers:[],react:!!o.react,final:!!o.final,
     dmg:o.dmg||"",foe:o.foe||"",effects:[],at:new Date().toTimeString().slice(0,5)};
+  const tf=res.foe?foe(res.foe):null;
+  if(tf&&tf.cond.includes("Vulnerabile")){res.adv.push(d(6));res.effects.push(`${tf.name} è Vulnerabile: vantaggio.`)}
+  if(tf&&tf.cond.includes("Nascosto")){res.dis.push(d(6));res.effects.push(`${tf.name} è Nascosto: svantaggio.`)}
   const crit=res.hope===res.fear;
   if(res.react)res.effects.push("Tiro reazione: non genera Speranza né Paura.");
   else if(crit){if(r){r.hope=Math.min(6,r.hope+1);if(r.st>0)r.st--}res.effects.push(`${p?p.name:"Il PG"}: +1 Speranza e −1 Stress.`)}
@@ -687,9 +717,14 @@ function recalc(res){
   if(res.final){S.flags.final=res.crit?"crit":res.success?(res.kind==="h"?"sh":"sf"):(res.kind==="h"?"fh":"ff");if(S.flags.bargain)S.flags.bargainUsed=true}
 }
 function rollAtk(o){
-  const f=foe(o.foe),p=pcById(o.target);if(!f||!p)return null;
-  const v=d(20),total=v+(f.atk||0),hit=v===20||total>=p.eva;f.acted=true;
-  const res={id:uid(),t:"atk",label:`${f.name} attacca ${p.name}`,d20:v,atk:f.atk||0,total,eva:p.eva,hit,crit:v===20,foe:f.id,target:o.target,at:new Date().toTimeString().slice(0,5)};
+  const f=foe(o.foe),r=pcRaw(o.target),p=P(r);if(!f||!p)return null;
+  const vul=r.cond.includes("Vulnerabile"),hid=r.cond.includes("Nascosto");
+  const a=d(20),b=vul!==hid?d(20):null,v=b==null?a:vul?Math.max(a,b):Math.min(a,b);
+  const total=v+(f.atk||0),hit=v===20||total>=p.eva;f.acted=true;
+  const notes=[];if(vul&&!hid)notes.push(`${p.name} è Vulnerabile: il GM tira con vantaggio.`);if(hid&&!vul)notes.push(`${p.name} è Nascosto: il GM tira con svantaggio.`);
+  if(p.eva!==p.evaBase)notes.push(`Evasione ${p.evaBase} +2 (Schivata del Ladro).`);
+  if(hit&&r.cond.includes("Schivata del Ladro")){r.cond=r.cond.filter(c=>c!=="Schivata del Ladro");notes.push("L'attacco va a segno: Schivata del Ladro termina.")}
+  const res={id:uid(),t:"atk",label:`${f.name} attacca ${p.name}`,d20:v,d20b:b==null?null:(v===a?b:a),atk:f.atk||0,total,eva:p.eva,hit,crit:v===20,foe:f.id,target:o.target,notes,at:new Date().toTimeString().slice(0,5)};
   log(`${res.label}: d20 ${v} ${sgn(res.atk)} = ${total} vs Evasione ${p.eva} → ${v===20?"CRITICO":hit?"colpito":"mancato"}`,hit?"bad":"");
   return res;
 }
@@ -747,14 +782,15 @@ function resultHTML(res){
   if(res.t==="atk"){
     const f=foe(res.foe);
     return `<div class="rp-h"><div><span class="lab">${esc(res.at)} · attacco avversario</span><b>${esc(res.label)}</b></div><button class="btn xs" data-a="rp-close" aria-label="Chiudi">×</button></div>
-    <div class="rp-dice">${faceHTML(res.d20,20,"n")}<span class="rmod">ATK ${sgn(res.atk)}</span><span class="rtot">${res.total}<small>vs Ev ${res.eva}</small></span></div>
+    <div class="rp-dice">${faceHTML(res.d20,20,"n")}${res.d20b!=null?faceHTML(res.d20b,20,"n","cancel"):""}<span class="rmod">ATK ${sgn(res.atk)}</span><span class="rtot">${res.total}<small>vs Ev ${res.eva}</small></span></div>
     <div class="verdict ${res.hit?"f":"h"}">${res.crit?"Critico!":res.hit?"Colpito":"Mancato"}</div>
+    ${res.notes&&res.notes.length?`<ul class="tight small">${res.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`:""}
     ${res.hit&&f&&f.attack&&/d/.test(f.attack.d)?`<div class="row">${rb(`Danni ${f.attack.d}${res.crit?" (critico)":""}`,{t:"expr",x:f.attack.d,label:`${f.name}: ${f.attack.n}`,tgt:"pc",target:res.target},"dmg")}</div>`:""}`;
   }
   const f=res.foe?foe(res.foe):(res.tgt==="foe"&&openFoe?foe(openFoe):null);
   return `<div class="rp-h"><div><span class="lab">${esc(res.at)}</span><b>${esc(res.label)}</b></div><button class="btn xs" data-a="rp-close" aria-label="Chiudi">×</button></div>
    ${res.parts.map(pt=>`<div class="rp-dice">${res.parts.length>1?`<span class="small" style="min-width:8em">${esc(pt.label)}</span>`:""}${pt.x.rolls.map(v=>faceHTML(v,dieSides(pt.x.expr),"n")).join("")}${(pt.x.total-pt.x.rolls.reduce((a,b)=>a+b,0))?`<span class="rmod">${sgn(pt.x.total-pt.x.rolls.reduce((a,b)=>a+b,0))}</span>`:""}<span class="rtot">${pt.x.total}</span></div>`).join("")}
-   ${res.tgt==="pc"&&res.total!=null?`<div class="rp-mods"><span class="lab">Applica a</span>${(res.target?[pcRaw(res.target)]:S.pcs).map(r=>{const q=P(r);return `<button class="btn xs bad" data-a="rp-apply-pc" data-id="${r.id}">${esc(q.name.split(" ")[0])} → ${hpFromDamage(res.total,q.major,q.severe)} PF</button><button class="btn xs" data-a="rp-apply-pc" data-id="${r.id}" data-arm="1" ${r.ar>=q.arMax?"disabled":""}>con Armatura</button>`}).join("")}</div>`:""}
+   ${res.tgt==="pc"&&res.total!=null?`<div class="rp-mods"><span class="lab">Applica a</span>${(res.target?[pcRaw(res.target)]:S.pcs).map(r=>{const q=P(r);return `<button class="btn xs bad" data-a="rp-apply-pc" data-id="${r.id}">${esc(q.name.split(" ")[0])} → ${pcHpPreview(r,res.total)} PF</button><button class="btn xs" data-a="rp-apply-pc" data-id="${r.id}" data-arm="1" ${r.ar>=q.arMax?"disabled":""}>con Armatura</button>`}).join("")}</div>`:""}
    ${res.tgt==="foe"&&f&&f.hpMax&&res.total!=null?`<div class="rp-mods"><button class="btn xs bad" data-a="rp-apply-foe" data-id="${f.id}">Applica a ${esc(f.name)} → ${f.minion?"sconfitto":hpFromDamage(res.total,f.thr[0],f.thr[1])+" PF"}</button></div>`:""}`;
 }
 function renderRoll(){
@@ -811,13 +847,18 @@ function foeMark(f,k,n){
 const encOpen=new Map();let picker=null,encResetAsk=null,sheetTab="cap";
 const KIND_ICON={Combattimento:"⚔",Sociale:"❝",Ambientale:"✧"};
 const initial=n=>esc(String(n||"?").trim().charAt(0).toUpperCase());
+const condMark=list=>{const v=list.includes("Vulnerabile"),h=list.includes("Nascosto");return v&&!h?`<span class="cmark up" title="I tiri contro hanno vantaggio">▲ vant.</span>`:h&&!v?`<span class="cmark down" title="I tiri contro hanno svantaggio">▼ svant.</span>`:""};
+const condChips=(list,a,id)=>list.map(c=>`<button class="chip bad cchip" data-a="${a}" data-id="${id}" data-k="${esc(c)}" title="${esc(COND_INFO[c]?.fx||"")} · tocca per rimuovere">${esc(c)} ×</button>`).join("");
+const condSelect=(list,all,f,id)=>{const opts=all.filter(c=>!list.includes(c)&&!(list.includes("Inarrestabile")&&(c==="Vulnerabile"||c==="Trattenuto")));return opts.length?`<select class="csel" data-f="${f}" data-id="${id}" aria-label="Aggiungi condizione"><option value="">+ cond.</option>${opts.map(c=>`<option>${esc(c)}</option>`).join("")}</select>`:""};
 function miniCard(f){
   const sel=openFoe===f.id;
   return `<div class="mc ${sel?"sel":""} ${f.dead?"dead":""}" data-a="foe-open" data-id="${f.id}" tabindex="0" role="button" aria-expanded="${sel}">
-   <div class="mc-h"><span class="ava">${initial(f.name)}</span><b>${esc(f.name)}</b>${shield(f.diff,"DIFF","diff xs")}</div>
+   <button class="mc-x" data-a="foe-del" data-id="${f.id}" aria-label="Togli ${esc(f.name)} dall'incontro" title="Togli dall'incontro">×</button>
+   <div class="mc-h"><span class="ava">${initial(f.name)}</span><b>${esc(f.name)}</b><span class="mc-d">${shield(f.diff,"DIFF","diff xs")}${condMark(f.cond)}</span></div>
    ${f.hpMax?`<div class="mc-r"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>`:`<div class="mc-r xsmall muted">${esc(f.type)} · nessun PF</div>`}
    ${f.stMax?`<div class="mc-r"><span class="lab">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}
-   <div class="mc-r"><button class="act-b ${f.acted?"done":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Non ha agito"}</button>${f.dead?`<span class="chip ok">sconfitto</span>`:""}${f.cond.map(c=>`<span class="chip bad">${c}</span>`).join("")}</div>
+   <div class="mc-r"><button class="act-b ${f.acted?"done":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Non ha agito"}</button>${f.dead?`<span class="chip ok">sconfitto</span>`:""}</div>
+   <div class="mc-r">${condChips(f.cond,"foe-cond",f.id)}${condSelect(f.cond,FOE_COND,"foe-cond-add",f.id)}</div>
   </div>`;
 }
 function foeSheet(f){
@@ -838,12 +879,12 @@ function foeSheet(f){
    <div class="sh-b">
     <div class="sh-l">
      <div class="sh-id"><span class="ava lg">${initial(f.name)}</span><div><b>${esc(f.name)}</b><div class="row" style="gap:6px"><span class="tbadge t-${esc(f.type).replace(/\W/g,"")}">${esc(f.type)}</span><span class="small muted">Tier ${f.tier}${f.sub?" · "+esc(f.sub):""}</span></div></div></div>
-     <div class="sh-stats"><div><span class="lab">Difficoltà</span><b>${f.diff??"—"}${f.sugg?"*":""}</b></div><div><span class="lab">Soglie</span><b>${f.minion?"—":`${f.thr[0]??"—"}/${f.thr[1]??"—"}`}</b></div>
+     <div class="sh-stats"><div><span class="lab">Difficoltà</span><b>${f.diff??"—"}${f.sugg?"*":""}</b>${condMark(f.cond)}</div><div><span class="lab">Soglie</span><b>${f.minion?"—":`${f.thr[0]??"—"}/${f.thr[1]??"—"}`}</b></div>
       <div><span class="lab">PF</span><b>${f.hpMax?`${f.hpMax-f.hp}<small>/${f.hpMax}</small>`:"—"}</b></div><div><span class="lab">Stress</span><b>${f.stMax?`${f.st}<small>/${f.stMax}</small>`:"—"}</b></div></div>
      ${f.hpMax?`<div class="sh-pad">${thrStrip(f.thr[0],f.thr[1],{a:"foe-thr",id:f.id,minion:f.minion})}
       <div class="row"><span class="lab" style="width:3.6em">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>
       ${f.stMax?`<div class="row"><span class="lab" style="width:3.6em">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}</div>`:""}
-     ${f.cond.length?`<div class="sh-pad row">${f.cond.map(c=>`<button class="chip bad" data-a="foe-cond" data-id="${f.id}" data-k="${c}" title="Rimuovi">${c} ×</button>`).join("")}</div>`:""}
+     ${f.cond.length?`<div class="sh-pad">${f.cond.map(c=>`<div class="row small"><button class="chip bad cchip" data-a="foe-cond" data-id="${f.id}" data-k="${esc(c)}">${esc(c)} ×</button><span class="muted">${esc(COND_INFO[c]?.fx||"")}</span></div>`).join("")}</div>`:""}
     </div>
     <div class="sh-r"><div class="sh-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" class="${sheetTab===k?"on":""}" data-a="sheet-tab" data-k="${k}">${l}</button>`).join("")}</div>
      <div class="stack" style="gap:8px">${sheetTab==="cap"?featsHTML:sheetTab==="nar"?nar:info}</div></div>
@@ -1252,9 +1293,9 @@ let openPc=null;
 function pcCard(r){
   const p=P(r),x=openPc===r.id;
   return `<article class="pcc ${r.hp>=p.hpMax?"down":""}">
-  <div class="pcc-top">${shield(p.eva,"EVASIONE","sm")}
+  <div class="pcc-top"><span class="mc-d">${shield(p.eva,"EVASIONE","sm"+(p.eva!==p.evaBase?" boosted":""))}${condMark(r.cond)}</span>
    <div class="pcc-id" data-a="pc-open" data-id="${r.id}"><b>${esc(p.name)}</b><span>${esc(p.her)} · ${esc(p.cls)}</span>
-    <div class="row" style="gap:4px;margin-top:2px">${p.sage?`<span class="chip hope">Saggio di Corte</span>`:""}${S.flags.bargain===r.id?`<span class="chip fear">Patto${S.flags.bargainUsed?" riscosso":""}</span>`:""}${r.cond.map(c=>`<span class="chip bad">${c}</span>`).join("")}</div></div>
+    <div class="row" style="gap:4px;margin-top:2px">${p.sage?`<span class="chip hope">Saggio di Corte</span>`:""}${S.flags.bargain===r.id?`<span class="chip fear">Patto${S.flags.bargainUsed?" riscosso":""}</span>`:""}${condChips(r.cond,"pc-cond",r.id)}${condSelect(r.cond,pcConds(r.id),"pc-cond-add",r.id)}</div></div>
    ${shield(p.arMax,"ARMATURA","sm arm")}</div>
   ${thrStrip(p.major,p.severe,{a:"pc-thr",id:r.id,compact:true})}
   <div class="trk"><div><span class="lab">PF ${p.hpMax-r.hp}/${p.hpMax}</span>${pips(p.hpMax,r.hp,"hp","pc-pip",`data-id="${r.id}" data-k="hp"`)}</div>
@@ -1281,7 +1322,7 @@ function pcDetail(r,p){
   <details><summary class="small"><b>Capacità</b> (${p.feats.length})</summary><div class="stack" style="margin-top:6px;gap:6px">${p.feats.map(f=>`<div class="feat"><b>${esc(f[0])}</b><span class="k">${esc(f[1])}</span><div>${esc(f[2])}</div></div>`).join("")}</div></details>
   <details><summary class="small"><b>Carte dominio</b> (${p.cards.length})</summary><div class="stack" style="margin-top:6px;gap:6px">${p.cards.map(c=>`<div class="feat"><b>${esc(c[0])}</b><span class="k">${esc(c[1])}</span><div>${esc(c[2])}</div></div>`).join("")}</div></details>
   <div class="row small"><span class="lab">Inventario</span> ${esc(p.item[0])} (${esc(p.item[1])}) ${r.item?`<span class="chip">usata</span>`:`<button class="btn xs has-die" data-a="potion" data-id="${r.id}">${DIE_SVG}Bevi</button>`}</div>
-  <div><div class="lab">Condizioni</div><div class="cond">${PC_COND.map(c=>`<button class="${r.cond.includes(c)?"on":""}" data-a="pc-cond" data-id="${r.id}" data-k="${c}">${c}</button>`).join("")}</div></div>
+  <div><div class="lab">Condizioni</div><div class="cond">${pcConds(r.id).map(c=>`<button title="${esc(COND_INFO[c]?.fx||"")}" class="${r.cond.includes(c)?"on":""}" data-a="pc-cond" data-id="${r.id}" data-k="${c}">${c}</button>`).join("")}</div></div>
   <details><summary class="small"><b>Correggi valori</b></summary><div class="row small" style="margin-top:6px">${[["eva","Evasione"],["major","Grave"],["severe","Severa"],["hpMax","PF"],["stMax","Stress"],["arMax","Armatura"]].map(([k,l])=>`<label class="inl">${l}<input type="number" id="ov-${k}-${r.id}" data-f="pc-over" data-k="${k}" data-id="${r.id}" value="${p[k]}"></label>`).join("")}
    <label class="inl"><input type="checkbox" data-a="pc-sage" data-id="${r.id}" ${p.sage?"checked":""}> Saggio di Corte</label></div></details>
   ${p.q?ask(esc(p.q),"","Domanda di background"):""}
@@ -1442,9 +1483,9 @@ const A={
  "pc-thr":o=>upd(()=>pcMarkHp(o.id,+o.k,`danni ${["","minori","gravi","severi"][+o.k]}`)),
  "pc-armor":o=>upd(()=>{const r=pcRaw(o.id),p=P(r);if(r.ar>=p.arMax){toast("Nessuno slot Armatura libero");return}if(r.hp<1){toast("Nessun PF da togliere");return}r.ar++;r.hp--;if(deathFor===r.id)deathFor=null;log(`${p.name} segna 1 slot Armatura: −1 PF`)}),
  "pc-sage":o=>upd(()=>{const r=pcRaw(o.id);r.over.sage=!P(r).sage}),
- "pc-cond":o=>upd(()=>{const r=pcRaw(o.id);r.cond=r.cond.includes(o.k)?r.cond.filter(c=>c!==o.k):[...r.cond,o.k];log(`${pcName(r.id)}: ${o.k} ${r.cond.includes(o.k)?"attivo":"rimosso"}`)}),
+ "pc-cond":o=>upd(()=>{const r=pcRaw(o.id);r.cond=toggleCond(r.cond,o.k,r.id);log(`${pcName(r.id)}: ${o.k} ${r.cond.includes(o.k)?"attivo":"rimosso"}`)}),
  "pc-dmg":o=>{const v=+document.getElementById("dmg-"+o.id).value;if(!(v>0)){toast("Inserisci i danni");return}const arm=document.getElementById("arm-"+o.id).checked;upd(()=>pcDamage(o.id,v,arm))},
- "hope-feat":o=>upd(()=>{const r=pcRaw(o.id),p=P(r);if(r.hope<3)return;r.hope-=3;log(`${p.name} usa ${p.hopeF[0]} (−3 Speranza)`,"hope");if(r.id==="khari")r.ar=Math.max(0,r.ar-2)}),
+ "hope-feat":o=>upd(()=>{const r=pcRaw(o.id),p=P(r);if(r.hope<3)return;r.hope-=3;log(`${p.name} usa ${p.hopeF[0]} (−3 Speranza)`,"hope");if(r.id==="khari")r.ar=Math.max(0,r.ar-2);if(r.id==="barnacle"&&!r.cond.includes("Schivata del Ladro"))r.cond.push("Schivata del Ladro")}),
  potion:o=>upd(()=>{const r=pcRaw(o.id),p=P(r);const x=rollShow("1d4",`${p.name}: ${p.item[0]}`);r.item=true;if(p.item[2]==="hp")r.hp=Math.max(0,r.hp-x.total);else r.st=Math.max(0,r.st-x.total);log(`${p.name} beve ${p.item[0]}: −${x.total} ${p.item[2]==="hp"?"PF":"Stress"}`,"ok")}),
  death:o=>upd(()=>{const r=pcRaw(o.id),p=P(r);deathFor=null;
   if(o.k==="blaze")log(`${p.name} sceglie la Gloria Finale: un'ultima azione con successo critico, poi muore`,"bad");
@@ -1458,7 +1499,7 @@ const A={
  "foe-pip":o=>upd(()=>{const f=foe(o.id),n=+o.i+1;f[o.k]=f[o.k]===n?n-1:n;if(o.k==="st"&&f.tmpl==="elder"){S.elderSt=f.st;syncElder()}if(o.k==="hp"){if(f.hp>=f.hpMax)foeDefeated(f);else f.dead=false}}),
  "foe-thr":o=>upd(()=>{const f=foe(o.id);foeMark(f,"hp",+o.k);log(`${f.name} segna ${o.k} PF (${f.hpMax-f.hp}/${f.hpMax} rimasti)`)}),
  "foe-acted":o=>upd(()=>{const f=foe(o.id);f.acted=!f.acted}),
- "foe-cond":o=>upd(()=>{const f=foe(o.id);f.cond=f.cond.includes(o.k)?f.cond.filter(c=>c!==o.k):[...f.cond,o.k]}),
+ "foe-cond":o=>upd(()=>{const f=foe(o.id);f.cond=toggleCond(f.cond,o.k,"");log(`${f.name}: ${o.k} ${f.cond.includes(o.k)?"attivo":"rimosso"}`)}),
  "foe-feat":o=>upd(()=>{const f=foe(o.id),x=f.feats[+o.i];
   if(x.fx==="no-hosp"){noHosp();f.acted=true;return}if(x.fx==="peace"){peace();f.acted=true;return}
   if(x.c){const [k,n]=x.c.split(":");if(k==="fear"){if(S.fear<+n){toast("Paura insufficiente");return}addFear(-n,`${f.name}: ${x.n}`)}else{foeMark(f,"st",+n);log(`${f.name} segna ${n} Stress per ${x.n}`)}}
@@ -1519,6 +1560,7 @@ const A={
 document.addEventListener("click",e=>{
   const sum=e.target.closest("details.scn>summary");
   if(sum){const d=sum.parentElement,key=d.dataset.scn||"dev:"+d.dataset.dev;setTimeout(()=>scnOpen.set(key,d.open),0);return}
+  if(e.target.closest("select,input,textarea,label")&&!e.target.closest("[data-a]")?.matches("input,select,label,button"))return;
   const b=e.target.closest("[data-a]");if(!b)return;
   const f=A[b.dataset.a];if(f){f(b.dataset,b);flushShows()}
 });
@@ -1527,7 +1569,8 @@ document.addEventListener("change",e=>{
   const el=e.target,o=el.dataset;if(!o.f)return;const v=el.value;
   switch(o.f){
     case "pc-over":{const r=pcRaw(o.id);r.over[o.k]=clamp(+v||0,0,o.k.endsWith("Max")?12:40);const p=P(r);r.hp=Math.min(r.hp,p.hpMax);r.st=Math.min(r.st,p.stMax);r.ar=Math.min(r.ar,p.arMax);persist();render();return}
-    case "foe-cond-add":{const f=foe(o.id);if(v&&f&&!f.cond.includes(v)){f.cond.push(v);log(`${f.name}: ${v}`);persist();render()}return}
+    case "foe-cond-add":{const f=foe(o.id);if(v&&f&&!f.cond.includes(v)){f.cond=toggleCond(f.cond,v,"");log(`${f.name}: ${v}`);persist();render()}return}
+    case "pc-cond-add":{const r=pcRaw(o.id);if(v&&r&&!r.cond.includes(v)){r.cond=toggleCond(r.cond,v,r.id);log(`${pcName(r.id)}: ${v} attivo`);persist();render()}return}
     case "pc-notes":pcRaw(o.id).notes=v;persist();return;
     case "critter":S.critters[+o.i]=v;persist();render();return;
     case "bargain":S.flags.bargain=v;log(v?`${pcName(v)} accetta il patto dello Strixwolf`:"Nessun patto fatato","fear");persist();render();return;
