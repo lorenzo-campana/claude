@@ -288,9 +288,14 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .fearbox{border-color:var(--fear)} .fearbox b{color:var(--fear)}
 .enc-env{border:1px dashed var(--line);border-radius:8px;padding:8px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
 .enc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;align-items:start}
-.enc-rules{margin-top:6px;border-left:3px solid var(--kc);padding:4px 10px;background:var(--bg);border-radius:0 var(--r) var(--r) 0}
-.enc-rules ul{margin:0}
-.enc-main .enc-rules b{font-family:var(--f-body);font-weight:700;font-size:inherit;line-height:inherit;display:inline}
+.enc-rules{border:1px solid var(--line);border-left:4px solid var(--kc);border-radius:var(--r);background:var(--bg);padding:6px 12px}
+.enc-rules>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+.enc-rules>summary::-webkit-details-marker{display:none}
+.enc-rules>summary::before{content:"▸";color:var(--kc);font-size:.8rem}
+.enc-rules[open]>summary::before{content:"▾"}
+.enc-rules[open]>summary{margin-bottom:4px}
+.enc-rules ul{margin:0;columns:2 340px;column-gap:24px}
+.enc-rules li{break-inside:avoid}
 .enc-split{display:grid;grid-template-columns:fit-content(620px) minmax(210px,250px);justify-content:start;gap:10px;align-items:start}
 .enc-split .env-compact{grid-template-columns:repeat(2,minmax(0,290px))}
 @media (max-width:980px){.enc-split .env-compact{grid-template-columns:minmax(0,1fr)}}
@@ -349,6 +354,9 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 .ec-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .ec-n{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1;min-width:1.4em;text-align:center}
 .ec-full{grid-column:1/-1}
+.ec-warn{border-color:var(--blood);background:var(--blood-soft)}
+.ec-who{min-width:7em}
+.kv-list{display:grid;grid-template-columns:auto 1fr;gap:2px 8px}
 .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
 .choice{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;background:var(--paper)}
 .choice.on{border-color:var(--ok);box-shadow:inset 3px 0 0 var(--ok)} .choice.off{opacity:.5}
@@ -932,12 +940,101 @@ function showResult(res){
   ROLL.cur=res;ROLL.hist.unshift(res);if(ROLL.hist.length>8)ROLL.hist.length=8;
   animateDice(facesOf(res),()=>{render();renderRoll()});
 }
+/* ---- dadi 3D: poliedri numerati che rotolano e si fermano sulla faccia uscita (three.js, caricato al primo uso) ---- */
+const D3={lib:null,loading:null,cache:{}};
+function loadThree(){
+  if(window.THREE)return Promise.resolve(D3.lib=window.THREE);
+  if(D3.loading)return D3.loading;
+  return D3.loading=new Promise((res,rej)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+    sc.onload=()=>window.THREE?res(D3.lib=window.THREE):rej();sc.onerror=()=>{D3.loading=null;rej()};document.head.appendChild(sc)});
+}
+setTimeout(()=>loadThree().catch(()=>{}),1500); // precarica: il primo tiro è già in 3D
+const DIE_COL={h:["#c48a20","#fff6e0"],f:["#6a3f86","#f3e9fb"],n:["#2f3833","#eef1ea"]};
+// facce del dado: elenco di poligoni (indici di vertici), ognuno con il suo numero
+function dieShape(T,s){
+  if(s===10){ // trapezoedro pentagonale: 10 aquiloni
+    const v=[new T.Vector3(0,1,0),new T.Vector3(0,-1,0)];
+    for(let i=0;i<10;i++){const a=i*Math.PI/5;v.push(new T.Vector3(Math.cos(a),i%2?-.105:.105,Math.sin(a)))}
+    const f=[];for(let i=0;i<10;i+=2){f.push([0,2+(i+2)%10,2+i+1,2+i]);f.push([1,2+i+1,2+(i+2)%10,2+(i+3)%10])}
+    return {v,f};
+  }
+  const g=s===4?new T.TetrahedronGeometry(1):s===6?new T.BoxGeometry(1.25,1.25,1.25):s===8?new T.OctahedronGeometry(1):s===12?new T.DodecahedronGeometry(1):new T.IcosahedronGeometry(1);
+  const geo=g.index?g.toNonIndexed():g,p=geo.attributes.position,v=[],groups=[];
+  for(let i=0;i<p.count;i+=3){
+    const a=new T.Vector3().fromBufferAttribute(p,i),b=new T.Vector3().fromBufferAttribute(p,i+1),c=new T.Vector3().fromBufferAttribute(p,i+2);
+    const n=new T.Vector3().crossVectors(b.clone().sub(a),c.clone().sub(a)).normalize();
+    let gr=groups.find(x=>x.n.dot(n)>.999);if(!gr){gr={n,pts:[]};groups.push(gr)}
+    [a,b,c].forEach(q=>{if(!gr.pts.some(o=>o.distanceTo(q)<1e-4))gr.pts.push(q)});
+  }
+  const f=groups.map(gr=>{const c=gr.pts.reduce((m,q)=>m.add(q),new T.Vector3()).divideScalar(gr.pts.length);
+    const u=gr.pts[0].clone().sub(c).normalize(),w=new T.Vector3().crossVectors(gr.n,u);
+    return gr.pts.slice().sort((A,B)=>Math.atan2(A.clone().sub(c).dot(w),A.clone().sub(c).dot(u))-Math.atan2(B.clone().sub(c).dot(w),B.clone().sub(c).dot(u))).map(q=>{v.push(q);return v.length-1})});
+  return {v,f};
+}
+function numTex(T,n,col,fs){
+  const k=`${n}|${col}|${fs}`;if(D3.cache[k])return D3.cache[k];
+  const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d");
+  x.fillStyle=col[0];x.fillRect(0,0,128,128);x.fillStyle=col[1];x.textAlign="center";x.textBaseline="middle";
+  x.font=`700 ${Math.round(fs*(n>9?.84:1))}px "IM Fell English SC", Georgia, serif`;x.fillText(String(n),64,66);
+  if(n===6||n===9){const w=fs*.5;x.fillRect(64-w/2,66+fs*.42,w,Math.max(3,fs*.08))} // distingue 6 e 9
+  const t=new T.CanvasTexture(c);return D3.cache[k]=t;
+}
+function buildDie(T,s,col){
+  const {v,f}=dieShape(T,s),pos=[],uv=[],geo=new T.BufferGeometry(),mats=[],faces=[];let vi=0;
+  f.forEach((poly,fi)=>{
+    const P=poly.map(i=>v[i]),c=P.reduce((m,q)=>m.clone().add(q),new T.Vector3()).divideScalar(P.length);
+    const n=new T.Vector3().crossVectors(P[1].clone().sub(P[0]),P[2].clone().sub(P[0])).normalize();if(n.dot(c)<0)n.negate();
+    const up=(s===10?(P[0].y>0?P[0]:P[0]).clone().sub(c):P[0].clone().sub(c)).projectOnPlane(n).normalize(),rt=new T.Vector3().crossVectors(up,n);
+    const R=Math.max(...P.map(q=>q.distanceTo(c)))*(s===10?1.15:1.05);
+    const start=pos.length/3;
+    for(let k=1;k<P.length-1;k++)[P[0],P[k],P[k+1]].forEach(q=>{pos.push(q.x,q.y,q.z);const d=q.clone().sub(c);uv.push(.5+d.dot(rt)/(2*R),.5+d.dot(up)/(2*R))});
+    geo.addGroup(start,pos.length/3-start,fi);
+    mats.push(new T.MeshStandardMaterial({map:numTex(T,fi+1,col,{4:40,8:42,20:38,10:46}[s]||60),roughness:.45,metalness:.1,flatShading:true}));
+    faces.push({n,up});
+  });
+  geo.setAttribute("position",new T.Float32BufferAttribute(pos,3));geo.setAttribute("uv",new T.Float32BufferAttribute(uv,2));geo.computeVertexNormals();
+  const m=new T.Mesh(geo,mats);m.userData.faces=faces;m.scale.setScalar(s===6?.95:s===4?1.25:1.05);return m;
+}
+// quaternione che porta la faccia «v» verso la camera, con il numero dritto
+function restQuat(T,mesh,val){
+  const fc=mesh.userData.faces[val-1],z=new T.Vector3(0,0,1);
+  const q=new T.Quaternion().setFromUnitVectors(fc.n,z);
+  const up=fc.up.clone().applyQuaternion(q),tw=new T.Quaternion().setFromAxisAngle(z,Math.PI/2-Math.atan2(up.y,up.x)+(Math.random()-.5)*.3);
+  return tw.multiply(q);
+}
+function roll3D(faces,done){
+  const T=D3.lib,fx=document.getElementById("dice-fx"),W=innerWidth,H=innerHeight;
+  const r=new T.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.setSize(W,H);
+  fx.innerHTML="";fx.appendChild(r.domElement);fx.hidden=false;
+  const sc=new T.Scene(),cam=new T.PerspectiveCamera(32,W/H,.1,100);cam.position.set(0,0,14);
+  sc.add(new T.AmbientLight(0xffffff,.65));const dl=new T.DirectionalLight(0xffffff,.9);dl.position.set(-4,6,10);sc.add(dl);
+  const shown=faces.slice(0,8),span=Math.min(2.6,7.5/Math.max(1,shown.length)),vw=2*Math.tan(16*Math.PI/180)*14*W/H;
+  const dice=shown.map((f,i)=>{const m=buildDie(T,f.s,DIE_COL[f.c]||DIE_COL.n);if(f.s===6&&shown.length>2)m.scale.multiplyScalar(.8);sc.add(m);
+    const ax=new T.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize();
+    return {m,x0:-vw/2-1.5-Math.random()*1.5,y0:3+Math.random()*2,x1:(i-(shown.length-1)/2)*span,y1:(Math.random()-.5)*.6,ax,spin:14+Math.random()*10,
+      q0:new T.Quaternion().setFromAxisAngle(ax,Math.random()*6),qf:restQuat(T,m,f.v),delay:i*.06}});
+  const dur=1.5,t0=performance.now();let raf=0,ended=false;
+  const ease=t=>1-Math.pow(1-t,3),sm=(a,b,t)=>{t=Math.min(1,Math.max(0,(t-a)/(b-a)));return t*t*(3-2*t)};
+  const frame=now=>{
+    const tt=(now-t0)/1000;
+    dice.forEach(d=>{const t=Math.min(1,Math.max(0,(tt-d.delay)/dur)),e=ease(t);
+      d.m.position.set(d.x0+(d.x1-d.x0)*e,d.y0+(d.y1-d.y0)*e,2.2*Math.abs(Math.sin(t*Math.PI*2.6))*Math.pow(1-t,2));
+      const qt=d.q0.clone().premultiply(new T.Quaternion().setFromAxisAngle(d.ax,d.spin*e));
+      d.m.quaternion.copy(qt.slerp(d.qf,sm(.55,.97,t)))});
+    r.render(sc,cam);
+    if(tt<dur+.1+dice.length*.06+.55)raf=requestAnimationFrame(frame);else finish();
+  };
+  const finish=()=>{if(ended)return;ended=true;cancelAnimationFrame(raf);fx.onclick=null;fx.hidden=true;
+    dice.forEach(d=>{d.m.geometry.dispose();d.m.material.forEach(x=>x.dispose())});r.dispose();fx.innerHTML="";done()};
+  fx.onclick=finish;raf=requestAnimationFrame(frame);
+}
 let fxTimer=null,fxTick=null;
 function animateDice(faces,done){
   const fx=document.getElementById("dice-fx");
   const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
   clearTimeout(fxTimer);clearInterval(fxTick);
   if(reduce||!faces.length){fx.hidden=true;done();return}
+  if(D3.lib){try{roll3D(faces,done);return}catch(e){D3.lib=null}} // senza WebGL o senza three.js resta l'animazione 2D
   const shown=faces.slice(0,8);
   fx.innerHTML=`<div class="fx-row">${shown.map((f,i)=>`<div class="fxd s${f.s} ${f.c}" style="--i:${i};--dx:${(i-(shown.length-1)/2)*92}px;--r:${(Math.random()>.5?1:-1)*(540+Math.floor(Math.random()*360))}deg"><span>${1+Math.floor(Math.random()*f.s)}</span></div>`).join("")}</div>`;
   fx.hidden=false;
@@ -1033,7 +1130,7 @@ function foeMark(f,k,n){
   if(f.hpMax&&f.hp>=f.hpMax)foeDefeated(f);
 }
 /* ---- incontri: card dell'incontro → card dei partecipanti → scheda dettagliata ---- */
-const encOpen=new Map();let picker=null,encResetAsk=null,sheetTab="cap";
+const encOpen=new Map(),rulesOpen=new Map(); // rulesOpen: specchietto regole chiuso a manolet picker=null,encResetAsk=null,sheetTab="cap";
 const KIND_ICON={Combattimento:"⚔",Sociale:"❝",Ambientale:"✧"};
 const initial=n=>esc(String(n||"?").trim().charAt(0).toUpperCase());
 const condMark=list=>{const v=list.includes("Vulnerabile"),h=list.includes("Nascosto");return v&&!h?`<span class="cmark up" title="I tiri contro hanno vantaggio">▲ vant.</span>`:h&&!v?`<span class="cmark down" title="I tiri contro hanno svantaggio">▼ svant.</span>`:""};
@@ -1115,13 +1212,14 @@ function encounterCard(key,def,forceOpen){
    :`<button class="enc-plus" data-a="enc-plus" data-k="${key}" aria-label="Aggiungi partecipante" title="Aggiungi partecipante">+</button>`;
   const sel=parts.find(f=>f.id===openFoe);
   return `<div class="enc open ${kc}" id="enc-${key.replace(/[:.]/g,"_")}">
-   <div class="enc-head"><div class="enc-main"><span class="enc-kind">${KIND_ICON[def.k]||"✦"} Incontro ${def.k.toLowerCase()}</span><b>${esc(def.t)}</b><p>${def.d}</p>${def.rules?`<div class="enc-rules">${def.rules()}</div>`:""}</div>
+   <div class="enc-head"><div class="enc-main"><span class="enc-kind">${KIND_ICON[def.k]||"✦"} Incontro ${def.k.toLowerCase()}</span><b>${esc(def.t)}</b><p>${def.d}</p></div>
     <div class="enc-tools">
      <div class="box fearbox"><span class="lab">Paura</span><b>${S.fear}</b><button class="btn xs" data-a="fear-step" data-k="-1" aria-label="Paura −1">−</button><button class="btn xs fear" data-a="fear-step" data-k="1" aria-label="Paura +1">+</button></div>
      ${parts.length?`<div class="box"><span class="lab">In piedi</span><b>${up}<small>/${parts.length}</small></b></div>`:""}
      <button class="btn" data-a="new-round" data-w="${key}">Nuovo giro GM</button>
      ${encResetAsk===key?`<button class="btn bad" data-a="enc-reset" data-k="${key}">Conferma reimposta</button><button class="btn xs" data-a="enc-reset-no">No</button>`:`<button class="btn" data-a="enc-reset-ask" data-k="${key}">Reimposta</button>`}
      ${forceOpen?"":`<button class="btn" data-a="enc-toggle" data-k="${key}">Chiudi</button>`}</div></div>
+   ${def.rules?`<details class="enc-rules" data-k="${key}" ${rulesOpen.get(key)===false?"":"open"}><summary><span class="lab">Regole dell'incontro</span></summary>${def.rules()}</details>`:""}
    ${def.env&&parts.length&&parts.length<=2 // pochi partecipanti: le loro card accanto all'ambiente invece che in una riga quasi vuota
     ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div></div>`
     :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div>`}
@@ -1313,22 +1411,23 @@ const ENC={
    <li><b>Risacca (1 Paura):</b> un PG che annega sbatte su una roccia: tira 1d4 sulla tabella qui sotto.</li>
    <li><b>Tesori sommersi:</b> un PG che annega può fare un tiro di Forza per recuperare un oggetto dal fondo.</li>
    <li><b>Tiri reazione:</b> non generano Speranza né Paura.</li></ul>`,t:"Il fiume Orfanatore",k:"Ambientale",d:"Traversata · Diff 13. Annegamento, Risacca e tesori sommersi.",env:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
- <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
- ${dr.length?`<div class="warn"><b>Annegano:</b> ${dr.map(p=>esc(pcName(p.id))).join(", ")}. Ogni tiro d'azione di un PG fa segnare 1 Stress a tutti quelli che annegano.
-  <div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div>
-  ${dr.map(p=>`<div class="row small" style="margin-top:6px"><b>${esc(pcName(p.id))}</b>${rb("Liberarsi · Diff 13",{t:"dual",who:p.id,trait:"ask",diff:13,label:"Liberarsi dall'annegamento"})}<button class="btn xs ok" data-a="drown-free" data-id="${p.id}">Riuscito: si libera</button></div>`).join("")}</div>`:""}
- <div class="row">${rb("Tiro d'azione · Diff 13",{t:"dual",trait:"ask",diff:13,label:"Attraversare l'Orfanatore"})}
-  <button class="btn ok" data-a="river" data-k="s" ${dr.length&&S.river.t<=1?"disabled":""}>Successo · Traversata −1</button>
-  <button class="btn bad" data-a="river" data-k="f">Fallimento · azione Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div>
- <div class="grid2 small">
-  <div><div class="lab">Dettagli utili (azione riuscita)</div><ul class="tight"><li>Ponte di corda spezzato</li><li>Tratto poco profondo</li><li>Un isolotto</li><li>Liane pendenti</li></ul></div>
-  <div><div class="lab">Annegare</div><p class="small muted">Scegli il PG: reazione di Agilità, se fallisce annega.</p>
-   <div class="row"><select id="drownpc" data-f="drownpc" aria-label="PG">${pcOptions(drownPick)}</select>${rb("Reazione Agilità · 13",{t:"dual",trait:0,diff:13,react:1,label:"Reazione contro l'annegamento"})}<button class="btn xs bad" data-a="drown-set">Annega</button></div></div>
-  <div><div class="lab">Risacca — spendi 1 Paura</div><ol class="tight">${UNDERTOW.map(u=>`<li>${u}</li>`).join("")}</ol>
-   <button class="btn fear has-die" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>${DIE_SVG}Spendi 1 Paura: Risacca (d4)</button>
-   ${S.undertow?`<div class="note" style="margin-top:6px">${esc(S.undertow)}</div>`:""}</div>
-  <div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
-   <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
+ <div class="ec"><div class="ec-h"><span class="lab">Traversata · Diff 13</span>${pips(4,S.river.t,"cd","river-pip")}<b class="mono">${S.river.t}</b><span class="xsmall muted">a 0 il gruppo attraversa${dr.length?" · bloccata finché qualcuno annega":""}</span></div>
+  <div class="row">${rb("Tiro d'azione · Diff 13",{t:"dual",trait:"ask",diff:13,label:"Attraversare l'Orfanatore"})}
+   <button class="btn xs ok" data-a="river" data-k="s" ${dr.length&&S.river.t<=1?"disabled":""}>Successo · −1</button>
+   <button class="btn xs bad" data-a="river" data-k="f">Fallimento · Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div></div>
+ ${dr.length?`<div class="ec ec-warn"><div class="ec-h"><span class="lab">Annegano</span><span class="xsmall muted">ogni tiro d'azione di un PG: +1 Stress a ciascuno</span><button class="btn xs bad" data-a="drown-tick" style="margin-left:auto">Tiro fatto: +1 Stress</button></div>
+  ${dr.map(p=>`<div class="row small"><b class="ec-who">${esc(pcName(p.id))}</b>${rb("Liberarsi · Diff 13",{t:"dual",who:p.id,trait:"ask",diff:13,label:"Liberarsi dall'annegamento"})}<button class="btn xs ok" data-a="drown-free" data-id="${p.id}">Riuscito: si libera</button></div>`).join("")}</div>`:""}
+ <div class="env-compact">
+  <div class="ec"><div class="ec-h"><span class="lab">Annegare</span><span class="xsmall muted">dopo un fallimento</span></div>
+   <div class="row small"><select id="drownpc" data-f="drownpc" aria-label="PG che rischia di annegare">${pcOptions(drownPick,"— chi? —")}</select>${rb("Reazione Agilità · 13",{t:"dual",trait:0,diff:13,react:1,label:"Reazione contro l'annegamento"})}<button class="btn xs bad" data-a="drown-set">Fallita: annega</button></div></div>
+  <div class="ec"><div class="ec-h"><span class="lab">Risacca</span><span class="chip fear">1 Paura</span><span class="xsmall muted">su chi annega</span></div>
+   <div class="kv-list small">${["1 Stress","2d6+3 danni fisici","Una carta dominio nel deposito","Un oggetto finisce sul fondo"].map((u,i)=>`<span class="mono">${i+1}</span><span>${u}</span>`).join("")}</div>
+   <div class="row small"><button class="btn xs fear has-die" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>${DIE_SVG}Tira d4</button>${S.undertow?`<span class="muted">${esc(S.undertow)}</span>`:""}</div></div>
+  <div class="ec"><div class="ec-h"><span class="lab">Tesori sommersi</span><span class="xsmall muted">tiro di Forza di chi annega</span></div>
+   ${TREASURES.map((t,i)=>`<div class="row small" style="gap:6px"><b>${t[0]}</b><span class="muted" style="flex:1 1 140px">${t[1]}</span>${S.loot.includes(t[0])?`<span class="chip ok">preso</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Preso</button>`}</div>`).join("")}</div>
+  <div class="ec"><div class="ec-h"><span class="lab">Appigli</span><span class="xsmall muted">da offrire dopo un'azione riuscita</span></div>
+   <div class="row" style="gap:4px">${["Ponte di corda spezzato","Tratto poco profondo","Un isolotto","Liane pendenti"].map(x=>`<span class="chip">${x}</span>`).join("")}</div></div>
+ </div>
  `},reset:()=>{S.river.t=4;S.undertow=null;S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}},
  "3:arcanista":{
   rules:()=>`<ul class="tight small">
@@ -2127,6 +2226,7 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("[data-a]");if(!b)return;
   const f=A[b.dataset.a];if(f){f(b.dataset,b);flushShows()}
 });
+document.addEventListener("toggle",e=>{const d=e.target;if(d.matches?.("details.enc-rules"))rulesOpen.set(d.dataset.k,d.open)},true);
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&VIEW.mode!=="gm"&&VIEW.canGM&&!document.fullscreenElement){A["view-mode"]({k:"gm"});return}if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".mc[data-a],.enc[data-a]")){e.preventDefault();A[e.target.dataset.a](e.target.dataset)}});
 document.addEventListener("change",e=>{
   const el=e.target,o=el.dataset;if(!o.f)return;const v=el.value;
