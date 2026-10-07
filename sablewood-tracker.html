@@ -306,6 +306,8 @@ label.inl{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}
 .mc-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .mc-r .lab{width:3.6em;font-size:.6rem}
 .ava{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--plate);color:var(--plate-fg);font-family:var(--f-display);font-size:1.1rem}
+button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-display);font-size:1.1rem}
+.ava.acted{box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--ok)}
 .ava.sm{width:24px;height:24px;font-size:.8rem;border-radius:6px}
 .ava.lg{width:58px;height:58px;font-size:1.9rem;border-radius:12px}
 .shield.xs .sv{width:30px;height:33px;font-size:1rem;padding:2px}
@@ -884,10 +886,10 @@ function miniCard(f){
   const sel=openFoe===f.id;
   return `<div class="mc ${sel?"sel":""} ${f.dead?"dead":""}" data-a="foe-open" data-id="${f.id}" tabindex="0" role="button" aria-expanded="${sel}">
    <button class="mc-x" data-a="foe-del" data-id="${f.id}" aria-label="Togli ${esc(f.name)} dall'incontro" title="Togli dall'incontro">×</button>
-   <div class="mc-h"><span class="ava">${initial(f.name)}</span><b>${esc(f.name)}</b><span class="mc-d">${shield(f.diff,"DIFF","diff xs")}${condMark(f.cond)}</span></div>
+   <div class="mc-h"><button class="ava ${f.acted?"acted":""}" data-a="foe-acted" data-id="${f.id}" title="${f.acted?"Ha agito · tocca per azzerare":"Non ha ancora agito · tocca quando agisce"}" aria-label="${f.acted?"Ha agito":"Segna che ha agito"}" aria-pressed="${f.acted}">${initial(f.name)}</button><b>${esc(f.name)}</b><span class="mc-d">${shield(f.diff,"DIFF","diff xs")}${condMark(f.cond)}</span></div>
    ${f.hpMax?`<div class="mc-r"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>`:`<div class="mc-r xsmall muted">${esc(f.type)} · nessun PF</div>`}
    ${f.stMax?`<div class="mc-r"><span class="lab">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}
-   <div class="mc-r"><button class="act-b ${f.acted?"done":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Non ha agito"}</button>${f.dead?`<span class="chip ok">sconfitto</span>`:""}</div>
+   ${f.dead?`<div class="mc-r"><span class="chip ok">sconfitto</span></div>`:""}
    <div class="mc-r">${condChips(f.cond,"foe-cond",f.id)}${condSelect(f.cond,FOE_COND,"foe-cond-add",f.id)}</div>
   </div>`;
 }
