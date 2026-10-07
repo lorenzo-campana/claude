@@ -1106,7 +1106,8 @@ function encounterCard(key,def,forceOpen){
    <div class="enc-main"><span class="enc-kind">Incontro ${def.k.toLowerCase()}</span><b>${esc(def.t)}</b><p>${def.d}</p></div>
    <div class="enc-meta">${parts.length?`<span class="chip">${up}/${parts.length} in piedi</span>${parts.slice(0,5).map(f=>`<span class="ava sm" title="${esc(f.name)}">${initial(f.name)}</span>`).join("")}`:`<span class="xsmall muted">${def.env?"Ambiente e conti":"Nessun partecipante"}</span>`}<span class="enc-go">Apri ›</span></div></div>`;
   const sugs=encSugs(def);
-  const pick=picker===key?`<div class="mc pick"><div class="lab">Aggiungi partecipante</div>
+  const pick=def.k==="Ambientale"?"":picker===key? // negli incontri ambientali niente + : ci sono le card dei PG
+   `<div class="mc pick"><div class="lab">Aggiungi partecipante</div>
     ${sugs.length?`<div class="row">${sugs.map(([k,n,label])=>`<button class="btn xs ok" data-a="enc-add" data-k="${k}" data-n="${n}" data-w="${key}">${label||`${n>1?n+"× ":""}${esc(T[k].name)}`}</button>`).join("")}</div>`:""}
     ${def.devSug?def.devSug():""}
     <div class="row"><select id="pick-${key.replace(/[:.]/g,"_")}" aria-label="Avversario o PNG">${Object.entries(T).map(([k,t])=>`<option value="${k}">${esc(t.name)} · ${t.type}</option>`).join("")}</select>
