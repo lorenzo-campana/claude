@@ -1239,6 +1239,35 @@ const aliveSkel=()=>S.foes.filter(f=>f.tmpl==="skeleton"&&!f.dead).length;
 let drownPick="",elderPick="";
 const castBtn=(key,label,n,where)=>`<button class="btn xs ok" data-a="spawn" data-k="${key}" data-n="${n}" data-w="${where}">+ ${label}</button>`;
 
+/* ---- testi finali da leggere: usano i PNG di casa e il rivale annotati all'inizio ---- */
+const homeNames=()=>{const n=S.home.map(h=>h.n.trim()).filter(Boolean).map(esc);return n.length?n.length>1?n.slice(0,-1).join(", ")+" e "+n[n.length-1]:n[0]:""};
+const rivalName=()=>S.rival&&S.rival.trim()?esc(S.rival.trim()):"";
+function ending(k){
+  const npc=homeNames(),one=S.home.filter(h=>h.n.trim()).length===1,riv=rivalName()||"il vostro rivale",Riv=rivalName()||"Il vostro rivale";
+  const who=npc||"le persone che speravate di proteggere",Who=npc||"Le persone che speravate di proteggere";
+  const letter=luna()?`<p>Una settimana dopo arriva una lettera da Hush, scritta con una calligrafia minuscola. Luna vi saluta, vi ringrazia, e vi fa notare che siete comunque arrivati in ritardo.</p>`
+   :`<p>Una settimana dopo arriva una lettera da Hush, con un sigillo di cera bianca. L'Arcanista vi ringrazia e chiede, ancora una volta, come sta il piccolo Emeris.</p>`;
+  const crowd=`<p>L'onda di magia passa sopra i tetti e la città si ferma di colpo. Le orso-vespe cadono come foglie secche, gli alberi animati tornano legno. Per un momento non si sente niente. Poi qualcuno, giù in piazza, grida i vostri nomi, e la piazza li ripete.</p>`;
+  return {
+   ff:`<p>Quando la luce si spegne, il silenzio pesa più dell'assedio. Le mura esterne sono annerite e metà dei tetti del quartiere basso non c'è più.</p>
+    <p>Cercate ${who} tra la folla, e non ${one?"lo trovate":"li trovate"}. ${one?"Lo":"Li"} ritrovate più tardi, sotto un lenzuolo, nel cortile del tempio.</p>
+    <p>Re Emeris VIII vi riceve in piedi, senza farvi sedere. «Vi ho affidato la città, e me l'avete riportata a pezzi.» Non vuole spiegazioni. Prima di sera un araldo legge il bando in piazza: avete tre giorni per lasciare il regno.</p>
+    <p>All'alba vi incamminate verso il confine. Alle vostre spalle qualcuno ha già cominciato a ricostruire, e nessuno si volta a guardarvi andare via.</p>`,
+   fh:`<p>L'ultima onda di magia si spegne e la città riprende fiato. Non tutta. ${Who} non ${one?"ce l'ha fatta":"ce l'hanno fatta"}: ${one?"lo trovate":"li trovate"} quando il fumo si è ormai diradato.</p>
+    <p>Tre giorni dopo, davanti alla statua di Emeris II, il re vi appunta sul petto una spilla d'argento. La folla applaude, i bambini salgono sulle spalle dei genitori per vedervi meglio.</p>
+    <p>Poi il re alza una mano, e la piazza resta zitta per un minuto intero, per chi non è tornato a casa.</p>
+    <p>Il cippo brilla di nuovo nella corona di pietra. La città è salva, e voi sapete esattamente quanto è costata.</p>`,
+   sf:`<p>Gli Scarshade vanno in frantumi come vetro e quel che resta dell'assedio scappa verso il Sablewood. ${Who} vi ${one?"viene":"vengono"} incontro zoppicando, con le bende sporche e graffi dappertutto, ma ${one?"vivo":"vivi"}.</p>
+    <p>Nella sala del trono, però, non si parla di voi. ${Riv} è in piedi accanto al re, con il mantello strappato ad arte, e racconta a tutti di come ha fatto da scudo a Emeris VIII sulle scale del castello. Il re annuncia per ${riv} un titolo nuovo e un posto nel consiglio.</p>
+    <p>Quando uscite, ${riv} vi fa un cenno con la testa e sorride. D'ora in poi conterà molto più di prima.</p>`,
+   sh:`${crowd}<p>${Who} si ${one?"fa":"fanno"} largo tra la gente per abbracciarvi, senza un graffio.</p>
+    <p>Quella sera re Emeris VIII vi riceve a palazzo. Vi offre oro, terre e un posto alla sua tavola, e vi chiede una sola cosa: che fra un paio di secoli, quando il cippo si scaricherà di nuovo, qualcuno sappia raccontare questa storia all'Arcanista.</p>${letter}`,
+   crit:`${crowd}<p>${Who} si ${one?"fa":"fanno"} largo tra la gente per abbracciarvi, senza un graffio.</p>
+    <p>Più tardi, tra le macerie della porta est, le guardie trovano il corpo di ${riv}, tra le poche vittime dell'assedio. Al banchetto nessuno ne parla, e voi non fate domande.</p>
+    <p>Re Emeris VIII vi offre oro, terre e un posto alla sua tavola. Il vino è buono, la musica pure, e per una sera la città dimentica di avere paura.</p>${letter}`
+  }[k];
+}
+const rivalInput=()=>`<label class="inl small">Rivale odiato <input type="text" id="rival-in" data-f="rival" value="${esc(S.rival||"")}" placeholder="nome, se i giocatori ne hanno uno" aria-label="Rivale odiato"></label>`;
 const F={
  inizio:{k:"Inseguimento",luogo:"Un bivacco nel Sablewood, sotto alberi alti centinaia di metri: è giorno, ma sembra notte fonda.",posta:"Raggiungere Luna prima che sia troppo tardi.",uscita:"Distanza a 0: Luna è viva. Tempo a 0: Luna è morta. In entrambi i casi si arriva alla radura."},
  prezzo:{k:"Sociale · Combattimento",luogo:"Una piccola radura tra radici enormi.",posta:"La vita di Luna, e forse un debito con uno spirito antico.",uscita:"Patto accettato, Strixwolf in fuga o Luna morta: il gruppo riprende il cammino verso Hush."},
@@ -1367,9 +1396,9 @@ const SECTIONS={
  ["fh","Fallimento con Speranza","I PNG da proteggere sono morti. Una cerimonia acclama i PG come eroi, con un minuto di silenzio per chi non ce l'ha fatta."],
  ["sf","Successo con Paura","I PNG da proteggere sono feriti ma vivi. Un rivale odiato dai PG viene acclamato per aver protetto re Emeris: il suo rango sale."],
  ["sh","Successo con Speranza","I PNG da proteggere sono salvi. I PG sono acclamati come eroi e re Emeris offre ricompense."],
- ["crit","Successo critico","Come un successo con Speranza, ma un rivale odiato dai giocatori ha trovato la fine durante l'attacco."]].filter(([k])=>!f||f===k).map(([k,t,x])=>`<div class="out-card ${f===k?"hit":""}"><b>${t}</b>${f===k?` <span class="chip hope">risultato</span>`:""}<div class="small">${x}</div></div>`).join("")}</div>${f?"":pendNote("Concludi la scena 11 con l'esito del tiro finale: qui resterà solo il finale giusto.")}
+ ["crit","Successo critico","Come un successo con Speranza, ma un rivale odiato dai giocatori ha trovato la fine durante l'attacco."]].filter(([k])=>!f||f===k).map(([k,t,x])=>f===k?read(ending(k),`Leggi ad alta voce · ${t}`):`<div class="out-card"><b>${t}</b><div class="small">${x}</div><details class="small"><summary>Testo da leggere</summary>${read(ending(k),"Anteprima")}</details></div>`).join("")}</div>${f?"":pendNote("Concludi la scena 11 con l'esito del tiro finale: qui resterà solo il finale giusto.")}
  ${f?ask("Cosa fate il giorno dopo?","","Per chiudere"):""}
- <h4>PNG di casa da proteggere</h4><p class="small muted">Li hai annotati in «Prima di iniziare», all'inizio dell'Atto I.</p>${homeEditor()}`}}
+ <h4>PNG di casa da proteggere</h4><p class="small muted">Li hai annotati in «Prima di iniziare», all'inizio dell'Atto I: i testi dei finali usano i loro nomi.</p>${homeEditor()}${rivalInput()}`}}
 ]};
 const ENC={
  "1:inizio":{
@@ -1826,7 +1855,7 @@ function preGame(){
     ${read(SECRET,`In segreto, solo al Saggio di Corte${sage?` (${esc(sage.name)})`:""}`)}
     <div class="lab">Domande di background · una per giocatore, annota le risposte</div>
     ${S.pcs.map(r=>{const p=P(r);return p.q?`${ask(esc(p.q),`<textarea id="pre-nt-${r.id}" data-f="pc-notes" data-id="${r.id}" rows="2" placeholder="Risposta, e i PNG che nomina" aria-label="Risposta di ${esc(p.name)}">${esc(r.notes)}</textarea>`,`A ${esc(p.name)}`)}`:""}).join("")}
-    <div class="lab">PNG di casa nominati nelle risposte · tornano nel finale</div>${homeEditor()}
+    <div class="lab">PNG di casa nominati nelle risposte · tornano nel finale</div>${homeEditor()}${rivalInput()}
    </div></details>`;
 }
 function renderAct(){
@@ -2237,6 +2266,7 @@ document.addEventListener("change",e=>{
     case "home-n":S.home[+o.i].n=v;persist();return;
     case "home-note":S.home[+o.i].note=v;persist();return;
     case "notes":S.notes=v;persist();return;
+    case "rival":S.rival=v;persist();render();return;
     case "scr-cap":setScreen({caption:v.trim()});return;
     case "gal-title":{const g=VIEW.gallery.find(x=>x.gid===o.k);if(g){g.title=v.trim()||g.title;saveGallery()}return}
     case "gal-up":{const fs=[...el.files];el.value="";if(fs.length)uploadImages(fs);return}
