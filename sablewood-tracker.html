@@ -571,15 +571,17 @@ body.dy-capture .dy-pages{zoom:1}
 .dc-meta{display:flex;flex-direction:column;gap:1mm;margin-top:6mm;font-size:12pt;color:var(--ink2)}
 .dc-meta b{font-family:"Caveat",cursive;font-size:26pt;font-weight:700;color:#34295e;transform:rotate(-2deg)}
 /* la compagnia */
-.dpcs{display:flex;flex-direction:column;gap:5mm;flex:1;justify-content:space-between}
-.dpc{display:grid;grid-template-columns:32mm 1fr;gap:6mm;align-items:center}
-.dpc.alt{grid-template-columns:1fr 32mm}.dpc.alt .dpc-pic{order:2}.dpc.alt .dpc-t{text-align:right}
-.dpc-pic{width:32mm;height:32mm;border-radius:50%;border:1.3px solid var(--ink2);outline:.3mm solid rgba(106,79,53,.45);outline-offset:1.4mm;display:grid;place-items:center;overflow:hidden}
-.dpc-pic img{width:100%;height:100%;object-fit:cover;filter:sepia(.7) contrast(1.05)}
-.emb{width:74%;height:74%;color:var(--ink)}.emb svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.dpc h3{font-family:"IM Fell English SC",serif;font-weight:400;font-size:1.5em;margin:0;line-height:1}
+.dpcs{display:flex;flex-direction:column;gap:2mm;flex:1;justify-content:space-around}
+.dpc{display:grid;grid-template-columns:54mm 1fr;gap:6mm;align-items:center}
+.dpc.alt{grid-template-columns:1fr 54mm}.dpc.alt .dpc-pic{order:2}.dpc.alt .dpc-t{text-align:right}
+.dpcs.two .dpc{grid-template-columns:70mm 1fr}.dpcs.two .dpc.alt{grid-template-columns:1fr 70mm}
+.dpc-pic{display:grid;place-items:center}
+.dpc-fig{height:76mm;width:auto;display:block}.dpcs.two .dpc-fig{height:110mm}
+.dpc-photo{width:48mm;height:64mm;object-fit:cover;filter:sepia(.7) contrast(1.05);border:1.5mm solid #f4e9cf;box-shadow:0 1px 4px rgba(60,40,20,.35)}
+.emb{width:40mm;height:40mm;color:var(--ink)}.emb svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.dpc h3{font-family:"IM Fell English SC",serif;font-weight:400;font-size:1.6em;margin:0;line-height:1}
 .dpc-k{font-size:.84em;color:var(--ink2);font-style:italic}
-.dpc p{margin:.3em 0 0}
+.dpc p{margin:.35em 0 0}
 .dp-mush{width:20mm;height:20mm;right:-4mm;bottom:-7mm;transform:rotate(-8deg)}
 .dp-fern{width:14mm;height:28mm;right:-6mm;top:-7mm;transform:rotate(20deg)}
 /* capitoli: quattro impaginazioni che si alternano */
@@ -1342,19 +1344,19 @@ function ending(k){
    ff:`<p>Quando la luce si spegne, il silenzio pesa più dell'assedio. Le mura esterne sono annerite e metà dei tetti del quartiere basso non c'è più.</p>
     <p>Cercate ${who} tra la folla, ma la folla non vi restituisce ${one?"quel volto":"quei volti"}. Più tardi un sacerdote vi accompagna nel cortile del tempio, dove i lenzuoli sono allineati sull'erba.</p>
     <p>Re Emeris VIII vi riceve in piedi, senza farvi sedere. «Vi ho affidato la città, e me l'avete riportata a pezzi.» Non vuole spiegazioni. Prima di sera un araldo legge il bando in piazza: avete tre giorni per lasciare il regno.</p>
-    <p>All'alba vi incamminate verso il confine. Alle vostre spalle qualcuno ha già cominciato a ricostruire, e nessuno si volta a guardarvi andare via.</p>`,
+    <p>All'alba vi incamminate verso il confine. Alle vostre spalle qualcuno sta già sgomberando le macerie dalla porta est.</p>`,
    fh:`<p>L'ultima onda di magia si spegne e la città riprende fiato. Non tutta. ${Who} non ${one?"ce l'ha fatta":"ce l'hanno fatta"}: ve lo dicono quando il fumo si è ormai diradato.</p>
     <p>Tre giorni dopo, davanti alla statua di Emeris II, il re vi appunta sul petto una spilla d'argento. La folla applaude, i bambini salgono sulle spalle dei genitori per vedervi meglio.</p>
     <p>Poi il re alza una mano, e la piazza resta zitta per un minuto intero, per chi non è tornato a casa.</p>
-    <p>Il cippo brilla di nuovo nella corona di pietra. La città è salva, e voi sapete esattamente quanto è costata.</p>`,
+    <p>La sera, nella corona della statua, il cippo brilla di nuovo. Da sotto non si vede quasi.</p>`,
    sf:`<p>Gli Scarshade vanno in frantumi come vetro e quel che resta dell'assedio scappa verso il Sablewood. ${Who} vi ${one?"viene":"vengono"} incontro zoppicando, con le bende sporche e graffi dappertutto, ma ${one?"ce l'ha fatta":"ce l'hanno fatta"}.</p>
     <p>Nella sala del trono, però, non si parla di voi. ${Riv} è in piedi accanto al re, con il mantello strappato ad arte, e racconta a tutti di come ha fatto da scudo a Emeris VIII sulle scale del castello. Il re annuncia per ${riv} un titolo nuovo e un posto nel consiglio.</p>
-    <p>Quando uscite, ${riv} vi fa un cenno con la testa e sorride. D'ora in poi conterà molto più di prima.</p>`,
+    <p>Quando uscite, ${riv} vi fa un cenno con la testa e sorride.</p>`,
    sh:`${crowd}<p>${Who} si ${one?"fa":"fanno"} largo tra la gente per abbracciarvi, senza un graffio.</p>
-    <p>Quella sera re Emeris VIII vi riceve a palazzo. Vi offre oro, terre e un posto alla sua tavola, e vi chiede una sola cosa: che fra un paio di secoli, quando il cippo si scaricherà di nuovo, qualcuno sappia raccontare questa storia all'Arcanista.</p>${letter}`,
+    <p>La sera stessa re Emeris VIII vi riceve a palazzo. Vi offre oro, terre e un posto alla sua tavola, e vi chiede una sola cosa: che fra un paio di secoli, quando il cippo si scaricherà di nuovo, qualcuno sappia raccontare questa storia all'Arcanista.</p>${letter}`,
    crit:`${crowd}<p>${Who} si ${one?"fa":"fanno"} largo tra la gente per abbracciarvi, senza un graffio.</p>
     <p>Più tardi, tra le macerie della porta est, le guardie trovano il corpo di ${riv}, tra le poche vittime dell'assedio. Al banchetto nessuno ne parla, e voi non fate domande.</p>
-    <p>Re Emeris VIII vi offre oro, terre e un posto alla sua tavola. Il vino è buono, la musica pure, e per una sera la città dimentica di avere paura.</p>${letter}`
+    <p>Re Emeris VIII vi offre oro, terre e un posto alla sua tavola. Il vino è buono e la musica va avanti fino a tardi.</p>${letter}`
   }[k];
 }
 const rivalInput=()=>`<label class="inl small">Rivale odiato <input type="text" id="rival-in" data-f="rival" value="${esc(S.rival||"")}" placeholder="nome, se i giocatori ne hanno uno" aria-label="Rivale odiato"></label>`;
@@ -2166,7 +2168,7 @@ function logByAct(){ // registro in ordine cronologico, diviso per atto
   S.log.slice().reverse().forEach(l=>{const m=l.text.match(/^→ Atto ([^:]+):/);if(m){const a=ACTS.find(x=>x.n===m[1]);if(a)act=a.id;return}(out[act]=out[act]||[]).push(l.text)});
   return out;
 }
-function critOf(lines){const c=(lines||[]).find(t=>/Successo critico/.test(t)&&/ — /.test(t));if(!c)return "";const m=c.match(/^(.+?) — (.+?):/);return m?`Il tiro perfetto di ${esc(m[2].split(" ")[0])}: ${esc(m[1].toLowerCase())}, e per un istante tutto è andato esattamente come doveva.`:""}
+function critOf(lines){const c=(lines||[]).find(t=>/Successo critico/.test(t)&&/ — /.test(t));if(!c)return "";const m=c.match(/^(.+?) — (.+?):/);return m?`${esc(m[2].split(" ")[0])} e i dadi gemelli: successo critico.`:""}
 function devsIn(keys){
   return S.devs.filter(d=>keys.includes(d.where)&&d.raw).map(d=>{const p=parseDev(d.raw),c=d.choice!=null?p.scelte[d.choice]:null;
     return {t:p.titolo||"un imprevisto",u:d.user||"",ch:c?c[0]:"",res:d.res==="s"?"ci è andata bene":d.res==="f"?"ci è andata male":""}});
@@ -2178,72 +2180,80 @@ const firstName=id=>esc(pcName(id).split(" ")[0]);
 // i capitoli del diario: un racconto unico per tappa, costruito dalle scelte della campagna e legato alla tappa successiva
 function diaryChapters(){
   const F=S.flags,L=logByAct(),sage=S.pcs.map(r=>P(r)).find(p=>p.sage),sageN=sage?esc(sage.name.split(" ")[0]):"il Saggio di Corte";
-  const [c1,c2]=S.critters.map(x=>x.trim().toLowerCase());const hyb=c1&&c2?`${esc(c1)}-${esc(c2)}`:"insetti che nessuno di noi sapeva nominare";
+  const [c1,c2]=S.critters.map(x=>x.trim().toLowerCase());const hyb=c1&&c2?`${esc(c1)}-${esc(c2)}`:"insetti senza nome";
   const bargain=F.bargain?firstName(F.bargain):"";
   const lunaDiedFight=F.luna==="dead"&&/Luna muore/.test(S.out["1:prezzo"]||"");
   const pactAtHush=F.bargainUsed&&/patto si compie/.test(S.out["3:anziano"]||"");
   const homes=S.pcs.map((r,i)=>({r,h:plainHome(i)})).filter(x=>x.h),rival=S.rival&&S.rival.trim()?esc(S.rival.trim()):"";
+  const rivalNote=S.rivalNote&&S.rivalNote.trim()?esc(S.rivalNote.trim().replace(/\.$/,"")):"";
   const drowned=[...new Set((L["2.5"]||[]).map(t=>(t.match(/^(.+?) sta annegando/)||[])[1]).filter(Boolean))].map(n=>esc(n.split(" ")[0]));
   const finalRoll=(L["5"]||[]).concat(L["4"]||[]).find(t=>/^Tiro finale — /.test(t));const roller=finalRoll?esc(finalRoll.match(/^Tiro finale — (.+?):/)[1].split(" ")[0]):"";
   const list=a=>a.length>1?a.slice(0,-1).join(", ")+" e "+a[a.length-1]:a[0]||"";
-  const homeNamesL=list(homes.map(x=>esc(x.h.n.trim())));
-  const devs=keys=>devsIn(keys).map(d=>`Poi le cose sono andate diversamente dal previsto${d.u?`: ${esc(d.u.replace(/\.$/,""))}`:""}. Ne è venuto fuori quello che ricordiamo come «${esc(d.t)}»${d.ch?`, e alla fine abbiamo scelto di ${esc(d.ch.charAt(0).toLowerCase()+d.ch.slice(1))}`:""}${d.res?`: ${d.res}`:""}.`);
-  const fin={ff:`Non siamo arrivati in tempo. La città si è salvata a metà${homeNamesL?`, e ${homeNamesL} non c'${homes.length>1?"erano":"era"} più`:""}. Il re ci ha dato la colpa di tutto e ci ha dato tre giorni per lasciare il regno. Siamo partiti all'alba, e nessuno si è voltato a guardarci.`,
-   fh:`La pietra è tornata al suo posto, ma troppo tardi per qualcuno${homeNamesL?`: ${homeNamesL} non ce l'${homes.length>1?"hanno":"ha"} fatta`:""}. Ci hanno chiamati eroi, in piazza, con una spilla d'argento sul petto, e poi la piazza è rimasta zitta per un minuto intero, per chi non è tornato a casa.`,
-   sf:`Ce l'abbiamo fatta, a fatica.${homeNamesL?` ${homeNamesL} ci ${homes.length>1?"sono venuti":"è venuto"} incontro zoppicando, ma ce l'${homes.length>1?"hanno":"ha"} fatta.`:""}${rival?` A palazzo, però, i complimenti se li è presi ${rival}, che giura di aver fatto da scudo al re sulle scale del castello. Ora siede nel consiglio, e ci sorride.`:" A palazzo, però, i complimenti se li è presi qualcun altro."}`,
-   sh:`Siamo arrivati in tempo. La città ha gridato i nostri nomi${homeNamesL?`, ${homeNamesL} ci ${homes.length>1?"sono corsi":"è corso"} incontro senza un graffio`:""}, e quella sera il re ci ha offerto oro, terre e un posto alla sua tavola. Ci ha chiesto solo una cosa: che fra un paio di secoli qualcuno sappia raccontare questa storia all'Arcanista.`,
-   crit:`Siamo arrivati in tempo, e la città ha gridato i nostri nomi${homeNamesL?`, mentre ${homeNamesL} si ${homes.length>1?"facevano":"faceva"} largo tra la folla per abbracciarci`:""}.${rival?` Più tardi, tra le macerie della porta est, hanno trovato ${rival}: non tutti sono tornati, quel giorno, e al banchetto nessuno ne ha parlato.`:""} Il re ci ha offerto oro, terre e un posto alla sua tavola.`};
+  const names=list(homes.map(x=>esc(x.h.n.trim()))),many=homes.length>1;
+  const kills=w=>{const n=fallen(w);return n?(n===1?"Uno l'abbiamo abbattuto":`Ne abbiamo abbattuti ${numIt(n)}`):""};
+  const devs=keys=>devsIn(keys).map(d=>`C'è stato anche un imprevisto, quello che tra noi chiamiamo «${esc(d.t)}»${d.ch?`: alla fine abbiamo deciso di ${esc(d.ch.charAt(0).toLowerCase()+d.ch.slice(1).replace(/\.$/,""))}`:""}${d.res?`, e ${d.res}`:""}.`);
+  const fin={
+   ff:`Non siamo arrivati in tempo. La città si è salvata a metà${names?`, e ${names} non c'${many?"erano":"era"} più`:""}. Il re ci ha dato la colpa di tutto e tre giorni per lasciare il regno. Siamo partiti all'alba.`,
+   fh:`La pietra è tornata al suo posto, ma tardi${names?`: ${names} non ce l'${many?"hanno":"ha"} fatta`:""}. In piazza ci hanno appuntato una spilla d'argento sul petto e ci hanno chiamati eroi. Poi la piazza è rimasta zitta per un minuto, per chi non era tornato.`,
+   sf:`Ce l'abbiamo fatta per poco.${names?` Abbiamo ritrovato ${names} con qualche benda, ma in piedi.`:""} I complimenti però se li è presi ${rival||"qualcun altro"}${rival?", che racconta a tutti di aver fatto da scudo al re sulle scale del castello. Adesso siede nel consiglio":""}.`,
+   sh:`Siamo arrivati in tempo. La città gridava i nostri nomi${names?` e abbiamo ritrovato ${names} senza un graffio`:""}. La sera il re ci ha offerto oro, terre e un posto alla sua tavola. In cambio voleva solo che, fra un paio di secoli, qualcuno sappia raccontare questa storia all'Arcanista.`,
+   crit:`Siamo arrivati in tempo. La città gridava i nostri nomi${names?` e abbiamo ritrovato ${names} senza un graffio`:""}.${rival?` Più tardi, fra le macerie della porta est, hanno trovato ${rival}. Al banchetto nessuno ne ha parlato.`:""} Il re ci ha offerto oro, terre e un posto alla sua tavola.`};
   const chapters=[
    {key:"bosco",n:"Il bosco e la partenza",img:1,deco:"fern",paras:[
-     `Due giorni fa ${sage?`${sageN}, il Saggio di Corte,`:"il Saggio di Corte"} ci ha riuniti per una consegna: un pacco per l'Arcanista Fuocobianco, nel villaggio di Hush, dall'altra parte del Sablewood. Cosa ci fosse dentro lo sapeva solo ${sageN}, che non ne parlava.`,
-     `Ci siamo accampati dove la foresta comincia sul serio: alberi alti centinaia di metri, e a mezzogiorno sembra notte. Attorno al fuoco ronzavano sciami di ${hyb}. Aspettavamo Luna, la cacciatrice che doveva guidarci, ed era molto in ritardo.`,
-     homes.length||rival?`Così, guardando le fiamme, abbiamo finito per parlare di casa. ${homes.map(x=>`${firstName(x.r.id)} pensava a ${esc(x.h.n.trim())}${x.h.note&&x.h.note.trim()?` (${esc(x.h.note.trim())})`:""}`).join("; ")}${homes.length?".":""}${rival?` E qualcuno ha nominato ${rival}${S.rivalNote&&S.rivalNote.trim()?`, che ${esc(S.rivalNote.trim())}`:""}: sarebbe felicissimo di vederci tornare con le mani vuote.`:""}`:"",
-     `Poi, nel buio, qualcuno ha gridato. ${F.luna==="saved"?"Abbiamo corso tra radici alte come case e fango fino alle caviglie, e siamo arrivati in tempo.":F.luna==="dead"?"Abbiamo corso più forte che potevamo, ma la foresta ci ha trattenuti a ogni passo, e a un certo punto le grida sono finite.":"Siamo corsi verso le grida, senza sapere cosa avremmo trovato."}`,
+     `Il Saggio di Corte${sage?`, ${sageN},`:""} ci ha riuniti due giorni fa con un incarico che sembrava semplice: portare un pacco all'Arcanista Fuocobianco, a Hush. Il guaio era la strada. Hush sta dall'altra parte del Sablewood, e nel Sablewood si entra solo con un buon motivo. Cosa ci fosse nel pacco lo sapeva solo ${sage?(sage.pron==="lei"?"lei":sage.pron==="lui"?"lui":sageN):"il Saggio"}.`,
+     `Ci siamo fermati dove comincia la foresta vera ad aspettare Luna, la cacciatrice di Hush che doveva farci da guida. Lì gli alberi salgono per centinaia di metri e chiudono il cielo, e a mezzogiorno accendi il fuoco come fosse sera. Sopra le fiamme giravano sciami di ${hyb}. Luna non arrivava.`,
+     homes.length||rival?`Per ammazzare l'attesa abbiamo parlato di casa. ${homes.map(x=>`${firstName(x.r.id)} ha parlato di ${esc(x.h.n.trim())}${x.h.note&&x.h.note.trim()?` («${esc(x.h.note.trim().replace(/\.$/,""))}»)`:""}.`).join(" ")}${rival?` Poi è venuto fuori il nome di ${rival}${rivalNote?`, che ${rivalNote}`:""}. Se tornassimo a mani vuote, ${rival} brinderebbe.`:""}`:"",
+     F.luna==="saved"?`Le grida sono arrivate all'improvviso, dal buio. Abbiamo lasciato il fuoco e siamo corsi tra radici alte come muri, nel fango fino alle caviglie. Siamo arrivati in tempo.`
+      :F.luna==="dead"?`Le grida sono arrivate all'improvviso, dal buio. Abbiamo lasciato il fuoco e siamo corsi più che potevamo, ma ogni radice ci rubava un passo. A metà strada le grida si sono fermate.`
+      :`Le grida sono arrivate all'improvviso, dal buio, e abbiamo lasciato il fuoco di corsa.`,
      ...devs(["1:inizio"])],
-    aside:critOf(L["1"])||`Il ronzio dei ${hyb} sopra il fuoco, e poi quel grido nel buio.`},
+    aside:critOf(L["1"])||`I ${hyb} sopra il fuoco. Poi il grido.`},
    {key:"luna",n:"Luna e il guardiano",img:2,deco:"moon",paras:F.luna==="saved"?[
-     `Nella radura Luna era a terra, ferita: una fata grande come due mele, con una pelle d'ornitorinco come mantello. Sopra di lei c'era lo Strixwolf, un lupo bianchissimo con la testa di gufo, e la sua voce ci è arrivata dritta nella testa: Luna aveva cacciato un cucciolo del suo branco, e doveva pagare.`,
-     F.pact==="yes"?`Voleva una vita per una vita, ma ha detto che si sarebbe accontentato di una sorpresa. ${bargain} ha fatto un passo avanti e ha accettato il suo patto: un momento del proprio tempo, che lo spirito reclamerà prima della fine del viaggio. Il lupo ha lasciato andare Luna ed è sparito tra gli alberi senza fare rumore.`
-      :`Non abbiamo trattato. Abbiamo combattuto, tra le radici e i fulmini, finché lo spirito non ha deciso che non ne valeva la pena e se n'è andato.`,
-     `Luna si è rimessa in piedi, ci ha insultati per il ritardo con un certo impegno, e da quel momento ci ha fatto da guida.${F.pact==="yes"?` ${bargain}, da allora, sente addosso lo sguardo dello spirito, e si chiede quando verrà a riscuotere.`:""}`,
+     `Luna era a terra in una radura, ferita: una fata grande come due mele, con una pelle d'ornitorinco addosso a fare da mantello. Sopra di lei stava lo Strixwolf, un lupo bianco con la testa di gufo. Non ha aperto il becco, eppure l'abbiamo sentito tutti, dentro la testa: Luna aveva cacciato un cucciolo del suo branco e doveva pagare.`,
+     F.pact==="yes"?`Chiedeva una vita per una vita. Poi ha cambiato idea, o ha finto di cambiarla: gli bastava un momento del tempo di uno di noi, da riscuotere prima della fine del viaggio. ${bargain} ha accettato prima che potessimo discuterne. Lo Strixwolf ha lasciato andare Luna ed è sparito tra gli alberi.`
+      :`Chiedeva una vita per una vita, e non avevamo intenzione di dargliela. Ci sono voluti fulmini, morsi e parecchia testardaggine, ma alla fine è stato lui a decidere che non ne valeva la pena.`,
+     `Luna si è rimessa in piedi, ci ha guardati uno per uno e ci ha fatto notare che eravamo in ritardo. Da lì in poi ci ha fatto da guida, e il ritardo non ce l'ha più fatto dimenticare.${F.pact==="yes"?` ${bargain}, da quel giorno, si guarda spesso alle spalle.`:""}`,
      ...devs(["1:prezzo"])]
-    :[lunaDiedFight?`Nella radura Luna era a terra, e sopra di lei lo Strixwolf, un lupo bianchissimo con la testa di gufo. Abbiamo combattuto, ma Luna è caduta. «Il prezzo è pagato», ha detto lo spirito nella nostra testa, e se n'è andato.`
-      :`Nella radura abbiamo trovato solo il corpo di Luna. Chi l'aveva uccisa se n'era già andato, e la foresta era tornata zitta.`,
-     F.ring?`Al dito portava una fede incantata che tira sempre nella stessa direzione: quella del suo sposo. L'abbiamo presa con noi. Senza una guida il Sablewood ci è sembrato ancora più grande, ma almeno quell'anello sapeva dove andare.`
-      :`L'abbiamo lasciata lì, con la sua fede al dito, e siamo ripartiti in silenzio. Senza una guida il Sablewood ci è sembrato ancora più grande.`,
+    :[lunaDiedFight?`Luna era a terra in una radura, e sopra di lei lo Strixwolf, un lupo bianco con la testa di gufo. Abbiamo provato a strappargliela e non ci siamo riusciti. «Il prezzo è pagato», ci ha detto dentro la testa, e se n'è andato.`
+      :`Nella radura c'era solo il corpo di Luna. Chi l'aveva uccisa non era rimasto ad aspettarci.`,
+     F.ring?`Al dito portava una fede incantata, di quelle che puntano sempre verso lo sposo. L'abbiamo presa: in tutta la foresta era l'unica cosa che sapesse dove andare.`
+      :`Le abbiamo lasciato la fede al dito e siamo ripartiti senza guida.`,
      ...devs(["1:prezzo"])],
-    aside:"Una voce nella testa, calma come la neve: «una vita per una vita»."},
+    aside:"«Una vita per una vita.» Detto con la calma di chi ha tempo."},
    {key:"ombre",n:"Le ombre della foresta",img:3,deco:"feather",paras:[
-     `Eravamo di nuovo in cammino quando la foresta si è zittita: niente più scarabei-serpente, niente lama-saltafango.${luna()?" «Oh, bastoncini», ha detto Luna.":""} Dagli alberi sono uscite sagome enormi, squarci nella realtà a forma di uomo: gli Scarshade. Guardandoci dentro si vedeva un'altra foresta, più verde e più giovane, com'era prima che gli Antichi Dèi morissero qui.`,
-     F.learned===true?`Volevano sapere cosa portavamo. Uno di loro ha posato la mano sulla fronte di ${sageN} e ha letto quello che sapeva: ora sanno che la nostra città è indifesa, e se ne sono andati verso casa nostra.${fallen("2:emissari")?` ${fallen("2:emissari")===1?"Ne abbiamo abbattuto uno":`Ne abbiamo abbattuti ${numIt(fallen("2:emissari"))}`}, ma non abbastanza.`:""}`
-      :`Volevano sapere cosa portavamo, ma non l'hanno scoperto.${fallen("2:emissari")?` ${fallen("2:emissari")===1?"Ne abbiamo abbattuto uno":`Ne abbiamo abbattuti ${numIt(fallen("2:emissari"))}`}, e gli altri sono svaniti com'erano venuti.`:""} Abbiamo stretto il pacco un po' più forte e siamo ripartiti.`,
-     F.learned?(F.shortcut==="taken"?`Da quel momento abbiamo contato le ore. ${luna()?"Luna conosceva una scorciatoia":"Abbiamo trovato una scorciatoia"} attraverso le parti peggiori del Sablewood, e l'abbiamo presa.`:`Da quel momento abbiamo contato le ore. Abbiamo preso il sentiero lungo, e ogni ora persa ci è pesata addosso.`):"",
+     `Ci ha avvertiti il silenzio. Gli scarabei-serpente hanno smesso di frusciare, i lama-saltafango sono spariti${luna()?` e Luna ha mormorato: «Oh, bastoncini»`:""}. Dagli alberi sono usciti gli Scarshade, sagome d'uomo ritagliate nell'aria. Dentro ognuna si vedeva un'altra foresta, più bassa e più verde: quella di prima che gli Antichi Dèi morissero qui.`,
+     F.learned===true?`Volevano sapere cosa portavamo. Uno di loro ha appoggiato la mano sulla fronte di ${sageN} e ha preso quello che cercava. Adesso sanno che la nostra città è senza protezione, e se ne sono andati verso casa nostra.${kills("2:emissari")?` ${kills("2:emissari")}, ma non è servito.`:""}`
+      :`Volevano sapere cosa portavamo e non l'hanno saputo.${kills("2:emissari")?` ${kills("2:emissari")}; gli altri sono svaniti com'erano venuti.`:""}`,
+     F.learned?(F.shortcut==="taken"?`Da quel momento abbiamo contato le ore. ${luna()?"Luna conosceva una scorciatoia":"Abbiamo trovato una scorciatoia"} che passa per le parti peggiori del Sablewood, e l'abbiamo presa senza votare.`
+      :`Da quel momento abbiamo contato le ore. Abbiamo tenuto il sentiero lungo, e ogni ora persa ce la siamo rinfacciata.`):"",
      ...devs(["2:emissari","2:polvere"])],
-    aside:critOf(L["2"])||"Guardare dentro uno Scarshade e vedere alberi verdi e sottili, come dovevano essere una volta."},
+    aside:critOf(L["2"])||"Dentro uno Scarshade c'erano alberi giovani."},
    {key:"fiume",n:"Il fiume Orfanatore",img:4,deco:"leaf",skip:F.shortcut!=="taken",paras:[
-     `La scorciatoia ci ha portati dritti all'Orfanatore. Si sente molto prima di vederlo: un fragore continuo, e poi l'acqua, così agitata da sembrare una cascata che corre di traverso.`,
-     `Lo abbiamo attraversato un pezzo alla volta, tra un ponte di corda spezzato, un isolotto e le liane che pendevano dagli alberi.${drowned.length?` ${list(drowned)} ${drowned.length>1?"sono finiti":"è finito"} sott'acqua, e per qualche lungo momento abbiamo temuto il peggio.`:" Nessuno è finito sotto, per fortuna."}${S.pcs.some(r=>r.id==="barnacle")?" Barnacle respira sott'acqua, ma ha una paura tremenda di nuotare, e non ha smesso di lamentarsene fino all'altra riva.":""}`,
-     `${S.loot.length?`Dal fondo abbiamo ripescato ${list(S.loot.map(esc))}. `:""}Siamo arrivati dall'altra parte fradici e pieni di lividi, ma tutti interi.`,
+     `La scorciatoia finiva sull'Orfanatore. L'abbiamo sentito un'ora prima di vederlo: l'acqua corre così forte da sembrare una cascata messa di traverso.`,
+     `L'abbiamo passato a pezzi, tra un ponte di corda spezzato, un isolotto e le liane appese ai rami.${drowned.length?` La corrente ha trascinato sotto ${list(drowned)}, e c'è voluto tutto il gruppo per riportare a galla ${drowned.length>1?"tutti":drowned[0]}.`:" La corrente non si è presa nessuno."}${S.pcs.some(r=>r.id==="barnacle")?" Barnacle respira sott'acqua, ma ha il terrore di nuotare, e ce l'ha ripetuto a ogni bracciata.":""}`,
+     `${S.loot.length?`Dal fondo abbiamo ripescato ${list(S.loot.map(esc))}. `:""}Siamo usciti dall'altra parte bagnati fino alle ossa, ma c'eravamo tutti.`,
      ...devs(["2.5:fiume"])],
-    aside:critOf(L["2.5"])||"Le liane bagnate tra le mani, e la riva che non arrivava mai."},
+    aside:critOf(L["2.5"])||"Le liane scivolose. La riva che non arrivava mai."},
    {key:"hush",n:"Il villaggio di Hush",img:5,deco:"key",paras:[
-     `Ancora un paio d'ore di foresta, e poi un cippo di pietra scolpito come un volto con il dito sulle labbra. Lo abbiamo superato, abbiamo sentito come lo scoppio di una bolla, e il villaggio di Hush è apparso dal nulla: capanne di legno e decine di facce diffidenti.`,
-     luna()?"Luna è sparita oltre il cippo e ha garantito per noi, anche se dal tono non sembrava del tutto convinta.":F.ring?"Nessuno voleva parlarci. La fede di Luna ci ha portati da Octavio, suo marito: dirgli la verità è stata la cosa più difficile di tutto il viaggio.":"Nessuno voleva parlarci. Alla fine ci hanno dato retta Fidget, che non sta fermo un secondo, Lausa la fabbra e Octavio.",
-     `Poi è arrivato l'Anziano Halython, un halfling con la barba bianca e un bastone, a ordinarci di andarcene.${pactAtHush?` È stato lì che lo Strixwolf ha riscosso il suo momento: ${bargain} ha alzato la mano contro uno dei paesani, senza sapere bene perché.`:""}${F.peaceUsed?" L'Anziano ha detto «Ci sarà pace», e ci siamo sentiti svuotati di ogni speranza.":""} ${F.elderDone?"Alla fine ha ceduto, e ci ha indicato la villa dell'Arcanista, sull'albero più alto del villaggio.":""}`,
+     `Hush si annuncia con un cippo di pietra: un volto scolpito con un dito sulle labbra. L'abbiamo superato, si è sentito come lo scoppio di una bolla, e il villaggio è apparso dal nulla. Capanne di legno, e decine di facce che non ci volevano lì.`,
+     luna()?"Luna ci ha preceduti oltre il cippo e ha garantito per noi, con l'entusiasmo di chi garantisce per un sacco di patate."
+      :F.ring?"Nessuno voleva parlarci. La fede di Luna puntava dritta verso un fauno, Octavio: suo marito. Dirgli cos'era successo è stata la parte peggiore del viaggio."
+      :"Nessuno voleva parlarci. Alla fine ci hanno dato retta Fidget, un bambino che non sta fermo un secondo, Lausa la fabbra e Octavio.",
+     `Poi è arrivato l'Anziano Halython, un halfling con la barba bianca e un bastone che batteva per terra a ogni parola, e ci ha ordinato di andarcene.${pactAtHush?` Lì lo Strixwolf è venuto a riscuotere: ${bargain} ha alzato la mano contro un paesano, e dopo non sapeva spiegare perché.`:""}${F.peaceUsed?" L'Anziano ha detto «Ci sarà pace», e ci siamo sentiti vuoti.":""}${F.elderDone?" Alla fine ha ceduto e ci ha indicato l'albero più alto del villaggio. Lassù c'era la villa dell'Arcanista.":""}`,
      ...devs(["3:arcanista","3:anziano"])],
-    aside:critOf(L["3"])||"Gli sguardi dei paesani dietro le finestre, e il bastone dell'Anziano che batte per terra."},
+    aside:critOf(L["3"])||"Il bastone dell'Anziano. Toc. Toc."},
    {key:"rituale",n:"Il rinnovo della protezione",img:6,deco:"dragonfly",paras:[
-     `La villa è scesa fino a terra per noi, la porta è sbocciata come un fiore enorme, e l'Arcanista Fuocobianco è uscita: mezza donna e mezza lucciola, carica di libri. La prima cosa che ci ha chiesto è come stesse «il piccolo Emeris».`,
-     `${F.ritualHere?"Il rituale l'abbiamo fatto nel villaggio, per non perdere altro tempo.":"Siamo andati con lei alla Valle Aperta, l'unico posto del Sablewood da cui si vede il cielo."} ${F.rest==="taken"?(F.ritualHere?"Prima ci siamo concessi un'ora di riposo.":"Prima ci siamo concessi un'ora di riposo sotto le stelle."):F.rest==="skipped"?"Non ci siamo riposati: c'era troppa fretta, e l'abbiamo aiutata a preparare tutto.":""}`,
-     `Quando il rituale è cominciato, la foresta si è messa a urlare: dagli alberi uscivano Scheletri Antichi ed Eroi Dimenticati, e noi stavamo in cerchio attorno all'Arcanista.${fallen("4:rituale")&&!F.ritualDone?` ${fallen("4:rituale")===1?"Ne abbiamo abbattuto uno":`Ne abbiamo abbattuti ${numIt(fallen("4:rituale"))}`}.`:""} ${F.ritualDone?"Quando il sigillo si è riacceso, quelli rimasti sono diventati polvere. Poi l'Arcanista ci ha trasformati in libellule, con la nostra testa, perché tornassimo a casa in fretta.":""}`,
+     `La villa è scesa dall'albero per venirci incontro. Al posto della porta c'è un bocciolo enorme: si è aperto e ne è uscita l'Arcanista Fuocobianco, per metà donna e per metà lucciola, carica di libri. Per prima cosa ci ha chiesto come stesse «il piccolo Emeris».`,
+     `${F.ritualHere?"Il rituale l'abbiamo fatto nel villaggio, per non perdere altro tempo.":"L'abbiamo seguita fino alla Valle Aperta, l'unico punto del Sablewood da cui si vede il cielo."}${F.rest==="taken"?(F.ritualHere?" Lei ha chiesto un'ora per prepararsi e noi l'abbiamo passata a riposare.":" Lei ha chiesto un'ora per prepararsi e noi l'abbiamo passata sdraiati a guardare le stelle."):F.rest==="skipped"?" Non ci siamo riposati: l'abbiamo aiutata a preparare tutto, perché di tempo non ce n'era.":""}`,
+     `Quando il rituale è partito, la foresta ha cominciato a urlare. Dagli alberi sono usciti Scheletri Antichi ed Eroi Dimenticati, e noi ci siamo messi in cerchio attorno all'Arcanista.${!F.ritualDone&&kills("4:rituale")?` ${kills("4:rituale")}.`:""}${F.ritualDone?" Quando il sigillo si è riacceso, quelli rimasti si sono sbriciolati. Prima di salutarci, l'Arcanista ci ha trasformati in libellule con la nostra faccia: l'insetto più veloce che conosca, ha detto, con qualche miglioria sua.":""}`,
      ...devs(["4:villa","4:preparare","4:rituale"])],
-    aside:critOf(L["4"])||"Volare con le ali di una libellula, e la nostra testa, sopra un mare di alberi."},
+    aside:critOf(L["4"])||"Ali di libellula, e sotto un mare di alberi."},
    {key:"casa",n:"Il ritorno a casa",img:7,deco:"compass",last:true,paras:[
-     `Abbiamo volato per centinaia di chilometri in un paio d'ore.${S.counter.on?` Sapevamo di essere in ritardo.`:""} Quando la città è apparsa all'orizzonte era sotto assedio: orso-vespe giganti dal cielo, alberi animati che colpivano le mura con le radici, e gli Scarshade per le strade.`,
-     `Sapevamo dove andava la pietra: era uno dei gioielli della corona della statua di re Emeris II, davanti al castello.${roller?` È toccato a ${roller} l'ultimo slancio.`:""}${F.bargain&&F.bargainUsed&&!pactAtHush?` E proprio lì lo Strixwolf ha reclamato il momento di ${bargain}, nel modo peggiore.`:""}`,
+     `Abbiamo volato per centinaia di chilometri in un paio d'ore. La città l'abbiamo vista da lontano, ed era sotto assedio: orso-vespe giganti dal cielo, alberi del Sablewood che picchiavano le mura con le radici, e per le strade gli Scarshade di prima.`,
+     `La pietra andava rimessa nella corona della statua di re Emeris II, davanti al castello. L'avevamo vista decine di volte senza sapere cosa fosse.${roller?` L'ultimo slancio è toccato a ${roller}.`:""}${F.bargain&&F.bargainUsed&&!pactAtHush?` Proprio lì lo Strixwolf si è preso il momento di ${bargain}.`:""}`,
      F.final?fin[F.final]:"",
      ...devs(["5:finale","5:risolvere"])],
-    aside:critOf(L["5"])||"La pietra che scivola nell'incavo, e l'onda di magia che passa sopra i tetti."}
+    aside:critOf(L["5"])||"La pietra che entra nell'incavo."}
   ];
   return chapters.filter(c=>!c.skip).map(c=>({...c,paras:c.paras.filter(Boolean)}));
 }
@@ -2258,10 +2268,14 @@ function diaryPages(){
     <div class="dc-in"><span class="dc-kicker">Diario di viaggio</span><h1>I Messaggeri<br><small>di</small> Sablewood</h1><div class="dvine dc-vine">${VINE}</div>
      <img class="dc-ink" src="diario/ink1.png" alt="">
      <div class="dc-meta"><b>${esc(cfg.group||"Brigata Daggerheart")}</b>${cfg.narrator?`<span>raccontato da ${esc(cfg.narrator)}</span>`:""}${cfg.date?`<span>${esc(cfg.date)}</span>`:""}</div></div></section>`;
+  const pcRow=(r,i)=>{const p=P(r),h=plainHome(S.pcs.indexOf(r)),g=cfg.portraits[r.id]&&VIEW.gallery.find(x=>x.gid===cfg.portraits[r.id]);
+    const fig=g?`<img class="dpc-photo" src="${esc(imgSrc(g))}" alt="">`:PREGEN[r.id]?`<img class="dpc-fig" src="diario/pg-${r.id}.png" alt="">`:`<span class="emb">${EMB[r.id]||""}</span>`;
+    return `<article class="dpc ${i%2?"alt":""}"><div class="dpc-pic">${fig}</div><div class="dpc-t"><h3>${esc(p.name)}</h3><span class="dpc-k">${esc(p.her)} · ${esc(p.cls)}${p.sage?" · Saggio di Corte":""}${S.flags.bargain===r.id?" · legato allo Strixwolf":""}</span>
+      <p>${esc(p.desc||"")}${h?` A casa l'aspetta ${esc(h.n.trim())}.`:""}</p>${r.notes&&r.notes.trim()?`<p class="dhand">«${esc(r.notes.trim())}»</p>`:""}</div></article>`};
+  const half=Math.ceil(S.pcs.length/2);
   const party=`<section class="dpage dparty pb"><div class="dp-in"><span class="dch-n">Prima pagina</span><h2 class="dh">La compagnia</h2><div class="dvine">${VINE}</div>
-    <div class="dpcs">${S.pcs.map((r,i)=>{const p=P(r),h=plainHome(i);return `<article class="dpc ${i%2?"alt":""}"><div class="dpc-pic">${portrait(r)}</div><div class="dpc-t"><h3>${esc(p.name)}</h3><span class="dpc-k">${esc(p.her)} · ${esc(p.cls)}${p.sage?" · Saggio di Corte":""}${S.flags.bargain===r.id?" · legato allo Strixwolf":""}</span>
-      <p>${esc(p.desc||"")}${h?` A casa l'aspetta ${esc(h.n.trim())}.`:""}</p>${r.notes&&r.notes.trim()?`<p class="dhand">«${esc(r.notes.trim())}»</p>`:""}</div></article>`}).join("")}</div>
-    ${sk("mushroom","dp-mush")}${sk("fern","dp-fern")}</div></section>`;
+    <div class="dpcs">${S.pcs.slice(0,half).map(pcRow).join("")}</div>${sk("fern","dp-fern")}</div></section>`
+   +`<section class="dpage dparty pa"><div class="dp-in"><div class="dpcs two">${S.pcs.slice(half).map((r,i)=>pcRow(r,i+half)).join("")}</div>${sk("mushroom","dp-mush")}<span class="dfolio">3</span></div></section>`;
   const chap=(c,i)=>{const k=c.key,lay=LAYOUTS[i%LAYOUTS.length];
     const body=dropCap(dyEdit(k+".testo",c.paras.map(p=>`<p>${p}</p>`).join("")));
     const img=`<img class="dink" src="diario/ink${c.img}.png" alt="">`;
@@ -2273,9 +2287,9 @@ function diaryPages(){
      :lay==="right"?`${head}<div class="dbody"><figure class="dfig fr">${img}</figure>${text}${note}${lines}</div>`
      :lay==="left"?`${head}<div class="dbody"><figure class="dfig fl">${img}</figure>${text}${note}${lines}</div>`
      :`${head}<div class="dbody">${text}${note}${lines}</div><figure class="dfig foot">${img}</figure>`;
-    return `<section class="dpage dchap lay-${lay} ${i%2?"pa":"pb"}"><div class="dp-in">${inner}${sk(c.deco,"dch-deco")}<span class="dfolio">${i+3}</span></div></section>`};
+    return `<section class="dpage dchap lay-${lay} ${i%2?"pb":"pa"}"><div class="dp-in">${inner}${sk(c.deco,"dch-deco")}<span class="dfolio">${i+4}</span></div></section>`};
   const endTxt=S.flags.final?ending(S.flags.final):"";
-  const last=`<section class="dpage dend ${chs.length%2?"pb":"pa"}"><div class="dp-in"><span class="dch-n">Ultima pagina</span><h2 class="dh">Come ci ricorderanno</h2><div class="dvine">${VINE}</div><p class="dsmall">Le parole del Narratore, la sera dell'ultimo fuoco.</p>
+  const last=`<section class="dpage dend ${chs.length%2?"pa":"pb"}"><div class="dp-in"><span class="dch-n">Ultima pagina</span><h2 class="dh">Come ci ricorderanno</h2><div class="dvine">${VINE}</div><p class="dsmall">Le parole del Narratore, la sera dell'ultimo fuoco.</p>
     ${endTxt?`<div class="dtxt dend-t" contenteditable="true" spellcheck="false" data-dy="fine.testo">${dyEdit("fine.testo",endTxt)}</div>`:`<p class="dsmall">Il finale comparirà qui dopo il tiro finale.</p>`}
     <div class="dsign"><span class="dsmall">Firmato, attorno all'ultimo fuoco:</span>${S.pcs.map(r=>`<div><i></i><span>${esc(P(r).name)}</span></div>`).join("")}</div>
     ${sk("dragonfly","dend-fly")}<div class="dfin">— Fine —</div></div></section>`;
@@ -2340,7 +2354,8 @@ async function diaryClaude(){
   const facts=chs.map(c=>({key:c.key,titolo:c.n,testo:strip(dyEdit(c.key+".testo",c.paras.map(p=>`<p>${p}</p>`).join("")).replace(/<span class="dcap">(.)<\/span>/,"$1"))}));
   const party=S.pcs.map(r=>{const p=P(r);return `${p.name} (${p.her}, ${p.cls})`}).join("; ");
   try{
-    const out=await sample.json(`Sei il narratore del diario di viaggio di un gruppo di avventurieri (gioco di ruolo Daggerheart, avventura "I Messaggeri del Sablewood"). Riscrivi ogni capitolo come un racconto unico e scorrevole, scritto dai personaggi stessi in prima persona plurale, in un italiano caldo e concreto, con un filo d'ironia. I capitoli devono leggersi come un solo diario: ognuno si apre collegandosi a come è finito il precedente. Conserva TUTTI i fatti e i nomi presenti, non inventare eventi, PNG o oggetti nuovi, non cambiare gli esiti. Dettagli sensoriali sì, cliché fantasy no («antico», «oscuro», «misterioso», «destino»). Tra 150 e 220 parole per capitolo, 3-4 paragrafi.
+    const out=await sample.json(`Sei il narratore del diario di viaggio di un gruppo di avventurieri (gioco di ruolo Daggerheart, avventura "I Messaggeri del Sablewood"). Riscrivi ogni capitolo come un racconto unico e scorrevole, scritto dai personaggi stessi in prima persona plurale, in un italiano caldo e concreto, con un filo d'ironia. I capitoli devono leggersi come un solo diario: ognuno si apre collegandosi a come è finito il precedente. Conserva TUTTI i fatti e i nomi presenti, non inventare eventi, PNG o oggetti nuovi, non cambiare gli esiti.
+Regole di stile, rispettale tutte: niente aperture d'atmosfera; niente chiuse a effetto, morali o frasi che tirano le somme («e da quel giorno…», «non lo dimenticheremo»); niente terne di aggettivi o di frasi parallele; niente trattini lunghi; niente transizioni da formulario («poi», «ma non era finita»); niente cliché fantasy («antico», «oscuro», «misterioso», «destino», «come se»). Frasi di lunghezza varia, verbi concreti, dettagli che solo chi c'era può sapere, qualche battuta asciutta. Tra 150 e 220 parole per capitolo, 3-4 paragrafi.
 Gruppo: ${party}.${cfg.narrator?` Narratore: ${cfg.narrator}.`:""}
 Capitoli (JSON): ${JSON.stringify(facts)}
 Rispondi SOLO con un oggetto JSON {"<key>": ["paragrafo", "paragrafo", ...], ...} con le stesse chiavi.`,{modelTier:"default",cache:false});
