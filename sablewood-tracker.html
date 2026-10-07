@@ -202,7 +202,7 @@ details.alt[open]>summary{margin-bottom:8px}
 .btn.xs{padding:1px 7px;font-size:.8rem}
 .chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:0 8px;font-size:.74rem;font-weight:700;border:1px solid var(--line);white-space:nowrap}
 .chip.fear{border-color:var(--fear);color:var(--fear)} .chip.hope{border-color:var(--hope);color:var(--hope)}
-.chip.bad{border-color:var(--blood);color:var(--blood)} .chip.ok{border-color:var(--moss);color:var(--moss)}
+.chip.bad{border-color:var(--blood);color:var(--blood)} .chip.ko{background:var(--blood);border-color:var(--blood);color:#fff;letter-spacing:.06em} .chip.ok{border-color:var(--moss);color:var(--moss)}
 input[type=text],input[type=number],select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:4px 7px;min-width:0}
 input[type=number]{width:4.2em}
 textarea{width:100%;resize:vertical}
@@ -1035,8 +1035,7 @@ function miniCard(f){
    <div class="mc-h"><button class="ava ${f.acted?"acted":""}" data-a="foe-acted" data-id="${f.id}" title="${f.acted?"Ha agito · tocca per azzerare":"Non ha ancora agito · tocca quando agisce"}" aria-label="${f.acted?"Ha agito":"Segna che ha agito"}" aria-pressed="${f.acted}">${initial(f.name)}</button><b>${esc(f.name)}</b><span class="mc-d">${shield(f.diff,"DIFF","diff xs")}${condMark(f.cond)}</span></div>
    ${f.hpMax?`<div class="mc-r"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>`:`<div class="mc-r xsmall muted">${esc(f.type)} · nessun PF</div>`}
    ${f.stMax?`<div class="mc-r"><span class="lab">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}
-   ${f.dead?`<div class="mc-r"><span class="chip ok">sconfitto</span></div>`:""}
-   <div class="mc-r">${condChips(f.cond,"foe-cond",f.id)}${condSelect(f.cond,FOE_COND,"foe-cond-add",f.id)}</div>
+   <div class="mc-r">${f.dead?`<span class="chip ko" title="Sconfitto">KO</span>`:""}${condChips(f.cond,"foe-cond",f.id)}${condSelect(f.cond,FOE_COND,"foe-cond-add",f.id)}</div>
   </div>`;
 }
 function foeSheet(f){
