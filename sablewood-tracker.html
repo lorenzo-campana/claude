@@ -1452,11 +1452,6 @@ const ENC={
    <button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo (1 Paura)</button></div></div>
  ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small ec-full"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
  </div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
- "4:villa":{
-  rules:()=>`<ul class="tight small">
-   <li><b>Incontro di sola conversazione:</b> l'Arcanista è cordiale, non servono tiri per farla parlare.</li>
-   <li><b>Cosa sa:</b> ha creato il cippo e lo rinnova ogni paio di secoli in cambio della promessa del regno di evitare il Sablewood.</li>
-   ${S.counter.on?`<li><b>Contatore attivo:</b> i PG possono convincere i paesani a fare il rituale nel villaggio; se vanno alla Valle Aperta, Contatore +1.</li>`:""}</ul>`,auto:[["arcanist",1]],t:"L'Arcanista Fuocobianco",k:"Sociale",d:"Una maga millenaria, distratta e affettuosa, che aspettava la consegna.",sug:[["arcanist",1]]},
  "4:rituale":{
   rules:()=>`<ul class="tight small">
    <li><b>Conto Rituale 8:</b> a 0 il rituale riesce. Ogni nemico sconfitto: −1. Ogni volta che l'Arcanista viene colpita (Diff 11): +1. Non ha PF: i danni sono solo narrativi.</li>
