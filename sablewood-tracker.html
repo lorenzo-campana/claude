@@ -814,9 +814,9 @@ const P=r=>{if(!r)return null;const q=Object.assign({},PREGEN[r.id]||{},r.over||
 const pcRaw=id=>S.pcs.find(p=>p.id===id);
 const pcById=id=>P(pcRaw(id));
 const pcName=id=>pcById(id)?.name||"PG";
-function addFear(n,why){const b=S.fear;S.fear=clamp(S.fear+n,0,12);if(S.fear!==b)log(`Paura ${sgn(S.fear-b)} (${S.fear})${why?" — "+why:""}`,"fear")}
-function counterAdd(n,why){if(!S.counter.on)return false;S.counter.value+=n;log(`Contatore d'Assalto ${sgn(n)} → ${S.counter.value}${why?" — "+why:""}`,"bad");return true}
-function counterStart(v,why){S.counter={on:true,value:v};log(`Contatore d'Assalto avviato a ${v}${why?" — "+why:""}`,"bad")}
+function addFear(n,why){const b=S.fear;S.fear=clamp(S.fear+n,0,12);if(S.fear!==b)log(`Paura ${sgn(S.fear-b)} (${S.fear})${why?" ("+why+")":""}`,"fear")}
+function counterAdd(n,why){if(!S.counter.on)return false;S.counter.value+=n;log(`Contatore d'Assalto ${sgn(n)} → ${S.counter.value}${why?" ("+why+")":""}`,"bad");return true}
+function counterStart(v,why){S.counter={on:true,value:v};log(`Contatore d'Assalto avviato a ${v}${why?" ("+why+")":""}`,"bad")}
 const pips=(n,val,cls,a,extra="")=>`<span class="pips">${Array.from({length:n},(_,i)=>`<button class="pip ${cls} ${i<val?"on":""}" data-a="${a}" data-i="${i}" ${extra} aria-label="${i+1} di ${n}"></button>`).join("")}</span>`;
 const pcOptions=(sel,blank="— nessuno —")=>`<option value="">${blank}</option>`+S.pcs.map(p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(pcName(p.id))}</option>`).join("");
 const shield=(v,label,cls="")=>`<span class="shield ${cls}"><span class="sv"><span>${v??"—"}</span></span><span class="sl">${label}</span></span>`;
@@ -901,7 +901,7 @@ function rollDual(o){
   recalc(res);
   if(!res.react&&!crit&&res.fear>res.hope&&r&&r.id==="garrick"&&res.success===false){r.hope=Math.min(6,r.hope+1);res.effects.push("Coraggio: Garrick ottiene 1 Speranza.")}
   if(S.pcs.some(x=>x.cond.includes("Annegamento"))&&!res.react)res.effects.push("Chi sta annegando segna 1 Stress.");
-  log(`${res.label} — ${p?p.name:"Tiro"}: ${res.hope}+${res.fear}${mod?" "+sgn(mod):""} = ${res.total}${res.diff?" vs "+res.diff:""} → ${res.verdict}`,res.kind==="f"?"fear":"hope");
+  log(`${res.label}, ${p?p.name:"Tiro"}: ${res.hope}+${res.fear}${mod?" "+sgn(mod):""} = ${res.total}${res.diff?" vs "+res.diff:""} → ${res.verdict}`,res.kind==="f"?"fear":"hope");
   return res;
 }
 function recalc(res){
@@ -1557,7 +1557,7 @@ function homeEditor(){return `<div class="stack">${S.home.map((h,i)=>`<div class
 
 /* ================= scene improvvisate con Claude ================= */
 let composer=null; // {where} per una nuova scena, {where:"re:<id>"} per riscriverne una
-let G={kind:"Qualsiasi",busy:null,err:{},ctrl:null};
+let G={kind:"Qualsiasi",busy:null,polish:null,err:{},ctrl:null};
 const KINDS=["Qualsiasi","Combattimento","Sociale","Esplorazione","Traversata","Colpo di scena"];
 const strip=h=>String(h).replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
 const scnOpen=new Map(); // apertura manuale delle scene (chiave scena o "dev:<id>")
@@ -1622,12 +1622,19 @@ function devPrompt(where,userText,kind,excludeId){
   const party=S.pcs.map(r=>{const q=P(r);return `${q.name} (${q.cls}${q.sage?", Saggio di Corte":""}; PF ${q.hpMax-r.hp}/${q.hpMax}, Stress ${r.st}/${q.stMax}, Speranza ${r.hope}${r.cond.length?", "+r.cond.join("/"):""})`}).join("; ");
   return `Sei il co-GM di una partita di Daggerheart (Tier 1, PG di livello 1), avventura "The Sablewood Messengers". I giocatori hanno appena concluso una scena facendo qualcosa di inaspettato. Crea la NUOVA SCENA IMPROVVISATA che ne deriva, seguendo le linee guida di Daggerheart per le scene: inquadrala (dove siamo, chi c'è, cosa è in gioco), dai ai PG qualcosa a cui reagire, fai domande ai giocatori per coinvolgerli nella narrazione, usa la Paura con parsimonia e prevedi un'uscita chiara che riporti la storia verso la prossima scena prevista, senza forzature.
 
+PRIMA DI SCRIVERE (non scriverlo nella risposta): chiediti cosa è appena successo, chi reagisce per primo, cosa vogliono i PG adesso e cosa può andare storto. Solo dopo scrivi le righe.
+
 STILE (importante): scrivi come il modulo originale, in un italiano naturale da GM al tavolo, non da romanzo fantasy generico.
 - Dettagli concreti e sensoriali presi dal Sablewood (radici alte come torri, buio a mezzogiorno, animali ibridi precisi, odori, rumori), non aggettivi vaghi.
 - Vietati i cliché: «antico», «oscuro», «misterioso», «sinistro», «arcano», «destino», «potere primordiale», «un'aura di…», «sembra quasi», «non è ciò che sembra», entità astratte con la maiuscola (la Memoria, l'Ombra, il Patto della…).
+- Vietate anche le parole tipiche dei testi scritti da un'IA: «intricato», «palpabile», «tangibile», «avvolto», «si staglia», «danza», «tessuto», «sinfonia», «arazzo», «testimonianza di», «nel cuore di», «carico di tensione», «un mix di», «crocevia», «cruciale», «fondamentale», «in bilico».
 - Il tono del modulo è fiabesco con ironia leggera: i PNG parlano come persone vere, a volte buffe o scorbutiche (Luna che dice «oh, bastoncini», l'Arcanista che chiede del «piccolo Emeris»). Usa PNG, luoghi e creature già esistenti quando possibile.
-- Frasi brevi e attive, niente elenchi di tre aggettivi, niente trattini drammatici, niente frasi a effetto finali.
-- Il testo da leggere ai giocatori descrive ciò che vedono e sentono, non cosa provano, e finisce lasciando loro la scelta.
+- Frasi brevi e attive. Mai la lineetta (— o –): usa il punto o la virgola.
+- Niente terne automatiche: non mettere in fila tre aggettivi, tre suoni o tre azioni. Uno o due dettagli bastano.
+- Niente formule del tipo «non è X, è Y», «non solo… ma anche», «e poi, all'improvviso», «tuttavia», «inoltre», «in definitiva».
+- Il testo da leggere non apre con l'atmosfera («l'aria è densa», «un silenzio cala»): apre con un fatto o con qualcuno che fa qualcosa.
+- Niente frasi a effetto finali, niente morale, niente frase che spiega cosa significa la scena. Il testo da leggere descrive ciò che i PG vedono e sentono, non cosa provano, e finisce lasciando loro la scelta.
+- Non c'è un'unica strada giusta: nella SCENA indica almeno due modi diversi in cui i PG possono affrontarla.
 - Il titolo è un'etichetta semplice e concreta (es. «Il ponte di liane», «Lausa vuole un'ascia»), non un titolo epico.
 
 CAMPAGNA: il Saggio di Corte (Marlowe) e il gruppo portano in segreto la pietra del sigillo della loro città (ora indifesa) all'Arcanista Fuocobianco nel villaggio nascosto di Hush, nel Sablewood: foresta buia di alberi alti centinaia di metri e creature ibride (lemuri-rospo, alci-tigre, orso-vespe, ragni-gatto), dove i Nuovi Dèi uccisero gli Antichi. Nemici: Scarshade (squarci nella realtà, emissari degli Antichi Dèi), Strixwolf (lupo-gufo guardiano), Scheletri Antichi, Eroi Dimenticati. Hush è ostile agli estranei (Anziano Halython). Il Contatore d'Assalto alla Città è la Difficoltà del tiro finale: ogni perdita di tempo lo alza.
@@ -1670,6 +1677,53 @@ EFFETTI: elenco separato da «;» usando SOLO queste forme (oppure «nessuno»),
 CONTATORE +N · CONTATORE -N · PAURA +N · PAURA -N · SPERANZA PG +N · SPERANZA PG -N · STRESS PG +N · PF PG +N · CURA PG N · CONDIZIONE PG Vulnerabile|Nascosto|Trattenuto · OGGETTO nome · ANELLO
 Usa valori piccoli (1-2) e coerenti con Daggerheart Tier 1.`;
 }
+function polishPrompt(raw){
+  return `Sei il revisore dei testi di una partita di Daggerheart in italiano. Qui sotto c'è una scena improvvisata scritta da un co-GM. Rivedila in due tempi.
+1) Controllo (non scriverlo nella risposta): cerca i segni di un testo scritto da un'IA. Parole vuote o cliché («antico», «oscuro», «misterioso», «sinistro», «arcano», «intricato», «palpabile», «avvolto», «si staglia», «danza», «tessuto», «nel cuore di», «carico di tensione», «cruciale»); lineette (— o –); terne di aggettivi, suoni o azioni; formule come «non è X, è Y», «non solo… ma anche», «tuttavia», «inoltre»; aperture d'atmosfera («l'aria è densa», «un silenzio cala»); frasi finali a effetto, morali o che spiegano il senso della scena; emozioni attribuite ai PG nel testo da leggere; entità astratte con la maiuscola; una sola strada possibile per i PG.
+2) Riscrittura: correggi solo il testo dove trovi questi problemi. Frasi brevi e attive, dettagli concreti, PNG che parlano come persone vere, tono fiabesco con ironia leggera. Se una frase va già bene lasciala com'è.
+
+REGOLE FERREE:
+- Mantieni le stesse righe CHIAVE: valore, nello stesso ordine e nello stesso numero. Nessun markdown, nessun commento, nessuna riga in più.
+- Nelle righe con campi separati da «|» mantieni lo stesso numero di campi.
+- Non toccare nulla dopo «EFFETTI:», né i numeri, i tratti, le difficoltà, le statistiche degli avversari, i valori dei conti e i nomi di PNG, PG, avversari e oggetti.
+- Non cambiare cosa succede nella scena: cambia solo come è scritta.
+
+SCENA DA RIVEDERE:
+${raw}`;
+}
+function devSkeleton(raw){
+  const p=parseDev(raw),num=x=>String(x||"").replace(/\D+/g," ").trim(),fx=t=>JSON.stringify(splitFx(t).fx);
+  return JSON.stringify({
+    tiri:p.tiri.map(r=>[r.length,(r[1]||"").trim().toLowerCase(),num(r[2])]),
+    png:p.png.map(r=>[r.length,(r[0]||"").trim(),num(r[3])]),
+    avv:p.avv.map(r=>[r.length,(r[0]||"").trim(),...r.slice(1,8).map(x=>(x||"").trim()),(r[9]||"").trim()]),
+    conti:p.conti.map(c=>[c.length,num(c[1])]),
+    paura:p.paura.length,domande:p.domande.length,
+    scelte:p.scelte.map(c=>[c.length,fx(c.slice(1).join("|"))]),
+    su:fx(p.successo),fa:fx(p.fallimento),tipo:(p.tipo||"").trim(),cont:num(p.contatore),
+    has:["titolo","luogo","posta","leggi","scena","uscita","raccordo"].map(k=>!!p[k])
+  });
+}
+async function polish(dv,sample){
+  const draft=dv.raw;
+  G.polish=dv.id;const el=document.getElementById("devb-"+dv.id);if(el)el.innerHTML=devBody(dv);
+  try{
+    const out=await sample(polishPrompt(draft),{signal:G.ctrl?.signal,modelTier:"default",cache:false});
+    const txt=String(out?.text||"").trim();
+    if(txt&&devSkeleton(txt)===devSkeleton(draft)){dv.raw=txt;dv.polished=true;delete dv.polishErr}
+    else dv.polishErr="La revisione cambiava dati di gioco: tengo la prima stesura.";
+  }catch(e){dv.raw=draft;if(e?.code!=="cancelled")dv.polishErr="Revisione non riuscita: tengo la prima stesura."}
+  G.polish=null;
+}
+async function polishDev(id){
+  const dv=S.devs.find(x=>x.id===id);if(!dv||!dv.raw||G.busy)return;
+  let sample=null;
+  try{sample=window.claude?.use?await window.claude.use("sample"):null}catch(e){sample=null}
+  if(!sample){G.err["re:"+id]="La revisione usa Claude dal tuo account: apri il tracker su claude.ai per usarla.";render();return}
+  G.busy=dv.id;G.err["re:"+id]="";delete dv.polishErr;G.ctrl=new AbortController();render();
+  await polish(dv,sample);
+  G.busy=null;G.ctrl=null;persist();render();
+}
 async function generate(where,userText,kind,regenId){
   let sample=null;
   try{sample=window.claude?.use?await window.claude.use("sample"):null}catch(e){sample=null}
@@ -1685,7 +1739,8 @@ async function generate(where,userText,kind,regenId){
   try{
     const out=await sample(prompt,{signal:G.ctrl.signal,modelTier:"default",cache:false,
       onText:({text})=>{dv.raw=text;const el=document.getElementById("devb-"+dv.id);if(el)el.innerHTML=devBody(dv);const t=document.getElementById("devt-"+dv.id);if(t)t.textContent=parseDev(text).titolo||"Sto improvvisando…"}});
-    dv.raw=out.text;delete dv.prev;log(`Scena improvvisata: ${parseDev(dv.raw).titolo||"senza titolo"}`);
+    dv.raw=out.text;delete dv.prev;delete dv.polished;delete dv.polishErr;
+    await polish(dv,sample);log(`Scena improvvisata: ${parseDev(dv.raw).titolo||"senza titolo"}`);
   }catch(e){
     const m={not_granted:"Accesso a Claude negato per questa pagina: puoi riattivarlo dal menu Permessi dell'artefatto.",rate_limited:"Troppe richieste ravvicinate: aspetta un momento.",cancelled:"Generazione interrotta.",refused:"Claude non ha generato questa scena: prova a cambiare il racconto.",session_expired:"Sessione scaduta: ricarica la pagina.",sampling_disabled:"La generazione con Claude non è attiva per questo account."};
     if(e?.code==="refused")dv.raw="";else if(e?.text&&e.code!=="cancelled")dv.raw=e.text;
@@ -1726,7 +1781,8 @@ function devBody(dv){
     return `<div class="grid2 small">${card("s","Successo",su)}${card("f","Fallimento",fa)}</div>`})():""}
   ${p.raccordo?`<div class="note small"><b>Ritorno alla trama:</b> ${esc(p.raccordo)}</div>`:""}
   ${p.contatore&&!/^nessun/i.test(p.contatore)?`<div class="warn small"><b>Contatore d'Assalto:</b> ${esc(p.contatore)}</div>`:""}
-  ${streaming?`<div class="row"><span class="small muted blink">Sto scrivendo…</span><button class="btn xs" data-a="gen-stop">Interrompi</button></div>`:""}`;
+  ${!streaming&&dv.polishErr?`<div class="xsmall muted">${esc(dv.polishErr)}</div>`:""}
+  ${streaming?`<div class="row"><span class="small muted blink">${G.polish===dv.id?"Rileggo e ripulisco il testo…":"Sto scrivendo…"}</span><button class="btn xs" data-a="gen-stop">Interrompi</button></div>`:""}`;
 }
 function devCard(dv,num){
   const p=parseDev(dv.raw),key="dev:"+dv.id,streaming=G.busy===dv.id;
@@ -1736,7 +1792,7 @@ function devCard(dv,num){
   return `<details class="scn imp ${dv.done?"done":""}" data-dev="${dv.id}" ${open?"open":""}><summary><span class="scn-n">Scena ${num}</span><span class="scn-k">Improvvisata${p.tipo?" · "+esc(p.tipo):""}</span><span class="scn-t" id="devt-${dv.id}">${esc(p.titolo||(streaming?"Sto improvvisando…":"Senza titolo"))}</span>${dv.done?`<span class="chip ok">conclusa</span>`:""}</summary>
   <div class="scn-b">
    <div class="row small"><span class="muted">I PG hanno fatto: «${esc(dv.user||"—")}» · ${esc(dv.kind)}</span>
-    <span class="row" style="margin-left:auto;gap:4px"><button class="btn xs" data-a="dev-regen" data-id="${dv.id}" ${G.busy?"disabled":""}>Rigenera</button><button class="btn xs" data-a="dev-edit" data-id="${dv.id}" ${G.busy?"disabled":""}>Modifica e rigenera</button><button class="btn xs" data-a="dev-del" data-id="${dv.id}" ${streaming?"disabled":""}>Elimina</button><button class="btn xs" data-a="scn-fold" data-k="${key}">Chiudi</button></span></div>
+    <span class="row" style="margin-left:auto;gap:4px"><button class="btn xs" data-a="dev-regen" data-id="${dv.id}" ${G.busy?"disabled":""}>Rigenera</button><button class="btn xs" data-a="dev-edit" data-id="${dv.id}" ${G.busy?"disabled":""}>Modifica e rigenera</button>${dv.raw&&!dv.polished?`<button class="btn xs" data-a="dev-polish" data-id="${dv.id}" ${G.busy?"disabled":""}>Rivedi il testo</button>`:""}<button class="btn xs" data-a="dev-del" data-id="${dv.id}" ${streaming?"disabled":""}>Elimina</button><button class="btn xs" data-a="scn-fold" data-k="${key}">Chiudi</button></span></div>
    ${editing?composerForm("re:"+dv.id,dv.user||""):(G.err["re:"+dv.id]?`<div class="warn small">${esc(G.err["re:"+dv.id])}</div>`:"")}
    <div class="stack" style="gap:10px" id="devb-${dv.id}">${devBody(dv)}</div>
    ${!streaming&&dv.raw&&(here.length||parseDev(dv.raw).avv.length||parseDev(dv.raw).png.length)?encounterCard(dv.act+":dev:"+dv.id,devEnc(dv)):""}
@@ -2178,6 +2234,7 @@ const A={
    endAsk=null}
   if(o.w.startsWith("re:")){const dv=S.devs.find(x=>x.id===o.w.slice(3));if(dv)generate(dv.where,t,G.kind,dv.id)}else generate(o.w,t,G.kind)},
  "gen-stop":()=>G.ctrl?.abort(),
+ "dev-polish":o=>polishDev(o.id),
  "dev-regen":o=>{const dv=S.devs.find(x=>x.id===o.id);if(dv&&!G.busy)generate(dv.where,dv.user,dv.kind,dv.id)},
  "dev-choice":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);if(!dv||dv.choice!=null)return;const c=parseDev(dv.raw).scelte[+o.i];if(!c)return;
   const fx=parseFx((c.slice(1).join("|").match(/EFFETTI\s*:(.*)$/i)||[,""])[1]);dv.choice=+o.i;log(`Scelta: ${c[0]}`,"ok");applyFx(fx,`scelta «${c[0]}»`)}),
