@@ -329,6 +329,12 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 .ec-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .ec-n{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1;min-width:1.4em;text-align:center}
 .ec-full{grid-column:1/-1}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.choice{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;background:var(--paper)}
+.choice.on{border-color:var(--ok);box-shadow:inset 3px 0 0 var(--ok)} .choice.off{opacity:.5}
+.fx{display:flex;flex-wrap:wrap;gap:4px}
+.fxc{font-size:.7rem;font-weight:800;border-radius:4px;padding:1px 6px;background:var(--fear-soft);color:var(--fear);border:1px solid var(--fear)}
+.out-card{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
 .atk-card{border:1px solid var(--line);border-left:3px solid var(--fear);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
 .atk-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .atk-h b{font-weight:800}
@@ -1247,9 +1253,42 @@ let G={kind:"Qualsiasi",busy:null,err:{},ctrl:null};
 const KINDS=["Qualsiasi","Combattimento","Sociale","Esplorazione","Traversata","Colpo di scena"];
 const strip=h=>String(h).replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
 const scnOpen=new Map(); // apertura manuale delle scene (chiave scena o "dev:<id>")
+/* effetti che le scelte improvvisate possono applicare al tracker */
+const FX_PC={marlowe:"marlowe",barnacle:"barnacle",garrick:"garrick",khari:"khari",varian:"varian",tutti:"*",gruppo:"*"};
+function splitFx(text){const m=String(text||"").split(/\bEFFETTI\s*:/i);return {txt:m[0].replace(/[|\s]+$/,"").trim(),fx:parseFx(m[1]||"")}}
+function parseFx(str){
+  return String(str||"").split(/[;]/).map(t=>t.trim()).filter(t=>t&&!/^nessun/i.test(t)).map(t=>{
+    let m;
+    if(m=t.match(/^(CONTATORE|PAURA)\s*([+-]\s*\d+)$/i))return {k:m[1].toUpperCase(),n:parseInt(m[2].replace(/\s/g,""))};
+    if(m=t.match(/^(SPERANZA|STRESS|PF|CURA)\s+(\w+)\s*([+-]?\s*\d+)$/i)){const who=FX_PC[m[2].toLowerCase()];if(!who)return null;return {k:m[1].toUpperCase(),who,n:parseInt(m[3].replace(/\s/g,""))}}
+    if(m=t.match(/^CONDIZIONE\s+(\w+)\s+(Vulnerabile|Nascosto|Trattenuto)$/i)){const who=FX_PC[m[1].toLowerCase()];if(!who)return null;return {k:"CONDIZIONE",who,c:m[2][0].toUpperCase()+m[2].slice(1).toLowerCase()}}
+    if(m=t.match(/^OGGETTO\s+(.+)$/i))return {k:"OGGETTO",item:m[1].trim()};
+    if(/^ANELLO$/i.test(t))return {k:"ANELLO"};
+    return null;}).filter(Boolean);
+}
+const fxWho=w=>w==="*"?"tutti":pcName(w).split(" ")[0];
+function fxLabel(e){
+  switch(e.k){case "CONTATORE":return `Contatore ${sgn(e.n)}`;case "PAURA":return `Paura ${sgn(e.n)}`;case "SPERANZA":return `${fxWho(e.who)}: Speranza ${sgn(e.n)}`;
+   case "STRESS":return `${fxWho(e.who)}: +${Math.abs(e.n)} Stress`;case "PF":return `${fxWho(e.who)}: segna ${Math.abs(e.n)} PF`;case "CURA":return `${fxWho(e.who)}: cura ${Math.abs(e.n)} PF`;
+   case "CONDIZIONE":return `${fxWho(e.who)}: ${e.c}`;case "OGGETTO":return `Oggetto: ${e.item}`;case "ANELLO":return "Prendono la fede di Luna"}
+}
+function applyFx(list,why){
+  const pcs=w=>w==="*"?S.pcs.map(p=>p.id):[w];
+  list.forEach(e=>{switch(e.k){
+   case "CONTATORE":if(S.counter.on)counterAdd(e.n,why);else if(e.n>0)log(`${why}: Contatore +${e.n} ignorato (non attivo)`);break;
+   case "PAURA":addFear(e.n,why);break;
+   case "SPERANZA":pcs(e.who).forEach(id=>{const r=pcRaw(id);r.hope=clamp(r.hope+e.n,0,6);log(`${pcName(id)}: Speranza ${sgn(e.n)} (${why})`,"hope")});break;
+   case "STRESS":pcs(e.who).forEach(id=>pcMarkStress(id,Math.abs(e.n),why));break;
+   case "PF":pcs(e.who).forEach(id=>pcMarkHp(id,Math.abs(e.n),why));break;
+   case "CURA":pcs(e.who).forEach(id=>{const r=pcRaw(id);r.hp=Math.max(0,r.hp-Math.abs(e.n));log(`${pcName(id)} cura ${Math.abs(e.n)} PF (${why})`,"ok")});break;
+   case "CONDIZIONE":pcs(e.who).forEach(id=>{const r=pcRaw(id);if(!r.cond.includes(e.c))r.cond=toggleCond(r.cond,e.c,id)});break;
+   case "OGGETTO":if(!S.loot.includes(e.item))S.loot.push(e.item);log(`Oggetto ottenuto: ${e.item}`,"ok");break;
+   case "ANELLO":S.flags.ring=true;log("Il gruppo ha la fede di Luna","ok");break}});
+}
+const fxChips=list=>list.length?`<div class="fx">${list.map(e=>`<span class="fxc">${esc(fxLabel(e))}</span>`).join("")}</div>`:"";
 function parseDev(raw){
-  const o={tiri:[],png:[],avv:[],conti:[],paura:[],domande:[]};let last=null;
-  const multi={TIRO:"tiri",PNG:"png",AVVERSARIO:"avv",CONTO:"conti",PAURA:"paura",DOMANDA:"domande"};
+  const o={tiri:[],png:[],avv:[],conti:[],paura:[],domande:[],scelte:[]};let last=null;
+  const multi={TIRO:"tiri",PNG:"png",AVVERSARIO:"avv",CONTO:"conti",PAURA:"paura",DOMANDA:"domande",SCELTA:"scelte"};
   const single=["TITOLO","TIPO","LUOGO","POSTA","LEGGI","SCENA","USCITA","RACCORDO","SUCCESSO","FALLIMENTO","CONTATORE"];
   for(const line of String(raw||"").split("\n")){
     const m=line.match(/^\s*[*-]?\s*\**([A-ZÀÈÉÌÒÙ]+)\**\s*:\s*(.*)$/);
@@ -1284,7 +1323,14 @@ STILE (importante): scrivi come il modulo originale, in un italiano naturale da 
 - Il titolo è un'etichetta semplice e concreta (es. «Il ponte di liane», «Lausa vuole un'ascia»), non un titolo epico.
 
 CAMPAGNA: il Saggio di Corte (Marlowe) e il gruppo portano in segreto la pietra del sigillo della loro città (ora indifesa) all'Arcanista Fuocobianco nel villaggio nascosto di Hush, nel Sablewood: foresta buia di alberi alti centinaia di metri e creature ibride (lemuri-rospo, alci-tigre, orso-vespe, ragni-gatto), dove i Nuovi Dèi uccisero gli Antichi. Nemici: Scarshade (squarci nella realtà, emissari degli Antichi Dèi), Strixwolf (lupo-gufo guardiano), Scheletri Antichi, Eroi Dimenticati. Hush è ostile agli estranei (Anziano Halython). Il Contatore d'Assalto alla Città è la Difficoltà del tiro finale: ogni perdita di tempo lo alza.
-SCENA APPENA CONCLUSA: Scena ${sceneNum(act,secId)} (Atto ${a.n}) «${sec.t}». Posta in gioco: ${typeof sec.f.posta==="function"?sec.f.posta():sec.f.posta}. ${strip(sec.html()).slice(0,550)}
+PERTINENZA (importante):
+- La scena nasce DIRETTAMENTE da ciò che hanno fatto i PG, nello stesso luogo e momento in cui finisce la scena appena giocata. Riprendi il loro gesto e mostrane le conseguenze immediate.
+- Non inventare fazioni, divinità, artefatti o segreti nuovi. Usa i personaggi e le creature del modulo: Luna (fata cacciatrice), Octavio (suo marito, fauno), Fidget, Lausa (fabbra), l'Anziano Halython, l'Arcanista Fuocobianco, lo Strixwolf, gli Scarshade, Scheletri Antichi, Eroi Dimenticati, i paesani di Hush, le creature ibride della foresta. Al massimo un PNG nuovo e minore.
+- La posta tocca qualcosa che il gruppo ha già: la pietra del sigillo nel pacco, il tempo (Contatore), Luna, il patto fatato, la salute dei PG, la fiducia di Hush.
+- È una scena breve (10-20 minuti di gioco) che finisce riportando il gruppo verso la prossima scena prevista.
+- Rispetta lo stato attuale: chi è morto resta morto, ciò che è già successo non si annulla.
+
+SCENA APPENA CONCLUSA: Scena ${sceneNum(act,secId)} (Atto ${a.n}) «${sec.t}». Posta in gioco: ${typeof sec.f.posta==="function"?sec.f.posta():sec.f.posta}. Esito registrato: ${S.out[where]||"—"}. Testo della scena: ${strip(sec.html()).slice(0,1100)}
 ${chain?`SCENE IMPROVVISATE GIÀ GIOCATE DOPO QUELLA SCENA (in ordine):\n${chain}\n`:""}PROSSIMA SCENA PREVISTA: ${nx?`Scena ${nx.n} «${nx.s.t}»${nx.actN?` (Atto ${nx.actN})`:""}: ${typeof nx.s.f.posta==="function"?nx.s.f.posta():nx.s.f.posta}. ${strip(nx.s.html()).slice(0,260)}`:"fine dell'avventura"}
 STATO: Paura del GM ${S.fear}/12; Contatore ${S.counter.on?S.counter.value:"non attivo"}; Luna ${S.flags.luna==="saved"?"viva, col gruppo":S.flags.luna==="dead"?"morta":"sorte non decisa"}; patto fatato: ${S.flags.bargain?pcName(S.flags.bargain)+(S.flags.bargainUsed?" (riscosso)":""):"nessuno"}; Scarshade sanno del pacco: ${S.flags.learned===true?"sì":S.flags.learned===false?"no":"?"}; bottino: ${S.loot.join(", ")||"nessuno"}.
 GRUPPO: ${party}
@@ -1305,11 +1351,16 @@ PNG: nome | chi è | cosa vuole | difficoltà   (da 0 a 2 righe)
 AVVERSARIO: nome | ruolo (Standard/Bruiser/Minion/Leader/Solo/Skulk) | quantità | difficoltà | soglie grave/severa | PF | Stress | ATK | attacco e portata | danni (es. 1d8+2 fis) | caratteristica: effetto   (da 0 a 2 righe, solo se c'è combattimento)
 CONTO: nome | valore 3-6 | cosa succede a zero   (0 o 1 riga)
 PAURA: una mossa che il GM può fare spendendo Paura   (1-2 righe)
-SUCCESSO: esito se i PG riescono
-FALLIMENTO: esito se falliscono
+SCELTA: cosa possono decidere i PG | conseguenza in una frase | EFFETTI: …   (0-3 righe, solo se la scena mette i PG davanti a una decisione)
+SUCCESSO: esito se i PG riescono | EFFETTI: …
+FALLIMENTO: esito se falliscono | EFFETTI: …
 USCITA: come si chiude la scena
 RACCORDO: come si torna verso «${nx?nx.s.t:"il finale"}»
-CONTATORE: effetto sul Contatore d'Assalto oppure nessuno`;
+CONTATORE: effetto sul Contatore d'Assalto oppure nessuno
+
+EFFETTI: elenco separato da «;» usando SOLO queste forme (oppure «nessuno»), con PG = marlowe, barnacle, garrick, khari, varian oppure tutti:
+CONTATORE +N · CONTATORE -N · PAURA +N · PAURA -N · SPERANZA PG +N · SPERANZA PG -N · STRESS PG +N · PF PG +N · CURA PG N · CONDIZIONE PG Vulnerabile|Nascosto|Trattenuto · OGGETTO nome · ANELLO
+Usa valori piccoli (1-2) e coerenti con Daggerheart Tier 1.`;
 }
 async function generate(where,userText,kind,regenId){
   let sample=null;
@@ -1318,13 +1369,13 @@ async function generate(where,userText,kind,regenId){
   if(!sample){G.err[errKey]="L'improvvisazione usa Claude dal tuo account: apri il tracker su claude.ai per usarla.";render();return}
   let dv=regenId&&S.devs.find(x=>x.id===regenId);
   const prompt=devPrompt(where,userText,kind,regenId);
-  if(dv){dv.prev=dv.raw;dv.raw="";dv.user=userText;dv.kind=kind;dv.done=false}
+  if(dv){dv.prev=dv.raw;dv.raw="";dv.user=userText;dv.kind=kind;dv.done=false;delete dv.choice;delete dv.res}
   else{dv={id:uid(),where,act:where.split(":")[0],user:userText,kind,raw:"",done:false,at:new Date().toTimeString().slice(0,5)};S.devs.push(dv)}
   G.busy=dv.id;G.err[errKey]="";composer=null;scnOpen.set("dev:"+dv.id,true);render();
   document.querySelector(`details[data-dev="${dv.id}"]`)?.scrollIntoView({behavior:"smooth",block:"start"});
   G.ctrl=new AbortController();
   try{
-    const out=await sample(prompt,{signal:G.ctrl.signal,modelTier:"quick",cache:false,
+    const out=await sample(prompt,{signal:G.ctrl.signal,modelTier:"default",cache:false,
       onText:({text})=>{dv.raw=text;const el=document.getElementById("devb-"+dv.id);if(el)el.innerHTML=devBody(dv);const t=document.getElementById("devt-"+dv.id);if(t)t.textContent=parseDev(text).titolo||"Sto improvvisando…"}});
     dv.raw=out.text;delete dv.prev;log(`Scena improvvisata: ${parseDev(dv.raw).titolo||"senza titolo"}`);
   }catch(e){
@@ -1360,7 +1411,11 @@ function devBody(dv){
    <div class="mono xsmall">Soglie ${esc(r[4]||"—")} · PF ${esc(r[5]||"?")} · Stress ${esc(r[6]||"?")} · ATK ${esc(r[7]||"?")}</div><div class="small">${esc(r[8]||"")}${r[9]?" · "+esc(r[9]):""}</div>${r[10]?`<div class="small"><i>${esc(r.slice(10).join(" | "))}</i></div>`:""}</div>`).join("")}</div></div>`:""}
   ${p.conti.length?`<div class="row small">${p.conti.map((c,i)=>`<b>${esc(c[0])}</b> (${parseInt(c[1])||4}) <span class="muted">${esc(c[2]||"")}</span>${streaming?"":`<button class="btn xs" data-a="dev-cd" data-id="${dv.id}" data-i="${i}">Aggiungi conto</button>`}`).join("")}</div>`:""}
   ${p.paura.length?`<div><div class="lab" style="color:var(--fear)">Mosse con Paura</div><ul class="tight small">${p.paura.map(x=>`<li>${esc(x.join(" "))}</li>`).join("")}</ul></div>`:""}
-  ${p.successo||p.fallimento?`<div class="grid2 small"><div class="out-card"><b>Successo</b><div>${esc(p.successo||"")}</div></div><div class="out-card"><b>Fallimento</b><div>${esc(p.fallimento||"")}</div></div></div>`:""}
+  ${p.scelte.length?`<div><div class="lab">Scelte dei PG · il pulsante applica le conseguenze al tracker</div><div class="choices">${p.scelte.map((c,i)=>{const fx=parseFx((c.slice(1).join("|").match(/EFFETTI\s*:(.*)$/i)||[,""])[1]);const cons=(c[1]||"").replace(/EFFETTI\s*:.*$/i,"").trim();const chosen=dv.choice===i,locked=dv.choice!=null&&!chosen;
+    return `<div class="choice ${chosen?"on":""} ${locked?"off":""}"><b>${esc(c[0])}</b>${cons?`<span class="small">${esc(cons)}</span>`:""}${fxChips(fx)}
+     ${streaming?"":chosen?`<span class="chip ok">scelta</span>`:`<button class="btn xs ${locked?"":"pri"}" data-a="dev-choice" data-id="${dv.id}" data-i="${i}" ${locked?"disabled":""}>Scelgono questo</button>`}</div>`}).join("")}</div></div>`:""}
+  ${p.successo||p.fallimento?(()=>{const su=splitFx(p.successo),fa=splitFx(p.fallimento);const card=(k,t,o)=>`<div class="out-card ${dv.res===k?"hit":""}"><b>${t}</b><div>${esc(o.txt)}</div>${fxChips(o.fx)}${streaming?"":dv.res===k?`<span class="chip ok">applicato</span>`:`<button class="btn xs" data-a="dev-res" data-id="${dv.id}" data-k="${k}" ${dv.res?"disabled":""}>Applica esito</button>`}</div>`;
+    return `<div class="grid2 small">${card("s","Successo",su)}${card("f","Fallimento",fa)}</div>`})():""}
   ${p.raccordo?`<div class="note small"><b>Ritorno alla trama:</b> ${esc(p.raccordo)}</div>`:""}
   ${p.contatore&&!/^nessun/i.test(p.contatore)?`<div class="warn small"><b>Contatore d'Assalto:</b> ${esc(p.contatore)}</div>`:""}
   ${streaming?`<div class="row"><span class="small muted blink">Sto scrivendo…</span><button class="btn xs" data-a="gen-stop">Interrompi</button></div>`:""}`;
@@ -1683,6 +1738,9 @@ const A={
   if(o.w.startsWith("re:")){const dv=S.devs.find(x=>x.id===o.w.slice(3));if(dv)generate(dv.where,t,G.kind,dv.id)}else generate(o.w,t,G.kind)},
  "gen-stop":()=>G.ctrl?.abort(),
  "dev-regen":o=>{const dv=S.devs.find(x=>x.id===o.id);if(dv&&!G.busy)generate(dv.where,dv.user,dv.kind,dv.id)},
+ "dev-choice":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);if(!dv||dv.choice!=null)return;const c=parseDev(dv.raw).scelte[+o.i];if(!c)return;
+  const fx=parseFx((c.slice(1).join("|").match(/EFFETTI\s*:(.*)$/i)||[,""])[1]);dv.choice=+o.i;log(`Scelta: ${c[0]}`,"ok");applyFx(fx,`scelta «${c[0]}»`)}),
+ "dev-res":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);if(!dv||dv.res)return;const p=parseDev(dv.raw);const r=splitFx(o.k==="s"?p.successo:p.fallimento);dv.res=o.k;log(`Esito della scena improvvisata: ${o.k==="s"?"successo":"fallimento"}`);applyFx(r.fx,o.k==="s"?"successo della scena":"fallimento della scena")}),
  "dev-del":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);S.devs=S.devs.filter(x=>x!==dv);if(dv)S.foes=S.foes.filter(f=>f.where!==dv.act+":dev:"+dv.id)}),
  "dev-foe":o=>upd(()=>{picker=null;const dv=S.devs.find(x=>x.id===o.id);const r=parseDev(dv.raw).avv[+o.i];if(!r)return;const thr=String(r[4]||"").split("/").map(x=>parseInt(x));
   const dmg=(String(r[9]||"").match(/\d*d\d+\s*[+-]?\s*\d*/)||[""])[0].replace(/\s/g,"");
