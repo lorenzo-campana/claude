@@ -349,6 +349,9 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 .ec-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .ec-n{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1;min-width:1.4em;text-align:center}
 .ec-full{grid-column:1/-1}
+.ec-warn{border-color:var(--blood);background:var(--blood-soft)}
+.ec-who{min-width:7em}
+.kv-list{display:grid;grid-template-columns:auto 1fr;gap:2px 8px}
 .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
 .choice{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;background:var(--paper)}
 .choice.on{border-color:var(--ok);box-shadow:inset 3px 0 0 var(--ok)} .choice.off{opacity:.5}
@@ -1402,22 +1405,23 @@ const ENC={
    <li><b>Risacca (1 Paura):</b> un PG che annega sbatte su una roccia: tira 1d4 sulla tabella qui sotto.</li>
    <li><b>Tesori sommersi:</b> un PG che annega può fare un tiro di Forza per recuperare un oggetto dal fondo.</li>
    <li><b>Tiri reazione:</b> non generano Speranza né Paura.</li></ul>`,t:"Il fiume Orfanatore",k:"Ambientale",d:"Traversata · Diff 13. Annegamento, Risacca e tesori sommersi.",env:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
- <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
- ${dr.length?`<div class="warn"><b>Annegano:</b> ${dr.map(p=>esc(pcName(p.id))).join(", ")}. Ogni tiro d'azione di un PG fa segnare 1 Stress a tutti quelli che annegano.
-  <div class="row" style="margin-top:6px"><button class="btn bad" data-a="drown-tick">Tiro d'azione fatto: chi annega segna 1 Stress</button></div>
-  ${dr.map(p=>`<div class="row small" style="margin-top:6px"><b>${esc(pcName(p.id))}</b>${rb("Liberarsi · Diff 13",{t:"dual",who:p.id,trait:"ask",diff:13,label:"Liberarsi dall'annegamento"})}<button class="btn xs ok" data-a="drown-free" data-id="${p.id}">Riuscito: si libera</button></div>`).join("")}</div>`:""}
- <div class="row">${rb("Tiro d'azione · Diff 13",{t:"dual",trait:"ask",diff:13,label:"Attraversare l'Orfanatore"})}
-  <button class="btn ok" data-a="river" data-k="s" ${dr.length&&S.river.t<=1?"disabled":""}>Successo · Traversata −1</button>
-  <button class="btn bad" data-a="river" data-k="f">Fallimento · azione Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div>
- <div class="grid2 small">
-  <div><div class="lab">Dettagli utili (azione riuscita)</div><ul class="tight"><li>Ponte di corda spezzato</li><li>Tratto poco profondo</li><li>Un isolotto</li><li>Liane pendenti</li></ul></div>
-  <div><div class="lab">Annegare</div><p class="small muted">Scegli il PG: reazione di Agilità, se fallisce annega.</p>
-   <div class="row"><select id="drownpc" data-f="drownpc" aria-label="PG">${pcOptions(drownPick)}</select>${rb("Reazione Agilità · 13",{t:"dual",trait:0,diff:13,react:1,label:"Reazione contro l'annegamento"})}<button class="btn xs bad" data-a="drown-set">Annega</button></div></div>
-  <div><div class="lab">Risacca — spendi 1 Paura</div><ol class="tight">${UNDERTOW.map(u=>`<li>${u}</li>`).join("")}</ol>
-   <button class="btn fear has-die" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>${DIE_SVG}Spendi 1 Paura: Risacca (d4)</button>
-   ${S.undertow?`<div class="note" style="margin-top:6px">${esc(S.undertow)}</div>`:""}</div>
-  <div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
-   <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
+ <div class="ec"><div class="ec-h"><span class="lab">Traversata · Diff 13</span>${pips(4,S.river.t,"cd","river-pip")}<b class="mono">${S.river.t}</b><span class="xsmall muted">a 0 il gruppo attraversa${dr.length?" · bloccata finché qualcuno annega":""}</span></div>
+  <div class="row">${rb("Tiro d'azione · Diff 13",{t:"dual",trait:"ask",diff:13,label:"Attraversare l'Orfanatore"})}
+   <button class="btn xs ok" data-a="river" data-k="s" ${dr.length&&S.river.t<=1?"disabled":""}>Successo · −1</button>
+   <button class="btn xs bad" data-a="river" data-k="f">Fallimento · Annegare</button><button class="btn xs" data-a="river" data-k="r">Azzera</button></div></div>
+ ${dr.length?`<div class="ec ec-warn"><div class="ec-h"><span class="lab">Annegano</span><span class="xsmall muted">ogni tiro d'azione di un PG: +1 Stress a ciascuno</span><button class="btn xs bad" data-a="drown-tick" style="margin-left:auto">Tiro fatto: +1 Stress</button></div>
+  ${dr.map(p=>`<div class="row small"><b class="ec-who">${esc(pcName(p.id))}</b>${rb("Liberarsi · Diff 13",{t:"dual",who:p.id,trait:"ask",diff:13,label:"Liberarsi dall'annegamento"})}<button class="btn xs ok" data-a="drown-free" data-id="${p.id}">Riuscito: si libera</button></div>`).join("")}</div>`:""}
+ <div class="env-compact">
+  <div class="ec"><div class="ec-h"><span class="lab">Annegare</span><span class="xsmall muted">dopo un fallimento</span></div>
+   <div class="row small"><select id="drownpc" data-f="drownpc" aria-label="PG che rischia di annegare">${pcOptions(drownPick,"— chi? —")}</select>${rb("Reazione Agilità · 13",{t:"dual",trait:0,diff:13,react:1,label:"Reazione contro l'annegamento"})}<button class="btn xs bad" data-a="drown-set">Fallita: annega</button></div></div>
+  <div class="ec"><div class="ec-h"><span class="lab">Risacca</span><span class="chip fear">1 Paura</span><span class="xsmall muted">su chi annega</span></div>
+   <div class="kv-list small">${["1 Stress","2d6+3 danni fisici","Una carta dominio nel deposito","Un oggetto finisce sul fondo"].map((u,i)=>`<span class="mono">${i+1}</span><span>${u}</span>`).join("")}</div>
+   <div class="row small"><button class="btn xs fear has-die" data-a="undertow" ${S.fear<1||!dr.length?"disabled":""}>${DIE_SVG}Tira d4</button>${S.undertow?`<span class="muted">${esc(S.undertow)}</span>`:""}</div></div>
+  <div class="ec"><div class="ec-h"><span class="lab">Tesori sommersi</span><span class="xsmall muted">tiro di Forza di chi annega</span></div>
+   ${TREASURES.map((t,i)=>`<div class="row small" style="gap:6px"><b>${t[0]}</b><span class="muted" style="flex:1 1 140px">${t[1]}</span>${S.loot.includes(t[0])?`<span class="chip ok">preso</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Preso</button>`}</div>`).join("")}</div>
+  <div class="ec"><div class="ec-h"><span class="lab">Appigli</span><span class="xsmall muted">da offrire dopo un'azione riuscita</span></div>
+   <div class="row" style="gap:4px">${["Ponte di corda spezzato","Tratto poco profondo","Un isolotto","Liane pendenti"].map(x=>`<span class="chip">${x}</span>`).join("")}</div></div>
+ </div>
  `},reset:()=>{S.river.t=4;S.undertow=null;S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}},
  "3:arcanista":{
   rules:()=>`<ul class="tight small">
