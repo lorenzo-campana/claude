@@ -117,6 +117,22 @@ p{margin:0}
 .ask .ask-x{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .asks{display:flex;flex-direction:column;gap:8px}
 
+.pend{border:1px dashed var(--muted);border-radius:var(--r);padding:8px 12px;color:var(--muted);font-size:.92rem}
+details.alt{border:1px dashed var(--line);border-radius:var(--r);padding:6px 12px}
+details.alt>summary{font-weight:700;color:var(--muted);font-size:.9rem}
+details.alt[open]>summary{margin-bottom:8px}
+.scn.skipped{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding:8px 14px;opacity:.6;border-style:dashed}
+.scn.skipped .scn-t{flex:0 1 auto;font-size:1.1rem;text-decoration:line-through}
+.outq{border:2px solid var(--hope);border-radius:10px;background:var(--hope-soft);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.outq>b{font-family:var(--f-display);font-weight:400;font-size:1.3rem}
+.outs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.outopt{text-align:left;border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.outopt:hover{border-color:var(--ink)}
+.outopt b{font-size:1rem}
+.outopt span{font-size:.85rem;color:var(--muted)}
+.outopt i{font-size:.7rem;font-weight:800;font-style:normal;text-transform:uppercase;letter-spacing:.06em;color:var(--hope)}
+.outopt.sug{border-color:var(--hope);box-shadow:inset 3px 0 0 var(--hope)}
+
 /* box di regole (inseguimento, fiume, rituale) */
 .stat{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--paper)}
 .stat-h{background:var(--plate);color:var(--plate-fg);display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 12px;flex-wrap:wrap}
@@ -550,12 +566,12 @@ function fresh(){
   return {v:2,savedAt:0,act:'1',tab:'atto',fear:5,counter:{on:false,value:15},critters:["",""],
    flags:{luna:null,ring:false,bargain:"",bargainUsed:false,learned:null,shortcut:null,searchTick:false,elderDone:false,peaceUsed:false,ritualHere:null,rest:null,ritualDone:false,final:null},
    chase:{d:3,t:3},river:{t:4},ritual:{v:8},villagers:0,elderSt:0,undertow:null,loot:[],
-   pcs:Object.keys(PREGEN).map(mkPC),home:[{n:"",note:""}],foes:[],cds:[],log:[],devs:[],scn:{},notes:"",rest:{}};
+   pcs:Object.keys(PREGEN).map(mkPC),home:[{n:"",note:""}],foes:[],cds:[],log:[],devs:[],scn:{},out:{},notes:"",rest:{}};
 }
 function migrate(s){
   if(!s||typeof s!=="object")return fresh();
   if(s.v===2){
-    s.scn=s.scn||{};
+    s.scn=s.scn||{};s.out=s.out||{};
     const moved={"2:silenzio":"2:emissari","3:ingresso":"3:arcanista","4:fine":"4:rituale"};
     (s.devs||[]).forEach(x=>{if(moved[x.where])x.where=moved[x.where];if(x.done==null)x.done=false});
     (s.foes||[]).forEach(f=>{if(moved[f.where])f.where=moved[f.where]});
@@ -957,20 +973,17 @@ const SECTIONS={
  <p>Poi, in lontananza, delle grida. Qualcuno chiede aiuto, e potrebbe essere lei. Le urla vengono da un centinaio di metri, e il terreno è così impervio che non siete sicuri di arrivare in tempo, se non date tutto. Cosa fate?</p>`)}
  <p class="small muted">Questo incontro insegna i tiri d'azione. Descrivi 1 o 2 ostacoli alla volta.</p>
  `},
- {id:"prezzo",t:"Un prezzo da pagare",f:F.prezzo,html:()=>`
- <div class="row"><button class="btn ${S.flags.luna==="saved"?"pri":""}" data-a="luna" data-k="saved">Inseguimento riuscito</button><button class="btn ${S.flags.luna==="dead"?"pri":""}" data-a="luna" data-k="dead">Inseguimento fallito</button>
-  ${S.flags.luna?`<span class="chip ${luna()?"ok":"bad"}">Luna ${luna()?"viva":"morta"}</span>`:""}</div>
- ${S.flags.luna==="dead"?`${read(`<p>D'un tratto vi rendete conto che sono quasi dieci secondi che non sentite più gridare.</p><p>Arrivate in una piccola radura, ma trovate solo il corpo senza vita della cacciatrice che doveva guidarvi. Chi o cosa l'ha uccisa se n'è già andato.</p>`)}
-  ${read(`<p>A un dito porta un anello magico che tira sempre in una direzione: una fede nuziale, incantata per indicare dove si trova lo sposo di chi la indossa.</p>`,"Se perquisiscono il corpo")}
-  <label class="inl"><input type="checkbox" data-a="flag" data-k="ring" ${S.flags.ring?"checked":""}> Il gruppo ha preso l'anello (porta a Octavio, ad Hush)</label>`:""}
- ${S.flags.luna==="saved"?`${read(`<p>Vedete una fata ferita a terra che grida aiuto. È grande appena come due mele e indossa una pelle d'ornitorinco come mantello da caccia.</p>
+ {id:"prezzo",t:"Un prezzo da pagare",f:F.prezzo,html:()=>{
+  const dead=`${read(`<p>D'un tratto vi rendete conto che sono quasi dieci secondi che non sentite più gridare.</p><p>Arrivate in una piccola radura, ma trovate solo il corpo senza vita della cacciatrice che doveva guidarvi. Chi o cosa l'ha uccisa se n'è già andato.</p>`)}
+  ${read(`<p>A un dito porta un anello magico che tira sempre in una direzione: una fede nuziale, incantata per indicare dove si trova lo sposo di chi la indossa.</p>`,"Se perquisiscono il corpo")}`;
+  const saved=`${read(`<p>Vedete una fata ferita a terra che grida aiuto. È grande appena come due mele e indossa una pelle d'ornitorinco come mantello da caccia.</p>
   <p>Accanto a lei c'è un lupo gigante e maestoso con la testa di gufo. Il suo pelo è così bianco che sembra un'apparizione. Quando si volta verso di voi, sentite una voce nella testa:</p>
   <p>«Allontanatevi, mortali. Costei ha cacciato un cucciolo del mio branco, e per questo deve pagare un prezzo.»</p>`)}
   <p>Lo <b>Strixwolf</b> è un grande spirito, creato per proteggere le specie più rare del Sablewood. Luna non sapeva che l'ornitorinco che indossa era sotto la sua protezione.</p>
   <div class="panel stack"><h4>Patto fatato</h4>
   ${read(`<p>«Una vita per una vita: questo è il prezzo che chiedo. Eppure vedo fuoco nella tua anima, e mi fa credere che potresti saziare la mia fame con la <i>sorpresa</i> invece che con il sangue.</p><p>Concedimi un solo momento del tuo tempo, e lo userò per metterti alla prova. Prima che il tuo viaggio finisca reclamerò quel momento, e ti farò minacciare la vita che mi è dovuta. Cosa accadrà dopo, sono curioso di scoprirlo.»</p>`,"Se viene chiesto")}
-  <div class="row"><span class="lab">PG che accetta</span><select id="bargain" data-f="bargain" aria-label="PG che accetta il patto">${pcOptions(S.flags.bargain)}</select></div>
-  <p class="small muted">Poi: ad Hush il PG attacca un PNG (se è drammatico), <i>oppure</i> nel tiro finale sabota gli alleati dando svantaggio.</p></div>`:""}`},
+  <p class="small muted">Poi: ad Hush il PG attacca un PNG (se è drammatico), <i>oppure</i> nel tiro finale sabota gli alleati dando svantaggio.</p></div>`;
+  return branch(S.flags.luna==="saved"?"a":S.flags.luna==="dead"?"b":null,["Se Luna è viva",saved],["Se Luna è morta",dead],"Concludi la scena 1: in base all'inseguimento qui resterà solo il ramo giusto.")}},
 ],
 '2':()=>[
  {id:"emissari",t:"Emissari degli Antichi Dèi",f:F.emissari,html:()=>`
@@ -981,17 +994,14 @@ const SECTIONS={
  ${read(`<p>Sagome gigantesche e distorte emergono dalla boscaglia. Sono come buchi nel tessuto della realtà: puoi vederci attraverso, ma ciò che vedi è un'altra foresta.</p><p>Gli alberi sono più verdi, più sottili, non così assurdamente alti. È come se dentro questi squarci a forma umana ci fosse la visione di com'era la foresta in un passato lontano, prima che gli Antichi Dèi venissero uccisi qui.</p>`)}
  ${read(`<p>Uno di loro tende un braccio verso il pacco. E capite subito cosa questa cosa ha detto senza parole: pretende di sapere cos'è.</p>`,"Se vedono il pacco")}
  <p>Gli Scarshade sono resti degli Antichi Dèi, con un odio infinito per chi adora i Nuovi Dèi, compreso il regno dei PG. Proveranno lo <b>Scavo nella Memoria</b>.</p>`},
- {id:"polvere",t:"Al bivio",f:F.polvere,html:()=>`
- <div class="row"><span class="lab">Gli Scarshade hanno scoperto cos'è il pacco?</span>
-  <button class="btn ${S.flags.learned===true?"pri":""}" data-a="learned" data-k="1">Sì</button><button class="btn ${S.flags.learned===false?"pri":""}" data-a="learned" data-k="0">No</button></div>
- ${S.flags.learned===true?`<div class="warn">Avvia il <b>Contatore d'Assalto alla Città</b> a 15 + Scarshade sopravvissuti (ora ${aliveShades()}). Sarà la Difficoltà del tiro finale.
-  <div class="row" style="margin-top:6px">${S.counter.on?counterChip():`<button class="btn bad" data-a="counter-shades">Avvia a ${15+aliveShades()}</button>`}</div></div>
+ {id:"polvere",t:"Al bivio",f:F.polvere,html:()=>{
+  const L=S.flags.learned;
+  if(L==null)return pendNote("Concludi la scena 3: se gli Scarshade hanno scoperto il pacco, qui comparirà il bivio della scorciatoia.");
+  if(L===false)return `<div class="note">Gli Scarshade non hanno scoperto nulla: nessuna urgenza e nessun bivio. Il gruppo prosegue verso Hush.</div>`;
+  return `<div class="warn">Gli Scarshade sanno del pacco. Contatore d'Assalto alla Città: <b>${S.counter.on?S.counter.value:"—"}</b>, la Difficoltà del tiro finale.</div>
   <p><b>La scorciatoia.</b> Con questa urgenza, i giocatori potrebbero cercare una scorciatoia attraverso le parti più pericolose del Sablewood.</p>
   <ul class="tight"><li>${luna()?"<b>Luna è con il gruppo:</b> può indicare la strada.":"Luna non c'è: un PG fa un tiro di <b>Istinto</b> a Diff 15 per trovarla."}</li><li>Se proseguono senza scorciatoia, il Contatore sale di <b>2</b>.</li></ul>
-  <div class="row">${luna()?"":`${rb("Istinto · Diff 15",{t:"dual",trait:3,diff:15,label:"Trovare la scorciatoia"})}`}
-  <button class="btn pri" data-a="shortcut" data-k="taken">Prendono la scorciatoia → Atto II½</button>
-  <button class="btn" data-a="shortcut" data-k="skip">Niente scorciatoia (+2) → Atto III</button></div>`:""}
- ${S.flags.learned===false?`<div class="row"><button class="btn pri" data-a="goact" data-k="3">Prosegui all'Atto III →</button></div>`:""}`}
+  ${luna()?"":`<div class="row">${rb("Istinto · Diff 15",{t:"dual",trait:3,diff:15,label:"Trovare la scorciatoia"})}</div>`}`}}
 ],
 '2.5':()=>[
  {id:"fiume",t:"Il fiume Orfanatore",f:F.fiume,html:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
@@ -1000,8 +1010,7 @@ const SECTIONS={
  ${S.pcs.some(p=>p.id==="barnacle")?`<div class="note small">Barnacle è anfibio, ma ha paura dell'acqua e non nuota.</div>`:""}
  
  <div class="note small"><b>Glossario:</b> una condizione temporanea come Annegamento si rimuove con un tiro d'azione. I tiri reazione non generano Speranza né Paura. Le carte nel deposito non si possono usare: tornano nella dotazione con un riposo, oppure segni Stress pari al costo di richiamo per scambiarle con una carta della dotazione.</div>
- ${S.river.t===0?`<div class="note">Il gruppo ha attraversato il fiume.</div>`:""}
- <div class="row"><button class="btn pri" data-a="goact" data-k="3">Prosegui all'Atto III →</button></div>`}}
+ ${S.river.t===0?`<div class="note">Il gruppo ha attraversato il fiume.</div>`:""}`}}
 ],
 '3':()=>[
  {id:"arcanista",t:"Il villaggio che non vuole ospiti",f:F.arcanista,html:()=>`
@@ -1013,37 +1022,32 @@ const SECTIONS={
  <h4>Trovare l'Arcanista</h4>
  <div class="row">${counterChip()}</div>
  <p>Quasi tutti rifiutano di parlare con i PG: bisbigliano, fissano, sputano a terra, se ne vanno. La posizione dell'Arcanista dovrebbe restare segreta: temono che il gruppo sia un intruso.</p>
- ${S.counter.on?`<div class="row"><button class="btn bad" data-a="search-tick" ${S.flags.searchTick?"disabled":""}>Qualche minuto di ricerca: Contatore +1</button></div>`:""}
  <p class="small">Dopo un po' trovano gli unici disposti a parlare: Fidget, Lausa e Octavio.${S.flags.ring?" <b>Il gruppo ha l'anello di Luna: indica Octavio.</b>":""}</p>`},
  {id:"anziano",t:"L'Anziano Halython",f:F.anziano,html:()=>`
  ${read(`<p>D'improvviso sentite un tonfo alle vostre spalle. Un uomo anziano, alto poco più di un metro, ha appena sbattuto a terra la punta del suo bastone, pretendendo attenzione e rispetto.</p><p>La persona con cui stavate parlando balbetta: «Anziano Halython? Non stavo cercando di…»</p><p>Il vecchio halfling la interrompe: «Non un'altra parola. Hai già detto troppo. Quanto a voi, dovete lasciare questo villaggio. Subito.»</p>`,"Quando un paesano accetta di guidarli")}
- 
- <div class="row"><button class="btn pri" data-a="goact" data-k="4">L'Anziano cede → Atto IV</button></div>`}
+ `}
 ],
 '4':()=>[
  {id:"villa",t:"Villa Fuocobianco",f:F.villa,html:()=>`
  ${read(`<p>Superando le case notate che qui gli alberi hanno centinaia di volti intagliati su ogni lato, con gli occhi che scrutano in ogni direzione. Quando passate accanto a un intaglio, la bocca si apre ed emette piccole fiamme bianche che illuminano il sentiero.</p><p>Un albero, più alto degli altri, regge tra i rami una villa di legno. Rune blu dipinte nella corteccia si accendono, il ramo si anima e l'intera struttura scende lentamente fino a terra.</p><p>Al posto della porta c'è un bocciolo gigante, largo forse tre metri, che si schiude rivelando petali colorati. Al centro c'è un'apertura da cui esce una figura alta più di due metri: un misto tra un umanoide e una lucciola, in vesti da maga bianca, carica di libri e pozioni.</p><p>«Vi stavo aspettando. Spero che nessuno abbia scoperto cosa trasportavate. L'ultima volta che la vostra città è rimasta indifesa così, i seguaci degli Antichi Dèi l'hanno quasi rasa al suolo. Comunque, come sta il piccolo Emeris? È ancora vivo?»</p>`)}
  <p class="small">L'Arcanista ha diverse migliaia di anni. Parla di Emeris IV; il re che ha assunto il gruppo è Emeris VIII. Ha creato il sigillo e ha un accordo con la stirpe reale: ogni paio di secoli lo rinnova, e il Regno in cambio evita il Sablewood. Se le chiedono perché i paesani non sapessero della consegna: «Oh, l'avevo detto… mi pare 12 o 13 anni fa?»</p>
- ${read(`<p>«Dovremmo andare nella Valle Aperta per il rituale. È solo a un paio di miglia. Un incantesimo del genere attirerà creature pericolose dagli angoli più oscuri del Sablewood: dalle vostre facce capisco che ne avete già incontrate alcune. …E preferirei che succedesse fuori dal villaggio. Quel ragazzino Lylython è un tipo lunatico, si mette a urlarmi contro ogni volta che un esperimento va storto.»</p>`,"Quando ha parlato abbastanza")}
- ${S.counter.on?`<div class="row"><span class="lab">Contatore attivo</span><button class="btn ${S.flags.ritualHere===true?"pri":""}" data-a="ritual-here" data-k="1">Convincono i paesani a fare il rituale qui</button><button class="btn ${S.flags.ritualHere===false?"pri":""}" data-a="ritual-here" data-k="0">Vanno alla Valle Aperta (+1)</button></div>`:""}`},
+ ${read(`<p>«Dovremmo andare nella Valle Aperta per il rituale. È solo a un paio di miglia. Un incantesimo del genere attirerà creature pericolose dagli angoli più oscuri del Sablewood: dalle vostre facce capisco che ne avete già incontrate alcune. …E preferirei che succedesse fuori dal villaggio. Quel ragazzino Lylython è un tipo lunatico, si mette a urlarmi contro ogni volta che un esperimento va storto.»</p>`,"Quando ha parlato abbastanza")}`},
  {id:"preparare",t:"La quiete prima",f:F.preparare,html:()=>`
  ${S.flags.ritualHere!==true?read(`<p>Entrate in una radura larga un paio di centinaia di metri, così perfettamente circolare da sembrare innaturale. Per quanto ne sapete, è l'unico posto del Sablewood dove si vede il cielo.</p><p>L'Arcanista inizia a preparare il rituale: «Mi serve un'ora per prepararmi. Godetevi l'aria della notte finché potete. Presto saremo molto occupati.»</p>`,"Se vanno alla Valle Aperta"):""}
- ${S.counter.on?`<p class="small">Con il Contatore attivo i giocatori possono saltare il riposo e aiutare con la preparazione: passa a «Il rituale inizia».</p>`:""}
+ ${S.counter.on?`<p class="small">Con il Contatore attivo i giocatori possono saltare il riposo e aiutare con la preparazione: lo sceglierai alla fine della scena.</p>`:""}
  <div class="panel stack"><h4>Riposo breve</h4><p class="small">Ogni PG sceglie fino a due opzioni (anche la stessa due volte).</p>
  ${S.pcs.map(p=>{const used=(S.rest[p.id]||[]).length,dis=used>=2?"disabled":"";return `<div class="row small"><b style="min-width:8.5em">${esc(pcName(p.id))}</b><span class="muted mono">${used}/2</span>
   <button class="btn xs has-die" data-a="rest" data-k="wounds" data-id="${p.id}" ${dis}>${DIE_SVG}Curare ferite</button><button class="btn xs has-die" data-a="rest" data-k="stress" data-id="${p.id}" ${dis}>${DIE_SVG}Ricomporsi</button>
   <button class="btn xs has-die" data-a="rest" data-k="armor" data-id="${p.id}" ${dis}>${DIE_SVG}Riparare armatura</button><button class="btn xs" data-a="rest" data-k="prep" data-id="${p.id}" ${dis}>Prepararsi</button></div>`}).join("")}
  <div class="xsmall muted">Curare ferite: 1d4+1 PF · Ricomporsi: 1d4+1 Stress · Riparare armatura: 1d4+1 slot · Prepararsi: +1 Speranza (+2 a testa se insieme).</div>
- <div class="row small"><button class="btn xs" data-a="rest-group">Prepararsi insieme (+2 Speranza a chi ha mosse libere)</button><button class="btn xs" data-a="rest-reset">Nuovo riposo</button></div>
- <div class="row"><button class="btn fear has-die" data-a="downtime" ${S.flags.rest?"disabled":""}>${DIE_SVG}Benefici del GM: +1d4 Paura${S.counter.on?", Contatore +2":""}</button>${S.counter.on?`<button class="btn" data-a="skip-rest" ${S.flags.rest?"disabled":""}>Saltano il riposo</button>`:""}</div></div>`},
+ <div class="row small"><button class="btn xs" data-a="rest-group">Prepararsi insieme (+2 Speranza a chi ha mosse libere)</button><button class="btn xs" data-a="rest-reset">Nuovo riposo</button></div></div>`},
  {id:"rituale",t:"Il Rituale del Rinnovo",f:F.rituale,html:()=>`
  ${read(`<p>Quando siete pronti, l'Arcanista dà inizio al rituale. Il suo corpo e la pietra del sigillo iniziano a brillare, e grida ultraterrene risuonano dai boschi mentre le creature vicine percepiscono l'energia arcana.</p>`)}
  <p>Piazza <b>5 Scheletri Antichi</b> e <b>2 Eroi Dimenticati</b> ai margini della radura, a distanza Lontana. Finché ci sono meno di 8 scheletri, se un giocatore tira con Paura, spendi quella Paura per la Vendetta degli Antichi Dèi. Altrimenti spendi Paura per turni extra in cui attacchi l'Arcanista.</p>
  
  <h4>Il rituale termina</h4>
  ${read(`<p>Un'onda di magia riduce in polvere tutti i nemici rimasti.</p><p>L'Arcanista Fuocobianco vi ringrazia, ma vi esorta a riportare a casa la pietra il prima possibile… perché ora gli Antichi Dèi lo sanno di sicuro.</p>`,"Quando il conto arriva a zero")}
- ${read(`<p>Lancia un incantesimo che vi trasforma tutti in libellule con la testa umanoide. «L'insetto più veloce della natura, con qualche miglioria mia. Dovrebbe aiutarvi a tornare a casa. Buona fortuna, e salutatemi il piccolo Emeris!»</p>`,"Quando i giocatori accettano")}
- <div class="row"><button class="btn pri" data-a="ritual-end" ${S.flags.ritualDone?"disabled":""}>Il rituale è completo${S.counter.on?"":" (Contatore a 15)"}</button><button class="btn" data-a="goact" data-k="5">Atto V →</button></div>`}
+ ${read(`<p>Lancia un incantesimo che vi trasforma tutti in libellule con la testa umanoide. «L'insetto più veloce della natura, con qualche miglioria mia. Dovrebbe aiutarvi a tornare a casa. Buona fortuna, e salutatemi il piccolo Emeris!»</p>`,"Quando i giocatori accettano")}`}
 ],
 '5':()=>[
  {id:"finale",t:"La città sotto assedio",f:F.finale,html:()=>{const bp=pcById(S.flags.bargain);return `
@@ -1058,7 +1062,7 @@ const SECTIONS={
  ["fh","Fallimento con Speranza","I PNG da proteggere sono morti. Una cerimonia acclama i PG come eroi, con un minuto di silenzio per chi non ce l'ha fatta."],
  ["sf","Successo con Paura","I PNG da proteggere sono feriti ma vivi. Un rivale odiato dai PG viene acclamato per aver protetto re Emeris: il suo rango sale."],
  ["sh","Successo con Speranza","I PNG da proteggere sono salvi. I PG sono acclamati come eroi e re Emeris offre ricompense."],
- ["crit","Successo critico","Come un successo con Speranza, ma un rivale odiato dai giocatori ha trovato la fine durante l'attacco."]].map(([k,t,x])=>`<div class="out-card ${f===k?"hit":""}"><b>${t}</b>${f===k?` <span class="chip hope">risultato</span>`:""}<div class="small">${x}</div></div>`).join("")}</div>
+ ["crit","Successo critico","Come un successo con Speranza, ma un rivale odiato dai giocatori ha trovato la fine durante l'attacco."]].filter(([k])=>!f||f===k).map(([k,t,x])=>`<div class="out-card ${f===k?"hit":""}"><b>${t}</b>${f===k?` <span class="chip hope">risultato</span>`:""}<div class="small">${x}</div></div>`).join("")}</div>${f?"":pendNote("Concludi la scena 11 con l'esito del tiro finale: qui resterà solo il finale giusto.")}
  <h4>PNG di casa da proteggere</h4><p class="small muted">Annota i PNG nominati nelle domande di background all'inizio della partita.</p>${homeEditor()}`}}
 ]};
 const ENC={
@@ -1074,7 +1078,7 @@ const ENC={
    <button class="btn fear" data-a="complication" ${S.fear<1?"disabled":""}>Spendi 1 Paura: complicazione casuale</button>
    <div class="muted">Il prossimo tiro d'azione dei PG ha svantaggio.</div></div></div>
  `,reset:()=>{S.chase={d:3,t:3}}},
- "1:prezzo":{t:"Lo Strixwolf",k:"Combattimento",d:"Lo spirito guardiano pretende la vita di Luna. Si può combattere o trattare un patto fatato.",sug:[["strixwolf",1],["luna",1]]},
+ "1:prezzo":{hide:()=>S.flags.luna==="dead",t:"Lo Strixwolf",k:"Combattimento",d:"Lo spirito guardiano pretende la vita di Luna. Si può combattere o trattare un patto fatato.",sug:[["strixwolf",1],["luna",1]]},
  "2:emissari":{t:"Emissari degli Antichi Dèi",k:"Combattimento",d:"Gli Scarshade vogliono sapere cosa contiene il pacco. Finché i PG non attaccano, lo Scavo nella Memoria non fa danni.",sug:()=>[["scarshade",nShades(),`${nShades()}× Scarshade`],["scarshade",1]]},
  "2.5:fiume":{t:"Il fiume Orfanatore",k:"Ambientale",d:"Traversata · Diff 13. Annegamento, Risacca e tesori sommersi.",env:()=>{const dr=S.pcs.filter(p=>p.cond.includes("Annegamento"));return `
  <div><div class="lab">Traversata — a zero il gruppo attraversa (non con qualcuno che annega)</div>${pips(4,S.river.t,"cd","river-pip")} <span class="mono">${S.river.t}</span></div>
@@ -1093,7 +1097,7 @@ const ENC={
   <div><div class="lab">Tesori sommersi</div><p>Un PG che annega può fare un tiro di <b>Forza</b> per recuperare un oggetto dal fondo:</p>
    <ul class="tight">${TREASURES.map((t,i)=>`<li><b>${t[0]}</b>: ${t[1]} ${S.loot.includes(t[0])?`<span class="chip ok">recuperato</span>`:`<button class="btn xs" data-a="loot" data-i="${i}">Recuperato</button>`}</li>`).join("")}</ul></div>
  `},reset:()=>{S.river.t=4;S.undertow=null;S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}},
- "3:arcanista":{t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
+ "3:arcanista":{hide:()=>luna(),t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
  "3:anziano":{t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",env:()=>`<div class="grid2">
  <div class="panel stack"><h4>Convincere l'Anziano ${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}</h4>
   <div><div class="lab">Stress dell'Anziano — a 4 si arrende</div>${pips(4,S.elderSt||0,"st","elder-st")}</div>
@@ -1123,6 +1127,58 @@ function devEnc(dv){
   return {t:p.titolo||"Incontro improvvisato",k:kind,d:esc(p.posta||"Scena improvvisata."),
    devSug:()=>(p.avv.length||p.png.length)?`<div class="row">${p.avv.map((r,i)=>`<button class="btn xs ok" data-a="dev-foe" data-id="${dv.id}" data-i="${i}">${(parseInt(r[2])||1)>1?parseInt(r[2])+"× ":""}${esc(r[0])}</button>`).join("")}${p.png.map((r,i)=>`<button class="btn xs ok" data-a="dev-npc" data-id="${dv.id}" data-i="${i}">${esc(r[0])} · PNG</button>`).join("")}</div>`:""};
 }
+const pendNote=t=>`<div class="pend"><span aria-hidden="true">⟡</span> ${t}</div>`;
+function branch(which,a,b,msg){
+  if(which==="a")return a[1];if(which==="b")return b[1];
+  return `${pendNote(msg)}<details class="alt"><summary>${a[0]}</summary><div class="stack" style="gap:10px">${a[1]}</div></details><details class="alt"><summary>${b[0]}</summary><div class="stack" style="gap:10px">${b[1]}</div></details>`;
+}
+function ritualEnd(){S.flags.ritualDone=true;S.ritual.v=0;S.foes.filter(f=>f.where==="4:rituale").forEach(f=>f.dead=true);log("Il rituale è completo: i nemici rimasti diventano polvere","ok");if(!S.counter.on)counterStart(15,"fine del rituale")}
+const OUT={
+ "1:inizio":{q:()=>"Il gruppo è arrivato da Luna in tempo?",opts:()=>[
+  {k:"saved",l:"Sì, in tempo",d:"Luna è viva: nella radura c'è lo Strixwolf.",sug:S.chase.d===0,apply:()=>{S.flags.luna="saved"}},
+  {k:"dead",l:"No, troppo tardi",d:"Luna è morta: restano il suo corpo e la fede nuziale.",sug:S.chase.t===0&&S.chase.d>0,apply:()=>{S.flags.luna="dead"}}]},
+ "1:prezzo":{q:()=>luna()?"Com'è finita con lo Strixwolf?":"Il gruppo ha preso l'anello di Luna?",opts:()=>luna()?[
+  {k:"pact",l:"Un PG accetta il patto fatato",d:"Luna è salva; lo Strixwolf reclamerà il suo momento più avanti.",pick:true,apply:pc=>{S.flags.bargain=pc;S.flags.bargainUsed=false}},
+  {k:"fight",l:"Lo Strixwolf è respinto",d:"Luna è salva e accompagna il gruppo.",apply:()=>{S.flags.bargain=""}},
+  {k:"lunadies",l:"Luna muore nello scontro",d:"«Il prezzo è pagato». Il gruppo prende la sua fede.",apply:()=>{S.flags.luna="dead";S.flags.ring=true}}]:[
+  {k:"ring",l:"Sì, hanno l'anello",d:"La fede indicherà Octavio, ad Hush.",apply:()=>{S.flags.ring=true}},
+  {k:"noring",l:"No",d:"Ad Hush dovranno cercare da soli.",apply:()=>{S.flags.ring=false}}]},
+ "2:emissari":{q:()=>"Gli Scarshade hanno scoperto cos'è il pacco?",opts:()=>[
+  {k:"yes",l:"Sì, hanno letto il Saggio di Corte",d:`Parte il Contatore d'Assalto: 15 + Scarshade sopravvissuti (${aliveShades()}).`,apply:()=>{S.flags.learned=true;if(!S.counter.on)counterStart(15+aliveShades(),"gli Scarshade sanno del pacco")}},
+  {k:"no",l:"No, non hanno scoperto nulla",d:"Nessuna urgenza: si prosegue verso Hush.",apply:()=>{S.flags.learned=false}}]},
+ "2:polvere":{q:()=>S.flags.learned?"Quale strada prende il gruppo?":"Il gruppo riprende il cammino",opts:()=>S.flags.learned?[
+  {k:"taken",l:"La scorciatoia",d:"Si passa per il fiume Orfanatore (Atto II½).",apply:()=>{S.flags.shortcut="taken"}},
+  {k:"skip",l:"Il sentiero lungo",d:"Contatore +2, si arriva a Hush (Atto III).",apply:()=>{S.flags.shortcut="skip";counterAdd(2,"nessuna scorciatoia")}}]:[
+  {k:"go",l:"Proseguono verso Hush",d:"Atto III.",apply:()=>{S.flags.shortcut="skip"}}]},
+ "2.5:fiume":{q:()=>"Com'è andata la traversata?",opts:()=>[{k:"ok",l:"Il gruppo ha attraversato",d:S.loot.length?"Bottino: "+S.loot.join(", "):"Nessun tesoro recuperato.",apply:()=>{S.pcs.forEach(p=>p.cond=p.cond.filter(c=>c!=="Annegamento"))}}]},
+ "3:arcanista":{q:()=>"Come trovano la strada per l'Arcanista?",opts:()=>luna()?[{k:"luna",l:"Luna li guida",d:"Si passa subito all'Anziano.",apply:()=>{}}]:[
+  {k:"search",l:"Cercano nel villaggio",d:S.counter.on?"Qualche minuto di ricerca: Contatore +1.":"Trovano Fidget, Lausa e Octavio.",apply:()=>{S.flags.searchTick=true;counterAdd(1,"ricerca nel villaggio")}}]},
+ "3:anziano":{q:()=>"Com'è finita con l'Anziano?",opts:()=>[
+  {k:"yield",l:"L'Anziano cede",d:"Indica la villa dell'Arcanista.",apply:()=>{S.flags.elderDone=true}},
+  ...(S.flags.bargain&&!S.flags.bargainUsed?[{k:"pact",l:`Il patto si compie: ${pcName(S.flags.bargain)} attacca un paesano`,d:"Il patto è riscosso: nel tiro finale non ci sarà sabotaggio.",apply:()=>{S.flags.bargainUsed=true;S.flags.elderDone=true}}]:[])]},
+ "4:villa":{q:()=>S.counter.on?"Dove si farà il rituale?":"L'Arcanista è pronta a partire",opts:()=>S.counter.on?[
+  {k:"here",l:"Nel villaggio",d:"I paesani accettano: niente viaggio, si risparmia tempo.",apply:()=>{S.flags.ritualHere=true}},
+  {k:"vale",l:"Nella Valle Aperta",d:"Contatore +1.",apply:()=>{S.flags.ritualHere=false;counterAdd(1,"rituale alla Valle Aperta")}}]:[
+  {k:"vale",l:"Partono per la Valle Aperta",d:"",apply:()=>{S.flags.ritualHere=false}}]},
+ "4:preparare":{q:()=>"Il gruppo ha riposato?",opts:()=>[
+  {k:"rest",l:"Sì, riposo breve",d:`Il GM ottiene 1d4 Paura${S.counter.on?" e il Contatore sale di 2":""}.`,apply:()=>{if(!S.flags.rest){const x=rollShow("1d4","Paura del GM per il riposo");addFear(x.total,"riposo breve");counterAdd(2,"riposo breve");S.flags.rest="taken"}}},
+  ...(S.counter.on?[{k:"skip",l:"No, aiutano con la preparazione",d:"Nessun recupero, nessun tempo perso.",apply:()=>{S.flags.rest="skipped"}}]:[])]},
+ "4:rituale":{q:()=>"Il rituale è completo?",opts:()=>[{k:"done",l:"Sì, il sigillo è rinnovato",d:S.counter.on?"I nemici rimasti diventano polvere.":"I nemici diventano polvere e parte il Contatore a 15.",sug:S.ritual.v===0,apply:()=>{if(!S.flags.ritualDone)ritualEnd()}}]},
+ "5:finale":{q:()=>"Com'è andato il tiro finale?",opts:()=>[["crit","Successo critico"],["sh","Successo con Speranza"],["sf","Successo con Paura"],["fh","Fallimento con Speranza"],["ff","Fallimento con Paura"]].map(([k,l])=>({k,l,d:"",sug:S.flags.final===k,apply:()=>{S.flags.final=k}}))}
+};
+const SKIP={"2.5:fiume":()=>S.flags.learned===false?"gli Scarshade non sanno nulla: nessuna scorciatoia":S.flags.shortcut==="skip"?"il gruppo ha preso il sentiero lungo":null};
+const skipReason=key=>SKIP[key]?SKIP[key]():null;
+let endAsk=null;
+function sceneFoot(key){
+  const done=!!S.scn[key],o=OUT[key];
+  if(done)return `<div class="scn-foot"><span class="chip ok">Scena conclusa</span>${S.out[key]?`<span class="small">Esito: <b>${esc(S.out[key])}</b></span>`:""}<button class="btn xs" data-a="scn-reopen" data-k="${key}">Riapri</button></div>`;
+  if(endAsk===key&&o){const opts=o.opts(),pick=opts.some(x=>x.pick);
+    return `<div class="outq"><span class="lab">Com'è finita la scena?</span><b>${o.q()}</b>
+     ${pick?`<label class="inl small">PG che accetta il patto <select id="out-pc" aria-label="PG che accetta il patto">${pcOptions("","— scegli —")}</select></label>`:""}
+     <div class="outs">${opts.map(x=>`<button class="outopt ${x.sug?"sug":""}" data-a="scn-out" data-k="${key}" data-o="${x.k}"><b>${esc(x.l)}</b>${x.d?`<span>${esc(x.d)}</span>`:""}${x.sug?`<i>suggerito dal tracker</i>`:""}</button>`).join("")}</div>
+     <div class="row"><button class="btn xs" data-a="scn-end-no">Annulla</button><span class="xsmall muted">L'esito aggiorna i flag della campagna e le scene successive.</span></div></div>`}
+  return `<div class="scn-foot"><button class="btn pri" data-a="scn-end-ask" data-k="${key}">Concludi scena</button><span class="xsmall muted">Ti chiederò com'è finita e adatterò le scene successive.</span></div>`;
+}
 function homeEditor(){return `<div class="stack">${S.home.map((h,i)=>`<div class="row"><input type="text" id="hn${i}" data-f="home-n" data-i="${i}" value="${esc(h.n)}" placeholder="Nome PNG" style="flex:0 1 180px" aria-label="Nome PNG"><input type="text" id="ht${i}" data-f="home-note" data-i="${i}" value="${esc(h.note)}" placeholder="Legame, alleato o rivale" style="flex:1 1 200px" aria-label="Legame"><button class="btn xs" data-a="home-del" data-i="${i}" aria-label="Rimuovi">×</button></div>`).join("")}<div><button class="btn xs" data-a="home-add">+ PNG</button></div></div>`}
 
 /* ================= scene improvvisate con Claude ================= */
@@ -1147,10 +1203,9 @@ function parseDev(raw){
 }
 function sceneNum(act,id){let n=0;for(const a of ACTS)for(const s of SECTIONS[a.id]()){n++;if(a.id===act&&s.id===id)return n}return "?"}
 function nextScene(act,id){
-  const secs=SECTIONS[act](),i=secs.findIndex(s=>s.id===id);
-  if(secs[i+1])return {act,s:secs[i+1],n:sceneNum(act,secs[i+1].id)};
-  const na=ACTS[ACTS.findIndex(a=>a.id===act)+1];
-  if(na){const s=SECTIONS[na.id]()[0];return {act:na.id,s,n:sceneNum(na.id,s.id),actN:na.n}}
+  const all=[];for(const a of ACTS)for(const s of SECTIONS[a.id]())all.push({act:a.id,s,actN:a.n});
+  const i=all.findIndex(x=>x.act===act&&x.s.id===id);
+  for(let j=i+1;j<all.length;j++){const x=all[j];if(skipReason(x.act+":"+x.s.id))continue;return {act:x.act,s:x.s,n:sceneNum(x.act,x.s.id),actN:x.act!==act?x.actN:null}}
   return null;
 }
 function devPrompt(where,userText,kind,excludeId){
@@ -1339,16 +1394,18 @@ function renderParty(){
 }
 function renderAct(){
   const a=ACTS.find(x=>x.id===S.act),secs=SECTIONS[S.act]();
-  const cur=secs.find(s=>!S.scn[S.act+":"+s.id]);
+  const cur=secs.find(s=>!S.scn[S.act+":"+s.id]&&!skipReason(S.act+":"+s.id));
   return `<div class="act-h"><span class="num">ATTO ${a.n}</span><h2>${a.t}</h2><span class="small muted">${secs.filter(s=>S.scn[S.act+":"+s.id]).length}/${secs.length} scene concluse</span></div>`+secs.map(s=>{
     const key=S.act+":"+s.id,n=sceneNum(S.act,s.id),done=!!S.scn[key];
+    const why=skipReason(key);
+    if(why)return `<div class="scn skipped"><span class="scn-n">Scena ${n}</span><span class="scn-k">${s.f.k}</span><span class="scn-t">${s.t}</span><span class="chip">saltata</span><span class="small muted">${why}</span></div>`;
     const open=scnOpen.has(key)?scnOpen.get(key):!done;
     const devs=S.devs.filter(x=>x.where===key);
     const chainDone=done&&(!devs.length||devs[devs.length-1].done);
     return `<details class="scn ${done?"done":""} ${cur===s?"cur":""}" data-scn="${key}" id="scn-${S.act.replace(".","_")}-${s.id}" ${open?"open":""}><summary><span class="scn-n">Scena ${n}</span><span class="scn-k">${s.f.k}</span><span class="scn-t">${s.t}</span>${done?`<span class="chip ok">conclusa</span>`:cur===s?`<span class="chip hope">in corso</span>`:""}</summary>
     <div class="scn-b">${frameHTML(s.f)}${s.html()}
-    ${ENC[key]?encounterCard(key,ENC[key]):""}
-    <div class="scn-foot">${done?`<span class="chip ok">Scena conclusa</span><button class="btn xs" data-a="scn-reopen" data-k="${key}">Riapri</button>`:`<button class="btn pri" data-a="scn-done" data-k="${key}">Concludi scena</button><span class="xsmall muted">Alla fine della scena potrai proseguire come previsto o improvvisarne una nuova.</span>`}</div>
+    ${ENC[key]&&!(ENC[key].hide&&ENC[key].hide())?encounterCard(key,ENC[key]):""}
+    ${sceneFoot(key)}
     </div></details>
     ${devs.map((dv,i)=>devCard(dv,`${n}.${i+1}`)).join("")}
     ${chainDone?sceneEnd(S.act,s,key,devs.length?`${n}.${devs.length}`:n,devs.length?"imp-end":""):""}`;
@@ -1473,7 +1530,7 @@ const A={
  "ritual-pip":o=>upd(()=>{const n=+o.i+1;S.ritual.v=S.ritual.v===n?n-1:n}),
  "ritual-spawn":()=>upd(()=>{spawn("skeleton",5,"4:rituale");spawn("hero",2,"4:rituale")}),
  vengeance:()=>upd(()=>{addFear(-1,"Vendetta degli Antichi Dèi");spawn("skeleton",Math.min(2,10-aliveSkel()),"4:rituale")}),
- "ritual-end":()=>upd(()=>{S.flags.ritualDone=true;S.ritual.v=0;S.foes.filter(f=>f.where==="4:rituale").forEach(f=>f.dead=true);log("Il rituale è completo: i nemici rimasti diventano polvere","ok");if(!S.counter.on)counterStart(15,"fine del rituale")}),
+ "ritual-end":()=>upd(ritualEnd),
  "home-add":()=>upd(()=>S.home.push({n:"",note:""})),
  "home-del":o=>upd(()=>S.home.splice(+o.i,1)),
  // dadi
@@ -1530,7 +1587,13 @@ const A={
  "cd-add":()=>{const n=document.getElementById("cd-name").value.trim();if(!n){toast("Dai un nome al conto");return}const m=clamp(+document.getElementById("cd-max").value||4,1,12);upd(()=>S.cds.push({id:uid(),name:n,max:m,v:m,note:""}))},
  // generatore
  "scn-done":o=>upd(()=>{S.scn[o.k]=true;scnOpen.delete(o.k);const [a,id]=o.k.split(":");log(`Scena ${sceneNum(a,id)} conclusa`);setTimeout(()=>document.getElementById("end-"+o.k.replace(/[:.]/g,"_"))?.scrollIntoView({behavior:"smooth",block:"center"}),0)}),
- "scn-reopen":o=>upd(()=>{delete S.scn[o.k];scnOpen.set(o.k,true)}),
+ "scn-reopen":o=>upd(()=>{delete S.scn[o.k];scnOpen.set(o.k,true);toast("Scena riaperta: gli effetti dell'esito precedente restano applicati")}),
+ "scn-end-ask":o=>{if(OUT[o.k]){endAsk=o.k;render()}else A["scn-done"](o)},
+ "scn-end-no":()=>{endAsk=null;render()},
+ "scn-out":o=>{const opt=OUT[o.k].opts().find(x=>x.k===o.o);if(!opt)return;let pc="";
+  if(opt.pick){pc=document.getElementById("out-pc")?.value||"";if(!pc){toast("Scegli il PG che accetta il patto");return}}
+  upd(()=>{opt.apply(pc);S.out[o.k]=opt.l+(pc?` (${pcName(pc)})`:"");S.scn[o.k]=true;endAsk=null;scnOpen.delete(o.k);const [a,id]=o.k.split(":");log(`Scena ${sceneNum(a,id)} conclusa: ${S.out[o.k]}`,"ok")});
+  setTimeout(()=>document.getElementById("end-"+o.k.replace(/[:.]/g,"_"))?.scrollIntoView({behavior:"smooth",block:"center"}),30)},
  "scn-fold":o=>{scnOpen.set(o.k,false);render()},
  "scn-next":o=>{const [a,id]=o.k.split(":");scnOpen.set(o.k,true);if(a!==S.act){A.goact({k:a})}else{render()}setTimeout(()=>document.getElementById(`scn-${a.replace(".","_")}-${id}`)?.scrollIntoView({behavior:"smooth",block:"start"}),30)},
  "dev-done":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);dv.done=true;scnOpen.delete("dev:"+dv.id);log(`Scena improvvisata conclusa: ${parseDev(dv.raw).titolo||""}`);setTimeout(()=>document.getElementById("end-"+dv.where.replace(/[:.]/g,"_"))?.scrollIntoView({behavior:"smooth",block:"center"}),0)}),
