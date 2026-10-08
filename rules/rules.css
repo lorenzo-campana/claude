@@ -1,0 +1,29 @@
+/* regole: cheat sheet, bot del manuale */
+.rv-nav{display:flex;gap:3px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:999px;align-self:flex-start;flex-wrap:wrap}
+.rv-nav button{border:0;background:transparent;border-radius:999px;padding:6px 16px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap;transition:background .2s,color .2s}
+.rv-nav button:hover{color:var(--ink);background:var(--paper)}
+.rv-nav button.on{background:var(--ink);color:var(--paper)}
+.rv-jump{display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:5;padding:6px 0;background:var(--bg)}
+@media (max-width:700px){.rv-jump{position:static}}
+.rv-g{margin:10px 0 0;padding-bottom:4px;border-bottom:2px solid var(--line);scroll-margin-top:110px}
+.rv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px;align-items:start}
+.rv-card{display:flex;flex-direction:column;gap:8px}
+.rv-card.wide{grid-column:1/-1}
+.rv-card>h4{margin:0}
+.rv-card ul,.rv-card p{margin:0}
+.rv-ref{margin-top:auto;padding-top:6px;border-top:1px dotted var(--line);font-size:.7rem;letter-spacing:.03em;color:var(--muted)}
+.rv-t{width:100%;border-collapse:collapse;font-size:.88rem}
+.rv-t th{text-align:left;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:3px 8px 3px 0;border-bottom:1px solid var(--line)}
+.rv-t td{padding:4px 8px 4px 0;border-bottom:1px dotted var(--line);vertical-align:top}
+.rv-t tr:last-child td{border-bottom:0}
+.rbot .rb-in{flex:1 1 280px;padding:7px 12px;font-size:1rem}
+.rb-qq{margin:0}
+.rb-a{border-left:3px solid var(--ask);background:var(--ask-soft);border-radius:0 var(--r) var(--r) 0;padding:10px 14px;font-size:1.02rem;line-height:1.5}
+.rb-q{font-family:var(--f-read);font-style:italic;quotes:none}
+.rb-ref{font-weight:800;color:var(--ask);font-family:var(--f-mono);font-size:.78rem;padding:0 1px}
+.rb-srcs{display:flex;flex-direction:column;gap:6px}
+.rb-src{border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+.rb-src.cited{border-color:var(--ask);box-shadow:inset 3px 0 0 var(--ask)}
+.rb-src>summary{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;padding:7px 12px;cursor:pointer;font-size:.9rem}
+.rb-ext{margin-left:auto;font-size:.74rem;font-weight:700;color:var(--ask)}
+.rb-txt{padding:2px 14px 12px;font-size:.88rem;line-height:1.5;border-top:1px dotted var(--line);padding-top:8px;color:var(--ink)}
