@@ -49,3 +49,17 @@
 
 .eq-detail-card .eq-art:has(img){flex-basis:230px;min-height:230px}.eq-detail-card .eq-owned-card .cd-i:has(img){min-height:500px}
 .pl-head h1{font-family:'DH Eveleth',var(--f-display);font-weight:400;text-transform:uppercase;letter-spacing:0;line-height:1.05}
+.pl-pregens{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+.pl-pg{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;border:1px solid var(--line);border-top:4px solid var(--pl-accent);border-radius:12px;overflow:hidden;background:var(--paper);transition:transform .15s,box-shadow .15s}
+.pl-pg:hover{transform:translateY(-3px);box-shadow:0 8px 20px -8px #0005}.pl-pg:focus-visible{outline:2px solid var(--pl-accent);outline-offset:2px}
+.pl-pg-img{display:grid;place-items:center;background:url(diario/parchment-a.jpg) center/cover,#eadcb8}
+.pl-pg>.pl-pg-img{height:150px}.pl-pg-img img{mix-blend-mode:multiply}.pl-pg>.pl-pg-img img{height:140px;width:auto;max-width:100%;object-fit:contain}
+.pl-pg-t{display:flex;flex-direction:column;gap:2px;padding:8px 10px 10px}.pl-pg-t b{font:15px/1.15 var(--f-display)}.pl-pg-t small{font-size:.74rem;color:var(--muted)}
+.pl-pgd{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:22px;align-items:start}
+.pl-pgd>.pl-pg-img{padding:12px;border-radius:12px;border:1px solid var(--line)}.pl-pgd>.pl-pg-img img{max-height:340px;width:auto;max-width:100%}
+.pl-pgd-stats,.pl-pgd-traits{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}
+.pl-pgd-stats>div,.pl-pgd-traits>div{display:flex;flex-direction:column;align-items:center;border:1px solid var(--line);border-radius:8px;padding:6px 2px;background:var(--paper)}
+.pl-pgd-stats b,.pl-pgd-traits b{font:20px/1.1 var(--f-display)}.pl-pgd-stats span,.pl-pgd-traits span{font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.pl-pgd-stats>div{border-color:var(--pl-accent)}
+.pl-pgd-list{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:12px 0;font-size:.9rem}.pl-pgd-list dt{color:var(--muted);font-weight:700;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;padding-top:2px}.pl-pgd-list dd{margin:0}
+@media(max-width:640px){.pl-pgd{grid-template-columns:1fr}.pl-pgd-list{grid-template-columns:1fr;gap:2px}.pl-pgd-list dd{margin-bottom:8px}}
