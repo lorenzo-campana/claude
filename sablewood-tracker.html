@@ -37,6 +37,34 @@ button,input,select,textarea{font:inherit;color:inherit}
 .muted{color:var(--muted)} .small{font-size:.86rem} .xsmall{font-size:.76rem}
 .lab{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
 
+/* temi scelti dalle Opzioni: valgono sulla pagina e sulle anteprime ([data-skin] su qualsiasi elemento) */
+:root[data-skin="bosco"],[data-skin="bosco"]{--bg:#e4e7df; --paper:#f1f2ec; --ink:#1d2421; --muted:#5b665f; --line:#c3cabf; --moss:#3f5a48; --moss-soft:#d5dfd3; --hope:#a8741a; --hope-soft:#f0e2c2; --fear:#6a3f86; --fear-soft:#e5daee; --blood:#9b2f2a; --blood-soft:#f1d9d5; --ok:#2f6d43; --plate:#2a312d; --plate-fg:#f1f2ec; --ask:#1f6f8b; --ask-soft:#d9ebf0; color-scheme:light}
+:root[data-skin="notte"],[data-skin="notte"]{--bg:#111613; --paper:#192019; --ink:#e3e7df; --muted:#9aa69c; --line:#2f3a32; --moss:#8fb79a; --moss-soft:#24332a; --hope:#e0aa4c; --hope-soft:#3a2e17; --fear:#b892d6; --fear-soft:#2f2339; --blood:#e0786e; --blood-soft:#3b1f1c; --ok:#7cc293; --plate:#cfd6cc; --plate-fg:#161b18; --ask:#6cc3df; --ask-soft:#14303a; color-scheme:dark}
+:root[data-skin="pergamena"],[data-skin="pergamena"]{--bg:#e8dcc2; --paper:#f4ead3; --ink:#2b2118; --muted:#6e5d48; --line:#cdb994; --moss:#7a2e22; --moss-soft:#ead0c2; --hope:#9a6a12; --hope-soft:#f1dfb5; --fear:#5a3a78; --fear-soft:#e3d6e8; --blood:#9b2f2a; --blood-soft:#f0d3c9; --ok:#4d6b2f; --plate:#3a2a1e; --plate-fg:#f4ead3; --ask:#2c5f73; --ask-soft:#d6e4e3; color-scheme:light}
+:root[data-skin="brace"],[data-skin="brace"]{--bg:#15100c; --paper:#1f1813; --ink:#f0e4d2; --muted:#b09a82; --line:#3b2e24; --moss:#e08a4a; --moss-soft:#3a2516; --hope:#f0b44c; --hope-soft:#3b2c12; --fear:#c48ad8; --fear-soft:#32223a; --blood:#ef7a6a; --blood-soft:#3d1c18; --ok:#9cc27a; --plate:#e9d6bb; --plate-fg:#1a130e; --ask:#7cc6d8; --ask-soft:#15303a; color-scheme:dark}
+:root[data-skin="abisso"],[data-skin="abisso"]{--bg:#0c141d; --paper:#122030; --ink:#dde8f2; --muted:#93a8bb; --line:#26394c; --moss:#5fb8c9; --moss-soft:#143140; --hope:#e6b450; --hope-soft:#33290f; --fear:#a99af0; --fear-soft:#26214a; --blood:#ef7f7a; --blood-soft:#3a1b1e; --ok:#78c79a; --plate:#c9dbe8; --plate-fg:#0e1822; --ask:#7fd0ea; --ask-soft:#12303d; color-scheme:dark}
+:root[data-skin="arcano"],[data-skin="arcano"]{--bg:#e6e2ee; --paper:#f4f2f8; --ink:#211c2c; --muted:#625a73; --line:#c9c1d8; --moss:#4f3f86; --moss-soft:#dcd5ee; --hope:#a26d12; --hope-soft:#f1e2c0; --fear:#8a2f6e; --fear-soft:#f0d8e8; --blood:#a2302e; --blood-soft:#f2d8d6; --ok:#2f6d50; --plate:#2a2438; --plate-fg:#f4f2f8; --ask:#1f6f8b; --ask-soft:#d9ebf0; color-scheme:light}
+:root[data-skin="contrasto"],[data-skin="contrasto"]{--bg:#ffffff; --paper:#ffffff; --ink:#000000; --muted:#2e2e2e; --line:#000000; --moss:#00552b; --moss-soft:#d8eedf; --hope:#7a4c00; --hope-soft:#ffe9b8; --fear:#4b0f7a; --fear-soft:#eadcf7; --blood:#9a0000; --blood-soft:#ffd9d9; --ok:#00552b; --plate:#000000; --plate-fg:#ffffff; --ask:#00506b; --ask-soft:#d6eef7; color-scheme:light}
+/* ---- opzioni ---- */
+.opt-btn{display:inline-flex;align-items:center;gap:6px}
+.opt-btn svg{width:16px;height:16px}
+.opt{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:16px;background:rgba(10,12,11,.55);animation:lbFade .18s ease both}
+.opt-p{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:10px;width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.35);animation:sbIn .25s both}
+.opt-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper);z-index:1}
+.opt-b{padding:16px 18px 20px;display:flex;flex-direction:column;gap:10px}
+.skins{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:10px}
+.skin{all:unset;box-sizing:border-box;cursor:pointer;border:2px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;background:var(--paper);transition:transform .15s,border-color .15s}
+.skin:hover{transform:translateY(-2px)}
+.skin:focus-visible{outline:2px solid var(--hope);outline-offset:2px}
+.skin.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+.sk{background:var(--bg);color:var(--ink);padding:10px;display:flex;flex-direction:column;gap:6px;height:92px;position:relative}
+.sk-bar{height:10px;border-radius:3px;background:var(--plate)}
+.sk-card{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:6px;display:flex;flex-direction:column;gap:5px}
+.sk-l{height:5px;border-radius:3px;background:var(--ink);width:70%} .sk-l.m{background:var(--muted);width:45%}
+.sk-d{display:flex;gap:4px;margin-top:auto} .sk-d i{width:10px;height:10px;border-radius:50%}
+.sk.auto{background:linear-gradient(135deg,#e4e7df 50%,#111613 50%)}
+.skin-n{padding:6px 10px 8px;font-weight:700;font-size:.9rem;display:flex;justify-content:space-between;gap:6px;align-items:center}
+.skin-n small{font-weight:400;color:var(--muted);font-size:.74rem}
 /* barra */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}
 @media (max-width:700px){.bar{position:static}}
@@ -807,6 +835,7 @@ body.hub .party-pane,body.hub #rollpop,body.hub #dice-fx{display:none!important}
 <div class="toast" id="toast" hidden></div>
 <div id="alt"></div>
 <div id="diary" hidden></div>
+<div id="opt"></div>
 
 <script>
 /* ================= personaggi pregenerati (Quickstart Adventure) ================= */
@@ -2194,7 +2223,7 @@ function renderBar(){
   <nav class="acts">${ACTS.map((a,i)=>`<button class="${a.id===S.act?"on":i<ai?"done":""}" data-a="goact" data-k="${a.id}" title="${a.t}">${a.n}</button>`).join("")}</nav>
   <div class="bar-r"><span class="save-ind" id="save-ind">Salvato su ${saveWhere}</span>
    ${resetAsk?`<span class="small">Azzerare tutta la partita?</span><button class="btn xs bad" data-a="reset-yes">Sì, azzera</button><button class="btn xs" data-a="reset-no">No</button>`:`<button class="tgl" data-a="reset">Reimposta</button>`}
-<button class="tgl ${UI.party?"on":""}" data-a="party-toggle">Gruppo</button></div>`;
+<button class="tgl ${UI.party?"on":""}" data-a="party-toggle">Gruppo</button>${optBtn()}</div>`;
 }
 function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")
   +(S.tab==="scontro"||S.foes.length||S.cds.length?`<button class="sub ${S.tab==="scontro"?"on":""}" data-a="tab" data-k="scontro" title="Tutti gli scontri in corso e i conti alla rovescia">Scontri e conti</button>`:"")}
@@ -2833,13 +2862,43 @@ function renderHub(){
   let lastId=null;try{lastId=localStorage.getItem(ACTIVEKEY)}catch(e){}
   const last=campById(lastId);
   document.getElementById("bar").innerHTML=`<div class="brand"><b>Tavolo del GM</b><span>DAGGERHEART · CAMPAGNE E STRUMENTI</span></div>
-   <div class="bar-r">${last?`<button class="btn ok" data-a="camp-open" data-k="${esc(last.id)}">Riprendi «${esc(last.name)}»</button>`:""}</div>`;
+   <div class="bar-r">${last?`<button class="btn ok" data-a="camp-open" data-k="${esc(last.id)}">Riprendi «${esc(last.name)}»</button>`:""}${optBtn()}</div>`;
   document.getElementById("tabs").innerHTML=secs.map(s=>`<button class="${s===sec?"on":""}" data-a="hub-sec" data-k="${s.k}">${s.l}</button>`).join("");
   document.getElementById("page").classList.remove("party");document.getElementById("party").innerHTML="";
   document.getElementById("view").innerHTML=`<div class="stack">${sec.html()}</div>`;
   sec.after?.();
 }
+
+/* ---- opzioni: per ora i temi, salvati in questo browser ---- */
+const SKINS=[["auto","Automatico","segue il sistema"],["bosco","Bosco","chiaro"],["notte","Notte","scuro"],["pergamena","Pergamena","chiaro"],
+ ["brace","Brace","scuro"],["abisso","Abisso","scuro"],["arcano","Arcano","chiaro"],["contrasto","Alto contrasto","chiaro"]];
+const SKINKEY="dh-skin";
+let skin="auto";try{const k=localStorage.getItem(SKINKEY);if(SKINS.some(x=>x[0]===k))skin=k}catch(e){}
+function applySkin(){if(skin==="auto")document.documentElement.removeAttribute("data-skin");else document.documentElement.setAttribute("data-skin",skin)}
+applySkin();
+const OPT_ICON=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>`;
+const optBtn=()=>`<button class="tgl opt-btn" data-a="opt-open" aria-haspopup="dialog" title="Opzioni della pagina">${OPT_ICON}Opzioni</button>`;
+let optOpen=false;
+function renderOpt(){
+  const el=document.getElementById("opt");
+  if(!optOpen){el.innerHTML="";return}
+  el.innerHTML=`<div class="opt" data-a="opt-close" data-bg="1"><div class="opt-p" data-a="opt-stay" role="dialog" aria-modal="true" aria-labelledby="opt-t" tabindex="-1">
+   <div class="opt-h"><h3 id="opt-t">Opzioni</h3><button class="btn xs" data-a="opt-close" aria-label="Chiudi le opzioni">×</button></div>
+   <div class="opt-b"><div class="lab">Tema</div><p class="small muted" style="margin:0">Cambia i colori di tutta la pagina. La scelta resta salvata in questo browser.</p>
+    <div class="skins" role="radiogroup" aria-label="Tema">${SKINS.map(([k,n,d])=>`<button class="skin ${skin===k?"on":""}" role="radio" aria-checked="${skin===k}" data-a="skin" data-k="${k}">
+     <span class="sk ${k==="auto"?"auto":""}" ${k==="auto"?"":`data-skin="${k}"`}>${k==="auto"?"":`<span class="sk-bar"></span><span class="sk-card"><span class="sk-l"></span><span class="sk-l m"></span><span class="sk-d"><i style="background:var(--moss)"></i><i style="background:var(--hope)"></i><i style="background:var(--fear)"></i><i style="background:var(--blood)"></i></span></span>`}</span>
+     <span class="skin-n">${n}<small>${d}</small></span></button>`).join("")}</div></div></div></div>`;
+}
+let optReturn=null;
+const OPTACT={
+ "opt-open":(o,b)=>{optOpen=true;optReturn=b;renderOpt();document.querySelector("#opt .skin.on")?.focus()},
+ "opt-close":(o,b,e)=>{optOpen=false;renderOpt();optReturn?.isConnected?optReturn.focus():document.querySelector(".opt-btn")?.focus()},
+ skin:o=>{skin=o.k;try{localStorage.setItem(SKINKEY,skin)}catch(e){}applySkin();renderOpt();document.querySelector(`#opt .skin[data-k="${skin}"]`)?.focus()}
+};
+document.addEventListener("keydown",e=>{if(optOpen&&e.key==="Escape"){e.preventDefault();e.stopPropagation();OPTACT["opt-close"]()}},true);
+addEventListener("storage",e=>{if(e.key===SKINKEY){skin=SKINS.some(x=>x[0]===e.newValue)?e.newValue:"auto";applySkin();renderOpt()}});
 const HUBACT={
+ ...OPTACT,
  "go-home":()=>goHome(),
  "hub-sec":o=>{APP.sec=o.k;APP.newOpen=false;APP.renaming=APP.delAsk=null;if(o.k==="carte")CV.still=false;saveRoute();render();top0()},
  "camp-open":o=>openCampaign(o.k),
