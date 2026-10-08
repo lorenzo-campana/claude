@@ -82,6 +82,18 @@ button,input,select,textarea{font:inherit;color:inherit}
 .party-tab svg{width:20px;height:20px}
 .party-tab span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
 .party-tab[hidden],body.alt .party-tab,body.hub .party-tab{display:none}
+/* incontri: ambiente a tutta larghezza, partecipanti in fila */
+.enc-grid:not(.with-pcs){display:flex;flex-wrap:wrap;align-items:stretch}
+.enc-grid:not(.with-pcs)>.mc{flex:0 1 250px;min-width:min(100%,220px)}
+.enc-grid:not(.with-pcs)>.mc.pick{flex:1 1 320px}
+.enc-grid:not(.with-pcs)>.enc-plus{flex:0 0 64px;min-height:0;align-self:stretch}
+.ec-wide .ec-h{flex-wrap:wrap;gap:8px}
+.ec-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ec-sep{width:1px;align-self:stretch;background:var(--line);margin:0 4px}
+.ec-trk{display:inline-flex;gap:3px}
+@media (max-width:600px){.enc-grid:not(.with-pcs)>.mc{flex:1 1 100%}.ec-sep{display:none}}
+.ec-trk i{width:14px;height:14px;border:1.5px solid var(--blood);border-radius:3px}
+.ec-trk i.on{background:var(--blood)}
 /* barra */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}
 @media (max-width:700px){.bar{position:static}}
@@ -1649,9 +1661,7 @@ function encounterCard(key,def,forceOpen){
      ${encResetAsk===key?`<button class="btn bad" data-a="enc-reset" data-k="${key}">Conferma reimposta</button><button class="btn xs" data-a="enc-reset-no">No</button>`:`<button class="btn" data-a="enc-reset-ask" data-k="${key}">Reimposta</button>`}
      ${forceOpen?"":`<button class="btn" data-a="enc-toggle" data-k="${key}">Chiudi</button>`}</div></div>
    ${def.rules?`<details class="enc-rules" data-k="${key}" ${rulesOpen.get(key)===false?"":"open"}><summary><span class="lab">Regole dell'incontro</span></summary>${def.rules()}</details>`:""}
-   ${def.env&&parts.length&&parts.length<=2 // pochi partecipanti: le loro card accanto all'ambiente invece che in una riga quasi vuota
-    ?`<div class="enc-split"><div class="enc-env">${def.env()}</div><div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div></div>`
-    :`${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div>`}
+   ${def.env?`<div class="enc-env">${def.env()}</div>`:""}<div class="enc-grid ${def.k==="Ambientale"?"with-pcs":""}">${def.k==="Ambientale"?S.pcs.map(pcMini).join(""):""}${parts.map(miniCard).join("")}${pick}</div>
    ${sel?foeSheet(sel):""}
   </div>`;
 }
@@ -1902,9 +1912,12 @@ const ENC={
    <li><b>Attacco di Gruppo (1 Paura):</b> metti sotto i riflettori tutti i paesani a distanza Vicina da un bersaglio. Vanno in Mischia e fanno un solo tiro d'attacco; se colpisce, 2 danni fisici ciascuno, sommati.</li>
    <li><b>Se un PG attacca un paesano:</b> l'Anziano può usare <i>CI SARÀ PACE</i> (2 Paura, una volta sola): tutti i PG perdono tutta la Speranza e segnano 2d4 Stress.</li>
    ${S.flags.bargain&&!S.flags.bargainUsed?`<li><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno.</li>`:""}</ul>`,env:()=>`<div class="env-compact">
- <div class="ec"><div class="ec-h"><span class="lab">Convincere l'Anziano · cede a 4 Stress (${S.elderSt||0}/4)</span>${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}${luna()?`<span class="chip hope">Luna garantisce: vantaggio</span>`:""}</div>
-  <div class="row small">${rb("Presenza · Diff 15",{t:"dual",trait:4,diff:15,adv:luna()?1:"",label:"Convincere l'Anziano"})}<button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button></div>
-  <div class="row small"><select id="elderpc" data-f="elderpc" aria-label="PG che ha fallito">${pcOptions(elderPick,"PG che fallisce")}</select><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: PG +1 Stress</button></div></div>
+ <div class="ec ec-full ec-wide"><div class="ec-h"><span class="lab">Convincere l'Anziano · cede a 4 Stress</span>
+   <span class="ec-trk" aria-label="Stress dell'Anziano ${S.elderSt||0} su 4">${Array.from({length:4},(_,i)=>`<i class="${i<(S.elderSt||0)?"on":""}"></i>`).join("")}</span><b class="mono small">${S.elderSt||0}/4</b>
+   ${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}${luna()?`<span class="chip hope">Luna garantisce: vantaggio</span>`:""}</div>
+  <div class="ec-row small">${rb("Presenza · Diff 15",{t:"dual",trait:4,diff:15,adv:luna()?1:"",label:"Convincere l'Anziano"})}
+   <span class="ec-sep" aria-hidden="true"></span><button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button>
+   <span class="ec-sep" aria-hidden="true"></span><select id="elderpc" data-f="elderpc" aria-label="PG che ha fallito">${pcOptions(elderPick,"PG che fallisce")}</select><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: PG +1 Stress</button></div></div>
  ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small ec-full"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
  </div>`,sug:[["elder",1],["villager",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
  "4:rituale":{
