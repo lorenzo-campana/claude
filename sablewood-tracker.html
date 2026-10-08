@@ -843,16 +843,13 @@ body.hub .page{padding-top:22px}
 .nc input,.nc select{padding:6px 9px}
 .camps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
 .camp{border:1px solid var(--line);background:var(--paper);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;animation:sbIn .25s ease-out both;animation-delay:calc(var(--i,0)*25ms)}
-.camp-cov{position:relative;display:block;width:100%;height:150px;border:0;padding:0;background:#eadcb8 url("diario/parchment-a.jpg") center/150% auto;cursor:pointer;overflow:hidden;box-shadow:inset 0 0 22px rgba(122,78,28,.35)}
-.camp-cov img{width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;opacity:.92;transition:transform .5s ease-out,opacity .3s}
+.camp-cov{position:relative;display:block;width:100%;height:150px;border:0;padding:0;background:var(--plate);cursor:pointer;overflow:hidden}
+.camp-cov img{width:100%;height:100%;object-fit:cover;filter:sepia(.3) contrast(1.05);opacity:.9;transition:transform .5s ease-out,opacity .3s}
 .camp-cov:hover img,.camp-cov:focus-visible img{transform:scale(1.015);opacity:1}
 .camp-act{position:absolute;left:10px;bottom:10px;background:var(--plate);color:var(--plate-fg);font-family:var(--f-display);padding:1px 11px;border-radius:999px}
 .camp-b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
 .camp-b h3{overflow-wrap:anywhere}
 .camp-b .row input{flex:1;min-width:0}
-.camp-pcs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.camp-pc{gap:5px;padding:1px 9px;border-color:var(--moss);color:var(--moss);background:var(--moss-soft)}
-.camp-pc small{font-weight:600;opacity:.8}
 .camp-f{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:auto;padding-top:10px}
 .mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
 .mod{border:1px dashed var(--line);border-radius:var(--r);padding:12px 14px}
@@ -2945,16 +2942,9 @@ function campCard(c,i){
    <div class="small muted">${esc(m.name)}${act?` · ${esc(act.t)}`:""}</div>
    <div class="xsmall">${s.done?`${s.done} ${s.done===1?"scena giocata":"scene giocate"}`:"Nessuna scena giocata"} · Paura ${s.fear??"—"}${s.final?` · Finale: ${FINAL_IT[s.final]||s.final}`:""}</div>
    <div class="xsmall muted">${c.updated?"Ultima sessione: "+fmtDay(c.updated):"Creata il "+fmtDay(c.created||Date.now())}</div>
-   ${campRosterBadges(c.id)}
    <div class="camp-f">${del?`<span class="small">Eliminare la campagna e tutti i suoi dati?</span><button class="btn xs bad" data-a="camp-del" data-k="${esc(c.id)}">Sì, elimina</button><button class="btn xs" data-a="camp-del-no">No</button>`
     :`<button class="btn ok" data-a="camp-open" data-k="${esc(c.id)}">Apri</button><button class="btn xs" data-a="camp-ren" data-k="${esc(c.id)}">Rinomina</button><button class="btn xs" data-a="camp-del-ask" data-k="${esc(c.id)}">Elimina</button>`}</div>
   </div></article>`;
-}
-// personaggi che i giocatori hanno iscritto a questa campagna, come badge sulla card
-function campRosterBadges(id){
-  const rows=(typeof PL!=="undefined"&&Array.isArray(PL.roster)?PL.roster:[]).filter(x=>x.campaign===id&&x.character);
-  if(!rows.length)return "";
-  return `<div class="camp-pcs" aria-label="Personaggi iscritti dai giocatori">${rows.map(r=>`<span class="chip camp-pc" title="Iscritto da un giocatore">${esc(r.character.name)}<small>${esc(r.character.className||"")}${r.character.level?" · L"+r.character.level:""}</small></span>`).join("")}</div>`;
 }
 function renderCampaigns(){
   const list=[...CAMPS.list].sort((a,b)=>Math.max(b.updated||0,b.created||0)-Math.max(a.updated||0,a.created||0));
@@ -2964,7 +2954,7 @@ function renderCampaigns(){
    <label><span class="lab">Avventura</span><select id="nc-mod">${Object.entries(MODULES).map(([k,m])=>`<option value="${k}">${esc(m.name)}</option>`).join("")}</select></label>
    <div class="row"><button class="btn ok" data-a="camp-create">Crea e apri</button><button class="btn" data-a="camp-new-no">Annulla</button></div></div>`:""}
   ${list.length?`<div class="camps">${list.map(campCard).join("")}</div>`:`<p class="cd-empty">Nessuna campagna, per ora. Creane una per cominciare.</p>`}
-  <div class="stack" style="gap:8px"><h3>Avventure disponibili</h3><p class="small muted" style="margin:0">Ogni nuova campagna parte da un'avventura.</p>
+  ${renderPlayerRoster()}<div class="stack" style="gap:8px"><h3>Avventure disponibili</h3><p class="small muted" style="margin:0">Ogni nuova campagna parte da un'avventura.</p>
   <div class="mods">${Object.entries(MODULES).map(([k,m])=>`<div class="mod"><b>${esc(m.name)}</b><div class="xsmall muted">${esc(m.sys)}</div><p class="small">${esc(m.blurb)}</p></div>`).join("")}</div></div>`;
 }
 
