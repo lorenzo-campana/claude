@@ -3022,12 +3022,15 @@ const HUBACT={
 const CDOM=[
  {k:"Arcana",it:"Arcano",c:"#875994"},{k:"Blade",it:"Lama",c:"#b23f36"},{k:"Bone",it:"Ossa",c:"#7f8b97"},
  {k:"Codex",it:"Codex",c:"#315f94"},{k:"Grace",it:"Grazia",c:"#c64e8b"},{k:"Midnight",it:"Mezzanotte",c:"#4b4f66"},
- {k:"Sage",it:"Saggio",c:"#257e47"},{k:"Splendor",it:"Splendore",c:"#c99a0a"},{k:"Valor",it:"Valore",c:"#d67327"}];
+ {k:"Sage",it:"Saggio",c:"#257e47"},{k:"Splendor",it:"Splendore",c:"#c99a0a"},{k:"Valor",it:"Valore",c:"#d67327"},{k:"Dread",it:"Terrore",c:"#63478c"}];
 // i due domini di ogni classe (indici di CDOM)
 const CCLS={Bard:{it:"Bardo",d:[4,3]},Druid:{it:"Druido",d:[6,0]},Guardian:{it:"Guardiano",d:[8,1]},Ranger:{it:"Ranger",d:[2,6]},
- Rogue:{it:"Ladro",d:[5,4]},Seraph:{it:"Serafino",d:[7,8]},Sorcerer:{it:"Stregone",d:[0,5]},Warrior:{it:"Guerriero",d:[1,2]},Wizard:{it:"Mago",d:[3,7]}};
-const CTYPE={s:"Spell",a:"Ability",g:"Grimoire"},CCAT={d:"Dominio",s:"Sottoclasse",c:"Comunità",a:"Stirpe"},CTIER=["","Fondamento","Specializzazione","Maestria"];
-// d=dominio, l=livello, t=tipo, r=costo di richiamo, k=posizione nel livello · i=numero dell'immagine in carte/
+ Rogue:{it:"Ladro",d:[5,4]},Seraph:{it:"Serafino",d:[7,8]},Sorcerer:{it:"Stregone",d:[0,5]},Warrior:{it:"Guerriero",d:[1,2]},Wizard:{it:"Mago",d:[3,7]},
+ Assassin:{it:"Assassino",d:[1,5]},Brawler:{it:"Brawler",d:[2,8]},Warlock:{it:"Warlock",d:[9,4]},Witch:{it:"Strega",d:[6,9]}};
+const CTYPE={s:"Spell",a:"Ability",g:"Grimoire"},CCAT={d:"Dominio",s:"Sottoclasse",c:"Comunità",a:"Stirpe",t:"Trasformazione"},CTIER=["","Fondamento","Specializzazione","Maestria"];
+const CBOOK={core:"Daggerheart",hf:"Hope & Fear"};
+// d=dominio, l=livello, t=tipo, r=costo di richiamo, k=posizione nel livello · hf=numero Hope & Fear
+// i identifica ogni carta nella galleria; le carte originali conservano gli identificativi 0-269.
 const CARDS=[
 {i:0,n:"Rune Ward",c:"d",d:0,l:1,t:"s",r:0,k:0},
 {i:3,n:"Unleash Chaos",c:"d",d:0,l:1,t:"s",r:1,k:1},
@@ -3298,26 +3301,97 @@ const CARDS=[
 {i:268,n:"Katari",c:"a"},
 {i:263,n:"Orc",c:"a"},
 {i:266,n:"Ribbet",c:"a"},
-{i:269,n:"Simiah",c:"a"}
+{i:269,n:"Simiah",c:"a"},
+// Hope & Fear: i=270-332, hf=1-63 come nel PDF.
+{"i":270,"n":"Executioners Guild","c":"s","hf":1,"cl":"Assassin","tier":1},
+{"i":271,"n":"Executioners Guild","c":"s","hf":2,"cl":"Assassin","tier":2},
+{"i":272,"n":"Executioners Guild","c":"s","hf":3,"cl":"Assassin","tier":3},
+{"i":273,"n":"Poisoners Guild","c":"s","hf":4,"cl":"Assassin","tier":1},
+{"i":274,"n":"Poisoners Guild","c":"s","hf":5,"cl":"Assassin","tier":2},
+{"i":275,"n":"Poisoners Guild","c":"s","hf":6,"cl":"Assassin","tier":3},
+{"i":276,"n":"Juggernaut","c":"s","hf":7,"cl":"Brawler","tier":1},
+{"i":277,"n":"Juggernaut","c":"s","hf":8,"cl":"Brawler","tier":2},
+{"i":278,"n":"Juggernaut","c":"s","hf":9,"cl":"Brawler","tier":3},
+{"i":279,"n":"Martial Artist","c":"s","hf":10,"cl":"Brawler","tier":1},
+{"i":280,"n":"Martial Artist","c":"s","hf":11,"cl":"Brawler","tier":2},
+{"i":281,"n":"Martial Artist","c":"s","hf":12,"cl":"Brawler","tier":3},
+{"i":282,"n":"Pact of the Endless","c":"s","hf":13,"cl":"Warlock","tier":1},
+{"i":283,"n":"Pact of the Endless","c":"s","hf":14,"cl":"Warlock","tier":2},
+{"i":284,"n":"Pact of the Endless","c":"s","hf":15,"cl":"Warlock","tier":3},
+{"i":285,"n":"Pact of the Wrathful","c":"s","hf":16,"cl":"Warlock","tier":1},
+{"i":286,"n":"Pact of the Wrathful","c":"s","hf":17,"cl":"Warlock","tier":2},
+{"i":287,"n":"Pact of the Wrathful","c":"s","hf":18,"cl":"Warlock","tier":3},
+{"i":288,"n":"Hedge","c":"s","hf":19,"cl":"Witch","tier":1},
+{"i":289,"n":"Hedge","c":"s","hf":20,"cl":"Witch","tier":2},
+{"i":290,"n":"Hedge","c":"s","hf":21,"cl":"Witch","tier":3},
+{"i":291,"n":"Moon","c":"s","hf":22,"cl":"Witch","tier":1},
+{"i":292,"n":"Moon","c":"s","hf":23,"cl":"Witch","tier":2},
+{"i":293,"n":"Moon","c":"s","hf":24,"cl":"Witch","tier":3},
+{"i":294,"n":"Aetheris","c":"a","hf":25},
+{"i":295,"n":"Earthkin","c":"a","hf":26},
+{"i":296,"n":"Emberkin","c":"a","hf":27},
+{"i":297,"n":"Gnome","c":"a","hf":28},
+{"i":298,"n":"Skykin","c":"a","hf":29},
+{"i":299,"n":"Tidekin","c":"a","hf":30},
+{"i":300,"n":"Duneborne","c":"c","hf":31},
+{"i":301,"n":"Freeborne","c":"c","hf":32},
+{"i":302,"n":"Frostborne","c":"c","hf":33},
+{"i":303,"n":"Hearthborne","c":"c","hf":34},
+{"i":304,"n":"Reborne","c":"c","hf":35},
+{"i":305,"n":"Warborne","c":"c","hf":36},
+{"i":306,"n":"Demigod","c":"t","hf":37},
+{"i":307,"n":"Ghost","c":"t","hf":38},
+{"i":308,"n":"Reanimated","c":"t","hf":39},
+{"i":309,"n":"Shapeshifter","c":"t","hf":40},
+{"i":310,"n":"Vampire","c":"t","hf":41},
+{"i":311,"n":"Werewolf","c":"t","hf":42},
+{"i":312,"n":"Blighting Strike","c":"d","hf":43,"d":9,"l":1,"t":"s","r":1,"k":0},
+{"i":313,"n":"Umbral Veil","c":"d","hf":44,"d":9,"l":1,"t":"s","r":1,"k":1},
+{"i":314,"n":"Voice of Dread","c":"d","hf":45,"d":9,"l":1,"t":"s","r":0,"k":2},
+{"i":315,"n":"Hideous Retribution","c":"d","hf":46,"d":9,"l":2,"t":"s","r":2,"k":0},
+{"i":316,"n":"Siphon Essence","c":"d","hf":47,"d":9,"l":2,"t":"s","r":1,"k":1},
+{"i":317,"n":"Shared Trauma","c":"d","hf":48,"d":9,"l":3,"t":"s","r":1,"k":0},
+{"i":318,"n":"Terrify","c":"d","hf":49,"d":9,"l":3,"t":"s","r":1,"k":1},
+{"i":319,"n":"Chains of Affliction","c":"d","hf":50,"d":9,"l":4,"t":"s","r":2,"k":0},
+{"i":320,"n":"Summon Horror","c":"d","hf":51,"d":9,"l":4,"t":"s","r":2,"k":1},
+{"i":321,"n":"Dire Strike","c":"d","hf":52,"d":9,"l":5,"t":"s","r":2,"k":0},
+{"i":322,"n":"Spectral Mist","c":"d","hf":53,"d":9,"l":5,"t":"s","r":0,"k":1},
+{"i":323,"n":"Darkfire","c":"d","hf":54,"d":9,"l":6,"t":"s","r":2,"k":0},
+{"i":324,"n":"Jump Scare","c":"d","hf":55,"d":9,"l":6,"t":"s","r":1,"k":1},
+{"i":325,"n":"Dread-Touched","c":"d","hf":56,"d":9,"l":7,"t":"a","r":2,"k":0},
+{"i":326,"n":"Wall of Hunger","c":"d","hf":57,"d":9,"l":7,"t":"s","r":2,"k":1},
+{"i":327,"n":"Dark Army","c":"d","hf":58,"d":9,"l":8,"t":"s","r":2,"k":0},
+{"i":328,"n":"Eldritch Flesh","c":"d","hf":59,"d":9,"l":8,"t":"s","r":1,"k":1},
+{"i":329,"n":"Damnation","c":"d","hf":60,"d":9,"l":9,"t":"s","r":2,"k":0},
+{"i":330,"n":"Savor the Anguish","c":"d","hf":61,"d":9,"l":9,"t":"s","r":1,"k":1},
+{"i":331,"n":"Avatar of Terror","c":"d","hf":62,"d":9,"l":10,"t":"s","r":2,"k":0},
+{"i":332,"n":"Invoke Torment","c":"d","hf":63,"d":9,"l":10,"t":"s","r":2,"k":1}
 ];
-const CV={cat:new Set(),dom:new Set(),lvl:new Set(),typ:new Set(),cost:new Set(),tier:new Set(),grp:false,q:"",fold:innerWidth<700,still:false,open:null,list:[]};
+const CV={book:new Set(),cat:new Set(),dom:new Set(),lvl:new Set(),typ:new Set(),cost:new Set(),tier:new Set(),grp:false,q:"",fold:innerWidth<700,still:false,open:null,list:[]};
 const CNUM=["dom","lvl","cost","tier"];
 // URL immutabili delle immagini HD, utilizzabili anche nell'artifact di Claude.
 const CARD_ASSET_BASE="https://raw.githubusercontent.com/lorenzo-campana/sablewood/f5fdab0733ee558bf8c78530d7d17ab670c5991e/carte/";
-const cpad=i=>String(i).padStart(3,"0"),cimg=c=>`${CARD_ASSET_BASE}c${cpad(c.i)}.webp`;
-const cdomimg=d=>`${CARD_ASSET_BASE}dom${d}.webp`;
+const HF_ASSET_BASE="https://raw.githubusercontent.com/lorenzo-campana/sablewood/1bfc5d09130959e068b3b229258ecf9f5c8b56b6/carte-hope-fear/";
+const cpad=i=>String(i).padStart(3,"0"),cimg=c=>c.hf?`${HF_ASSET_BASE}hf${cpad(c.hf)}.webp`:`${CARD_ASSET_BASE}c${cpad(c.i)}.webp`;
+const cdomimg=d=>`${d===9?HF_ASSET_BASE:CARD_ASSET_BASE}dom${d}.webp`;
+const csource=c=>c.hf?"hf":"core",cbook=c=>CBOOK[csource(c)];
 const cnum=c=>82+21*c.d+(c.l===1?c.k:3+2*(c.l-2)+c.k);
 const cdoms=c=>c.c==="d"?[c.d]:c.c==="s"?CCLS[c.cl].d:[];
-const ccol=c=>c.c==="d"?CDOM[c.d].c:c.c==="s"?CDOM[CCLS[c.cl].d[0]].c:c.c==="c"?"#a8741a":"#3f5a48";
+const ccol=c=>c.c==="d"?CDOM[c.d].c:c.c==="s"?CDOM[CCLS[c.cl].d[0]].c:c.c==="c"?"#a8741a":c.c==="t"?"#765b82":"#3f5a48";
 const cfold=s=>String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
 const creduced=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
-function chay(c){return c._h||(c._h=cfold([c.n,c.cl||"",c.cl?CCLS[c.cl].it:"",...cdoms(c).flatMap(d=>[CDOM[d].k,CDOM[d].it]),c.c==="d"?CTYPE[c.t]+" "+({s:"incantesimo",a:"abilita",g:"grimorio"})[c.t]+" livello "+c.l:"",CCAT[c.c],c.tier?CTIER[c.tier]:""].join(" ")))}
+function chay(c){return c._h||(c._h=cfold([c.n,cbook(c),c.cl||"",c.cl?CCLS[c.cl].it:"",...cdoms(c).flatMap(d=>[CDOM[d].k,CDOM[d].it]),c.c==="d"?CTYPE[c.t]+" "+({s:"incantesimo",a:"abilita",g:"grimorio"})[c.t]+" livello "+c.l:"",CCAT[c.c],c.tier?CTIER[c.tier]:""].join(" ")))}
 function cpartyDoms(){const s=new Set();S.pcs.forEach(r=>String(P(r).dom||"").split(/[&,]/).map(x=>cfold(x.trim())).forEach(n=>{const i=CDOM.findIndex(d=>cfold(d.it)===n||cfold(d.k)===n);if(i>=0)s.add(i)}));return s}
-function cactive(){return CV.cat.size+CV.dom.size+CV.lvl.size+CV.typ.size+CV.cost.size+CV.tier.size+(CV.grp?1:0)+(CV.q.trim()?1:0)}
+function cactive(){return CV.book.size+CV.cat.size+CV.dom.size+CV.lvl.size+CV.typ.size+CV.cost.size+CV.tier.size+(CV.grp?1:0)+(CV.q.trim()?1:0)}
+const CCATORDER={d:0,s:1,c:2,a:3,t:4},CCLSORDER=Object.keys(CCLS);
+function cgalleryOrder(a,b){
+  return CCATORDER[a.c]-CCATORDER[b.c]||(a.c==="d"?a.d-b.d||a.l-b.l||a.k-b.k:a.c==="s"?CCLSORDER.indexOf(a.cl)-CCLSORDER.indexOf(b.cl):0);
+}
 function cardsFiltered(){
   const q=cfold(CV.q.trim()),pd=CV.grp?cpartyDoms():null;
   return CARDS.filter(c=>{
     const d=c.c==="d";
+    if(CV.book.size&&!CV.book.has(csource(c)))return false;
     if(CV.cat.size&&!CV.cat.has(c.c))return false;
     const ds=cdoms(c);
     if(CV.dom.size&&!ds.some(x=>CV.dom.has(x)))return false;
@@ -3327,13 +3401,14 @@ function cardsFiltered(){
     if(CV.cost.size&&!(d&&CV.cost.has(Math.min(c.r,3))))return false;
     if(CV.tier.size&&!(c.c==="s"&&CV.tier.has(c.tier)))return false;
     return !q||q.split(/\s+/).every(w=>chay(c).includes(w));
-  });
+  }).sort(cgalleryOrder);
 }
 const cchip=(g,v,label,extra="",cls="")=>{const on=g==="grp"?CV.grp:CV[g].has(CNUM.includes(g)?+v:v);return `<button type="button" class="cdc ${cls} ${on?"on":""}" data-a="cd-f" data-g="${g}" data-v="${v}" aria-pressed="${on}" ${extra}>${label}</button>`};
 function cardsFilters(){
   const n=cactive(),pd=cpartyDoms(),showTier=CV.cat.has("s")||CV.tier.size;
   const only=(CV.lvl.size||CV.typ.size||CV.cost.size)?`<p class="cd-note">Livello, tipo e costo valgono solo per le carte di dominio: le altre restano nascoste.</p>`:"";
   return `<details class="cd-f" ${CV.fold?"":"open"}><summary>Filtri ${n?`<span class="chip hope">${n} attiv${n===1?"o":"i"}</span>`:`<span class="small muted" style="font-weight:400">nessuno: vedi tutte le carte</span>`}</summary><div class="cd-fb">
+   <div class="cd-fg"><span class="lab">Manuale</span><div class="cd-cs">${Object.keys(CBOOK).map(k=>cchip("book",k,CBOOK[k])).join("")}</div></div>
    <div class="cd-fg"><span class="lab">Categoria</span><div class="cd-cs">${Object.keys(CCAT).map(k=>cchip("cat",k,CCAT[k])).join("")}</div></div>
    <div class="cd-fg"><span class="lab">Dominio</span><div class="cd-cs">${CDOM.map((d,i)=>cchip("dom",i,`<i style="--dc:${d.c}"></i>${d.k}`)).join("")}${APP.view!=="camp"?"":cchip("grp","1","Domini del gruppo",`title="${esc([...pd].map(i=>CDOM[i].k).join(", ")||"nessun dominio impostato")}"`,"grp")}</div></div>
    <div class="cd-fg"><span class="lab">Livello</span><div class="cd-cs">${Array.from({length:10},(_,i)=>cchip("lvl",i+1,i+1)).join("")}</div></div>
@@ -3350,7 +3425,7 @@ function cardsResults(list){
   if(!list.length)return `<div class="cd-empty"><b>Nessuna carta con questi filtri</b><span class="small muted">Prova a toglierne qualcuno.</span><button class="btn" data-a="cd-clear">Azzera i filtri</button></div>`;
   const by=k=>list.filter(c=>c.c===k),pl=(n)=>n===1?"carta":"carte";
   let h="";
-  for(let d=0;d<9;d++){
+  for(let d=0;d<CDOM.length;d++){
     const cs=by("d").filter(c=>c.d===d);if(!cs.length)continue;
     h+=`<section class="cds" style="--dc:${CDOM[d].c}"><header class="cds-h ${CV.still?"in":""}"><img class="cds-ic" src="${cdomimg(d)}" alt="" width="36" height="40"><h3>${CDOM[d].k}</h3><span class="cds-n">${cs.length} ${pl(cs.length)}</span></header><div class="cg">`;
     let L=0;cs.forEach(c=>{if(c.l!==L){L=c.l;h+=`<h4 class="cg-l ${CV.still?"in":""}">Livello ${L}</h4>`}h+=cardEl(c)});
@@ -3362,7 +3437,7 @@ function cardsResults(list){
     Object.keys(CCLS).forEach(k=>{const cs=sc.filter(c=>c.cl===k);if(!cs.length)return;h+=`<h4 class="cg-l ${CV.still?"in":""}">${CCLS[k].it} · ${CCLS[k].d.map(i=>CDOM[i].k).join(" e ")}</h4>`+cs.map(cardEl).join("")});
     h+="</div></section>";
   }
-  [["c","Comunità","Community"],["a","Stirpi","Ancestry"]].forEach(([k,t,en])=>{
+  [["c","Comunità","Community"],["a","Stirpi","Ancestry"],["t","Trasformazioni","Transformations"]].forEach(([k,t,en])=>{
     const cs=by(k);if(!cs.length)return;
     h+=`<section class="cds" style="--dc:${ccol(cs[0])}"><header class="cds-h ${CV.still?"in":""}"><h3>${t}</h3><span class="cds-en">${en}</span><span class="cds-n">${cs.length} ${pl(cs.length)}</span></header><div class="cg">${cs.map(cardEl).join("")}</div></section>`;
   });
@@ -3370,7 +3445,7 @@ function cardsResults(list){
 }
 function renderCards(){
   CV.list=cardsFiltered();
-  return `<div class="cards"><div class="cd-head"><h2>Carte</h2><p class="small muted">Le 270 carte del PDF: domini per livello, sottoclassi, comunità e stirpi. Tocca una carta per ingrandirla.</p></div>
+  return `<div class="cards"><div class="cd-head"><h2>Carte</h2><p class="small muted">Le ${CARDS.length} carte di Daggerheart e Hope &amp; Fear: domini per livello, sottoclassi, comunità, stirpi e trasformazioni. Tocca una carta per ingrandirla.</p></div>
   <div class="cd-top"><label class="cd-s"><span class="sr">Cerca una carta</span><input id="cd-q" type="search" placeholder="Cerca per nome, dominio, classe, tipo…" value="${esc(CV.q)}" autocomplete="off"></label>
    <button class="btn" data-a="cd-rand">Pesca una carta</button><button class="btn" id="cd-clr" data-a="cd-clear" ${cactive()?"":"disabled"}>Azzera filtri</button><span class="cd-n" id="cd-n">${CV.list.length} ${CV.list.length===1?"carta":"carte"}</span></div>
   <div id="cd-fl">${cardsFilters()}</div><div id="cd-res">${cardsResults(CV.list)}</div></div>`;
@@ -3425,6 +3500,7 @@ function lbHtml(c){
   const col=ccol(c),d=c.c==="d"?CDOM[c.d]:null,pos=CV.list.findIndex(x=>x.i===c.i),pd=cpartyDoms();
   const pills=c.c==="d"?[`<span class="dm">${d.k}</span>`,`<span>Livello ${c.l}</span>`,`<span>${CTYPE[c.t]}</span>`,`<span>Costo di richiamo ${c.r}</span>`,pd.has(c.d)?`<span class="pt">Dominio del gruppo</span>`:""]
     :c.c==="s"?[`<span class="dm">${CCLS[c.cl].it}</span>`,`<span>${CTIER[c.tier]}</span>`,...CCLS[c.cl].d.map(i=>`<span>${CDOM[i].k}</span>`)]:[`<span class="dm">${CCAT[c.c]}</span>`];
+  pills.push(`<span>${cbook(c)}</span>`);
   const sibs=c.c==="d"?CARDS.filter(x=>x.c==="d"&&x.d===c.d&&x.l===c.l&&x.i!==c.i):c.c==="s"?CARDS.filter(x=>x.c==="s"&&x.n===c.n&&x.i!==c.i):[];
   const back=c.c==="d"?`<img src="${cdomimg(c.d)}" alt="">`:`<span>${c.n.charAt(0)}</span>`;
   const eyebrow=c.c==="d"?`${d.k} · Livello ${c.l}`:c.c==="s"?`Sottoclasse · ${CCLS[c.cl].it}`:CCAT[c.c];
@@ -3432,7 +3508,7 @@ function lbHtml(c){
   ${CV.list.length>1?`<button class="lb-nav prev" data-a="cd-nav" data-k="-1" aria-label="Carta precedente">‹</button><button class="lb-nav next" data-a="cd-nav" data-k="1" aria-label="Carta successiva">›</button>`:""}
   <div class="lb-body" style="--dc:${col}" role="document"><div class="lb-stage"><div class="lb-card"><div class="lb-f"><img src="${cimg(c)}" alt="${esc(c.n)}"><span class="cd-glare"></span></div><div class="lb-b">${back}</div></div></div>
   <aside class="lb-info"><p class="lb-k">${eyebrow}</p><h2 class="lb-t">${esc(c.n)}</h2><div class="lb-p">${pills.join("")}</div>
-   ${c.c==="d"?`<p class="lb-f2">Carta ${cnum(c)} di 270 · ${c.l===1?"una delle 3 carte":"una delle 2 carte"} di livello ${c.l} del dominio.</p>`:`<p class="lb-f2">${c.c==="s"?`Carta di sottoclasse: ${CTIER[c.tier].toLowerCase()}.`:`Carta di ${CCAT[c.c].toLowerCase()}.`}</p>`}
+   ${c.hf?`<p class="lb-f2">Hope &amp; Fear · Carta ${c.hf} di 63.</p>`:c.c==="d"?`<p class="lb-f2">Daggerheart · Carta ${cnum(c)} di 270 · ${c.l===1?"una delle 3 carte":"una delle 2 carte"} di livello ${c.l} del dominio.</p>`:`<p class="lb-f2">${c.c==="s"?`Carta di sottoclasse: ${CTIER[c.tier].toLowerCase()}.`:`Carta di ${CCAT[c.c].toLowerCase()}.`}</p>`}
    ${sibs.length?`<div class="lb-sib"><span>${c.c==="d"?"Stesso dominio e livello":"Gli altri gradi"}</span><div class="lb-th">${sibs.map(x=>`<button type="button" data-a="cd-th" data-i="${x.i}" aria-label="${esc(x.n)}"><img src="${cimg(x)}" alt="" loading="lazy"></button>`).join("")}</div></div>`:""}
    <p class="lb-pos">${pos>=0?`${pos+1} di ${CV.list.length} con i filtri attuali · `:""}← → per scorrere · Esc per chiudere</p></aside></div>`;
 }
@@ -3502,7 +3578,7 @@ const CARDACT={
    else{const s=CV[o.g],v=CNUM.includes(o.g)?+o.v:o.v;s.has(v)?s.delete(v):s.add(v)}
    cardsPaint();
  },
- "cd-clear":()=>{["cat","dom","lvl","typ","cost","tier"].forEach(k=>CV[k].clear());CV.grp=false;CV.q="";const q=document.getElementById("cd-q");if(q)q.value="";cardsPaint()},
+ "cd-clear":()=>{["book","cat","dom","lvl","typ","cost","tier"].forEach(k=>CV[k].clear());CV.grp=false;CV.q="";const q=document.getElementById("cd-q");if(q)q.value="";cardsPaint()},
  "cd-open":(o,b)=>cardOpen(+o.i,b.querySelector(".cd-i")),
  "cd-close":()=>cardClose(),
  "cd-nav":o=>cardNav(+o.k),
