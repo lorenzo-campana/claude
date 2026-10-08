@@ -850,6 +850,9 @@ body.hub .page{padding-top:22px}
 .camp-b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
 .camp-b h3{overflow-wrap:anywhere}
 .camp-b .row input{flex:1;min-width:0}
+.camp-pcs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.camp-pcs .chip{font-size:.78rem;padding:1px 9px}
+.camp-pcs button.chip{cursor:pointer;background:var(--fear-soft)}
 .camp-f{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:auto;padding-top:10px}
 .mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
 .mod{border:1px dashed var(--line);border-radius:var(--r);padding:12px 14px}
@@ -2889,7 +2892,7 @@ function render(){
   if(hub)document.getElementById("party-tab").hidden=true;
   if(hub){renderHub();return}
   renderBar();renderTabs();renderParty();renderRoll();
-  document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct()+renderPlayerRoster(APP.camp):S.tab==="carte"?renderCards():S.tab==="scontro"?renderCombat():S.tab==="regole"?rulesView():S.tab==="schermo"?renderScreenCtl():renderDiary()}</div>`;
+  document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct():S.tab==="carte"?renderCards():S.tab==="scontro"?renderCombat():S.tab==="regole"?rulesView():S.tab==="schermo"?renderScreenCtl():renderDiary()}</div>`;
   if(S.tab==="carte")cardsAfterRender();if(S.tab==="regole")rulesAfter();
 }
 
@@ -2952,6 +2955,14 @@ function deleteCampaign(id){
 }
 const FINAL_IT={crit:"successo critico",sh:"successo con Speranza",sf:"successo con Paura",fh:"fallimento con Speranza",ff:"fallimento con Paura"};
 const fmtDay=t=>new Date(t).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"});
+// badge dei personaggi nella card: chi è già nel gruppo e chi si è iscritto e aspetta di essere aggiunto
+function campBadges(c){
+  const st=APP.camp===c.id?S:readState(campLocalKey(c.id)),pcs=st.pcs||[];
+  const joined=VIEW.canGM&&typeof PL!=="undefined"?PL.roster.filter(x=>x.campaign===c.id&&!pcs.some(p=>p.id===x.character.id)):[];
+  if(!pcs.length&&!joined.length)return "";
+  const nm=r=>{const q=Object.assign({},PREGEN[r.id]||{},r.over||{});return q.name||"PG"};
+  return `<div class="camp-pcs" aria-label="Personaggi">${pcs.map(r=>`<span class="chip ${r.playerOwner?"hope":""}" title="${r.playerOwner?"Giocato da un giocatore collegato":"Nel gruppo"}">${esc(nm(r))}</span>`).join("")}${joined.map(x=>`<button class="chip fear" data-pl="gm-add" data-id="${esc(x.id)}" title="Si è iscritto: tocca per aggiungerlo al gruppo">+ ${esc(x.character.name||"PG")}</button>`).join("")}</div>`;
+}
 function campCard(c,i){
   const m=MODULES[c.module]||{name:c.module,cover:""},s=c.sum||{},act=ACTS.find(a=>a.id===s.act),ren=APP.renaming===c.id,del=APP.delAsk===c.id;
   return `<article class="camp" style="--i:${i}">
@@ -2961,6 +2972,7 @@ function campCard(c,i){
    <div class="small muted">${esc(m.name)}${act?` · ${esc(act.t)}`:""}</div>
    <div class="xsmall">${s.done?`${s.done} ${s.done===1?"scena giocata":"scene giocate"}`:"Nessuna scena giocata"} · Paura ${s.fear??"—"}${s.final?` · Finale: ${FINAL_IT[s.final]||s.final}`:""}</div>
    <div class="xsmall muted">${c.updated?"Ultima sessione: "+fmtDay(c.updated):"Creata il "+fmtDay(c.created||Date.now())}</div>
+   ${campBadges(c)}
    <div class="camp-f">${del?`<span class="small">Eliminare la campagna e tutti i suoi dati?</span><button class="btn xs bad" data-a="camp-del" data-k="${esc(c.id)}">Sì, elimina</button><button class="btn xs" data-a="camp-del-no">No</button>`
     :`<button class="btn ok" data-a="camp-open" data-k="${esc(c.id)}">Apri</button><button class="btn xs" data-a="camp-ren" data-k="${esc(c.id)}">Rinomina</button><button class="btn xs" data-a="camp-del-ask" data-k="${esc(c.id)}">Elimina</button>`}</div>
   </div></article>`;
@@ -2973,7 +2985,7 @@ function renderCampaigns(){
    <label><span class="lab">Avventura</span><select id="nc-mod">${Object.entries(MODULES).map(([k,m])=>`<option value="${k}">${esc(m.name)}</option>`).join("")}</select></label>
    <div class="row"><button class="btn ok" data-a="camp-create">Crea e apri</button><button class="btn" data-a="camp-new-no">Annulla</button></div></div>`:""}
   ${list.length?`<div class="camps">${list.map(campCard).join("")}</div>`:`<p class="cd-empty">Nessuna campagna, per ora. Creane una per cominciare.</p>`}
-  ${renderPlayerRoster()}<div class="stack" style="gap:8px"><h3>Avventure disponibili</h3><p class="small muted" style="margin:0">Ogni nuova campagna parte da un'avventura.</p>
+  <div class="stack" style="gap:8px"><h3>Avventure disponibili</h3><p class="small muted" style="margin:0">Ogni nuova campagna parte da un'avventura.</p>
   <div class="mods">${Object.entries(MODULES).map(([k,m])=>`<div class="mod"><b>${esc(m.name)}</b><div class="xsmall muted">${esc(m.sys)}</div><p class="small">${esc(m.blurb)}</p></div>`).join("")}</div></div>`;
 }
 
@@ -4591,7 +4603,7 @@ async function plAction(a,o){const c=plCurrent();PL.error='';switch(a){
  case'rest-back':PL.rest.stage='swap';break;
  case'rest-finish':{const r=PL.rest;if(r.moves.some(x=>!x))throw Error('Scegli due downtime moves.');c.cards=plClone(r.work.cards);const results=[];for(const move of r.moves){const amount=r.type==='long'?99:d(4)+plTier(c.level);if(['hp','stress','armor'].includes(move)){if(move==='stress'&&c.companionData)c.counters.companionStress=Math.max(0,(c.counters.companionStress||0)-amount);c[move]=Math.max(0,c[move]-amount);results.push(move+' clear '+(amount===99?'all':amount))}if(move==='armor')c.equipmentState.effects=c.equipmentState.effects.filter(x=>x.source!=='Vitreous');if(move==='prepare'||move==='group')c.hope=clamp(c.hope+(move==='group'?2:1),0,plStats(c).hope);if(move==='tribute')c.counters.favor=Math.max(0,c.counters.favor+(plStats(c).traits[PL_TRAITS.indexOf(plSpell(c))]||0));if(move.startsWith('ally'))results.push(move+' clear '+(amount===99?'all':amount));if(move==='project')results.push('Project: resolve progress with GM')}if(r.type==='long'&&c.companionData&&c.counters.companionStress>=c.companionData.stress)c.counters.companionStress--;plResetCards(c,r.type==='long'?'long':'rest');c.shortRests=r.type==='long'?0:c.shortRests+1;plRecord(c,r.type+' rest · '+results.join(' · '));PL.modal=null;PL.rest=null;plSave(c);toast(results.join(' · ')||'Downtime completato');break}
  case'join':PL.id=o.id;PL.modal={kind:'join'};break;
- case'gm-add':{if(!VIEW.canGM)return;const row=PL.roster.find(x=>x.id===o.id);if(!row)throw Error('Personaggio non disponibile.');const state=APP.camp===row.campaign?S:readState(campLocalKey(row.campaign));if(!state.pcs.some(x=>x.id===row.character.id)){const pc=mkPC(Object.keys(PREGEN)[0]);pc.id=row.character.id;pc.over=plAdapter(row.character);pc.hp=row.character.hp;pc.st=row.character.stress;pc.hope=row.character.hope;pc.ar=row.character.armor;pc.cond=row.character.conditions||[];pc.playerOwner=row.owner;pc.playerAt=row.at;state.pcs.push(pc);PL.gmBase.set(pc.id,JSON.stringify([pc.hp,pc.st,pc.hope,pc.ar,pc.cond]));if(APP.camp===row.campaign)persist();else{state.savedAt=Date.now();localStorage.setItem(campLocalKey(row.campaign),JSON.stringify(state));if(userCol)await dbQueue(userCol.doc(campDocName(row.campaign)),{json:JSON.stringify(state),savedAt:state.savedAt})}toast('Personaggio aggiunto al gruppo')}break;}
+ case'gm-add':{if(!VIEW.canGM)return;const row=PL.roster.find(x=>x.id===o.id);if(!row)throw Error('Personaggio non disponibile.');const state=APP.camp===row.campaign?S:readState(campLocalKey(row.campaign));if(!state.pcs.some(x=>x.id===row.character.id)){const pc=mkPC(Object.keys(PREGEN)[0]);pc.id=row.character.id;pc.over=plAdapter(row.character);pc.hp=row.character.hp;pc.st=row.character.stress;pc.hope=row.character.hope;pc.ar=row.character.armor;pc.cond=row.character.conditions||[];pc.playerOwner=row.owner;pc.playerAt=row.at;state.pcs.push(pc);PL.gmBase.set(pc.id,JSON.stringify([pc.hp,pc.st,pc.hope,pc.ar,pc.cond]));if(APP.camp===row.campaign)persist();else{state.savedAt=Date.now();localStorage.setItem(campLocalKey(row.campaign),JSON.stringify(state));if(userCol)await dbQueue(userCol.doc(campDocName(row.campaign)),{json:JSON.stringify(state),savedAt:state.savedAt})}toast('Personaggio aggiunto al gruppo')}if(APP.view==='home'&&APP.sec==='campagne')render();break;}
  case'join-confirm':{if(VIEW.tdb){const row={id:plJoinKey(o.camp,c.id),campaign:o.camp,owner:PL.account,joined:true,character:plPublic(c),at:Date.now()};const ok=await dbQueue(VIEW.tdb.doc('tavolo/players/roster/'+row.id),{json:JSON.stringify(row)});if(!ok)throw Error('Iscrizione non riuscita: il personaggio è salvo nel tuo account. Riprova.');}const camp=PL.directory.find(x=>x.id===o.camp);if(!camp)throw Error('Campagna non più disponibile.');if(!c.campaigns.includes(camp.id))c.campaigns.push(camp.id);plRecord(c,'Joined '+camp.name);plSave(c);plWatchGM(c);toast('Personaggio condiviso con il master');break}
  case'leave':await plLeave(c,o.camp);plSave(c);break;
  case'refresh':if(PL.rosterRefresh)await PL.rosterRefresh();if(VIEW.tdb){const s=await VIEW.tdb.doc('tavolo/campagne').get();PL.directory=s.exists?JSON.parse(s.data().json):[]}else playerPublishCampaigns();break;
@@ -4608,7 +4620,6 @@ document.addEventListener('change',async e=>{const el=e.target;if(el.id==='pl-im
 document.addEventListener('input',e=>{const el=e.target;if(el.dataset.plFilter==='query'){PL.query=el.value;clearTimeout(plFilterTimer);plFilterTimer=setTimeout(()=>{const caret=el.selectionStart;plRender();const n=document.querySelector('[data-pl-filter="query"]');n?.focus();n?.setSelectionRange(caret,caret)},250);return}if(!el.dataset.plField||el.tagName==='SELECT'||el.type==='number')return;const w=el.dataset.plDraft?(PL.level?.work||PL.draft):plCurrent();if(w){plSet(w,el.dataset.plField,el.value);if(!PL.level)plSave(el.dataset.plDraft?null:w)}},true);
 document.addEventListener('keydown',e=>{if(CV.open!=null||!PL.modal)return;if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();plAction('close-modal',{});return}if(e.key==='Tab'){const els=[...document.querySelectorAll('.pl-dialog button,.pl-dialog input,.pl-dialog select,.pl-dialog textarea,.pl-dialog summary')].filter(x=>!x.disabled&&x.getClientRects().length),first=els[0],last=els.at(-1);if(e.shiftKey&&(document.activeElement===first||document.activeElement.matches('.pl-dialog'))){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
 addEventListener('storage',e=>{if(e.key===PL_DIR){try{PL.directory=JSON.parse(e.newValue)||[];plRenderIfVisible()}catch(x){}}if(e.key===PL_ROSTER){try{PL.roster=JSON.parse(e.newValue)||[];if(plReceiveRoster())persist();plRenderIfVisible()}catch(x){}}if(e.key===PL_KEY+':'+PL.account){try{plMerge(JSON.parse(e.newValue));plRenderIfVisible()}catch(x){}}if(e.key?.startsWith('dh-gm-status:')){const c=PL.chars.find(c=>c.campaigns.some(camp=>e.key==='dh-gm-status:'+plJoinKey(camp,c.id)));if(c){const m=JSON.parse(e.newValue);Object.assign(c,{hp:m.hp,stress:m.stress,hope:m.hope,armor:m.armor,conditions:m.conditions});plSave(c);plRenderIfVisible()}}});
-function renderPlayerRoster(camp){if(!VIEW.canGM)return '';const rows=PL.roster.filter(x=>!camp||x.campaign===camp);return `<section class="pl pl-box" style="margin-top:20px;padding:20px"><h3>Personaggi iscritti dai giocatori</h3>${rows.length?rows.map(row=>`<div class="pl-actions" style="margin-top:12px"><b>${esc(row.character.name)}</b><span class="pl-note">${esc(row.character.className)} · L${row.character.level} · ${esc(campById(row.campaign)?.name||row.campaign)}</span>${plBtn('gm-add','Aggiungi al gruppo',`data-id="${esc(row.id)}"`)}</div>`).join(''):'<p class="pl-note">I personaggi compariranno qui quando i giocatori si uniranno alle campagne.</p>'}</section>`;}
 plLoad();try{PL.directory=JSON.parse(localStorage.getItem(PL_DIR)||'[]');PL.roster=JSON.parse(localStorage.getItem(PL_ROSTER)||'[]')}catch(e){}
 
 /* Sablewood pregenerated characters, built on the same character model as the creator.
