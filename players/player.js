@@ -180,16 +180,16 @@ function plMorph(old,next){
 /* tiri con dadi 3D (stessa animazione della campagna): la logica gira subito, i dadi lanciati vengono registrati
    e riprodotti; la scheda si aggiorna solo a dadi fermi (PL.hold) così non lampeggia a metà lancio */
 function plFx(run){
- DREC=[];let rec;try{run()}finally{rec=DREC;DREC=null}
+ DREC=[];PL.hold=true;let rec;try{run()}catch(e){PL.hold=false;throw e}finally{rec=DREC;DREC=null}
  const faces=rec.filter(x=>[4,6,8,10,12,20].includes(x.s)).slice(0,8).map((x,i)=>({v:x.v,s:x.s,c:x.s===12&&i<2?(i?'f':'h'):'n'}));
- const text=PL.lastRoll;if(!faces.length)return;
+ const text=PL.lastRoll;if(!faces.length){PL.hold=false;return}
  document.getElementById('pl-rollpop')?.remove();PL.hold=true;let ended=false;if(!PL.modal)document.querySelectorAll('.pl-overlay,[data-pl-overlay]').forEach(n=>n.style.display='none');
  const end=()=>{if(ended)return;ended=true;PL.hold=false;plPop(text,faces);plRender()};
  try{animateDice(faces,end)}catch(e){end()}
  setTimeout(end,9000);
 }
 function plPop(text,faces){let el=document.getElementById('pl-rollpop');if(!el){el=document.createElement('div');el.id='pl-rollpop';el.setAttribute('role','status');el.onclick=()=>el.remove();document.body.appendChild(el)}
- el.innerHTML=`<div class="rp-dice">${faces.map(f=>faceHTML(f.v,f.s,f.c)).join('')}</div><b>${esc(text)}</b><small>tocca per chiudere</small>`;clearTimeout(el._t);el._t=setTimeout(()=>el.remove(),12000)}
+ el.innerHTML=`<div class="rp-dice">${faces.map(f=>faceHTML(f.v,f.s,f.c)).join('')}</div><b>${esc(text)}</b>`;clearTimeout(el._t);el._t=setTimeout(()=>el.remove(),4200)}
 function plRender(){if(PL.hold)return;const root=document.querySelector('.pl'),y=scrollY,dialog=document.querySelector('.pl-dialog'),sy=dialog?.scrollTop||0,phase=dialog?.getAttribute('data-pl-phase');
  if(root?.tagName==='MAIN'&&!PL.legacy&&typeof document.createElement==='function'){const template=document.createElement('template');template.innerHTML=APP.sec==='equipaggiamenti'?renderEquipment():renderPlayerWorkspace();plMorph(root,template.content.firstElementChild);playerAfterRender()}else render();
  scrollTo(0,y);const nextDialog=document.querySelector('.pl-dialog');if(nextDialog){nextDialog.scrollTop=PL.error||phase!==nextDialog.getAttribute('data-pl-phase')?0:sy;if(!dialog)nextDialog.focus({preventScroll:true})}

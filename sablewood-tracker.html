@@ -472,6 +472,7 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 .traits button:hover{border-color:var(--hope);background:var(--hope-soft)}
 #dice-fx{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:rgba(10,14,12,.35);cursor:pointer}
 #dice-fx[hidden]{display:none}
+#dice-fx:not([hidden]){animation:fxin .12s ease-out}@keyframes fxin{from{opacity:0}to{opacity:1}}
 .fx-row{position:relative;width:1px;height:1px}
 .fxd{position:absolute;left:-36px;top:-36px;width:72px;height:72px;display:grid;place-items:center;font-family:var(--f-display);font-size:2rem;color:#fff;
  animation:fx-in .32s ease-out both;animation-delay:calc(var(--i)*25ms);filter:drop-shadow(0 8px 14px rgba(0,0,0,.45))}
@@ -982,8 +983,8 @@ body.hub .page{padding-top:22px}
 .pl-official-sheet .pl-gold-count button{border:2px solid #6f5a25;box-shadow:0 1px 0 rgba(60,40,10,.3)}
 .pl-official-sheet .pl-gold-count button.on{background:linear-gradient(180deg,#e8cf8d,#b89545)}
 .pl-paper-roll[hidden]{display:block!important;visibility:hidden;height:0;margin:0;padding:0;overflow:hidden}
-#pl-rollpop{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;width:min(560px,calc(100% - 32px));background:#fbf7ee;color:#2b2430;border:2px solid #2b2430;border-radius:12px;box-shadow:0 10px 36px rgba(0,0,0,.45);padding:12px 16px;display:grid;gap:6px;cursor:pointer;animation:pl-in .2s ease-out}
-#pl-rollpop .rp-dice{display:flex;gap:6px;flex-wrap:wrap}#pl-rollpop b{font:600 15px/1.35 "DH Overpass",system-ui,sans-serif}#pl-rollpop small{opacity:.55;font-size:11px}
+#pl-rollpop{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;width:min(420px,calc(100% - 32px));background:#fbf7ee;color:#2b2430;border:2px solid #2b2430;border-radius:12px;box-shadow:0 10px 36px rgba(0,0,0,.45);padding:8px 12px;display:grid;gap:4px;cursor:pointer;animation:pl-in .2s ease-out}
+#pl-rollpop .rp-dice{display:flex;gap:6px;flex-wrap:wrap}#pl-rollpop b{font:600 13px/1.3 "DH Overpass",system-ui,sans-serif}#pl-rollpop small{opacity:.55;font-size:11px}
 .eq-attack-btn{font-weight:700}
 
 /* PLAYER_STYLE_END */
@@ -1688,7 +1689,7 @@ function roll3DPhysics(faces,done){
     if(want!==top){const mt=m.material;[mt[top],mt[want]]=[mt[want],mt[top]]}
     D3.check.push({want:shown[i].v,got:m.material[top].userData.n,up:m.userData.faces[top].n.clone().applyQuaternion(q).y});
   });
-  const t0=performance.now(),hold=.75;let raf=0,ended=false;
+  const t0=performance.now(),hold=.4;let raf=0,ended=false;
   const pose=k=>dice.forEach((m,i)=>{const e=rec[i][Math.min(k,N-1)];m.position.set(e[0],e[1],e[2]);m.quaternion.set(e[3],e[4],e[5],e[6]);m.visible=true});
   const frame=now=>{
     const t=(now-t0)/1000;pose(Math.max(0,Math.floor(t*60)));r.render(sc,cam);
@@ -4645,16 +4646,16 @@ function plMorph(old,next){
 /* tiri con dadi 3D (stessa animazione della campagna): la logica gira subito, i dadi lanciati vengono registrati
    e riprodotti; la scheda si aggiorna solo a dadi fermi (PL.hold) così non lampeggia a metà lancio */
 function plFx(run){
- DREC=[];let rec;try{run()}finally{rec=DREC;DREC=null}
+ DREC=[];PL.hold=true;let rec;try{run()}catch(e){PL.hold=false;throw e}finally{rec=DREC;DREC=null}
  const faces=rec.filter(x=>[4,6,8,10,12,20].includes(x.s)).slice(0,8).map((x,i)=>({v:x.v,s:x.s,c:x.s===12&&i<2?(i?'f':'h'):'n'}));
- const text=PL.lastRoll;if(!faces.length)return;
+ const text=PL.lastRoll;if(!faces.length){PL.hold=false;return}
  document.getElementById('pl-rollpop')?.remove();PL.hold=true;let ended=false;if(!PL.modal)document.querySelectorAll('.pl-overlay,[data-pl-overlay]').forEach(n=>n.style.display='none');
  const end=()=>{if(ended)return;ended=true;PL.hold=false;plPop(text,faces);plRender()};
  try{animateDice(faces,end)}catch(e){end()}
  setTimeout(end,9000);
 }
 function plPop(text,faces){let el=document.getElementById('pl-rollpop');if(!el){el=document.createElement('div');el.id='pl-rollpop';el.setAttribute('role','status');el.onclick=()=>el.remove();document.body.appendChild(el)}
- el.innerHTML=`<div class="rp-dice">${faces.map(f=>faceHTML(f.v,f.s,f.c)).join('')}</div><b>${esc(text)}</b><small>tocca per chiudere</small>`;clearTimeout(el._t);el._t=setTimeout(()=>el.remove(),12000)}
+ el.innerHTML=`<div class="rp-dice">${faces.map(f=>faceHTML(f.v,f.s,f.c)).join('')}</div><b>${esc(text)}</b>`;clearTimeout(el._t);el._t=setTimeout(()=>el.remove(),4200)}
 function plRender(){if(PL.hold)return;const root=document.querySelector('.pl'),y=scrollY,dialog=document.querySelector('.pl-dialog'),sy=dialog?.scrollTop||0,phase=dialog?.getAttribute('data-pl-phase');
  if(root?.tagName==='MAIN'&&!PL.legacy&&typeof document.createElement==='function'){const template=document.createElement('template');template.innerHTML=APP.sec==='equipaggiamenti'?renderEquipment():renderPlayerWorkspace();plMorph(root,template.content.firstElementChild);playerAfterRender()}else render();
  scrollTo(0,y);const nextDialog=document.querySelector('.pl-dialog');if(nextDialog){nextDialog.scrollTop=PL.error||phase!==nextDialog.getAttribute('data-pl-phase')?0:sy;if(!dialog)nextDialog.focus({preventScroll:true})}
