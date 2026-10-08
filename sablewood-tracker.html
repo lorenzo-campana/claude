@@ -65,6 +65,23 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sk.auto{background:linear-gradient(135deg,#e4e7df 50%,#111613 50%)}
 .skin-n{padding:6px 10px 8px;font-weight:700;font-size:.9rem;display:flex;justify-content:space-between;gap:6px;align-items:center}
 .skin-n small{font-weight:400;color:var(--muted);font-size:.74rem}
+/* ---- barra: pulsanti a icona, linguetta del gruppo ---- */
+.ib{width:34px;height:34px;display:inline-grid;place-items:center;flex:none;border:1px solid var(--line);background:var(--bg);border-radius:var(--r);cursor:pointer;color:var(--ink);padding:0;transition:background .15s,color .15s}
+.ib svg{width:18px;height:18px}
+.ib:hover:not(:disabled){background:var(--paper)}
+.ib:disabled{opacity:.38;cursor:default}
+.ib.xs{width:24px;height:24px} .ib.xs svg{width:14px;height:14px}
+.save-ind.ib{cursor:help;color:var(--muted);background:transparent;border-color:transparent}
+.save-ind.ok{color:var(--moss)} .save-ind.bad{color:var(--blood)}
+.bar-r{gap:4px}
+@media (max-width:1400px){body .bar-in{gap:10px 12px}body .brand b{max-width:14ch;font-size:1.25rem}body .fp{width:12px;height:12px}body .counter .lab{font-size:.62rem}}
+.opt-sec{border-top:1px solid var(--line);margin-top:8px;padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.log-undo{margin-left:auto}
+.party-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:35;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px 12px;border:1px solid var(--line);border-right:0;border-radius:12px 0 0 12px;background:var(--paper);color:var(--ink);cursor:pointer;box-shadow:-6px 0 18px rgba(0,0,0,.14);transition:padding .2s,background .2s}
+.party-tab:hover{padding-right:12px;background:var(--bg)}
+.party-tab svg{width:20px;height:20px}
+.party-tab span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.party-tab[hidden],body.alt .party-tab,body.hub .party-tab{display:none}
 /* barra */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}
 @media (max-width:700px){.bar{position:static}}
@@ -477,7 +494,7 @@ details.dev[open]>summary::before{content:"▾"}
 @keyframes blink{50%{opacity:.35}}
 
 .log{display:flex;flex-direction:column;gap:2px;max-height:520px;overflow:auto;font-size:.92rem}
-.log div{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:3px 0;border-bottom:1px dotted var(--line)}
+.log div{display:grid;grid-template-columns:52px 1fr auto;gap:8px;padding:3px 0;border-bottom:1px dotted var(--line)}
 .log .t{font-family:var(--f-mono);font-size:.76rem;color:var(--muted)}
 .out-card{border:1px solid var(--line);border-radius:var(--r);padding:8px 12px}
 .out-card.hit{border-color:var(--hope);background:var(--hope-soft)}
@@ -848,6 +865,7 @@ body.hub .page{padding-top:22px}
 <div id="alt"></div>
 <div id="diary" hidden></div>
 <div id="opt"></div>
+<button id="party-tab" class="party-tab" data-a="party-toggle" title="Mostra il pannello del gruppo" aria-label="Mostra il pannello del gruppo" hidden></button>
 
 <script>
 /* ================= personaggi pregenerati (Quickstart Adventure) ================= */
@@ -1103,10 +1121,45 @@ addEventListener("storage",e=>{
   else if(e.key===CAMPKEY&&APP.view==="home"&&!APP.renaming&&!APP.newOpen){try{const c=JSON.parse(e.newValue);if(c&&Array.isArray(c.list))CAMPS={list:c.list,del:c.del||[]}}catch(x){}render()}
 });
 
+const ICO={
+ undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+ cloud:'<path d="M17.5 19H8a5 5 0 1 1 1.6-9.7A6 6 0 0 1 21 11.5a4 4 0 0 1-3.5 7.5z"/><path d="m9.5 14 2 2 3.5-3.5"/>',
+ cloudOff:'<path d="M17.5 19H8a5 5 0 0 1-1.4-9.8"/><path d="M10.4 7.2A6 6 0 0 1 21 11.5a4 4 0 0 1-1.3 6.4"/><path d="m3 3 18 18"/>',
+ device:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a5 5 0 0 1 6 4.8"/>'};
+const svgI=(k,extra="")=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${ICO[k]}</svg>`;
+function saveIco(){
+  const fail=/non riuscito/.test(saveWhere),acc=saveWhere==="il tuo account",t="Salvato su "+saveWhere;
+  return `<span class="save-ind ib ${fail?"bad":acc?"ok":""}" id="save-ind" role="img" title="${t}" aria-label="${t}">${svgI(fail?"cloudOff":acc?"cloud":"device")}</span>`;
+}
+/* ---- annulla: istantanee dello stato a ogni salvataggio della campagna aperta ---- */
+let UNDO=[],undoBase=null,undoTop="",undoAt=0;
+const undoKey=s=>JSON.stringify(Object.assign({},s,{savedAt:0,tab:""}));
+const logSig=s=>s.log&&s.log[0]?s.log[0].t+"|"+s.log[0].text:"";
+function undoReset(){UNDO=[];undoAt=0;undoBase=APP.camp?undoKey(S):null;undoTop=APP.camp?logSig(S):"";undoPaint()}
+function undoTrack(){
+  const cur=undoKey(S),top=logSig(S);
+  if(undoBase==null){undoBase=cur;undoTop=top;return}
+  if(cur===undoBase)return;
+  const now=Date.now(),grew=top!==undoTop;
+  // più salvataggi ravvicinati dello stesso clic diventano un solo passo
+  if(now-undoAt>400||!UNDO.length){UNDO.push({json:undoBase,label:grew?S.log[0].text:"",sig:grew?top:""});if(UNDO.length>60)UNDO.shift()}
+  else if(grew){const u=UNDO[UNDO.length-1];u.label=S.log[0].text;u.sig=top}
+  undoAt=now;undoBase=cur;undoTop=top;undoPaint();
+}
+const undoTitle=()=>UNDO.length?"Annulla: "+(UNDO[UNDO.length-1].label||"ultima modifica"):"Niente da annullare";
+function undoPaint(){const b=document.getElementById("undo-btn");if(b){b.disabled=!UNDO.length;b.title=undoTitle();b.setAttribute("aria-label",undoTitle())}}
+function undo(){
+  const u=UNDO.pop();if(!u)return;
+  const tab=S.tab;S=migrate(JSON.parse(u.json));S.tab=tab;
+  undoBase=undoKey(S);undoTop=logSig(S);undoAt=0;
+  openFoe=openPc=null;picker=null;composer=null;deathFor=null;
+  persist();render();toast("Annullato"+(u.label?": "+u.label:""));
+}
 let dbDoc=null,saveTimer=null,idxTimer=null,saveWhere="questo browser";
 function persist(){
   if(!APP.camp)return;
-  S.savedAt=Date.now();
+  S.savedAt=Date.now();undoTrack();
   try{localStorage.setItem(campLocalKey(APP.camp),JSON.stringify(S))}catch(e){}
   if(dbDoc){clearTimeout(saveTimer);saveTimer=setTimeout(pushDb,1500)}
   if(VIEW.tdb){clearTimeout(liveTimer);liveTimer=setTimeout(pushLive,600)}
@@ -1118,7 +1171,7 @@ function pushDb(){
   saveTimer=null;const doc=dbDoc;if(!doc)return;
   dbQueue(doc,{json:JSON.stringify(S),savedAt:S.savedAt}).then(ok=>{
     saveWhere=ok?"il tuo account":"questo browser (sync non riuscito)";
-    const el=document.getElementById("save-ind");if(el)el.textContent="Salvato su "+saveWhere});
+    const el=document.getElementById("save-ind");if(el)el.outerHTML=saveIco()});
 }
 // prima di cambiare campagna: scrivi subito quello che aspettava il timer
 function flushSave(){if(saveTimer){clearTimeout(saveTimer);pushDb()}if(idxTimer){clearTimeout(idxTimer);touchCamp()}}
@@ -2227,15 +2280,13 @@ function renderBar(){
   const ai=ACTS.findIndex(a=>a.id===S.act);
   document.getElementById("bar").innerHTML=`
   <button class="tgl home-btn" data-a="go-home" title="Torna al tavolo del GM: campagne, carte, avversari, regole">← Campagne</button>
-  <div class="brand"><b>${esc(campById(APP.camp)?.name||"Campagna")}</b><span>${(()=>{const c=campById(APP.camp),m=MODULES[c?.module]?.name||"";return esc(m&&m!==c.name?m.toUpperCase()+" · ":"")})()}TRACKER DEL GM</span></div>
+  <div class="brand"><b title="${esc(campById(APP.camp)?.name||"")}">${esc(campById(APP.camp)?.name||"Campagna")}</b><span>${(()=>{const c=campById(APP.camp),m=MODULES[c?.module]?.name||"";return esc(m&&m!==c.name?m.toUpperCase()+" · ":"")})()}TRACKER DEL GM</span></div>
   <div class="meter"><span class="lab" style="color:var(--fear)">Paura</span><span class="mono" style="font-weight:600;color:var(--fear)">${S.fear}</span>
    <div class="fear-pips">${Array.from({length:12},(_,i)=>`<button class="fp ${i<S.fear?"on":""}" data-a="fear-set" data-i="${i}" aria-label="Paura ${i+1}"></button>`).join("")}</div></div>
   <div class="counter ${S.counter.on?"live":""}"><span class="lab">Assalto alla Città</span>
    ${S.counter.on?`<button class="btn xs" data-a="ctr" data-k="-1" aria-label="Contatore −1">−</button><span class="v">${S.counter.value}</span><button class="btn xs" data-a="ctr" data-k="1" aria-label="Contatore +1">+</button><button class="btn xs" data-a="ctr-close" title="Chiudi il Contatore" aria-label="Chiudi il Contatore">×</button>`:`<button class="btn xs" data-a="ctr-start">Avvia (15)</button>`}</div>
   <nav class="acts">${ACTS.map((a,i)=>`<button class="${a.id===S.act?"on":i<ai?"done":""}" data-a="goact" data-k="${a.id}" title="${a.t}">${a.n}</button>`).join("")}</nav>
-  <div class="bar-r"><span class="save-ind" id="save-ind">Salvato su ${saveWhere}</span>
-   ${resetAsk?`<span class="small">Azzerare tutta la partita?</span><button class="btn xs bad" data-a="reset-yes">Sì, azzera</button><button class="btn xs" data-a="reset-no">No</button>`:`<button class="tgl" data-a="reset">Reimposta</button>`}
-<button class="tgl ${UI.party?"on":""}" data-a="party-toggle">Gruppo</button>${optBtn()}</div>`;
+  <div class="bar-r"><button class="ib" id="undo-btn" data-a="undo" ${UNDO.length?"":"disabled"} title="${esc(undoTitle())}" aria-label="${esc(undoTitle())}">${svgI("undo")}</button>${saveIco()}${optBtn()}</div>`;
 }
 function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")
   +(S.tab==="scontro"||S.foes.length||S.cds.length?`<button class="sub ${S.tab==="scontro"?"on":""}" data-a="tab" data-k="scontro" title="Tutti gli scontri in corso e i conti alla rovescia">Scontri e conti</button>`:"")}
@@ -2282,6 +2333,7 @@ function pcDetail(r,p){
 }
 function renderParty(){
   const el=document.getElementById("party");el.hidden=!UI.party;
+  const tab=document.getElementById("party-tab");tab.hidden=UI.party;if(!tab.innerHTML)tab.innerHTML=svgI("users")+"<span>Gruppo</span>";
   document.getElementById("page").classList.toggle("party",UI.party);
   if(!UI.party){el.innerHTML="";return}
   el.innerHTML=`<div class="row" style="justify-content:space-between"><h3>Il gruppo</h3><button class="btn xs" data-a="party-toggle">Nascondi</button></div>
@@ -2356,7 +2408,7 @@ function renderDiary(){return `<div class="stack"><div class="row" style="justif
 <div class="lab">PNG di casa</div>${homeEditor()}
 <label class="lab" for="notes">Note libere</label><textarea id="notes" data-f="notes" rows="6">${esc(S.notes)}</textarea>
 </div>
-<div class="panel"><h4>Registro</h4><div class="log">${S.log.map(l=>`<div><span class="t">${l.t}</span><span>${esc(l.text)}</span></div>`).join("")||`<span class="muted small">Tiri ed eventi compariranno qui.</span>`}</div></div></div></div>`}
+<div class="panel"><h4>Registro</h4><div class="log">${S.log.map((l,i)=>`<div><span class="t">${l.t}</span><span>${esc(l.text)}</span>${i===0&&UNDO.length&&UNDO[UNDO.length-1].sig===logSig(S)?`<button class="ib xs log-undo" data-a="undo" title="Annulla questa azione" aria-label="Annulla questa azione">${svgI("undo")}</button>`:""}</div>`).join("")||`<span class="muted small">Tiri ed eventi compariranno qui.</span>`}</div></div></div></div>`}
 
 /* ================= vista giocatore e schermo ================= */
 const roPips=(n,v,cls)=>`<span class="pips ro">${Array.from({length:n},(_,i)=>`<span class="pip ${cls} ${i<v?"on":""}"></span>`).join("")}</span>`;
@@ -2710,6 +2762,7 @@ function render(){
   if(alt){renderAlt();return}
   document.getElementById("alt").innerHTML="";
   const hub=APP.view==="home";document.body.classList.toggle("hub",hub);
+  if(hub)document.getElementById("party-tab").hidden=true;
   if(hub){renderHub();return}
   renderBar();renderTabs();renderParty();renderRoll();
   document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct():S.tab==="carte"?renderCards():S.tab==="scontro"?renderCombat():S.tab==="regole"?RULES:S.tab==="schermo"?renderScreenCtl():renderDiary()}</div>`;
@@ -2733,7 +2786,7 @@ async function loadCampDb(id){
     const snap=await doc.get();
     if(!snap.exists||APP.camp!==id||dbDoc!==doc)return;
     const d=snap.data();
-    if(d&&d.savedAt>(S.savedAt||0)){S=migrate(JSON.parse(d.json));try{localStorage.setItem(campLocalKey(id),JSON.stringify(S))}catch(e){}toast("Partita caricata dal tuo account");render();pushLive()}
+    if(d&&d.savedAt>(S.savedAt||0)){S=migrate(JSON.parse(d.json));try{localStorage.setItem(campLocalKey(id),JSON.stringify(S))}catch(e){}toast("Partita caricata dal tuo account");undoReset();render();pushLive()}
   }catch(e){}
 }
 function resetTransient(){
@@ -2745,7 +2798,7 @@ function openCampaign(id){
   if(!campById(id))return;
   flushSave();resetTransient();
   APP.view="camp";APP.camp=id;APP.delAsk=APP.renaming=null;APP.newOpen=false;
-  S=readState(campLocalKey(id));
+  S=readState(campLocalKey(id));undoReset();
   try{localStorage.setItem(ACTIVEKEY,id)}catch(e){}
   dbDoc=userCol?userCol.doc(campDocName(id)):null;
   saveRoute();render();top0();pushLive();
@@ -2753,7 +2806,7 @@ function openCampaign(id){
 }
 function goHome(){
   flushSave();resetTransient();
-  APP.view="home";APP.camp=null;dbDoc=null;S=fresh();CV.grp=false;CV.still=false;
+  APP.view="home";APP.camp=null;dbDoc=null;S=fresh();undoReset();CV.grp=false;CV.still=false;
   saveRoute();render();top0();
 }
 function createCampaign(){
@@ -2890,8 +2943,8 @@ let skin="auto";try{const k=localStorage.getItem(SKINKEY);if(SKINS.some(x=>x[0]=
 function applySkin(){if(skin==="auto")document.documentElement.removeAttribute("data-skin");else document.documentElement.setAttribute("data-skin",skin)}
 applySkin();
 const OPT_ICON=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>`;
-const optBtn=()=>`<button class="tgl opt-btn" data-a="opt-open" aria-haspopup="dialog" title="Opzioni della pagina">${OPT_ICON}Opzioni</button>`;
-let optOpen=false;
+const optBtn=()=>`<button class="ib opt-btn" data-a="opt-open" aria-haspopup="dialog" title="Opzioni" aria-label="Opzioni">${OPT_ICON}</button>`;
+let optOpen=false,optReset=false;
 function renderOpt(){
   const el=document.getElementById("opt");
   if(!optOpen){el.innerHTML="";return}
@@ -2900,14 +2953,22 @@ function renderOpt(){
    <div class="opt-b"><div class="lab">Tema</div><p class="small muted" style="margin:0">Cambia i colori di tutta la pagina. La scelta resta salvata in questo browser.</p>
     <div class="skins" role="radiogroup" aria-label="Tema">${SKINS.map(([k,n,d])=>`<button class="skin ${skin===k?"on":""}" role="radio" aria-checked="${skin===k}" data-a="skin" data-k="${k}">
      <span class="sk ${k==="auto"?"auto":""}" ${k==="auto"?"":`data-skin="${k}"`}>${k==="auto"?"":`<span class="sk-bar"></span><span class="sk-card"><span class="sk-l"></span><span class="sk-l m"></span><span class="sk-d"><i style="background:var(--moss)"></i><i style="background:var(--hope)"></i><i style="background:var(--fear)"></i><i style="background:var(--blood)"></i></span></span>`}</span>
-     <span class="skin-n">${n}<small>${d}</small></span></button>`).join("")}</div></div></div></div>`;
+     <span class="skin-n">${n}<small>${d}</small></span></button>`).join("")}</div>
+    ${APP.view==="camp"?`<div class="opt-sec"><div class="lab">Partita</div><p class="small muted" style="margin:0">Riporta «${esc(campById(APP.camp)?.name||"")}» all'inizio: atti, scene, Paura, personaggi, registro. Si può annullare subito dopo con ↶.</p>
+     <div class="row">${optReset?`<span class="small">Azzerare tutta la partita?</span><button class="btn xs bad" data-a="reset-yes">Sì, azzera</button><button class="btn xs" data-a="opt-reset-no">No</button>`:`<button class="btn" data-a="opt-reset-ask">Azzera la partita</button>`}</div></div>`:""}
+   </div></div></div>`;
 }
 let optReturn=null;
 const OPTACT={
- "opt-open":(o,b)=>{optOpen=true;optReturn=b;renderOpt();document.querySelector("#opt .skin.on")?.focus()},
+ "opt-reset-ask":()=>{optReset=true;renderOpt()},
+ "opt-reset-no":()=>{optReset=false;renderOpt()},
+ undo:()=>undo(),
+ "opt-open":(o,b)=>{optOpen=true;optReset=false;optReturn=b;renderOpt();document.querySelector("#opt .skin.on")?.focus()},
  "opt-close":(o,b,e)=>{optOpen=false;renderOpt();optReturn?.isConnected?optReturn.focus():document.querySelector(".opt-btn")?.focus()},
  skin:o=>{skin=o.k;try{localStorage.setItem(SKINKEY,skin)}catch(e){}applySkin();renderOpt();document.querySelector(`#opt .skin[data-k="${skin}"]`)?.focus()}
 };
+document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&APP.view==="camp"&&VIEW.mode==="gm"&&!e.target.closest?.("input,textarea,select,[contenteditable]")){e.preventDefault();undo()}});
 document.addEventListener("keydown",e=>{if(optOpen&&e.key==="Escape"){e.preventDefault();e.stopPropagation();OPTACT["opt-close"]()}},true);
 addEventListener("storage",e=>{if(e.key===SKINKEY){skin=SKINS.some(x=>x[0]===e.newValue)?e.newValue:"auto";applySkin();renderOpt()}});
 const HUBACT={
@@ -3627,7 +3688,7 @@ const A={
  "dy-reset":()=>{dyCfg().edits={};persist();redrawDiary()},
  reset:()=>{resetAsk=true;renderBar()},
  "reset-no":()=>{resetAsk=false;renderBar()},
- "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;ROLL={cur:null,hist:[],pend:null,showHist:false};foeRoll.res=null;top0();persist();render();toast("Partita azzerata")}
+ "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;ROLL={cur:null,hist:[],pend:null,showHist:false};foeRoll.res=null;top0();optOpen=optReset=false;renderOpt();persist();render();toast("Partita azzerata: puoi annullare con ↶")}
 };
 
 document.addEventListener("click",e=>{
@@ -3671,7 +3732,7 @@ document.addEventListener("change",e=>{
   if(VIEW.mode!=="gm"){S=readState(activeLocalKey());return}
   let r=null;try{r=JSON.parse(sessionStorage.getItem(ROUTEKEY)||"null")}catch(e){}
   if(r&&HUB_SECTIONS.some(x=>x.k===r.sec))APP.sec=r.sec;
-  if(r&&r.view==="camp"&&campById(r.camp)){APP.view="camp";APP.camp=r.camp;S=readState(campLocalKey(r.camp))}
+  if(r&&r.view==="camp"&&campById(r.camp)){APP.view="camp";APP.camp=r.camp;S=readState(campLocalKey(r.camp));undoReset()}
 })();
 render();
 </script>
