@@ -96,7 +96,10 @@
       "kind": "adv",
       "book": "core",
       "page": 210,
-      "pdf_page": 211
+      "pdf_page": 211,
+      "art": "generated/bear.png",
+      "artSource": "generated",
+      "artCaption": "BEAR"
     },
     {
       "name": "CAVE OGRE",
@@ -151,7 +154,10 @@
       "kind": "adv",
       "book": "core",
       "page": 210,
-      "pdf_page": 211
+      "pdf_page": 211,
+      "art": "generated/cave-ogre.png",
+      "artSource": "generated",
+      "artCaption": "CAVE OGRE"
     },
     {
       "name": "CONSTRUCT",
@@ -211,7 +217,10 @@
       "kind": "adv",
       "book": "core",
       "page": 210,
-      "pdf_page": 211
+      "pdf_page": 211,
+      "art": "generated/construct-v2.png",
+      "artSource": "generated",
+      "artCaption": "CONSTRUCT"
     },
     {
       "name": "COURTIER",
@@ -297,7 +306,10 @@
       "kind": "adv",
       "book": "core",
       "page": 211,
-      "pdf_page": 212
+      "pdf_page": 212,
+      "art": "generated/deeproot-defender.png",
+      "artSource": "generated",
+      "artCaption": "DEEPROOT DEFENDER"
     },
     {
       "name": "DIRE WOLF",
@@ -335,7 +347,10 @@
       "kind": "adv",
       "book": "core",
       "page": 211,
-      "pdf_page": 212
+      "pdf_page": 212,
+      "art": "generated/dire-wolf.png",
+      "artSource": "generated",
+      "artCaption": "DIRE WOLF"
     },
     {
       "name": "GIANT MOSQUITOES",
@@ -379,7 +394,10 @@
       "kind": "adv",
       "book": "core",
       "page": 211,
-      "pdf_page": 212
+      "pdf_page": 212,
+      "art": "generated/giant-mosquitoes.png",
+      "artSource": "generated",
+      "artCaption": "GIANT MOSQUITOES"
     },
     {
       "name": "GIANT RAT",
@@ -417,7 +435,10 @@
       "kind": "adv",
       "book": "core",
       "page": 211,
-      "pdf_page": 212
+      "pdf_page": 212,
+      "art": "generated/giant-rat.png",
+      "artSource": "generated",
+      "artCaption": "GIANT RAT"
     },
     {
       "name": "GIANT SCORPION",
@@ -470,7 +491,10 @@
       "kind": "adv",
       "book": "core",
       "page": 211,
-      "pdf_page": 212
+      "pdf_page": 212,
+      "art": "generated/giant-scorpion.png",
+      "artSource": "generated",
+      "artCaption": "GIANT SCORPION"
     },
     {
       "name": "GLASS SNAKE",
@@ -557,7 +581,10 @@
       "kind": "adv",
       "book": "core",
       "page": 212,
-      "pdf_page": 213
+      "pdf_page": 213,
+      "art": "generated/harrier.png",
+      "artSource": "generated",
+      "artCaption": "HARRIER"
     },
     {
       "name": "ARCHER GUARD",
@@ -589,7 +616,10 @@
       "kind": "adv",
       "book": "core",
       "page": 212,
-      "pdf_page": 213
+      "pdf_page": 213,
+      "art": "generated/archer-guard.png",
+      "artSource": "generated",
+      "artCaption": "ARCHER GUARD"
     },
     {
       "name": "BLADED GUARD",
@@ -627,7 +657,10 @@
       "kind": "adv",
       "book": "core",
       "page": 212,
-      "pdf_page": 213
+      "pdf_page": 213,
+      "art": "generated/bladed-guard.png",
+      "artSource": "generated",
+      "artCaption": "BLADED GUARD"
     },
     {
       "name": "HEAD GUARD",
@@ -671,7 +704,10 @@
       "kind": "adv",
       "book": "core",
       "page": 212,
-      "pdf_page": 213
+      "pdf_page": 213,
+      "art": "generated/head-guard.png",
+      "artSource": "generated",
+      "artCaption": "HEAD GUARD"
     },
     {
       "name": "JAGGED KNIFE BANDIT",
@@ -782,7 +818,10 @@
       "kind": "adv",
       "book": "core",
       "page": 213,
-      "pdf_page": 214
+      "pdf_page": 214,
+      "art": "generated/jagged-knife-kneebreaker.png",
+      "artSource": "generated",
+      "artCaption": "JAGGED KNIFE KNEEBREAKER"
     },
     {
       "name": "JAGGED KNIFE LACKEY",
@@ -820,7 +859,10 @@
       "kind": "adv",
       "book": "core",
       "page": 213,
-      "pdf_page": 214
+      "pdf_page": 214,
+      "art": "generated/jagged-knife-lackey.png",
+      "artSource": "generated",
+      "artCaption": "JAGGED KNIFE LACKEY"
     },
     {
       "name": "JAGGED KNIFE LIEUTENANT",
@@ -913,7 +955,10 @@
       "kind": "adv",
       "book": "core",
       "page": 214,
-      "pdf_page": 215
+      "pdf_page": 215,
+      "art": "generated/jagged-knife-shadow.png",
+      "artSource": "generated",
+      "artCaption": "JAGGED KNIFE SHADOW"
     },
     {
       "name": "JAGGED KNIFE SNIPER",
@@ -940,7 +985,10 @@
       "kind": "adv",
       "book": "core",
       "page": 214,
-      "pdf_page": 215
+      "pdf_page": 215,
+      "art": "generated/jagged-knife-sniper.png",
+      "artSource": "generated",
+      "artCaption": "JAGGED KNIFE SNIPER"
     },
     {
       "name": "MERCHANT",
@@ -1281,7 +1329,10 @@
       "kind": "adv",
       "book": "core",
       "page": 215,
-      "pdf_page": 216
+      "pdf_page": 216,
+      "art": "generated/tiny-green-ooze.png",
+      "artSource": "generated",
+      "artCaption": "TINY GREEN OOZE"
     },
     {
       "name": "RED OOZE",
@@ -1466,7 +1517,10 @@
       "kind": "adv",
       "book": "core",
       "page": 216,
-      "pdf_page": 217
+      "pdf_page": 217,
+      "art": "generated/pirate-captain.png",
+      "artSource": "generated",
+      "artCaption": "PIRATE CAPTAIN"
     },
     {
       "name": "PIRATE RAIDERS",
@@ -1504,7 +1558,10 @@
       "kind": "adv",
       "book": "core",
       "page": 216,
-      "pdf_page": 217
+      "pdf_page": 217,
+      "art": "generated/pirate-raiders.png",
+      "artSource": "generated",
+      "artCaption": "PIRATE RAIDERS"
     },
     {
       "name": "PIRATE TOUGH",
@@ -1547,7 +1604,10 @@
       "kind": "adv",
       "book": "core",
       "page": 216,
-      "pdf_page": 217
+      "pdf_page": 217,
+      "art": "generated/pirate-tough.png",
+      "artSource": "generated",
+      "artCaption": "PIRATE TOUGH"
     },
     {
       "name": "SELLSWORD",
@@ -1584,7 +1644,10 @@
       "kind": "adv",
       "book": "core",
       "page": 217,
-      "pdf_page": 218
+      "pdf_page": 218,
+      "art": "generated/sellsword.png",
+      "artSource": "generated",
+      "artCaption": "SELLSWORD"
     },
     {
       "name": "SKELETON ARCHER",
@@ -1792,7 +1855,10 @@
       "kind": "adv",
       "book": "core",
       "page": 217,
-      "pdf_page": 218
+      "pdf_page": 218,
+      "art": "generated/spellblade.png",
+      "artSource": "generated",
+      "artCaption": "SPELLBLADE"
     },
     {
       "name": "SWARM OF RATS",
@@ -1824,7 +1890,10 @@
       "kind": "adv",
       "book": "core",
       "page": 218,
-      "pdf_page": 219
+      "pdf_page": 219,
+      "art": "generated/swarm-of-rats.png",
+      "artSource": "generated",
+      "artCaption": "SWARM OF RATS"
     },
     {
       "name": "SYLVAN SOLDIER",
@@ -1873,7 +1942,10 @@
       "kind": "adv",
       "book": "core",
       "page": 218,
-      "pdf_page": 219
+      "pdf_page": 219,
+      "art": "generated/sylvan-soldier.png",
+      "artSource": "generated",
+      "artCaption": "SYLVAN SOLDIER"
     },
     {
       "name": "TANGLE BRAMBLE SWARM",
@@ -1917,7 +1989,10 @@
       "kind": "adv",
       "book": "core",
       "page": 218,
-      "pdf_page": 219
+      "pdf_page": 219,
+      "art": "generated/tangle-bramble-swarm.png",
+      "artSource": "generated",
+      "artCaption": "TANGLE BRAMBLE SWARM"
     },
     {
       "name": "TANGLE BRAMBLE",
@@ -1960,7 +2035,10 @@
       "kind": "adv",
       "book": "core",
       "page": 218,
-      "pdf_page": 219
+      "pdf_page": 219,
+      "art": "generated/tangle-bramble.png",
+      "artSource": "generated",
+      "artCaption": "TANGLE BRAMBLE"
     },
     {
       "name": "WEAPONMASTER",
@@ -2008,7 +2086,10 @@
       "kind": "adv",
       "book": "core",
       "page": 218,
-      "pdf_page": 219
+      "pdf_page": 219,
+      "art": "generated/weaponmaster.png",
+      "artSource": "generated",
+      "artCaption": "WEAPONMASTER"
     },
     {
       "name": "YOUNG DRYAD",
@@ -2061,7 +2142,10 @@
       "kind": "adv",
       "book": "core",
       "page": 218,
-      "pdf_page": 219
+      "pdf_page": 219,
+      "art": "generated/young-dryad.png",
+      "artSource": "generated",
+      "artCaption": "YOUNG DRYAD"
     },
     {
       "name": "BRAWNY ZOMBIE",
@@ -2232,7 +2316,10 @@
       "kind": "adv",
       "book": "core",
       "page": 219,
-      "pdf_page": 220
+      "pdf_page": 220,
+      "art": "generated/shambling-zombie.png",
+      "artSource": "generated",
+      "artCaption": "SHAMBLING ZOMBIE"
     },
     {
       "name": "ZOMBIE PACK",
@@ -2269,7 +2356,10 @@
       "kind": "adv",
       "book": "core",
       "page": 219,
-      "pdf_page": 220
+      "pdf_page": 220,
+      "art": "generated/zombie-pack.png",
+      "artSource": "generated",
+      "artCaption": "ZOMBIE PACK"
     },
     {
       "name": "ARCHER SQUADRON",
@@ -2317,7 +2407,10 @@
       "kind": "adv",
       "book": "core",
       "page": 220,
-      "pdf_page": 221
+      "pdf_page": 221,
+      "art": "generated/archer-squadron.png",
+      "artSource": "generated",
+      "artCaption": "ARCHER SQUADRON"
     },
     {
       "name": "APPRENTICE ASSASSIN",
@@ -2600,7 +2693,10 @@
       "kind": "adv",
       "book": "core",
       "page": 221,
-      "pdf_page": 222
+      "pdf_page": 222,
+      "art": "generated/conscript.png",
+      "artSource": "generated",
+      "artCaption": "CONSCRIPT"
     },
     {
       "name": "COURTESAN",
@@ -2696,7 +2792,10 @@
       "kind": "adv",
       "book": "core",
       "page": 222,
-      "pdf_page": 223
+      "pdf_page": 223,
+      "art": "generated/cult-adept.png",
+      "artSource": "generated",
+      "artCaption": "CULT ADEPT"
     },
     {
       "name": "CULT FANG",
@@ -2738,7 +2837,10 @@
       "kind": "adv",
       "book": "core",
       "page": 222,
-      "pdf_page": 223
+      "pdf_page": 223,
+      "art": "generated/cult-fang.png",
+      "artSource": "generated",
+      "artCaption": "CULT FANG"
     },
     {
       "name": "CULT INITIATE",
@@ -2775,7 +2877,10 @@
       "kind": "adv",
       "book": "core",
       "page": 222,
-      "pdf_page": 223
+      "pdf_page": 223,
+      "art": "generated/cult-initiate.png",
+      "artSource": "generated",
+      "artCaption": "CULT INITIATE"
     },
     {
       "name": "DEMONIC HOUND PACK",
@@ -2857,7 +2962,10 @@
       "kind": "adv",
       "book": "core",
       "page": 222,
-      "pdf_page": 223
+      "pdf_page": 223,
+      "art": "generated/electric-eels.png",
+      "artSource": "generated",
+      "artCaption": "ELECTRIC EELS"
     },
     {
       "name": "ELITE SOLDIER",
@@ -2899,7 +3007,10 @@
       "kind": "adv",
       "book": "core",
       "page": 222,
-      "pdf_page": 223
+      "pdf_page": 223,
+      "art": "generated/elite-soldier.png",
+      "artSource": "generated",
+      "artCaption": "ELITE SOLDIER"
     },
     {
       "name": "FAILED EXPERIMENT",
@@ -2943,7 +3054,10 @@
       "kind": "adv",
       "book": "core",
       "page": 223,
-      "pdf_page": 224
+      "pdf_page": 224,
+      "art": "generated/failed-experiment.png",
+      "artSource": "generated",
+      "artCaption": "FAILED EXPERIMENT"
     },
     {
       "name": "GIANT BEASTMASTER",
@@ -2987,7 +3101,10 @@
       "kind": "adv",
       "book": "core",
       "page": 223,
-      "pdf_page": 224
+      "pdf_page": 224,
+      "art": "generated/giant-beastmaster.png",
+      "artSource": "generated",
+      "artCaption": "GIANT BEASTMASTER"
     },
     {
       "name": "GIANT BRAWLER",
@@ -3069,7 +3186,10 @@
       "kind": "adv",
       "book": "core",
       "page": 223,
-      "pdf_page": 224
+      "pdf_page": 224,
+      "art": "generated/giant-recruit.png",
+      "artSource": "generated",
+      "artCaption": "GIANT RECRUIT"
     },
     {
       "name": "GIANT EAGLE",
@@ -3118,7 +3238,10 @@
       "kind": "adv",
       "book": "core",
       "page": 223,
-      "pdf_page": 224
+      "pdf_page": 224,
+      "art": "generated/giant-eagle.png",
+      "artSource": "generated",
+      "artCaption": "GIANT EAGLE"
     },
     {
       "name": "GORGON",
@@ -3329,7 +3452,10 @@
       "kind": "adv",
       "book": "core",
       "page": 225,
-      "pdf_page": 226
+      "pdf_page": 226,
+      "art": "generated/masked-thief.png",
+      "artSource": "generated",
+      "artCaption": "MASKED THIEF"
     },
     {
       "name": "MERCHANT BARON",
@@ -3481,7 +3607,10 @@
       "kind": "adv",
       "book": "core",
       "page": 225,
-      "pdf_page": 226
+      "pdf_page": 226,
+      "art": "generated/mortal-hunter.png",
+      "artSource": "generated",
+      "artCaption": "MORTAL HUNTER"
     },
     {
       "name": "ROYAL ADVISOR",
@@ -3595,7 +3724,10 @@
       "kind": "adv",
       "book": "core",
       "page": 226,
-      "pdf_page": 227
+      "pdf_page": 227,
+      "art": "generated/secret-keeper.png",
+      "artSource": "generated",
+      "artCaption": "SECRET-KEEPER"
     },
     {
       "name": "SHARK",
@@ -3639,7 +3771,10 @@
       "kind": "adv",
       "book": "core",
       "page": 226,
-      "pdf_page": 227
+      "pdf_page": 227,
+      "art": "generated/shark.png",
+      "artSource": "generated",
+      "artCaption": "SHARK"
     },
     {
       "name": "SIREN",
@@ -3681,7 +3816,10 @@
       "kind": "adv",
       "book": "core",
       "page": 226,
-      "pdf_page": 227
+      "pdf_page": 227,
+      "art": "generated/siren.png",
+      "artSource": "generated",
+      "artCaption": "SIREN"
     },
     {
       "name": "SPECTRAL ARCHER",
@@ -3724,7 +3862,10 @@
       "kind": "adv",
       "book": "core",
       "page": 226,
-      "pdf_page": 227
+      "pdf_page": 227,
+      "art": "generated/spectral-archer.png",
+      "artSource": "generated",
+      "artCaption": "SPECTRAL ARCHER"
     },
     {
       "name": "SPECTRAL CAPTAIN",
@@ -3784,7 +3925,10 @@
       "kind": "adv",
       "book": "core",
       "page": 226,
-      "pdf_page": 227
+      "pdf_page": 227,
+      "art": "generated/spectral-captain.png",
+      "artSource": "generated",
+      "artCaption": "SPECTRAL CAPTAIN"
     },
     {
       "name": "SPECTRAL GUARDIAN",
@@ -3831,7 +3975,10 @@
       "kind": "adv",
       "book": "core",
       "page": 226,
-      "pdf_page": 227
+      "pdf_page": 227,
+      "art": "generated/spectral-guardian.png",
+      "artSource": "generated",
+      "artCaption": "SPECTRAL GUARDIAN"
     },
     {
       "name": "SPY",
@@ -4465,7 +4612,10 @@
       "kind": "adv",
       "book": "core",
       "page": 230,
-      "pdf_page": 231
+      "pdf_page": 231,
+      "art": "generated/dryad.png",
+      "artSource": "generated",
+      "artCaption": "DRYAD"
     },
     {
       "name": "ELEMENTAL SPARK",
@@ -4502,7 +4652,10 @@
       "kind": "adv",
       "book": "core",
       "page": 230,
-      "pdf_page": 231
+      "pdf_page": 231,
+      "art": "generated/elemental-spark.png",
+      "artSource": "generated",
+      "artCaption": "ELEMENTAL SPARK"
     },
     {
       "name": "GREATER EARTH ELEMENTAL",
@@ -4611,7 +4764,10 @@
       "kind": "adv",
       "book": "core",
       "page": 230,
-      "pdf_page": 231
+      "pdf_page": 231,
+      "art": "generated/greater-water-elemental.png",
+      "artSource": "generated",
+      "artCaption": "GREATER WATER ELEMENTAL"
     },
     {
       "name": "HUGE GREEN OOZE",
@@ -4666,7 +4822,10 @@
       "kind": "adv",
       "book": "core",
       "page": 231,
-      "pdf_page": 232
+      "pdf_page": 232,
+      "art": "generated/huge-green-ooze.png",
+      "artSource": "generated",
+      "artCaption": "HUGE GREEN OOZE"
     },
     {
       "name": "HYDRA",
@@ -4825,7 +4984,10 @@
       "kind": "adv",
       "book": "core",
       "page": 231,
-      "pdf_page": 232
+      "pdf_page": 232,
+      "art": "generated/stag-knight.png",
+      "artSource": "generated",
+      "artCaption": "STAG KNIGHT"
     },
     {
       "name": "OAK TREANT",
@@ -4874,7 +5036,10 @@
       "kind": "adv",
       "book": "core",
       "page": 232,
-      "pdf_page": 233
+      "pdf_page": 233,
+      "art": "generated/oak-treant.png",
+      "artSource": "generated",
+      "artCaption": "OAK TREANT"
     },
     {
       "name": "TREANT SAPLING",
@@ -4911,7 +5076,10 @@
       "kind": "adv",
       "book": "core",
       "page": 232,
-      "pdf_page": 233
+      "pdf_page": 233,
+      "art": "generated/treant-sapling.png",
+      "artSource": "generated",
+      "artCaption": "TREANT SAPLING"
     },
     {
       "name": "HEAD VAMPIRE",
@@ -5012,7 +5180,10 @@
       "kind": "adv",
       "book": "core",
       "page": 232,
-      "pdf_page": 233
+      "pdf_page": 233,
+      "art": "generated/vampire.png",
+      "artSource": "generated",
+      "artCaption": "VAMPIRE"
     },
     {
       "name": "VAULT GUARDIAN GAOLER",
@@ -5049,7 +5220,10 @@
       "kind": "adv",
       "book": "core",
       "page": 232,
-      "pdf_page": 233
+      "pdf_page": 233,
+      "art": "generated/vault-guardian-gaoler.png",
+      "artSource": "generated",
+      "artCaption": "VAULT GUARDIAN GAOLER"
     },
     {
       "name": "VAULT GUARDIAN SENTINEL",
@@ -5103,7 +5277,10 @@
       "kind": "adv",
       "book": "core",
       "page": 232,
-      "pdf_page": 233
+      "pdf_page": 233,
+      "art": "generated/vault-guardian-sentinel.png",
+      "artSource": "generated",
+      "artCaption": "VAULT GUARDIAN SENTINEL"
     },
     {
       "name": "VAULT GUARDIAN TURRET",
@@ -5365,7 +5542,10 @@
       "kind": "adv",
       "book": "core",
       "page": 234,
-      "pdf_page": 235
+      "pdf_page": 235,
+      "art": "generated/fallen-shock-troop.png",
+      "artSource": "generated",
+      "artCaption": "FALLEN SHOCK TROOP"
     },
     {
       "name": "FALLEN SORCERER",
@@ -5425,7 +5605,10 @@
       "kind": "adv",
       "book": "core",
       "page": 234,
-      "pdf_page": 235
+      "pdf_page": 235,
+      "art": "generated/fallen-sorcerer.png",
+      "artSource": "generated",
+      "artCaption": "FALLEN SORCERER"
     },
     {
       "name": "FALLEN WARLORD: REALM-BREAKER",
@@ -5599,7 +5782,10 @@
       "kind": "adv",
       "book": "core",
       "page": 236,
-      "pdf_page": 237
+      "pdf_page": 237,
+      "art": "generated/hallowed-archer.png",
+      "artSource": "generated",
+      "artCaption": "HALLOWED ARCHER"
     },
     {
       "name": "HALLOWED SOLDIER",
@@ -5647,7 +5833,10 @@
       "kind": "adv",
       "book": "core",
       "page": 236,
-      "pdf_page": 237
+      "pdf_page": 237,
+      "art": "generated/hallowed-soldier.png",
+      "artSource": "generated",
+      "artCaption": "HALLOWED SOLDIER"
     },
     {
       "name": "HIGH SERAPH",
@@ -5718,7 +5907,10 @@
       "kind": "adv",
       "book": "core",
       "page": 236,
-      "pdf_page": 237
+      "pdf_page": 237,
+      "art": "generated/high-seraph.png",
+      "artSource": "generated",
+      "artCaption": "HIGH SERAPH"
     },
     {
       "name": "KRAKEN",
@@ -5911,7 +6103,10 @@
       "kind": "adv",
       "book": "core",
       "page": 237,
-      "pdf_page": 238
+      "pdf_page": 238,
+      "art": "generated/outer-realms-abomination.png",
+      "artSource": "generated",
+      "artCaption": "OUTER REALMS ABOMINATION"
     },
     {
       "name": "OUTER REALMS CORRUPTER",
@@ -5948,7 +6143,10 @@
       "kind": "adv",
       "book": "core",
       "page": 237,
-      "pdf_page": 238
+      "pdf_page": 238,
+      "art": "generated/outer-realms-corrupter.png",
+      "artSource": "generated",
+      "artCaption": "OUTER REALMS CORRUPTER"
     },
     {
       "name": "OUTER REALMS THRALL",
@@ -5985,7 +6183,10 @@
       "kind": "adv",
       "book": "core",
       "page": 237,
-      "pdf_page": 238
+      "pdf_page": 238,
+      "art": "generated/outer-realms-thrall.png",
+      "artSource": "generated",
+      "artCaption": "OUTER REALMS THRALL"
     },
     {
       "name": "VOLCANIC DRAGON: MOLTEN SCOURGE",
@@ -6270,7 +6471,10 @@
       "kind": "adv",
       "book": "core",
       "page": 239,
-      "pdf_page": 240
+      "pdf_page": 240,
+      "art": "generated/perfected-zombie.png",
+      "artSource": "generated",
+      "artCaption": "PERFECTED ZOMBIE"
     },
     {
       "name": "ZOMBIE LEGION",
@@ -6319,7 +6523,10 @@
       "kind": "adv",
       "book": "core",
       "page": 239,
-      "pdf_page": 240
+      "pdf_page": 240,
+      "art": "generated/zombie-legion.png",
+      "artSource": "generated",
+      "artCaption": "ZOMBIE LEGION"
     },
     {
       "name": "ABANDONED GROVE",
