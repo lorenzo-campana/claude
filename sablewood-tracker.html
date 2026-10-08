@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Tavolo di Daggerheart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap">
@@ -3301,7 +3302,10 @@ const CARDS=[
 ];
 const CV={cat:new Set(),dom:new Set(),lvl:new Set(),typ:new Set(),cost:new Set(),tier:new Set(),grp:false,q:"",fold:innerWidth<700,still:false,open:null,list:[]};
 const CNUM=["dom","lvl","cost","tier"];
-const cpad=i=>String(i).padStart(3,"0"),cimg=c=>`carte/c${cpad(c.i)}.webp`;
+// URL immutabili delle immagini HD, utilizzabili anche nell'artifact di Claude.
+const CARD_ASSET_BASE="https://raw.githubusercontent.com/lorenzo-campana/sablewood/f5fdab0733ee558bf8c78530d7d17ab670c5991e/carte/";
+const cpad=i=>String(i).padStart(3,"0"),cimg=c=>`${CARD_ASSET_BASE}c${cpad(c.i)}.webp`;
+const cdomimg=d=>`${CARD_ASSET_BASE}dom${d}.webp`;
 const cnum=c=>82+21*c.d+(c.l===1?c.k:3+2*(c.l-2)+c.k);
 const cdoms=c=>c.c==="d"?[c.d]:c.c==="s"?CCLS[c.cl].d:[];
 const ccol=c=>c.c==="d"?CDOM[c.d].c:c.c==="s"?CDOM[CCLS[c.cl].d[0]].c:c.c==="c"?"#a8741a":"#3f5a48";
@@ -3348,7 +3352,7 @@ function cardsResults(list){
   let h="";
   for(let d=0;d<9;d++){
     const cs=by("d").filter(c=>c.d===d);if(!cs.length)continue;
-    h+=`<section class="cds" style="--dc:${CDOM[d].c}"><header class="cds-h ${CV.still?"in":""}"><img class="cds-ic" src="carte/dom${d}.webp" alt="" width="36" height="40"><h3>${CDOM[d].k}</h3><span class="cds-n">${cs.length} ${pl(cs.length)}</span></header><div class="cg">`;
+    h+=`<section class="cds" style="--dc:${CDOM[d].c}"><header class="cds-h ${CV.still?"in":""}"><img class="cds-ic" src="${cdomimg(d)}" alt="" width="36" height="40"><h3>${CDOM[d].k}</h3><span class="cds-n">${cs.length} ${pl(cs.length)}</span></header><div class="cg">`;
     let L=0;cs.forEach(c=>{if(c.l!==L){L=c.l;h+=`<h4 class="cg-l ${CV.still?"in":""}">Livello ${L}</h4>`}h+=cardEl(c)});
     h+="</div></section>";
   }
@@ -3422,7 +3426,7 @@ function lbHtml(c){
   const pills=c.c==="d"?[`<span class="dm">${d.k}</span>`,`<span>Livello ${c.l}</span>`,`<span>${CTYPE[c.t]}</span>`,`<span>Costo di richiamo ${c.r}</span>`,pd.has(c.d)?`<span class="pt">Dominio del gruppo</span>`:""]
     :c.c==="s"?[`<span class="dm">${CCLS[c.cl].it}</span>`,`<span>${CTIER[c.tier]}</span>`,...CCLS[c.cl].d.map(i=>`<span>${CDOM[i].k}</span>`)]:[`<span class="dm">${CCAT[c.c]}</span>`];
   const sibs=c.c==="d"?CARDS.filter(x=>x.c==="d"&&x.d===c.d&&x.l===c.l&&x.i!==c.i):c.c==="s"?CARDS.filter(x=>x.c==="s"&&x.n===c.n&&x.i!==c.i):[];
-  const back=c.c==="d"?`<img src="carte/dom${c.d}.webp" alt="">`:`<span>${c.n.charAt(0)}</span>`;
+  const back=c.c==="d"?`<img src="${cdomimg(c.d)}" alt="">`:`<span>${c.n.charAt(0)}</span>`;
   const eyebrow=c.c==="d"?`${d.k} · Livello ${c.l}`:c.c==="s"?`Sottoclasse · ${CCLS[c.cl].it}`:CCAT[c.c];
   return `<div class="lb-bd" data-a="cd-close"></div><button class="lb-x" data-a="cd-close" aria-label="Chiudi">×</button>
   ${CV.list.length>1?`<button class="lb-nav prev" data-a="cd-nav" data-k="-1" aria-label="Carta precedente">‹</button><button class="lb-nav next" data-a="cd-nav" data-k="1" aria-label="Carta successiva">›</button>`:""}
