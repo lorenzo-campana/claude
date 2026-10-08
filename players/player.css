@@ -87,3 +87,4 @@
 .pl-official-sheet .pl-defense-icon.evasion b{padding-top:31px}.pl-official-sheet .pl-defense-icon.armor b{padding-top:33px}
 .pl-official-sheet .pl-defense-values>div:nth-child(1) small{bottom:14.5%}.pl-official-sheet .pl-defense-values>div:nth-child(2) small{bottom:16.8%}
 .pl-official-sheet .pl-defense-values small{display:flex;align-items:center;justify-content:center;height:12px}
+.pl-official-sheet .pl-threshold-value:after{display:none}
