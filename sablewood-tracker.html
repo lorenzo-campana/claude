@@ -1222,7 +1222,8 @@ function foeMark(f,k,n){
   if(f.hpMax&&f.hp>=f.hpMax)foeDefeated(f);
 }
 /* ---- incontri: card dell'incontro → card dei partecipanti → scheda dettagliata ---- */
-const encOpen=new Map(),rulesOpen=new Map(); // rulesOpen: specchietto regole chiuso a manolet picker=null,encResetAsk=null,sheetTab="cap";
+const encOpen=new Map(),rulesOpen=new Map(); // rulesOpen: specchietto regole chiuso a mano
+let picker=null,encResetAsk=null,sheetTab="cap";
 const KIND_ICON={Combattimento:"⚔",Sociale:"❝",Ambientale:"✧"};
 const initial=n=>esc(String(n||"?").trim().charAt(0).toUpperCase());
 const condMark=list=>{const v=list.includes("Vulnerabile"),h=list.includes("Nascosto");return v&&!h?`<span class="cmark up" title="I tiri contro hanno vantaggio">▲ vant.</span>`:h&&!v?`<span class="cmark down" title="I tiri contro hanno svantaggio">▼ svant.</span>`:""};
