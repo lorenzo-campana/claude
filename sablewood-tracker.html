@@ -1,4 +1,4 @@
-<title>Sablewood Tracker</title>
+<title>Tavolo di Daggerheart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap">
 <style>
@@ -749,6 +749,49 @@ body.lb-on{overflow:hidden}
   #cd-res{transition:none}.lb,.lb.bye,.lb-info>*{animation:none}
 }
 .tabs button.sub{margin-left:auto;font-weight:600;font-size:.85rem;color:var(--muted)}.tabs button.sub.on{color:var(--ink)}
+/* ---- tavolo del GM: campagne e avversari ---- */
+body.hub .party-pane,body.hub #rollpop,body.hub #dice-fx{display:none!important}
+.home-btn{white-space:nowrap}
+.brand b{max-width:24ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hub-hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 20px}
+.hub-hero p{margin:4px 0 0;max-width:62ch}
+.nc{border:1px solid var(--line);background:var(--paper);border-radius:var(--r);padding:14px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;animation:sbIn .3s both}
+.nc label{display:flex;flex-direction:column;gap:4px;flex:1 1 220px}
+.nc input,.nc select{padding:6px 9px}
+.camps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
+.camp{border:1px solid var(--line);background:var(--paper);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;animation:sbIn .5s both;animation-delay:calc(var(--i,0)*70ms)}
+.camp-cov{position:relative;display:block;width:100%;height:150px;border:0;padding:0;background:var(--plate);cursor:pointer;overflow:hidden}
+.camp-cov img{width:100%;height:100%;object-fit:cover;filter:sepia(.3) contrast(1.05);opacity:.9;transition:transform .7s cubic-bezier(.2,.7,.2,1),opacity .3s}
+.camp-cov:hover img,.camp-cov:focus-visible img{transform:scale(1.05);opacity:1}
+.camp-act{position:absolute;left:10px;bottom:10px;background:var(--plate);color:var(--plate-fg);font-family:var(--f-display);padding:1px 11px;border-radius:999px}
+.camp-b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.camp-b h3{overflow-wrap:anywhere}
+.camp-b .row input{flex:1;min-width:0}
+.camp-f{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:auto;padding-top:10px}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
+.mod{border:1px dashed var(--line);border-radius:var(--r);padding:12px 14px}
+.mod p{margin:6px 0 0}
+.bv-l{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+.sbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px;align-items:start}
+.sb{border:1px solid var(--line);background:var(--paper);border-radius:var(--r);overflow:hidden;animation:sbIn .45s both;animation-delay:calc(min(var(--i,0),12)*45ms)}
+.sb-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--plate);color:var(--plate-fg)}
+.sb-h h3{overflow-wrap:anywhere}
+.sb.png .sb-h{background:var(--moss);color:var(--paper)}
+.sb.env .sb-h{background:var(--fear);color:var(--paper)}
+.sb-h .shield .sv>span{color:var(--ink)}
+.sb.env .sb-h .shield .sv,.sb.env .sb-h .shield .sl{background:var(--plate)} .sb.env .sb-h .shield .sl{color:var(--plate-fg)}
+.sb-role{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;opacity:.85;margin-top:3px}
+.sb-b{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.sb-b p,.sb-b ul{margin:0}
+.sb-d{font-family:var(--f-read);font-style:italic;font-size:1.02rem}
+.sb-stats{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:4px;border-block:1px solid var(--line);padding:6px 0;text-align:center}
+.sb-stats>div{display:flex;flex-direction:column;gap:1px}
+.sb-atk{font-size:.9rem;display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center}
+.sb-tips summary{cursor:pointer;font-weight:700;color:var(--muted)}
+.sb-src{border-top:1px solid var(--line);padding:6px 14px}
+#bv-fl{display:flex;flex-direction:column;gap:10px}
+@keyframes sbIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.sb,.camp,.nc{animation:none}}
 </style>
 
 <header class="bar"><div class="bar-in" id="bar"></div></header>
@@ -937,8 +980,45 @@ function migrate(s){
   for(const k of["act","fear","counter","critters","flags","chase","river","ritual","villagers","elderSt","loot","home","log","notes","cds"])if(s[k]!==undefined)n[k]=s[k];
   return n;
 }
-let S;
-try{S=migrate(JSON.parse(localStorage.getItem(KEY)))}catch(e){S=fresh()}
+/* ================= campagne: indice delle campagne del GM =================
+   Ogni campagna ha il suo stato. La prima (LEGACY_ID) usa ancora la chiave locale e il documento storici,
+   così la partita già in corso resta dov'era. L'indice vive nel browser e, con claude.ai, nell'account. */
+const MODULES={sablewood:{name:"I Messaggeri del Sablewood",sys:"Daggerheart · Tier 1 · avventura introduttiva",cover:"diario/ink1.png",
+ blurb:"I PG portano un pacco misterioso attraverso il Sablewood fino al villaggio di Hush. Sei atti, due prove ambientali, un rituale da difendere."}};
+const LEGACY_ID="sablewood-1",CAMPKEY="dh-campaigns-v1",ROUTEKEY="dh-route",ACTIVEKEY="dh-active";
+const campLocalKey=id=>id===LEGACY_ID?KEY:"dh-camp-"+id;
+const campDocName=id=>id===LEGACY_ID?"tracker":"camp-"+id;
+function readState(k){try{return migrate(JSON.parse(localStorage.getItem(k)))}catch(e){return fresh()}}
+function campSummary(s){return {act:s.act,done:Object.values(s.scn||{}).filter(Boolean).length,fear:s.fear,final:s.flags?.final||null,pcs:(s.pcs||[]).length}}
+let CAMPS={list:[],del:[]};
+try{const c=JSON.parse(localStorage.getItem(CAMPKEY)||"null");if(c&&Array.isArray(c.list))CAMPS={list:c.list,del:Array.isArray(c.del)?c.del:[]}}catch(e){}
+if(!CAMPS.list.length&&!CAMPS.del.includes(LEGACY_ID)){
+  const s=readState(KEY),t=s.savedAt||Date.now();
+  CAMPS.list.push({id:LEGACY_ID,name:"I Messaggeri del Sablewood",module:"sablewood",created:t,updated:s.savedAt||0,at:t,sum:campSummary(s)});
+}
+let userCol=null,campsDoc=null,campsTimer=null;
+const campById=id=>CAMPS.list.find(c=>c.id===id);
+function saveCamps(sync=true){
+  try{localStorage.setItem(CAMPKEY,JSON.stringify(CAMPS))}catch(e){}
+  if(sync&&campsDoc){clearTimeout(campsTimer);campsTimer=setTimeout(()=>{const doc=campsDoc;dbQueue(doc,{json:JSON.stringify(CAMPS),at:Date.now()})},800)}
+}
+// unione per id: vince la voce toccata più di recente; le campagne eliminate restano come lapidi
+function mergeCamps(r){
+  if(!r||!Array.isArray(r.list))return false;
+  const before=JSON.stringify(CAMPS),del=new Set([...CAMPS.del,...(r.del||[])]),m=new Map();
+  [...CAMPS.list,...r.list].forEach(c=>{if(!c||!c.id||del.has(c.id))return;const o=m.get(c.id);if(!o||(c.at||0)>(o.at||0))m.set(c.id,c)});
+  CAMPS={list:[...m.values()].sort((a,b)=>(a.created||0)-(b.created||0)),del:[...del]};
+  return JSON.stringify(CAMPS)!==before;
+}
+const dq=new WeakMap();
+function dbQueue(doc,data){ // una scrittura alla volta per documento
+  const p=(dq.get(doc)||Promise.resolve()).then(()=>doc.set(data)).then(()=>true,()=>false);
+  dq.set(doc,p);return p;
+}
+const APP={view:"home",sec:"campagne",camp:null,newOpen:false,newMod:"sablewood",renaming:null,delAsk:null};
+let S=fresh();
+const saveRoute=()=>{try{sessionStorage.setItem(ROUTEKEY,JSON.stringify({view:APP.view,sec:APP.sec,camp:APP.camp}))}catch(e){}};
+const activeLocalKey=()=>{let id=APP.camp;if(!id)try{id=localStorage.getItem(ACTIVEKEY)}catch(e){}return campLocalKey(id||LEGACY_ID)};
 let UI={party:innerWidth>1100,dice:false};
 try{const u=JSON.parse(localStorage.getItem(UIKEY));if(u&&typeof u.party==="boolean")UI.party=u.party}catch(e){}
 const saveUI=()=>{try{localStorage.setItem(UIKEY,JSON.stringify({party:UI.party}))}catch(e){}};
@@ -963,7 +1043,7 @@ function dbWrite(path,data){ // una scrittura alla volta per documento
 }
 let liveTimer=null,liveSent="";
 function pushLive(){
-  if(!VIEW.tdb||!VIEW.canGM)return;
+  if(!VIEW.tdb||!VIEW.canGM||!APP.camp)return;
   const j=JSON.stringify(buildLive());if(j===liveSent)return;
   liveSent=j;dbWrite("tavolo/live",{json:j,at:Date.now()});
 }
@@ -978,23 +1058,29 @@ function saveGallery(){
 function setScreen(patch){VIEW.screen=Object.assign({kind:"splash",caption:"",party:false,fear:false},VIEW.screen||{},patch,{ts:Date.now()});saveScreen();render()}
 addEventListener("storage",e=>{
   if(e.key===SCRKEY){loadLocalScreen();if(VIEW.mode!=="gm"||S.tab==="schermo")render()}
-  else if(e.key===KEY&&VIEW.mode!=="gm"){try{S=migrate(JSON.parse(e.newValue))}catch(x){}render()}
+  else if((e.key===activeLocalKey()||e.key===ACTIVEKEY)&&VIEW.mode!=="gm"){S=readState(activeLocalKey());render()}
+  else if(e.key===CAMPKEY&&APP.view==="home"&&!APP.renaming&&!APP.newOpen){try{const c=JSON.parse(e.newValue);if(c&&Array.isArray(c.list))CAMPS={list:c.list,del:c.del||[]}}catch(x){}render()}
 });
 
-let dbDoc=null,saving=false,pending=false,saveTimer=null,saveWhere="questo browser";
+let dbDoc=null,saveTimer=null,idxTimer=null,saveWhere="questo browser";
 function persist(){
+  if(!APP.camp)return;
   S.savedAt=Date.now();
-  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  try{localStorage.setItem(campLocalKey(APP.camp),JSON.stringify(S))}catch(e){}
   if(dbDoc){clearTimeout(saveTimer);saveTimer=setTimeout(pushDb,1500)}
   if(VIEW.tdb){clearTimeout(liveTimer);liveTimer=setTimeout(pushLive,600)}
+  clearTimeout(idxTimer);idxTimer=setTimeout(touchCamp,2500);
 }
-async function pushDb(){
-  if(saving){pending=true;return}
-  saving=true;
-  try{await dbDoc.set({json:JSON.stringify(S),savedAt:S.savedAt});saveWhere="il tuo account"}catch(e){saveWhere="questo browser (sync non riuscito)"}
-  saving=false;const el=document.getElementById("save-ind");if(el)el.textContent="Salvato su "+saveWhere;
-  if(pending){pending=false;pushDb()}
+// aggiorna nell'indice il riassunto della campagna aperta (atto, scene, Paura, finale)
+function touchCamp(){idxTimer=null;const c=APP.camp&&campById(APP.camp);if(!c)return;c.updated=S.savedAt||c.updated;c.at=Date.now();c.sum=campSummary(S);saveCamps()}
+function pushDb(){
+  saveTimer=null;const doc=dbDoc;if(!doc)return;
+  dbQueue(doc,{json:JSON.stringify(S),savedAt:S.savedAt}).then(ok=>{
+    saveWhere=ok?"il tuo account":"questo browser (sync non riuscito)";
+    const el=document.getElementById("save-ind");if(el)el.textContent="Salvato su "+saveWhere});
 }
+// prima di cambiare campagna: scrivi subito quello che aspettava il timer
+function flushSave(){if(saveTimer){clearTimeout(saveTimer);pushDb()}if(idxTimer){clearTimeout(idxTimer);touchCamp()}}
 (async()=>{
   try{
     if(!window.claude?.use)return;
@@ -1013,11 +1099,14 @@ async function pushDb(){
     render();
     if(!db||!user||!VIEW.canGM)return;
     const id=await user.id();if(!id)return;
-    dbDoc=db.collection("data/users/"+id).doc("tracker");
-    const snap=await dbDoc.get();
-    if(snap.exists){const d=snap.data();
-      if(d&&d.savedAt>(S.savedAt||0)){try{S=migrate(JSON.parse(d.json));toast("Partita caricata dal tuo account")}catch(e){}}}
-    saveWhere="il tuo account";render();pushLive();
+    userCol=db.collection("data/users/"+id);campsDoc=userCol.doc("campagne");
+    let remote="";
+    try{const cs=await campsDoc.get();if(cs.exists){remote=cs.data().json;mergeCamps(JSON.parse(remote))}}catch(e){}
+    saveCamps(JSON.stringify(CAMPS)!==remote);
+    saveWhere="il tuo account";
+    if(APP.camp&&!campById(APP.camp)){goHome();return}
+    if(APP.camp){dbDoc=userCol.doc(campDocName(APP.camp));await loadCampDb(APP.camp)}
+    render();pushLive();
   }catch(e){VIEW.ready=true;render()}
 })();
 
@@ -2096,7 +2185,8 @@ const TABS=[["atto","Atto"],["carte","Carte"],["regole","Regole"],["diario","Dia
 function renderBar(){
   const ai=ACTS.findIndex(a=>a.id===S.act);
   document.getElementById("bar").innerHTML=`
-  <div class="brand"><b>Sablewood</b><span>I MESSAGGERI · TRACKER DEL GM</span></div>
+  <button class="tgl home-btn" data-a="go-home" title="Torna al tavolo del GM: campagne, carte, avversari, regole">← Campagne</button>
+  <div class="brand"><b>${esc(campById(APP.camp)?.name||"Campagna")}</b><span>${(()=>{const c=campById(APP.camp),m=MODULES[c?.module]?.name||"";return esc(m&&m!==c.name?m.toUpperCase()+" · ":"")})()}TRACKER DEL GM</span></div>
   <div class="meter"><span class="lab" style="color:var(--fear)">Paura</span><span class="mono" style="font-weight:600;color:var(--fear)">${S.fear}</span>
    <div class="fear-pips">${Array.from({length:12},(_,i)=>`<button class="fp ${i<S.fear?"on":""}" data-a="fear-set" data-i="${i}" aria-label="Paura ${i+1}"></button>`).join("")}</div></div>
   <div class="counter ${S.counter.on?"live":""}"><span class="lab">Assalto alla Città</span>
@@ -2578,10 +2668,193 @@ function render(){
   const alt=!VIEW.ready||VIEW.mode!=="gm";document.body.classList.toggle("alt",alt);
   if(alt){renderAlt();return}
   document.getElementById("alt").innerHTML="";
+  const hub=APP.view==="home";document.body.classList.toggle("hub",hub);
+  if(hub){renderHub();return}
   renderBar();renderTabs();renderParty();renderRoll();
   document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct():S.tab==="carte"?renderCards():S.tab==="scontro"?renderCombat():S.tab==="regole"?RULES:S.tab==="schermo"?renderScreenCtl():renderDiary()}</div>`;
   if(S.tab==="carte")cardsAfterRender();
 }
+
+/* ================= tavolo del GM: home con campagne, carte, avversari e regole =================
+   Le sezioni dichiarano a chi servono (for: "gm" | "player"): la parte per i giocatori, con la creazione
+   del personaggio, si aggiungerà qui come nuove sezioni senza toccare il tracker delle campagne. */
+const HUB_SECTIONS=[
+ {k:"campagne",l:"Campagne",for:"gm",html:()=>renderCampaigns()},
+ {k:"carte",l:"Carte",html:()=>renderCards(),after:()=>cardsAfterRender()},
+ {k:"avversari",l:"Avversari",html:()=>renderBestiary()},
+ {k:"regole",l:"Regole",html:()=>RULES}
+];
+const hubSections=()=>{const role=VIEW.canGM?"gm":"player";return HUB_SECTIONS.filter(s=>!s.for||s.for===role)};
+let loadT=null;
+async function loadCampDb(id){
+  const doc=dbDoc;if(!doc)return;
+  try{
+    const snap=await doc.get();
+    if(!snap.exists||APP.camp!==id||dbDoc!==doc)return;
+    const d=snap.data();
+    if(d&&d.savedAt>(S.savedAt||0)){S=migrate(JSON.parse(d.json));try{localStorage.setItem(campLocalKey(id),JSON.stringify(S))}catch(e){}toast("Partita caricata dal tuo account");render();pushLive()}
+  }catch(e){}
+}
+function resetTransient(){
+  resetAsk=false;openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;
+  ROLL={cur:null,hist:[],pend:null,showHist:false};foeRoll.res=null;
+  if(CV.open!=null)cardClose();
+}
+function openCampaign(id){
+  if(!campById(id))return;
+  flushSave();resetTransient();
+  APP.view="camp";APP.camp=id;APP.delAsk=APP.renaming=null;APP.newOpen=false;
+  S=readState(campLocalKey(id));
+  try{localStorage.setItem(ACTIVEKEY,id)}catch(e){}
+  dbDoc=userCol?userCol.doc(campDocName(id)):null;
+  saveRoute();render();top0();pushLive();
+  loadCampDb(id);
+}
+function goHome(){
+  flushSave();resetTransient();
+  APP.view="home";APP.camp=null;dbDoc=null;S=fresh();CV.grp=false;CV.still=false;
+  saveRoute();render();top0();
+}
+function createCampaign(){
+  const mod=document.getElementById("nc-mod")?.value||"sablewood",m=MODULES[mod]||MODULES.sablewood;
+  const name=(document.getElementById("nc-name")?.value||"").trim()||m.name;
+  const id="c"+Date.now().toString(36)+uid().slice(0,3),t=Date.now();
+  CAMPS.list.push({id,name,module:mod,created:t,updated:0,at:t,sum:campSummary(fresh())});
+  saveCamps();openCampaign(id);toast("Campagna creata: "+name);
+}
+function deleteCampaign(id){
+  const c=campById(id);if(!c)return;
+  CAMPS.list=CAMPS.list.filter(x=>x.id!==id);if(!CAMPS.del.includes(id))CAMPS.del.push(id);
+  try{localStorage.removeItem(campLocalKey(id));if(localStorage.getItem(ACTIVEKEY)===id)localStorage.removeItem(ACTIVEKEY)}catch(e){}
+  if(userCol)userCol.doc(campDocName(id)).delete().catch(()=>{});
+  APP.delAsk=null;saveCamps();render();toast(`«${c.name}» eliminata`);
+}
+const FINAL_IT={crit:"successo critico",sh:"successo con Speranza",sf:"successo con Paura",fh:"fallimento con Speranza",ff:"fallimento con Paura"};
+const fmtDay=t=>new Date(t).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"});
+function campCard(c,i){
+  const m=MODULES[c.module]||{name:c.module,cover:""},s=c.sum||{},act=ACTS.find(a=>a.id===s.act),ren=APP.renaming===c.id,del=APP.delAsk===c.id;
+  return `<article class="camp" style="--i:${i}">
+  <button class="camp-cov" data-a="camp-open" data-k="${esc(c.id)}" aria-label="Apri ${esc(c.name)}">${m.cover?`<img src="${m.cover}" alt="" loading="lazy">`:""}${act?`<span class="camp-act">Atto ${act.n}</span>`:""}</button>
+  <div class="camp-b">
+   ${ren?`<div class="row"><input id="cr-${esc(c.id)}" data-k="${esc(c.id)}" type="text" value="${esc(c.name)}" maxlength="80" aria-label="Nuovo nome della campagna"><button class="btn xs ok" data-a="camp-ren-save" data-k="${esc(c.id)}">Salva</button><button class="btn xs" data-a="camp-ren-no">Annulla</button></div>`:`<h3>${esc(c.name)}</h3>`}
+   <div class="small muted">${esc(m.name)}${act?` · ${esc(act.t)}`:""}</div>
+   <div class="xsmall">${s.done?`${s.done} ${s.done===1?"scena giocata":"scene giocate"}`:"Nessuna scena giocata"} · Paura ${s.fear??"—"}${s.final?` · Finale: ${FINAL_IT[s.final]||s.final}`:""}</div>
+   <div class="xsmall muted">${c.updated?"Ultima sessione: "+fmtDay(c.updated):"Creata il "+fmtDay(c.created||Date.now())}</div>
+   <div class="camp-f">${del?`<span class="small">Eliminare la campagna e tutti i suoi dati?</span><button class="btn xs bad" data-a="camp-del" data-k="${esc(c.id)}">Sì, elimina</button><button class="btn xs" data-a="camp-del-no">No</button>`
+    :`<button class="btn ok" data-a="camp-open" data-k="${esc(c.id)}">Apri</button><button class="btn xs" data-a="camp-ren" data-k="${esc(c.id)}">Rinomina</button><button class="btn xs" data-a="camp-del-ask" data-k="${esc(c.id)}">Elimina</button>`}</div>
+  </div></article>`;
+}
+function renderCampaigns(){
+  const list=[...CAMPS.list].sort((a,b)=>Math.max(b.updated||0,b.created||0)-Math.max(a.updated||0,a.created||0));
+  return `<div class="hub-hero"><div><h2>Le tue campagne</h2><p class="small muted">Apri una campagna per tornare al suo tracker. ${campsDoc?"L'elenco è salvato nel tuo account: lo ritrovi su ogni dispositivo.":"L'elenco è salvato in questo browser."}</p></div>
+   ${APP.newOpen?"":`<button class="btn ok" data-a="camp-new">+ Nuova campagna</button>`}</div>
+  ${APP.newOpen?`<div class="nc"><label><span class="lab">Nome della campagna</span><input id="nc-name" type="text" maxlength="80" placeholder="Es. Il gruppo del giovedì" autocomplete="off"></label>
+   <label><span class="lab">Avventura</span><select id="nc-mod">${Object.entries(MODULES).map(([k,m])=>`<option value="${k}">${esc(m.name)}</option>`).join("")}</select></label>
+   <div class="row"><button class="btn ok" data-a="camp-create">Crea e apri</button><button class="btn" data-a="camp-new-no">Annulla</button></div></div>`:""}
+  ${list.length?`<div class="camps">${list.map(campCard).join("")}</div>`:`<p class="cd-empty">Nessuna campagna, per ora. Creane una per cominciare.</p>`}
+  <div class="stack" style="gap:8px"><h3>Avventure disponibili</h3><p class="small muted" style="margin:0">Ogni nuova campagna parte da un'avventura.</p>
+  <div class="mods">${Object.entries(MODULES).map(([k,m])=>`<div class="mod"><b>${esc(m.name)}</b><div class="xsmall muted">${esc(m.sys)}</div><p class="small">${esc(m.blurb)}</p></div>`).join("")}</div></div>`;
+}
+
+/* ---- avversari: schede dei nemici, dei PNG e degli ambienti dell'avventura ---- */
+const ROLE_IT={Solo:"Solitario",Bruiser:"Bruto",Leader:"Capo",Standard:"Standard",Minion:"Gregario",Social:"Sociale",PNG:"PNG"};
+const ENVS=[
+ {k:"env-chase",enc:"1:inizio",diff:12,type:"Prova",where:"Atto I",lists:()=>[["Ostacoli",OBSTACLES.map(esc)],["Complicazioni · 1 Paura",COMPLICATIONS.map(esc)]]},
+ {k:"env-river",enc:"2.5:fiume",diff:13,type:"Prova",where:"Atto II½",lists:()=>[["Risacca · 1 Paura, tira 1d4",UNDERTOW.map((x,i)=>`<b>${i+1}.</b> ${esc(x)}`)],["Tesori sommersi",TREASURES.map(t=>`<b>${esc(t[0])}</b>: ${esc(t[1])}`)]]}];
+const BV={cat:"all",role:"",q:""};
+function statBlock(k,i){
+  const f=T[k],a=f.attack,role=ROLE_IT[f.type]||f.type;
+  const cost=x=>{if(!x.c)return"";const[c,n]=x.c.split(":");return `<span class="chip ${c==="fear"?"fear":"bad"}">${n} ${c==="fear"?"Paura":"Stress"}</span>`};
+  return `<article class="sb ${f.type==="PNG"?"png":""}" style="--i:${i}">
+  <header class="sb-h"><div><h3>${esc(f.name)}</h3><div class="sb-role">Tier ${f.tier} · ${role}${f.sub?` · ${esc(f.sub)}`:""}</div></div>${shield(f.diff,"DIFF","diff")}</header>
+  <div class="sb-b">
+   ${f.desc?`<p class="sb-d">${esc(f.desc)}</p>`:""}
+   ${f.mot?`<p class="small"><b>Motivazioni e tattiche:</b> ${esc(f.mot)}</p>`:""}
+   ${f.hp!=null?`<div class="sb-stats"><div><span class="lab">Soglie</span><b class="mono">${(f.thr||[]).map(t=>t??"—").join(" / ")}</b></div><div><span class="lab">PF</span><b class="mono">${f.hp}</b></div><div><span class="lab">Stress</span><b class="mono">${f.st}</b></div><div><span class="lab">Attacco</span><b class="mono">${sgn(f.atk||0)}</b></div></div>`:""}
+   ${a?`<div class="sb-atk"><span class="ktag">Attacco</span> <b>${esc(a.n)}</b> · ${esc(a.r)} · <span class="mono">${esc(a.d)}</span> ${a.ty==="mag"?"magici":"fisici"}</div>`:""}
+   ${f.exp?.length?`<p class="small"><b>Esperienze:</b> ${f.exp.map(e=>`${esc(e[0])} ${sgn(e[1])}`).join(", ")}</p>`:""}
+   ${f.feats?.length?`<div class="stack" style="gap:6px">${f.feats.map(x=>`<div class="ftr"><div class="ftr-h"><b>${esc(x.n)}</b><span class="sp"></span><span class="ktag ${x.k}">${x.k}</span>${cost(x)}</div><div class="small">${esc(x.x)}</div></div>`).join("")}</div>`:""}
+   ${f.tips?.length?`<details class="sb-tips"><summary class="small">Consigli per il GM</summary><ul class="tight small">${f.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></details>`:""}
+  </div><footer class="sb-src xsmall muted">I Messaggeri del Sablewood</footer></article>`;
+}
+function envBlock(e,i){
+  const x=ENC[e.enc];
+  return `<article class="sb env" style="--i:${i}">
+  <header class="sb-h"><div><h3>${esc(x.t)}</h3><div class="sb-role">Tier 1 · Ambiente · ${e.type}</div></div>${shield(e.diff,"DIFF","diff")}</header>
+  <div class="sb-b"><p class="sb-d">${esc(x.d)}</p>${x.rules()}
+   ${e.lists().map(([l,it])=>`<div><div class="lab">${l}</div><ul class="tight small">${it.map(v=>`<li>${v}</li>`).join("")}</ul></div>`).join("")}</div>
+  <footer class="sb-src xsmall muted">I Messaggeri del Sablewood · ${e.where}</footer></article>`;
+}
+function bvAll(){
+  return [...Object.keys(T).map(k=>{const f=T[k];return {k,kind:f.type==="PNG"?"png":"adv",role:f.type,txt:cfold([f.name,f.sub,f.desc,f.mot,...(f.feats||[]).map(x=>x.n+" "+x.x)].join(" "))}}),
+   ...ENVS.map(e=>({k:e.k,kind:"env",role:"",e,txt:cfold(ENC[e.enc].t+" "+ENC[e.enc].d)}))];
+}
+const bvActive=()=>BV.cat!=="all"||BV.role||BV.q.trim();
+function bvFiltered(){
+  const q=cfold(BV.q.trim());
+  return bvAll().filter(i=>(BV.cat==="all"||i.kind===BV.cat)&&(!BV.role||i.role===BV.role)&&(!q||i.txt.includes(q)));
+}
+function bvFilters(){
+  const all=bvAll(),chip=(g,v,l,n)=>`<button type="button" class="cdc ${BV[g]===v?"on":""}" data-a="bv-f" data-g="${g}" data-v="${v}" aria-pressed="${BV[g]===v}">${l}${n!=null?` <span class="xsmall" style="opacity:.7">${n}</span>`:""}</button>`;
+  const roles=[...new Set(all.filter(i=>i.kind==="adv").map(i=>i.role))];
+  return `<div class="cd-fg"><span class="lab">Tipo</span><div class="cd-cs">${chip("cat","all","Tutti",all.length)}${chip("cat","adv","Avversari",all.filter(i=>i.kind==="adv").length)}${chip("cat","png","PNG",all.filter(i=>i.kind==="png").length)}${chip("cat","env","Ambienti",all.filter(i=>i.kind==="env").length)}</div></div>
+   ${BV.cat==="all"||BV.cat==="adv"?`<div class="cd-fg"><span class="lab">Ruolo</span><div class="cd-cs">${roles.map(r=>chip("role",r,ROLE_IT[r]||r)).join("")}</div></div>`:""}`;
+}
+function bvResults(list){
+  if(!list.length)return `<p class="cd-empty">Nessuna scheda corrisponde. <button class="btn xs" data-a="bv-clear">Azzera i filtri</button></p>`;
+  let n=0;
+  return [["adv","Avversari"],["png","PNG"],["env","Ambienti"]].map(([k,l])=>{const it=list.filter(i=>i.kind===k);
+    return it.length?`<h3 class="bv-l">${l} <span class="xsmall muted">${it.length}</span></h3><div class="sbs">${it.map(i=>i.e?envBlock(i.e,n++):statBlock(i.k,n++)).join("")}</div>`:""}).join("");
+}
+function renderBestiary(){
+  const list=bvFiltered();
+  return `<div class="stack"><div class="cd-head"><h2>Avversari</h2><p class="small muted">Nemici, PNG e ambienti delle avventure, con scheda completa e abilità.</p></div>
+  <div class="cd-top"><label class="cd-s"><span class="sr">Cerca un avversario</span><input id="bv-q" type="search" placeholder="Cerca per nome, abilità, descrizione…" value="${esc(BV.q)}" autocomplete="off"></label>
+   <button class="btn" id="bv-clr" data-a="bv-clear" ${bvActive()?"":"disabled"}>Azzera filtri</button><span class="cd-n" id="bv-n">${list.length} ${list.length===1?"scheda":"schede"}</span></div>
+  <div class="cd-fb" id="bv-fl">${bvFilters()}</div><div id="bv-res" class="stack">${bvResults(list)}</div></div>`;
+}
+function bvPaint(){
+  const list=bvFiltered(),r=document.getElementById("bv-res");if(!r)return;
+  r.innerHTML=bvResults(list);
+  document.getElementById("bv-fl").innerHTML=bvFilters();
+  document.getElementById("bv-clr").disabled=!bvActive();
+  document.getElementById("bv-n").textContent=`${list.length} ${list.length===1?"scheda":"schede"}`;
+}
+let bvTimer=0;
+document.addEventListener("input",e=>{if(e.target.id==="bv-q"){BV.q=e.target.value;clearTimeout(bvTimer);bvTimer=setTimeout(bvPaint,160)}});
+document.addEventListener("keydown",e=>{
+  const t=e.target;if(!t.matches?.("#nc-name,[id^=cr-]"))return;
+  if(e.key==="Enter"){e.preventDefault();t.id==="nc-name"?createCampaign():A["camp-ren-save"]({k:t.dataset.k})}
+  else if(e.key==="Escape"){e.preventDefault();t.id==="nc-name"?A["camp-new-no"]():A["camp-ren-no"]()}
+});
+
+function renderHub(){
+  const secs=hubSections(),sec=secs.find(s=>s.k===APP.sec)||secs[0];
+  let lastId=null;try{lastId=localStorage.getItem(ACTIVEKEY)}catch(e){}
+  const last=campById(lastId);
+  document.getElementById("bar").innerHTML=`<div class="brand"><b>Tavolo del GM</b><span>DAGGERHEART · CAMPAGNE E STRUMENTI</span></div>
+   <div class="bar-r">${last?`<button class="btn ok" data-a="camp-open" data-k="${esc(last.id)}">Riprendi «${esc(last.name)}»</button>`:""}</div>`;
+  document.getElementById("tabs").innerHTML=secs.map(s=>`<button class="${s===sec?"on":""}" data-a="hub-sec" data-k="${s.k}">${s.l}</button>`).join("");
+  document.getElementById("page").classList.remove("party");document.getElementById("party").innerHTML="";
+  document.getElementById("view").innerHTML=`<div class="stack">${sec.html()}</div>`;
+  sec.after?.();
+}
+const HUBACT={
+ "go-home":()=>goHome(),
+ "hub-sec":o=>{APP.sec=o.k;APP.newOpen=false;APP.renaming=APP.delAsk=null;if(o.k==="carte")CV.still=false;saveRoute();render();top0()},
+ "camp-open":o=>openCampaign(o.k),
+ "camp-new":()=>{APP.newOpen=true;APP.renaming=APP.delAsk=null;render();document.getElementById("nc-name")?.focus()},
+ "camp-new-no":()=>{APP.newOpen=false;render()},
+ "camp-create":()=>createCampaign(),
+ "camp-ren":o=>{APP.renaming=o.k;APP.delAsk=null;render();const i=document.getElementById("cr-"+o.k);if(i){i.focus();i.select()}},
+ "camp-ren-no":()=>{APP.renaming=null;render()},
+ "camp-ren-save":o=>{const c=campById(o.k),v=(document.getElementById("cr-"+o.k)?.value||"").trim();if(c&&v&&v!==c.name){c.name=v;c.at=Date.now();saveCamps()}APP.renaming=null;render()},
+ "camp-del-ask":o=>{APP.delAsk=o.k;APP.renaming=null;render()},
+ "camp-del-no":()=>{APP.delAsk=null;render()},
+ "camp-del":o=>deleteCampaign(o.k),
+ "bv-f":o=>{if(o.g==="cat"){BV.cat=BV.cat===o.v?"all":o.v;if(BV.cat!=="all"&&BV.cat!=="adv")BV.role=""}else BV.role=BV.role===o.v?"":o.v;bvPaint()},
+ "bv-clear":()=>{BV.cat="all";BV.role="";BV.q="";const q=document.getElementById("bv-q");if(q)q.value="";bvPaint()}
+};
 
 /* ================= carte: galleria delle carte del PDF, per dominio e poi per livello ================= */
 const CDOM=[
@@ -2897,7 +3170,7 @@ function cardsFilters(){
   const only=(CV.lvl.size||CV.typ.size||CV.cost.size)?`<p class="cd-note">Livello, tipo e costo valgono solo per le carte di dominio: le altre restano nascoste.</p>`:"";
   return `<details class="cd-f" ${CV.fold?"":"open"}><summary>Filtri ${n?`<span class="chip hope">${n} attiv${n===1?"o":"i"}</span>`:`<span class="small muted" style="font-weight:400">nessuno: vedi tutte le carte</span>`}</summary><div class="cd-fb">
    <div class="cd-fg"><span class="lab">Categoria</span><div class="cd-cs">${Object.keys(CCAT).map(k=>cchip("cat",k,CCAT[k])).join("")}</div></div>
-   <div class="cd-fg"><span class="lab">Dominio</span><div class="cd-cs">${CDOM.map((d,i)=>cchip("dom",i,`<i style="--dc:${d.c}"></i>${d.it}`)).join("")}${cchip("grp","1","Domini del gruppo",`title="${esc([...pd].map(i=>CDOM[i].it).join(", ")||"nessun dominio impostato")}"`,"grp")}</div></div>
+   <div class="cd-fg"><span class="lab">Dominio</span><div class="cd-cs">${CDOM.map((d,i)=>cchip("dom",i,`<i style="--dc:${d.c}"></i>${d.it}`)).join("")}${APP.view!=="camp"?"":cchip("grp","1","Domini del gruppo",`title="${esc([...pd].map(i=>CDOM[i].it).join(", ")||"nessun dominio impostato")}"`,"grp")}</div></div>
    <div class="cd-fg"><span class="lab">Livello</span><div class="cd-cs">${Array.from({length:10},(_,i)=>cchip("lvl",i+1,i+1)).join("")}</div></div>
    <div class="cd-fg"><span class="lab">Tipo</span><div class="cd-cs">${Object.keys(CTYPE).map(k=>cchip("typ",k,CTYPE[k])).join("")}</div></div>
    <div class="cd-fg"><span class="lab">Costo richiamo</span><div class="cd-cs">${[0,1,2,3].map(v=>cchip("cost",v,v===3?"3 o più":String(v))).join("")}</div></div>
@@ -3079,6 +3352,7 @@ function peace(){if(S.flags.peaceUsed){toast("CI SARÀ PACE è già stata usata"
 const top0=()=>setTimeout(()=>scrollTo({top:0}),0);
 const A={
  ...CARDACT,
+ ...HUBACT,
  tab:o=>{S.tab=o.k;if(o.k==="carte")CV.still=false;persist();render();top0()},
  goact:o=>upd(()=>{S.act=o.k;S.tab="atto";const a=ACTS.find(x=>x.id===o.k);log(`→ Atto ${a.n}: ${a.t}`);top0()}),
  "party-toggle":()=>{UI.party=!UI.party;saveUI();renderBar();renderParty()},
@@ -3281,7 +3555,7 @@ const A={
  "dy-reset":()=>{dyCfg().edits={};persist();redrawDiary()},
  reset:()=>{resetAsk=true;renderBar()},
  "reset-no":()=>{resetAsk=false;renderBar()},
- "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;ROLL={cur:null,hist:[],pend:null,showHist:false};foeRoll.res=null;top0();persist();render();toast("Nuova campagna pronta")}
+ "reset-yes":()=>{resetAsk=false;S=fresh();openFoe=openPc=null;scnOpen.clear();encOpen.clear();picker=null;composer=null;deathFor=null;ROLL={cur:null,hist:[],pend:null,showHist:false};foeRoll.res=null;top0();persist();render();toast("Partita azzerata")}
 };
 
 document.addEventListener("click",e=>{
@@ -3320,5 +3594,12 @@ document.addEventListener("change",e=>{
     case "gal-up":{const fs=[...el.files];el.value="";if(fs.length)uploadImages(fs);return}
   }
 });
+// all'avvio: la vista dei giocatori legge la campagna attiva; il GM riprende la sezione o la campagna di questa scheda
+(()=>{
+  if(VIEW.mode!=="gm"){S=readState(activeLocalKey());return}
+  let r=null;try{r=JSON.parse(sessionStorage.getItem(ROUTEKEY)||"null")}catch(e){}
+  if(r&&HUB_SECTIONS.some(x=>x.k===r.sec))APP.sec=r.sec;
+  if(r&&r.view==="camp"&&campById(r.camp)){APP.view="camp";APP.camp=r.camp;S=readState(campLocalKey(r.camp))}
+})();
 render();
 </script>
