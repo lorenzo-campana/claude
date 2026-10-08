@@ -1,0 +1,1911 @@
+{
+  "reviewedCards": 333,
+  "profiles": {
+    "3": {
+      "name": "Unleash Chaos",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Chaos",
+        "initial": "spell",
+        "max": "spell",
+        "refresh": "session",
+        "clear": "session",
+        "spendDie": 10,
+        "replenishStress": 1
+      },
+      "spellcast": true
+    },
+    "27": {
+      "name": "Cinder Grasp",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "1d20+3",
+          "count": 1,
+          "sides": 20,
+          "bonus": 3,
+          "scale": "fixed"
+        },
+        {
+          "label": "2d6",
+          "count": 2,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "48": {
+      "name": "Flight",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Flight",
+        "initial": "Agility",
+        "minimum": 1
+      },
+      "spellcast": true
+    },
+    "63": {
+      "name": "Blink Out",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "66": {
+      "name": "Preservation Blast",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d8+3",
+          "count": 1,
+          "sides": 8,
+          "bonus": 3,
+          "scale": "spell"
+        }
+      ]
+    },
+    "81": {
+      "name": "Chain Lightning",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "2d8+4",
+          "count": 2,
+          "sides": 8,
+          "bonus": 4,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "84": {
+      "name": "Premonition",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "99": {
+      "name": "Rift Walker",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "102": {
+      "name": "Telekinesis",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d12+4",
+          "count": 1,
+          "sides": 12,
+          "bonus": 4,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "117": {
+      "name": "Arcana-Touched",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "135": {
+      "name": "Arcane Reflection",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "manual"
+        }
+      ]
+    },
+    "138": {
+      "name": "Confusing Aura",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "resource"
+        }
+      ],
+      "reset": "long",
+      "resource": {
+        "kind": "tokens",
+        "label": "Layers",
+        "initial": "manual",
+        "initialOffset": 1,
+        "prepareStressCount": true
+      }
+    },
+    "153": {
+      "name": "Earthquake",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "3d10+8",
+          "count": 3,
+          "sides": 10,
+          "bonus": 8,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "rest"
+    },
+    "156": {
+      "name": "Sensory Projection",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "rest"
+    },
+    "174": {
+      "name": "Falling Sky",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "1d20+2",
+          "count": 1,
+          "sides": 20,
+          "bonus": 2,
+          "scale": "manual",
+          "bonusEach": true
+        }
+      ]
+    },
+    "33": {
+      "name": "A Soldier's Bond",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "51": {
+      "name": "Scramble",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "69": {
+      "name": "Deadly Focus",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "105": {
+      "name": "Battle-Hardened",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "141": {
+      "name": "Battle Cry",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "136": {
+      "name": "Frenzy",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "154": {
+      "name": "Reaper's Strike",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "2": {
+      "name": "Deft Maneuvers",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "5": {
+      "name": "I See It Coming",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d4",
+          "count": 1,
+          "sides": 4,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "34": {
+      "name": "Strategic Approach",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Strategy",
+        "initial": "Knowledge",
+        "minimum": 1,
+        "refresh": "long"
+      },
+      "rolls": [
+        {
+          "label": "d8",
+          "count": 1,
+          "sides": 8,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "67": {
+      "name": "Boost",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d10",
+          "count": 1,
+          "sides": 10,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "70": {
+      "name": "Redirect",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "88": {
+      "name": "Signature Move",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "121": {
+      "name": "Bone-Touched",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "139": {
+      "name": "Breaking Blow",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "2d12",
+          "count": 2,
+          "sides": 12,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "160": {
+      "name": "Splintering Strike",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "9": {
+      "name": "Book of Ava",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d10+2",
+          "count": 1,
+          "sides": 10,
+          "bonus": 2,
+          "scale": "proficiency"
+        },
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "12": {
+      "name": "Book of Illiat",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "manual"
+        }
+      ],
+      "reset": "rest"
+    },
+    "15": {
+      "name": "Book of Tyfar",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "2d6",
+          "count": 2,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "29": {
+      "name": "Book of Sitil",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "32": {
+      "name": "Book of Vagras",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "rest"
+    },
+    "47": {
+      "name": "Book of Korvax",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "2d12+4",
+          "count": 2,
+          "sides": 12,
+          "bonus": 4,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "50": {
+      "name": "Book of Norai",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d20+5",
+          "count": 1,
+          "sides": 20,
+          "bonus": 5,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "65": {
+      "name": "Book of Exota",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "2d10+3",
+          "count": 2,
+          "sides": 10,
+          "bonus": 3,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "rest"
+    },
+    "68": {
+      "name": "Book of Grynn",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "4d10+3",
+          "count": 4,
+          "sides": 10,
+          "bonus": 3,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "long"
+    },
+    "83": {
+      "name": "Manifest Wall",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "rest"
+    },
+    "86": {
+      "name": "Teleport",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "long"
+    },
+    "101": {
+      "name": "Banish",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d20",
+          "count": 1,
+          "sides": 20,
+          "bonus": 0,
+          "scale": "manual"
+        }
+      ],
+      "reset": "rest"
+    },
+    "104": {
+      "name": "Sigil of Retribution",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "pool",
+        "label": "Retribution",
+        "sides": 8,
+        "max": "level",
+        "spendAll": true
+      }
+    },
+    "119": {
+      "name": "Book of Homet",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "long"
+    },
+    "122": {
+      "name": "Codex-Touched",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "137": {
+      "name": "Book of Vyola",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "long"
+    },
+    "155": {
+      "name": "Book of Ronin",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "long"
+    },
+    "158": {
+      "name": "Disintegration Wave",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "long"
+    },
+    "173": {
+      "name": "Book of Yarrow",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "176": {
+      "name": "Transcendent Union",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "13": {
+      "name": "Enrapture",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "rest"
+    },
+    "16": {
+      "name": "Inspirational Words",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Inspiration",
+        "initial": "Presence",
+        "refresh": "long"
+      }
+    },
+    "35": {
+      "name": "Tell No Lies",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "36": {
+      "name": "Troublemaker",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d4",
+          "count": 1,
+          "sides": 4,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ],
+      "reset": "rest"
+    },
+    "53": {
+      "name": "Hypnotic Shimmer",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "rest"
+    },
+    "54": {
+      "name": "Invisibility",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Invisibility",
+        "initial": "spell",
+        "prepareStress": 1
+      },
+      "spellcast": true
+    },
+    "89": {
+      "name": "Thought Delver",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "90": {
+      "name": "Words of Discord",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "107": {
+      "name": "Never Upstaged",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Upstaged",
+        "prepareStress": 1,
+        "initial": "manual"
+      }
+    },
+    "108": {
+      "name": "Share the Burden",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "143": {
+      "name": "Astral Projection",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "144": {
+      "name": "Mass Enrapture",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "161": {
+      "name": "Copycat",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "179": {
+      "name": "Encore",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "14": {
+      "name": "Rain of Blades",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d8+2",
+          "count": 1,
+          "sides": 8,
+          "bonus": 2,
+          "scale": "proficiency"
+        },
+        {
+          "label": "1d8",
+          "count": 1,
+          "sides": 8,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "17": {
+      "name": "Uncanny Disguise",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Disguise",
+        "initial": "spell",
+        "prepareStress": 1
+      }
+    },
+    "39": {
+      "name": "Midnight Spirit",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "spell"
+        }
+      ]
+    },
+    "42": {
+      "name": "Shadowbind",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "57": {
+      "name": "Chokehold",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "2d6",
+          "count": 2,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "60": {
+      "name": "Veil of Night",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "78": {
+      "name": "Glyph of Nightfall",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "93": {
+      "name": "Hush",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "111": {
+      "name": "Dark Whispers",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "129": {
+      "name": "Midnight-Touched",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "150": {
+      "name": "Spellcharge",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Spellcharge",
+        "max": "spell",
+        "spendDie": 6
+      }
+    },
+    "165": {
+      "name": "Night Terror",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "manual"
+        }
+      ],
+      "reset": "long"
+    },
+    "168": {
+      "name": "Twilight Toll",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Twilight",
+        "clear": "rest",
+        "spendDie": 12
+      }
+    },
+    "183": {
+      "name": "Eclipse",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "long"
+    },
+    "21": {
+      "name": "Nature's Tongue",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "24": {
+      "name": "Vicious Entangle",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "1d8+1",
+          "count": 1,
+          "sides": 8,
+          "bonus": 1,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "37": {
+      "name": "Conjure Swarm",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "2d8+3",
+          "count": 2,
+          "sides": 8,
+          "bonus": 3,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "40": {
+      "name": "Natural Familiar",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "55": {
+      "name": "Corrosive Projectile",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d6+4",
+          "count": 1,
+          "sides": 6,
+          "bonus": 4,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "58": {
+      "name": "Towering Stalk",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d8",
+          "count": 1,
+          "sides": 8,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ],
+      "reset": "rest"
+    },
+    "73": {
+      "name": "Death Grip",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "3d6+2",
+          "count": 3,
+          "sides": 6,
+          "bonus": 2,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "76": {
+      "name": "Healing Field",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "91": {
+      "name": "Thorn Skin",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Thorns",
+        "initial": "spell",
+        "clear": "rest",
+        "spendDie": 6,
+        "prepareHopeFixed": 1
+      },
+      "reset": "rest"
+    },
+    "94": {
+      "name": "Wild Fortress",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Fortress HP",
+        "max": 3,
+        "initial": 0,
+        "prepareHopeFixed": 2
+      },
+      "spellcast": true
+    },
+    "112": {
+      "name": "Forager",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "127": {
+      "name": "Sage-Touched",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "130": {
+      "name": "Wild Surge",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "face",
+        "label": "Wild Surge",
+        "sides": 6,
+        "start": 1,
+        "clear": "rest",
+        "prepareStress": 1,
+        "endStress": 1
+      },
+      "reset": "long"
+    },
+    "145": {
+      "name": "Forest Sprites",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "148": {
+      "name": "Rejuvenation Barrier",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "1d4",
+          "count": 1,
+          "sides": 4,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "rest"
+    },
+    "163": {
+      "name": "Fane of the Wilds",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Fane",
+        "initial": "sageCards",
+        "refresh": "long"
+      },
+      "spellcast": true
+    },
+    "166": {
+      "name": "Plant Dominion",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "reset": "long"
+    },
+    "184": {
+      "name": "Tempest",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "2d20+8",
+          "count": 2,
+          "sides": 20,
+          "bonus": 8,
+          "scale": "fixed"
+        },
+        {
+          "label": "3d10+10",
+          "count": 3,
+          "sides": 10,
+          "bonus": 10,
+          "scale": "fixed"
+        },
+        {
+          "label": "5d6+9",
+          "count": 5,
+          "sides": 6,
+          "bonus": 9,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "19": {
+      "name": "Bolt Beacon",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d8+2",
+          "count": 1,
+          "sides": 8,
+          "bonus": 2,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "22": {
+      "name": "Mending Touch",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "25": {
+      "name": "Reassurance",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "43": {
+      "name": "Final Words",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "38": {
+      "name": "Healing Hands",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "61": {
+      "name": "Second Wind",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "79": {
+      "name": "Divination",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "92": {
+      "name": "Smite",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "115": {
+      "name": "Restoration",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Restoration",
+        "initial": "spell",
+        "refresh": "long"
+      }
+    },
+    "110": {
+      "name": "Zone of Protection",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "face",
+        "label": "Protection",
+        "sides": 6,
+        "start": 1
+      },
+      "spellcast": true,
+      "reset": "long"
+    },
+    "128": {
+      "name": "Splendor-Touched",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "146": {
+      "name": "Stunning Sunlight",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "3d20+3",
+          "count": 3,
+          "sides": 20,
+          "bonus": 3,
+          "scale": "fixed"
+        },
+        {
+          "label": "4d20+5",
+          "count": 4,
+          "sides": 20,
+          "bonus": 5,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "169": {
+      "name": "Overwhelming Aura",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "164": {
+      "name": "Salvation Beam",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "187": {
+      "name": "Invigoration",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "manual"
+        }
+      ],
+      "reset": "rest"
+    },
+    "182": {
+      "name": "Resurrection",
+      "source": "Core Rulebook",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "23": {
+      "name": "Forceful Push",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "44": {
+      "name": "Bold Presence",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "59": {
+      "name": "Critical Inspiration",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "62": {
+      "name": "Lean on Me",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "98": {
+      "name": "Rousing Strike",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d4",
+          "count": 1,
+          "sides": 4,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "rest"
+    },
+    "149": {
+      "name": "Full Surge",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "152": {
+      "name": "Ground Pound",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "4d10+8",
+          "count": 4,
+          "sides": 10,
+          "bonus": 8,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "188": {
+      "name": "Unyielding Armor",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "189": {
+      "name": "Troubadour",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "225": {
+      "name": "Troubadour",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "192": {
+      "name": "Wordsmith",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d4",
+          "count": 1,
+          "sides": 4,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "long"
+    },
+    "210": {
+      "name": "Wordsmith",
+      "source": "Core Rulebook",
+      "reset": "session"
+    },
+    "195": {
+      "name": "Warden of the Elements",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d10",
+          "count": 1,
+          "sides": 10,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "213": {
+      "name": "Warden of the Elements",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d8",
+          "count": 1,
+          "sides": 8,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "rest"
+    },
+    "231": {
+      "name": "Warden of the Elements",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "manual"
+        }
+      ]
+    },
+    "190": {
+      "name": "Warden of Renewal",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d4",
+          "count": 1,
+          "sides": 4,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "long"
+    },
+    "208": {
+      "name": "Warden of Renewal",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d4",
+          "count": 1,
+          "sides": 4,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "long"
+    },
+    "227": {
+      "name": "Beastbound",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "215": {
+      "name": "Nightwalker",
+      "source": "Core Rulebook",
+      "spellcast": true
+    },
+    "216": {
+      "name": "Syndicate",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "2d8",
+          "count": 2,
+          "sides": 8,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ],
+      "reset": "session"
+    },
+    "201": {
+      "name": "Divine Wielder",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "219": {
+      "name": "Divine Wielder",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "204": {
+      "name": "Winged Sentinel",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d8",
+          "count": 1,
+          "sides": 8,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "217": {
+      "name": "Elemental Origin",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "235": {
+      "name": "Elemental Origin",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "220": {
+      "name": "Primal Origin",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "205": {
+      "name": "Call of the Brave",
+      "source": "Core Rulebook",
+      "reset": "long"
+    },
+    "200": {
+      "name": "Call of the Slayer",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "pool",
+        "label": "Slayer",
+        "sides": 6,
+        "max": "proficiency",
+        "clear": "session",
+        "sessionHope": true
+      }
+    },
+    "218": {
+      "name": "Call of the Slayer",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "pool",
+        "label": "Slayer",
+        "sides": 6,
+        "max": "proficiency",
+        "shared": 200
+      },
+      "reset": "long"
+    },
+    "221": {
+      "name": "School of Knowledge",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "239": {
+      "name": "School of Knowledge",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "206": {
+      "name": "School of War",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d10",
+          "count": 1,
+          "sides": 10,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "224": {
+      "name": "School of War",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "2d10",
+          "count": 2,
+          "sides": 10,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "242": {
+      "name": "School of War",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "3d10",
+          "count": 3,
+          "sides": 10,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "249": {
+      "name": "Orderborne",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "247": {
+      "name": "Seaborne",
+      "source": "Core Rulebook",
+      "resource": {
+        "kind": "tokens",
+        "label": "Tide",
+        "max": "level",
+        "clear": "session"
+      }
+    },
+    "248": {
+      "name": "Wanderborne",
+      "source": "Core Rulebook",
+      "reset": "session"
+    },
+    "255": {
+      "name": "Drakona",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d8",
+          "count": 1,
+          "sides": 8,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "256": {
+      "name": "Faerie",
+      "source": "Core Rulebook",
+      "reset": "session"
+    },
+    "259": {
+      "name": "Faun",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "2d6",
+          "count": 2,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "254": {
+      "name": "Firbolg",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d12",
+          "count": 1,
+          "sides": 12,
+          "bonus": 0,
+          "scale": "fixed"
+        },
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "264": {
+      "name": "Goblin",
+      "source": "Core Rulebook",
+      "reset": "rest"
+    },
+    "263": {
+      "name": "Orc",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "1d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "266": {
+      "name": "Ribbet",
+      "source": "Core Rulebook",
+      "rolls": [
+        {
+          "label": "d12",
+          "count": 1,
+          "sides": 12,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "272": {
+      "name": "Executioners Guild",
+      "source": "Hope & Fear",
+      "reset": "long"
+    },
+    "273": {
+      "name": "Poisoners Guild",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "tokens",
+        "label": "Poison",
+        "clear": "long",
+        "prepareRoll": "1d4+1",
+        "prepareStress": 1
+      },
+      "rolls": [
+        {
+          "label": "Leech Weed · 1d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "274": {
+      "name": "Poisoners Guild",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "tokens",
+        "label": "Poison",
+        "shared": 273
+      }
+    },
+    "277": {
+      "name": "Juggernaut",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "280": {
+      "name": "Martial Artist",
+      "source": "Hope & Fear",
+      "rolls": [
+        {
+          "label": "d20+3",
+          "count": 1,
+          "sides": 20,
+          "bonus": 3,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "281": {
+      "name": "Martial Artist",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "282": {
+      "name": "Pact of the Endless",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "283": {
+      "name": "Pact of the Endless",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "284": {
+      "name": "Pact of the Endless",
+      "source": "Hope & Fear",
+      "reset": "long"
+    },
+    "287": {
+      "name": "Pact of the Wrathful",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "288": {
+      "name": "Hedge",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "tokens",
+        "label": "Talisman",
+        "prepareHope": true,
+        "clear": "rest"
+      },
+      "reset": "rest"
+    },
+    "289": {
+      "name": "Hedge",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "tokens",
+        "label": "Spirits",
+        "initial": "spell",
+        "clear": "scene",
+        "prepareStress": 1
+      },
+      "spellcast": true,
+      "reset": "rest"
+    },
+    "290": {
+      "name": "Hedge",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "tokens",
+        "label": "Circle",
+        "initial": "spell"
+      },
+      "reset": "rest"
+    },
+    "291": {
+      "name": "Moon",
+      "source": "Hope & Fear",
+      "spellcast": true
+    },
+    "292": {
+      "name": "Moon",
+      "source": "Hope & Fear",
+      "reset": "session"
+    },
+    "293": {
+      "name": "Moon",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "face",
+        "label": "Lunar Phase",
+        "sides": 6,
+        "refresh": "session",
+        "random": true,
+        "cycle": true
+      },
+      "reset": "rest"
+    },
+    "294": {
+      "name": "Aetheris",
+      "source": "Hope & Fear",
+      "reset": "long"
+    },
+    "296": {
+      "name": "Emberkin",
+      "source": "Hope & Fear",
+      "rolls": [
+        {
+          "label": "1d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "299": {
+      "name": "Tidekin",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "301": {
+      "name": "Freeborne",
+      "source": "Hope & Fear",
+      "reset": "session"
+    },
+    "303": {
+      "name": "Hearthborne",
+      "source": "Hope & Fear",
+      "reset": "long"
+    },
+    "304": {
+      "name": "Reborne",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "305": {
+      "name": "Warborne",
+      "source": "Hope & Fear",
+      "reset": "session"
+    },
+    "310": {
+      "name": "Vampire",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "tokens",
+        "label": "Blood",
+        "max": 6,
+        "loseLong": 1
+      },
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "311": {
+      "name": "Werewolf",
+      "source": "Hope & Fear",
+      "rolls": [
+        {
+          "label": "1d10",
+          "count": 1,
+          "sides": 10,
+          "bonus": 0,
+          "scale": "fixed"
+        },
+        {
+          "label": "d20",
+          "count": 1,
+          "sides": 20,
+          "bonus": 0,
+          "scale": "tier"
+        }
+      ]
+    },
+    "312": {
+      "name": "Blighting Strike",
+      "source": "Hope & Fear",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "Hope · d6+1",
+          "count": 1,
+          "sides": 6,
+          "bonus": 1,
+          "scale": "proficiency"
+        },
+        {
+          "label": "Fear · d10+1",
+          "count": 1,
+          "sides": 10,
+          "bonus": 1,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "313": {
+      "name": "Umbral Veil",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "tokens",
+        "label": "Veil",
+        "initial": "fear",
+        "clear": "scene"
+      },
+      "reset": "rest"
+    },
+    "314": {
+      "name": "Voice of Dread",
+      "source": "Hope & Fear",
+      "spellcast": true
+    },
+    "315": {
+      "name": "Hideous Retribution",
+      "source": "Hope & Fear",
+      "rolls": [
+        {
+          "label": "d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "proficiency"
+        }
+      ]
+    },
+    "316": {
+      "name": "Siphon Essence",
+      "source": "Hope & Fear",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "Hope · d12+4",
+          "count": 1,
+          "sides": 12,
+          "bonus": 4,
+          "scale": "proficiency"
+        },
+        {
+          "label": "Fear · d12+4",
+          "count": 1,
+          "sides": 12,
+          "bonus": 4,
+          "scale": "proficiency+1"
+        }
+      ],
+      "reset": "long"
+    },
+    "317": {
+      "name": "Shared Trauma",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "318": {
+      "name": "Terrify",
+      "source": "Hope & Fear",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "1d4",
+          "count": 1,
+          "sides": 4,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    },
+    "320": {
+      "name": "Summon Horror",
+      "source": "Hope & Fear",
+      "rolls": [
+        {
+          "label": "d8+1",
+          "count": 1,
+          "sides": 8,
+          "bonus": 1,
+          "scale": "spell"
+        }
+      ]
+    },
+    "323": {
+      "name": "Darkfire",
+      "source": "Hope & Fear",
+      "rolls": [
+        {
+          "label": "d8+6",
+          "count": 1,
+          "sides": 8,
+          "bonus": 6,
+          "scale": "spell"
+        }
+      ]
+    },
+    "325": {
+      "name": "Dread-Touched",
+      "source": "Hope & Fear",
+      "reset": "rest"
+    },
+    "326": {
+      "name": "Wall of Hunger",
+      "source": "Hope & Fear",
+      "spellcast": true
+    },
+    "327": {
+      "name": "Dark Army",
+      "source": "Hope & Fear",
+      "resource": {
+        "kind": "tokens",
+        "label": "Fiends",
+        "initial": 8,
+        "max": 8,
+        "clear": "rest",
+        "spendDie": 8
+      },
+      "spellcast": true,
+      "reset": "long"
+    },
+    "329": {
+      "name": "Damnation",
+      "source": "Hope & Fear",
+      "spellcast": true,
+      "rolls": [
+        {
+          "label": "d20",
+          "count": 1,
+          "sides": 20,
+          "bonus": 0,
+          "scale": "manual"
+        }
+      ]
+    },
+    "331": {
+      "name": "Avatar of Terror",
+      "source": "Hope & Fear",
+      "rolls": [
+        {
+          "label": "1d6",
+          "count": 1,
+          "sides": 6,
+          "bonus": 0,
+          "scale": "manual"
+        }
+      ]
+    },
+    "0": {
+      "name": "Rune Ward",
+      "source": "Core Rulebook",
+      "reset": "rest",
+      "rolls": [
+        {
+          "label": "Ward · 1d8",
+          "count": 1,
+          "sides": 8,
+          "bonus": 0,
+          "scale": "fixed"
+        }
+      ]
+    }
+  }
+}
