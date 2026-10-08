@@ -853,7 +853,7 @@ body.hub .page{padding-top:22px}
 /* ================= personaggi pregenerati (Quickstart Adventure) ================= */
 const TRAITS=["Agilità","Forza","Finezza","Istinto","Presenza","Conoscenza"];
 const PREGEN={
- marlowe:{name:"Marlowe Fairwind",pron:"lei",her:"Elfa Loreborne",cls:"Stregone",sub:"Origine Primordiale",dom:"Arcano & Mezzanotte",sage:true,
+ marlowe:{name:"Marlowe Fairwind",pron:"lei",her:"Elfa Loreborne",cls:"Stregone",sub:"Origine Primordiale",dom:"Arcana & Midnight",sage:true,
   eva:10,arMax:3,major:7,severe:14,hpMax:6,stMax:6,tr:[0,-1,1,2,1,0],spell:"Istinto",
   wpn:{n:"Bastone doppio",t:3,r:"Lontano",d:"1d6+3",ty:"mag"},arm:{n:"Armatura di cuoio",b:"6/13",s:3,f:""},
   exp:[["Maga Reale",2],["Non sotto la mia sorveglianza",2]],
@@ -865,12 +865,12 @@ const PREGEN={
    ["Reazioni Rapide","Ascendenza","Segna 1 Stress per avere vantaggio a un tiro reazione."],
    ["Trance Celeste","Ascendenza","Durante un riposo puoi entrare in trance e scegliere una mossa di riposo aggiuntiva."],
    ["Erudita","Comunità","Vantaggio ai tiri su storia, cultura o politica di una persona o un luogo importante."]],
-  cards:[["Scatenare il Caos","Incantesimo · Arcano 1","A inizio sessione metti su questa carta segnalini pari al tratto Incantesimo. Tiro Incantesimo contro un bersaglio a distanza Lontana e spendi quanti segnalini vuoi: se riesce tira un d10 per segnalino speso e infliggi altrettanti danni magici. Segna 1 Stress per ricaricare la carta. A fine sessione rimuovi i segnalini non spesi."],
-   ["Pioggia di Lame","Incantesimo · Mezzanotte 1","Spendi 1 Speranza e fai un tiro Incantesimo: lame evocate colpiscono tutti i bersagli a distanza Molto Vicina. Chi colpisci subisce d8+2 danni magici (Competenza). Un bersaglio Vulnerabile subisce 1d8 danni extra."]],
+  cards:[["Scatenare il Caos","Spell · Arcana 1","A inizio sessione metti su questa carta segnalini pari al tratto Incantesimo. Tiro Incantesimo contro un bersaglio a distanza Lontana e spendi quanti segnalini vuoi: se riesce tira un d10 per segnalino speso e infliggi altrettanti danni magici. Segna 1 Stress per ricaricare la carta. A fine sessione rimuovi i segnalini non spesi."],
+   ["Pioggia di Lame","Spell · Midnight 1","Spendi 1 Speranza e fai un tiro Incantesimo: lame evocate colpiscono tutti i bersagli a distanza Molto Vicina. Chi colpisci subisce d8+2 danni magici (Competenza). Un bersaglio Vulnerabile subisce 1d8 danni extra."]],
   item:["Pozione minore di vigore","rimuove 1d4 Stress","st"],
   desc:"Maga personale di re Emeris, ha riunito il gruppo. Sembra calma, finché non lo è più.",
   q:"Perché credi che re Emeris si fidi di te più di chiunque altro per consegnare questo pacco?"},
- barnacle:{name:"Barnacle",pron:"lui",her:"Ribbet Underborne",cls:"Ladro",sub:"Camminanotte",dom:"Mezzanotte & Grazia",
+ barnacle:{name:"Barnacle",pron:"lui",her:"Ribbet Underborne",cls:"Ladro",sub:"Camminanotte",dom:"Midnight & Grace",
   eva:13,arMax:3,major:6,severe:12,hpMax:6,stMax:6,tr:[1,-1,2,0,1,0],spell:"Finezza",
   wpn:{n:"Pugnale",t:2,r:"Mischia",d:"1d8+1",ty:"fis"},arm:{n:"Gambeson",b:"5/11",s:3,f:"Flessibile: +1 Evasione"},
   exp:[["Non mi vedono arrivare!",2],["Concludere un affare",2]],
@@ -881,12 +881,12 @@ const PREGEN={
    ["Anfibio","Ascendenza","Respiri e ti muovi naturalmente sott'acqua. (Eppure Barnacle ha paura dell'acqua e non nuota.)"],
    ["Lingua Lunga","Ascendenza","Afferri oggetti entro distanza Vicina. Segna 1 Stress per usarla come arma Finezza, Vicina: d12 danni fisici (Competenza)."],
    ["Vita in Penombra","Comunità","In luce scarsa o ombra fitta hai vantaggio ai tiri per nasconderti, investigare o percepire dettagli."]],
-  cards:[["Scasso e Borseggio","Abilità · Mezzanotte 1","Vantaggio ai tiri d'azione per scassinare serrature non magiche, disattivare trappole non magiche o rubare oggetti a un bersaglio (di nascosto o con la forza)."],
-   ["Parole d'Ispirazione","Abilità · Grazia 1","Dopo un riposo lungo, metti segnalini pari alla tua Presenza. Quando parli con un alleato, spendi un segnalino: l'alleato rimuove 1 Stress, oppure 1 PF, oppure ottiene 1 Speranza. Al riposo lungo rimuovi quelli non spesi."]],
+  cards:[["Scasso e Borseggio","Ability · Midnight 1","Vantaggio ai tiri d'azione per scassinare serrature non magiche, disattivare trappole non magiche o rubare oggetti a un bersaglio (di nascosto o con la forza)."],
+   ["Parole d'Ispirazione","Ability · Grace 1","Dopo un riposo lungo, metti segnalini pari alla tua Presenza. Quando parli con un alleato, spendi un segnalino: l'alleato rimuove 1 Stress, oppure 1 PF, oppure ottiene 1 Speranza. Al riposo lungo rimuovi quelli non spesi."]],
   item:["Pozione minore di vigore","rimuove 1d4 Stress","st"],
   desc:"Non c'è pericolo in cui non si cacci né situazione da cui non sappia uscire. Ha paura dell'acqua e non nuota.",
   q:"Quale voce strana o interessante hai sentito sul Sablewood?"},
- garrick:{name:"Garrick Reed",pron:"lui",her:"Umano Highborne",cls:"Guerriero",sub:"Richiamo dei Coraggiosi",dom:"Lama & Ossa",
+ garrick:{name:"Garrick Reed",pron:"lui",her:"Umano Highborne",cls:"Guerriero",sub:"Richiamo dei Coraggiosi",dom:"Blade & Bone",
   eva:11,arMax:3,major:7,severe:14,hpMax:6,stMax:7,tr:[2,1,1,0,-1,0],spell:"",
   wpn:{n:"Spada lunga",t:0,r:"Mischia",d:"1d8+3",ty:"fis"},arm:{n:"Armatura di cuoio",b:"6/13",s:3,f:""},
   exp:[["Affabile",2],["Colpire duro",2]],
@@ -898,12 +898,12 @@ const PREGEN={
    ["Grande Resistenza","Ascendenza","Uno slot Stress aggiuntivo (già conteggiato)."],
    ["Adattabilità","Ascendenza","Quando fallisci un tiro che usava una tua Esperienza, segna 1 Stress per ritirarlo."],
    ["Privilegio","Comunità","Vantaggio ai tiri per trattare con i nobili, negoziare prezzi o sfruttare la tua reputazione."]],
-  cards:[["Non Basta","Abilità · Lama 1","Quando tiri i dadi danno puoi ritirare gli 1 e i 2."],
-   ["Lo Vedo Arrivare","Abilità · Ossa 1","Quando sei bersaglio di un attacco da oltre la Mischia, segna 1 Stress per tirare un d4 e aggiungerlo alla tua Evasione contro quell'attacco."]],
+  cards:[["Non Basta","Ability · Blade 1","Quando tiri i dadi danno puoi ritirare gli 1 e i 2."],
+   ["Lo Vedo Arrivare","Ability · Bone 1","Quando sei bersaglio di un attacco da oltre la Mischia, segna 1 Stress per tirare un d4 e aggiungerlo alla tua Evasione contro quell'attacco."]],
   item:["Pozione minore di cura","rimuove 1d4 PF","hp"],
   desc:"Disertore di un lontano esercito, affronta i conflitti con un atteggiamento «uccidili con la gentilezza».",
   q:"Cosa ti ha chiesto Marlowe in passato che rende difficile dire sì a questa missione?"},
- khari:{name:"Khari Nix",pron:"lei",her:"Gigante Ridgeborne",cls:"Guardiano",sub:"Irremovibile",dom:"Valore & Lama",
+ khari:{name:"Khari Nix",pron:"lei",her:"Gigante Ridgeborne",cls:"Guardiano",sub:"Irremovibile",dom:"Valor & Blade",
   eva:8,arMax:4,major:9,severe:17,hpMax:8,stMax:6,tr:[0,2,-1,1,0,1],spell:"",
   wpn:{n:"Ascia da battaglia",t:1,r:"Molto Vicina",d:"1d10+3",ty:"fis"},arm:{n:"Cotta di maglia",b:"7/15",s:4,f:"Pesante: −1 Evasione"},
   exp:[["Ti copro io",2],["Non ho paura di niente",2]],
@@ -914,12 +914,12 @@ const PREGEN={
    ["Resistenza","Ascendenza","Uno slot PF aggiuntivo (già conteggiato)."],
    ["Portata","Ascendenza","Armi, abilità e incantesimi con portata Mischia contano come Molto Vicina."],
    ["Saldezza","Comunità","Vantaggio ai tiri per attraversare dirupi e cornicioni pericolosi, orientarti in ambienti ostili e usare le tue conoscenze di sopravvivenza."]],
-  cards:[["Turbine","Abilità · Lama 1","Quando riesci in un attacco contro un bersaglio a distanza Molto Vicina, spendi 1 Speranza per usare l'attacco contro tutti gli altri bersagli a distanza Molto Vicina. Gli avversari aggiuntivi colpiti subiscono metà danni."],
-   ["Sono il Tuo Scudo","Abilità · Valore 1","Quando un alleato a distanza Molto Vicina sta per subire danni, segna 1 Stress per frapporti e diventare tu il bersaglio. Contro questo attacco puoi segnare quanti slot Armatura vuoi."]],
+  cards:[["Turbine","Ability · Blade 1","Quando riesci in un attacco contro un bersaglio a distanza Molto Vicina, spendi 1 Speranza per usare l'attacco contro tutti gli altri bersagli a distanza Molto Vicina. Gli avversari aggiuntivi colpiti subiscono metà danni."],
+   ["Sono il Tuo Scudo","Ability · Valor 1","Quando un alleato a distanza Molto Vicina sta per subire danni, segna 1 Stress per frapporti e diventare tu il bersaglio. Contro questo attacco puoi segnare quanti slot Armatura vuoi."]],
   item:["Pozione minore di cura","rimuove 1d4 PF","hp"],
   desc:"Leale fino alla fine, con un umorismo asciutto, non sopporta gli sciocchi. È praticamente nata con un'ascia in mano.",
   q:"La tua comunità chiamava il Sablewood con un altro nome. Quale, e perché?"},
- varian:{name:"Varian Soto",pron:"loro",her:"Katari Wildborne",cls:"Ranger",sub:"Esploratore",dom:"Ossa & Saggio",
+ varian:{name:"Varian Soto",pron:"loro",her:"Katari Wildborne",cls:"Ranger",sub:"Esploratore",dom:"Bone & Sage",
   eva:13,arMax:3,major:7,severe:14,hpMax:6,stMax:6,tr:[2,0,1,1,-1,0],spell:"Agilità",
   wpn:{n:"Arco corto",t:0,r:"Lontano",d:"1d6+3",ty:"fis"},arm:{n:"Armatura di cuoio",b:"6/13",s:3,f:""},
   exp:[["Mira letale",2],["Amico della natura",2]],
@@ -930,8 +930,8 @@ const PREGEN={
    ["Istinti Felini","Ascendenza","Quando fai un tiro di Agilità puoi spendere 2 Speranza per ritirare il dado Speranza."],
    ["Artigli Retrattili","Ascendenza","Tiro di Agilità per graffiare un bersaglio in Mischia: se riesce diventa temporaneamente Vulnerabile."],
    ["Passo Felpato","Comunità","I tuoi movimenti sono silenziosi: vantaggio ai tiri per muoverti senza farti sentire."]],
-  cards:[["Intoccabile","Abilità · Ossa 1","Bonus all'Evasione pari a metà della tua Agilità (già conteggiato)."],
-   ["Groviglio Feroce","Incantesimo · Saggio 1","Tiro Incantesimo contro un bersaglio a distanza Lontana. Se riesce radici e rampicanti infliggono 1d8+1 danni fisici e lo Trattengono temporaneamente. Inoltre puoi spendere 1 Speranza per Trattenere un altro avversario entro distanza Molto Vicina dal bersaglio."]],
+  cards:[["Intoccabile","Ability · Bone 1","Bonus all'Evasione pari a metà della tua Agilità (già conteggiato)."],
+   ["Groviglio Feroce","Spell · Sage 1","Tiro Incantesimo contro un bersaglio a distanza Lontana. Se riesce radici e rampicanti infliggono 1d8+1 danni fisici e lo Trattengono temporaneamente. Inoltre puoi spendere 1 Speranza per Trattenere un altro avversario entro distanza Molto Vicina dal bersaglio."]],
   item:["Pozione minore di vigore","rimuove 1d4 Stress","st"],
   desc:"Approccio «prima tira, poi fai domande». Un problema che non si risolve con un arco non è ancora un problema.",
   q:"Quale animale ibrido cacci da anni e speri di vedere nel Sablewood?"}
@@ -2936,7 +2936,7 @@ const CDOM=[
 // i due domini di ogni classe (indici di CDOM)
 const CCLS={Bard:{it:"Bardo",d:[4,3]},Druid:{it:"Druido",d:[6,0]},Guardian:{it:"Guardiano",d:[8,1]},Ranger:{it:"Ranger",d:[2,6]},
  Rogue:{it:"Ladro",d:[5,4]},Seraph:{it:"Serafino",d:[7,8]},Sorcerer:{it:"Stregone",d:[0,5]},Warrior:{it:"Guerriero",d:[1,2]},Wizard:{it:"Mago",d:[3,7]}};
-const CTYPE={s:"Incantesimo",a:"Abilità",g:"Grimorio"},CCAT={d:"Dominio",s:"Sottoclasse",c:"Comunità",a:"Stirpe"},CTIER=["","Fondamento","Specializzazione","Maestria"];
+const CTYPE={s:"Spell",a:"Ability",g:"Grimoire"},CCAT={d:"Dominio",s:"Sottoclasse",c:"Comunità",a:"Stirpe"},CTIER=["","Fondamento","Specializzazione","Maestria"];
 // d=dominio, l=livello, t=tipo, r=costo di richiamo, k=posizione nel livello · i=numero dell'immagine in carte/
 const CARDS=[
 {i:0,n:"Rune Ward",c:"d",d:0,l:1,t:"s",r:0,k:0},
@@ -3218,7 +3218,7 @@ const cdoms=c=>c.c==="d"?[c.d]:c.c==="s"?CCLS[c.cl].d:[];
 const ccol=c=>c.c==="d"?CDOM[c.d].c:c.c==="s"?CDOM[CCLS[c.cl].d[0]].c:c.c==="c"?"#a8741a":"#3f5a48";
 const cfold=s=>String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
 const creduced=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
-function chay(c){return c._h||(c._h=cfold([c.n,c.cl||"",c.cl?CCLS[c.cl].it:"",...cdoms(c).flatMap(d=>[CDOM[d].k,CDOM[d].it]),c.c==="d"?CTYPE[c.t]+" "+({s:"spell",a:"ability",g:"grimoire"})[c.t]+" livello "+c.l:"",CCAT[c.c],c.tier?CTIER[c.tier]:""].join(" ")))}
+function chay(c){return c._h||(c._h=cfold([c.n,c.cl||"",c.cl?CCLS[c.cl].it:"",...cdoms(c).flatMap(d=>[CDOM[d].k,CDOM[d].it]),c.c==="d"?CTYPE[c.t]+" "+({s:"incantesimo",a:"abilita",g:"grimorio"})[c.t]+" livello "+c.l:"",CCAT[c.c],c.tier?CTIER[c.tier]:""].join(" ")))}
 function cpartyDoms(){const s=new Set();S.pcs.forEach(r=>String(P(r).dom||"").split(/[&,]/).map(x=>cfold(x.trim())).forEach(n=>{const i=CDOM.findIndex(d=>cfold(d.it)===n||cfold(d.k)===n);if(i>=0)s.add(i)}));return s}
 function cactive(){return CV.cat.size+CV.dom.size+CV.lvl.size+CV.typ.size+CV.cost.size+CV.tier.size+(CV.grp?1:0)+(CV.q.trim()?1:0)}
 function cardsFiltered(){
@@ -3242,7 +3242,7 @@ function cardsFilters(){
   const only=(CV.lvl.size||CV.typ.size||CV.cost.size)?`<p class="cd-note">Livello, tipo e costo valgono solo per le carte di dominio: le altre restano nascoste.</p>`:"";
   return `<details class="cd-f" ${CV.fold?"":"open"}><summary>Filtri ${n?`<span class="chip hope">${n} attiv${n===1?"o":"i"}</span>`:`<span class="small muted" style="font-weight:400">nessuno: vedi tutte le carte</span>`}</summary><div class="cd-fb">
    <div class="cd-fg"><span class="lab">Categoria</span><div class="cd-cs">${Object.keys(CCAT).map(k=>cchip("cat",k,CCAT[k])).join("")}</div></div>
-   <div class="cd-fg"><span class="lab">Dominio</span><div class="cd-cs">${CDOM.map((d,i)=>cchip("dom",i,`<i style="--dc:${d.c}"></i>${d.it}`)).join("")}${APP.view!=="camp"?"":cchip("grp","1","Domini del gruppo",`title="${esc([...pd].map(i=>CDOM[i].it).join(", ")||"nessun dominio impostato")}"`,"grp")}</div></div>
+   <div class="cd-fg"><span class="lab">Dominio</span><div class="cd-cs">${CDOM.map((d,i)=>cchip("dom",i,`<i style="--dc:${d.c}"></i>${d.k}`)).join("")}${APP.view!=="camp"?"":cchip("grp","1","Domini del gruppo",`title="${esc([...pd].map(i=>CDOM[i].k).join(", ")||"nessun dominio impostato")}"`,"grp")}</div></div>
    <div class="cd-fg"><span class="lab">Livello</span><div class="cd-cs">${Array.from({length:10},(_,i)=>cchip("lvl",i+1,i+1)).join("")}</div></div>
    <div class="cd-fg"><span class="lab">Tipo</span><div class="cd-cs">${Object.keys(CTYPE).map(k=>cchip("typ",k,CTYPE[k])).join("")}</div></div>
    <div class="cd-fg"><span class="lab">Costo richiamo</span><div class="cd-cs">${[0,1,2,3].map(v=>cchip("cost",v,v===3?"3 o più":String(v))).join("")}</div></div>
@@ -3259,14 +3259,14 @@ function cardsResults(list){
   let h="";
   for(let d=0;d<9;d++){
     const cs=by("d").filter(c=>c.d===d);if(!cs.length)continue;
-    h+=`<section class="cds" style="--dc:${CDOM[d].c}"><header class="cds-h ${CV.still?"in":""}"><img class="cds-ic" src="carte/dom${d}.webp" alt="" width="36" height="40"><h3>${CDOM[d].it}</h3><span class="cds-en">${CDOM[d].k}</span><span class="cds-n">${cs.length} ${pl(cs.length)}</span></header><div class="cg">`;
+    h+=`<section class="cds" style="--dc:${CDOM[d].c}"><header class="cds-h ${CV.still?"in":""}"><img class="cds-ic" src="carte/dom${d}.webp" alt="" width="36" height="40"><h3>${CDOM[d].k}</h3><span class="cds-n">${cs.length} ${pl(cs.length)}</span></header><div class="cg">`;
     let L=0;cs.forEach(c=>{if(c.l!==L){L=c.l;h+=`<h4 class="cg-l ${CV.still?"in":""}">Livello ${L}</h4>`}h+=cardEl(c)});
     h+="</div></section>";
   }
   const sc=by("s");
   if(sc.length){
     h+=`<section class="cds" style="--dc:#3f5a48"><header class="cds-h ${CV.still?"in":""}"><h3>Sottoclassi</h3><span class="cds-en">Subclass</span><span class="cds-n">${sc.length} ${pl(sc.length)}</span></header><div class="cg">`;
-    Object.keys(CCLS).forEach(k=>{const cs=sc.filter(c=>c.cl===k);if(!cs.length)return;h+=`<h4 class="cg-l ${CV.still?"in":""}">${CCLS[k].it} · ${CCLS[k].d.map(i=>CDOM[i].it).join(" e ")}</h4>`+cs.map(cardEl).join("")});
+    Object.keys(CCLS).forEach(k=>{const cs=sc.filter(c=>c.cl===k);if(!cs.length)return;h+=`<h4 class="cg-l ${CV.still?"in":""}">${CCLS[k].it} · ${CCLS[k].d.map(i=>CDOM[i].k).join(" e ")}</h4>`+cs.map(cardEl).join("")});
     h+="</div></section>";
   }
   [["c","Comunità","Community"],["a","Stirpi","Ancestry"]].forEach(([k,t,en])=>{
@@ -3330,11 +3330,11 @@ document.addEventListener("toggle",e=>{if(e.target.matches?.("details.cd-f"))CV.
 /* carta ingrandita: si gira dal punto in cui si trova nella galleria */
 function lbHtml(c){
   const col=ccol(c),d=c.c==="d"?CDOM[c.d]:null,pos=CV.list.findIndex(x=>x.i===c.i),pd=cpartyDoms();
-  const pills=c.c==="d"?[`<span class="dm">${d.it}</span>`,`<span>Livello ${c.l}</span>`,`<span>${CTYPE[c.t]}</span>`,`<span>Costo di richiamo ${c.r}</span>`,pd.has(c.d)?`<span class="pt">Dominio del gruppo</span>`:""]
-    :c.c==="s"?[`<span class="dm">${CCLS[c.cl].it}</span>`,`<span>${CTIER[c.tier]}</span>`,...CCLS[c.cl].d.map(i=>`<span>${CDOM[i].it}</span>`)]:[`<span class="dm">${CCAT[c.c]}</span>`];
+  const pills=c.c==="d"?[`<span class="dm">${d.k}</span>`,`<span>Livello ${c.l}</span>`,`<span>${CTYPE[c.t]}</span>`,`<span>Costo di richiamo ${c.r}</span>`,pd.has(c.d)?`<span class="pt">Dominio del gruppo</span>`:""]
+    :c.c==="s"?[`<span class="dm">${CCLS[c.cl].it}</span>`,`<span>${CTIER[c.tier]}</span>`,...CCLS[c.cl].d.map(i=>`<span>${CDOM[i].k}</span>`)]:[`<span class="dm">${CCAT[c.c]}</span>`];
   const sibs=c.c==="d"?CARDS.filter(x=>x.c==="d"&&x.d===c.d&&x.l===c.l&&x.i!==c.i):c.c==="s"?CARDS.filter(x=>x.c==="s"&&x.n===c.n&&x.i!==c.i):[];
   const back=c.c==="d"?`<img src="carte/dom${c.d}.webp" alt="">`:`<span>${c.n.charAt(0)}</span>`;
-  const eyebrow=c.c==="d"?`${d.it} · ${d.k}`:c.c==="s"?`Sottoclasse · ${CCLS[c.cl].it}`:CCAT[c.c];
+  const eyebrow=c.c==="d"?`${d.k} · Livello ${c.l}`:c.c==="s"?`Sottoclasse · ${CCLS[c.cl].it}`:CCAT[c.c];
   return `<div class="lb-bd" data-a="cd-close"></div><button class="lb-x" data-a="cd-close" aria-label="Chiudi">×</button>
   ${CV.list.length>1?`<button class="lb-nav prev" data-a="cd-nav" data-k="-1" aria-label="Carta precedente">‹</button><button class="lb-nav next" data-a="cd-nav" data-k="1" aria-label="Carta successiva">›</button>`:""}
   <div class="lb-body" style="--dc:${col}" role="document"><div class="lb-stage"><div class="lb-card"><div class="lb-f"><img src="${cimg(c)}" alt="${esc(c.n)}"><span class="cd-glare"></span></div><div class="lb-b">${back}</div></div></div>
