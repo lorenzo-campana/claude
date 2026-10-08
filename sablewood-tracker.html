@@ -409,6 +409,8 @@ button.ava{border:0;cursor:pointer;padding:0;font:inherit;font-family:var(--f-di
 .env-compact{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:8px}
 .ec{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--paper)}
 .ec-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.swarm-n{font-family:var(--f-display);font-weight:400;font-size:1.45rem;line-height:1;min-width:1.5em;text-align:center}
+.swarm-r{gap:6px}
 .ec-n{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1;min-width:1.4em;text-align:center}
 .ec-full{grid-column:1/-1}
 .ec-warn{border-color:var(--blood);background:var(--blood-soft)}
@@ -995,10 +997,10 @@ const T={
    {n:"Niente Ospitalità",k:"Azione",c:"st:1",x:"2d6 Paesani Preoccupati si radunano attorno all'Anziano e aspettano i suoi ordini.",fx:"no-hosp"},
    {n:"CI SARÀ PACE",k:"Azione",c:"fear:2",x:"Quando un PG attacca un paesano. Tutti i PG perdono tutta la Speranza e segnano 2d4 Stress. Usabile una sola volta.",fx:"peace"}],
   tips:["Se Luna è con il gruppo garantisce per loro: vantaggio ai tiri per convincerlo."]},
- villager:{name:"Paesano Preoccupato",tier:1,type:"Minion",hp:1,st:0,thr:[null,null],diff:9,atk:0,minion:true,
+ villager:{name:"Paesano Preoccupato",plural:"Paesani Preoccupati",swarm:"villagers",tier:1,type:"Minion",hp:1,st:0,thr:[null,null],diff:9,atk:0,minion:true,
   attack:{n:"Pugnali",r:"Mischia",d:"2",ty:"fis"},exp:[],
   feats:[{n:"Gregario",k:"Passiva",x:"Sconfitto da qualsiasi danno. Ogni 3 danni inflitti, sconfiggi un Gregario aggiuntivo a portata."},
-   {n:"Attacco di Gruppo",k:"Azione",c:"fear:1",x:"Tutti i Paesani a distanza Vicina dal bersaglio vanno in Mischia e fanno un tiro d'attacco condiviso. Se riesce, 2 danni fisici ciascuno (sommati)."}]},
+   {n:"Attacco di Gruppo",k:"Azione",c:"fear:1",x:"Tutti i Paesani a distanza Vicina dal bersaglio vanno in Mischia e fanno un tiro d'attacco condiviso. Se riesce, 2 danni fisici ciascuno (sommati).",fx:"vill-attack"}]},
  arcanist:{name:"Arcanista Fuocobianco",tier:1,type:"PNG",sub:"Umanoide-lucciola, millenaria (lei)",desc:"Maga di diverse migliaia di anni, metà umanoide e metà lucciola, in vesti bianche, carica di libri e pozioni. Ha creato il sigillo della città.",
   mot:"Rinnovare il sigillo, tenere i guai lontani dal villaggio",diff:11,exp:[],
   feats:[{n:"Il rituale",k:"Passiva",x:"Durante il rituale gli attacchi contro di lei sono a Difficoltà 11. Ogni volta che viene colpita il Rituale sale di 1. Non si tracciano i suoi PF: i danni sono solo narrativi."},
@@ -1496,7 +1498,7 @@ function resultHTML(res){
   return `<div class="rp-h"><div><span class="lab">${esc(res.at)}</span><b>${esc(res.label)}</b></div><button class="btn xs" data-a="rp-close" aria-label="Chiudi">×</button></div>
    ${res.parts.map(pt=>`<div class="rp-dice">${res.parts.length>1?`<span class="small" style="min-width:8em">${esc(pt.label)}</span>`:""}${pt.x.rolls.map(v=>faceHTML(v,dieSides(pt.x.expr),"n")).join("")}${(pt.x.total-pt.x.rolls.reduce((a,b)=>a+b,0))?`<span class="rmod">${sgn(pt.x.total-pt.x.rolls.reduce((a,b)=>a+b,0))}</span>`:""}<span class="rtot">${pt.x.total}</span></div>`).join("")}
    ${res.tgt==="pc"&&res.total!=null?`<div class="rp-mods"><span class="lab">Applica a</span>${(res.target?[pcRaw(res.target)]:S.pcs).map(r=>{const q=P(r);return `<button class="btn xs bad" data-a="rp-apply-pc" data-id="${r.id}">${esc(q.name.split(" ")[0])} → ${pcHpPreview(r,res.total)} PF</button><button class="btn xs" data-a="rp-apply-pc" data-id="${r.id}" data-arm="1" ${r.ar>=q.arMax?"disabled":""}>con Armatura</button>`}).join("")}</div>`:""}
-   ${res.tgt==="foe"&&f&&f.hpMax&&res.total!=null?`<div class="rp-mods"><button class="btn xs bad" data-a="rp-apply-foe" data-id="${f.id}">Applica a ${esc(f.name)} → ${f.minion?"sconfitto":hpFromDamage(res.total,f.thr[0],f.thr[1])+" PF"}</button></div>`:""}`;
+   ${res.tgt==="foe"&&f&&f.hpMax&&res.total!=null?`<div class="rp-mods"><button class="btn xs bad" data-a="rp-apply-foe" data-id="${f.id}">Applica a ${esc(f.name)} → ${f.swarm?Math.min(S[f.swarm]||0,1+Math.floor(res.total/3))+" sconfitti":f.minion?"sconfitto":hpFromDamage(res.total,f.thr[0],f.thr[1])+" PF"}</button></div>`:""}`;
 }
 function renderRoll(){
   const el=document.getElementById("rollpop");
@@ -1522,7 +1524,7 @@ function renderRoll(){
 
 /* ================= avversari ================= */
 function mkFoe(src,where,suffix){
-  return {id:uid(),tmpl:src.key||"",name:src.name+(suffix||""),tier:src.tier||1,type:src.type||"Standard",sub:src.sub||"",desc:src.desc||"",mot:src.mot||"",
+  return {id:uid(),tmpl:src.key||"",name:(src.swarm&&src.plural?src.plural:src.name)+(suffix||""),swarm:src.swarm||"",tier:src.tier||1,type:src.type||"Standard",sub:src.sub||"",desc:src.desc||"",mot:src.mot||"",
     hpMax:src.hp||0,stMax:src.st||0,hp:0,st:0,thr:src.thr||[null,null],diff:src.diff??null,sugg:!!src.sugg,atk:src.atk??null,attack:src.attack||null,
     exp:src.exp||[],feats:src.feats||[],tips:src.tips||[],minion:!!src.minion,cond:[],acted:false,dead:false,where};
 }
@@ -1538,7 +1540,14 @@ function foeDefeated(f){
 }
 const foe=id=>S.foes.find(f=>f.id===id);
 let openFoe=null;
+function swarmDamage(f,v){
+  const n=S[f.swarm]||0,k=Math.min(n,v>0?1+Math.floor(v/3):0);S[f.swarm]=n-k;
+  log(`${v} danni a ${f.name}: ${k} sconfitti (${S[f.swarm]} restano)`);
+  if(f.tmpl==="villager"&&k&&!S.flags.peaceUsed)toast("Un PG ha attaccato un paesano: l'Anziano può usare CI SARÀ PACE (2 Paura)");
+}
+const swarmRow=(f,big)=>{const n=S[f.swarm]||0;return `<div class="${big?"bt-row":"mc-r"} swarm-r"><span class="lab">Numero</span><button class="btn xs" data-a="swarm" data-id="${f.id}" data-k="-1" aria-label="Uno in meno">−</button><b class="mono swarm-n">${n}</b><button class="btn xs" data-a="swarm" data-id="${f.id}" data-k="1" aria-label="Uno in più">+</button>${n?"":`<span class="xsmall muted">nessuno in scena</span>`}</div>`};
 function foeTakeDamage(f,v){
+  if(f.swarm){swarmDamage(f,v);return}
   if(f.minion){foeDefeated(f);const extra=Math.floor(v/3);if(extra)log(`${v} danni: sconfiggi altri ${extra} gregari a portata`);return}
   const hp=hpFromDamage(v,f.thr[0],f.thr[1]);foeMark(f,"hp",hp);log(`${f.name} subisce ${v} danni → ${hp} PF (${f.hpMax-f.hp}/${f.hpMax})`);
 }
@@ -1572,7 +1581,7 @@ function miniCard(f){
   return `<div class="mc ${sel?"sel":""} ${f.dead?"dead":""}" data-a="foe-open" data-id="${f.id}" tabindex="0" role="button" aria-expanded="${sel}">
    <button class="mc-x" data-a="foe-del" data-id="${f.id}" aria-label="Togli ${esc(f.name)} dall'incontro" title="Togli dall'incontro">×</button>
    <div class="mc-h"><button class="ava ${f.acted?"acted":""}" data-a="foe-acted" data-id="${f.id}" title="${f.acted?"Ha agito · tocca per azzerare":"Non ha ancora agito · tocca quando agisce"}" aria-label="${f.acted?"Ha agito":"Segna che ha agito"}" aria-pressed="${f.acted}">${initial(f.name)}</button><b>${esc(f.name)}</b><span class="mc-d">${shield(f.diff,"DIFF","diff xs")}${condMark(f.cond)}</span></div>
-   ${f.hpMax?`<div class="mc-r"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>`:`<div class="mc-r xsmall muted">${esc(f.type)} · nessun PF</div>`}
+   ${f.swarm?swarmRow(f)+(f.tmpl==="villager"?`<div class="mc-r"><button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo · 1 Paura</button></div>`:""):f.hpMax?`<div class="mc-r"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}</div>`:`<div class="mc-r xsmall muted">${esc(f.type)} · nessun PF</div>`}
    ${f.stMax?`<div class="mc-r"><span class="lab">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}</div>`:""}
    <div class="mc-r">${f.dead?`<span class="chip ko" title="Sconfitto">KO</span>`:""}${condChips(f.cond,"foe-cond",f.id)}${condSelect(f.cond,FOE_COND,"foe-cond-add",f.id)}</div>
   </div>`;
@@ -1591,7 +1600,7 @@ function foeSheet(f){
    ${!a&&!rollFeats.length?`<div class="small muted">Nessun attacco: è un incontro da gestire a parole.</div>`:""}
    ${f.exp.length?`<div class="small"><span class="lab">Esperienze</span> ${f.exp.map(e=>`${esc(e[0])} ${sgn(e[1])}`).join(" · ")}</div>`:""}`;
   return `<div class="sheet" id="fd-${f.id}">
-   <div class="sh-ctl"><b class="sh-name">${esc(f.name)}</b>${f.hpMax?`<span class="xsmall muted">soglie ${f.thr[0]??"—"}/${f.thr[1]??"—"}</span>`:""}<span class="sp"></span>
+   <div class="sh-ctl"><b class="sh-name">${esc(f.name)}</b>${f.hpMax&&!f.swarm?`<span class="xsmall muted">soglie ${f.thr[0]??"—"}/${f.thr[1]??"—"}</span>`:""}<span class="sp"></span>
     ${f.hpMax?`<input type="number" id="fd-in-${f.id}" placeholder="Danni…" min="0" aria-label="Danni"><button class="btn hope" data-a="foe-hit" data-id="${f.id}">Applica</button>`:""}
     <select id="cond-${f.id}" data-f="foe-cond-add" data-id="${f.id}" aria-label="Aggiungi condizione"><option value="">+ condizione</option>${FOE_COND.filter(c=>!f.cond.includes(c)).map(c=>`<option>${c}</option>`).join("")}</select>
     <button class="btn ${f.acted?"ok":""}" data-a="foe-acted" data-id="${f.id}">${f.acted?"Ha agito":"Riflettore"}</button>
@@ -1602,10 +1611,10 @@ function foeSheet(f){
      <div class="sh-id"><span class="ava lg">${initial(f.name)}</span><div><b>${esc(f.name)}</b><div class="row" style="gap:6px"><span class="tbadge t-${esc(f.type).replace(/\W/g,"")}">${esc(f.type)}</span><span class="small muted">Tier ${f.tier}${f.sub?" · "+esc(f.sub):""}</span></div>
       ${a?`<div class="row sh-atk">${rb(`${esc(a.n)} · d20${sgn(f.atk||0)}`,{t:"atk",foe:f.id},"atk")}${/d/.test(a.d)?rb(`${a.d} ${a.ty}`,{t:"expr",x:a.d,label:`${f.name}: ${a.n}`,tgt:"pc"},"dmg"):""}</div>`:""}</div></div>
      <div class="sh-stats"><div><span class="lab">Difficoltà</span><b>${f.diff??"—"}${f.sugg?"*":""}</b>${condMark(f.cond)}</div><div><span class="lab">Soglie</span><b>${f.minion?"—":`${f.thr[0]??"—"}/${f.thr[1]??"—"}`}</b></div>
-      <div><span class="lab">PF</span><b>${f.hpMax?`${f.hpMax-f.hp}<small>/${f.hpMax}</small>`:"—"}</b></div><div><span class="lab">Stress</span><b>${f.stMax?`${f.st}<small>/${f.stMax}</small>`:"—"}</b></div></div>
+      <div><span class="lab">${f.swarm?"Numero":"PF"}</span><b>${f.swarm?S[f.swarm]||0:f.hpMax?`${f.hpMax-f.hp}<small>/${f.hpMax}</small>`:"—"}</b></div><div><span class="lab">Stress</span><b>${f.stMax?`${f.st}<small>/${f.stMax}</small>`:"—"}</b></div></div>
      ${f.hpMax||f.stMax?`<div class="sh-pad big-trk">
-      ${f.minion?`<div class="minion-note">Gregario · qualsiasi danno lo sconfigge</div>`:""}
-      ${f.hpMax?`<div class="bt-row"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}<span class="mono">${f.hpMax-f.hp}/${f.hpMax}</span></div>`:""}
+      ${f.minion?`<div class="minion-note">${f.swarm?"Sciame di gregari · ogni colpo ne sconfigge 1, più 1 ogni 3 danni":"Gregario · qualsiasi danno lo sconfigge"}</div>`:""}
+      ${f.swarm?swarmRow(f,true):f.hpMax?`<div class="bt-row"><span class="lab">PF</span>${pips(f.hpMax,f.hp,"hp","foe-pip",`data-id="${f.id}" data-k="hp"`)}<span class="mono">${f.hpMax-f.hp}/${f.hpMax}</span></div>`:""}
       ${f.stMax?`<div class="bt-row"><span class="lab">Stress</span>${pips(f.stMax,f.st,"st","foe-pip",`data-id="${f.id}" data-k="st"`)}<span class="mono">${f.st}/${f.stMax}</span></div>`:""}</div>`:""}
      ${f.cond.length?`<div class="sh-pad">${f.cond.map(c=>`<div class="row small"><button class="chip bad cchip" data-a="foe-cond" data-id="${f.id}" data-k="${esc(c)}">${esc(c)} ×</button><span class="muted">${esc(COND_INFO[c]?.fx||"")}</span></div>`).join("")}</div>`:""}
     </div>
@@ -1885,7 +1894,7 @@ const ENC={
    <li><b>Contatore:</b> se è attivo, qualche minuto di ricerca lo alza di 1.</li>
    <li><b>Chi parla:</b> solo Fidget, Lausa e Octavio.${S.flags.ring?" Il gruppo ha la fede di Luna: indica Octavio, suo marito.":""}</li>
    <li><b>Fine:</b> appena un paesano accetta di guidarli, arriva l'Anziano Halython.</li></ul>`,hide:()=>luna(),auto:[["fidget",1],["lausa",1],["octavio",1]],t:"Chi parla con gli estranei",k:"Sociale",d:"Gli unici paesani disposti a parlare: Fidget, Lausa e Octavio.",sug:[["fidget",1],["lausa",1],["octavio",1]]},
- "3:anziano":{auto:[["elder",1]],t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",
+ "3:anziano":{auto:[["elder",1],["villager",1]],t:"Il confronto con l'Anziano",k:"Sociale",d:"L'Anziano vuole cacciare il gruppo. Ogni tiro riuscito contro di lui gli fa segnare 1 Stress; a 4 Stress cede.",
   rules:()=>`<ul class="tight small">
    <li><b>Anziano · Diffidente:</b> quando un PG fallisce un tiro d'azione contro di lui, il PG segna 1 Stress; altrimenti l'Anziano segna 1 Stress. A 4 Stress si arrende.${luna()?" Luna garantisce per il gruppo: vantaggio.":""}</li>
    <li><b>Da dove arrivano i paesani:</b> con <i>Niente Ospitalità</i> l'Anziano segna 1 Stress e 2d6 Paesani Preoccupati si radunano attorno a lui, in attesa dei suoi ordini.</li>
@@ -1896,12 +1905,8 @@ const ENC={
  <div class="ec"><div class="ec-h"><span class="lab">Convincere l'Anziano · cede a 4 Stress (${S.elderSt||0}/4)</span>${S.flags.elderDone?`<span class="chip ok">si arrende</span>`:""}${luna()?`<span class="chip hope">Luna garantisce: vantaggio</span>`:""}</div>
   <div class="row small">${rb("Presenza · Diff 15",{t:"dual",trait:4,diff:15,adv:luna()?1:"",label:"Convincere l'Anziano"})}<button class="btn xs ok" data-a="elder" data-k="s">Successo: Anziano +1 Stress</button></div>
   <div class="row small"><select id="elderpc" data-f="elderpc" aria-label="PG che ha fallito">${pcOptions(elderPick,"PG che fallisce")}</select><button class="btn xs bad" data-a="elder" data-k="f">Fallimento: PG +1 Stress</button></div></div>
- <div class="ec"><div class="ec-h"><span class="lab">Paesani preoccupati</span><span class="xsmall muted">Gregari · Diff 9 · 2 danni ciascuno</span></div>
-  <div class="row"><b class="ec-n">${S.villagers}</b><button class="btn xs" data-a="vill" data-k="-1" aria-label="Un paesano in meno">−1</button><button class="btn xs" data-a="vill" data-k="1" aria-label="Un paesano in più">+1</button>
-   <input type="number" id="villdmg" value="3" min="1" aria-label="Danni"><button class="btn xs" data-a="vill-dmg">Danni</button>
-   <button class="btn xs fear has-die" data-a="vill-attack" ${S.fear<1||!S.villagers?"disabled":""}>${DIE_SVG}Attacco di Gruppo (1 Paura)</button></div></div>
  ${S.flags.bargain&&!S.flags.bargainUsed&&S.villagers>10?`<div class="warn small ec-full"><b>Patto fatato:</b> con più di 10 paesani presenti, ${esc(pcName(S.flags.bargain))} ne attacca uno. <button class="btn xs" data-a="bargain-used">Il patto è stato riscosso</button></div>`:""}
- </div>`,sug:[["elder",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
+ </div>`,sug:[["elder",1],["villager",1]],reset:()=>{S.elderSt=0;S.villagers=0;S.flags.elderDone=false;S.flags.peaceUsed=false}},
  "4:rituale":{
   rules:()=>`<ul class="tight small">
    <li><b>Conto Rituale 8:</b> a 0 il rituale riesce. Ogni nemico sconfitto: −1. Ogni volta che l'Arcanista viene colpita (Diff 11): +1. Non ha PF: i danni sono solo narrativi.</li>
@@ -3490,6 +3495,7 @@ const CARDACT={
 
 /* ================= azioni ================= */
 function syncElder(){if((S.elderSt||0)>=4&&!S.flags.elderDone){S.flags.elderDone=true;log("L'Anziano Halython si arrende","ok")}const f=S.foes.find(x=>x.tmpl==="elder");if(f)f.st=S.elderSt||0}
+function villAttack(){addFear(-1,"Attacco di Gruppo");const r=rollShow("1d20","Attacco di Gruppo dei Paesani").total;foeRoll.res=`Attacco di Gruppo dei Paesani: d20+0 = ${r}. Se ≥ Evasione del bersaglio: 2 danni fisici per ogni paesano a distanza Vicina (con tutti i ${S.villagers}: ${2*S.villagers}).`;log(foeRoll.res,"fear");toast(foeRoll.res)}
 function noHosp(){if((S.elderSt||0)>=4){toast("L'Anziano non ha più Stress da segnare");return}S.elderSt=(S.elderSt||0)+1;const x=rollShow("2d6","Niente ospitalità: paesani");S.villagers+=x.total;log(`Niente ospitalità: ${x.text} paesani arrivano (${S.villagers})`,"fear");syncElder()}
 function peace(){if(S.flags.peaceUsed){toast("CI SARÀ PACE è già stata usata");return}if(S.fear<2){toast("Servono 2 Paura");return}addFear(-2,"CI SARÀ PACE");S.flags.peaceUsed=true;S.pcs.forEach(p=>{p.hope=0;const x=rollShow("2d4",`Ci sarà pace: ${pcName(p.id)}`);pcMarkStress(p.id,x.total,"Ci sarà pace, "+x.text)});log("CI SARÀ PACE: tutti i PG perdono la Speranza","bad")}
 const top0=()=>setTimeout(()=>scrollTo({top:0}),0);
@@ -3554,8 +3560,8 @@ const A={
   if(o.k==="s"){S.elderSt=Math.min(4,(S.elderSt||0)+1);log(`L'Anziano segna 1 Stress (${S.elderSt}/4)`);syncElder()}
   else{if(!elderPick){toast("Scegli il PG che ha tirato");return}pcMarkStress(elderPick,1,"Diffidente")}}),
  vill:o=>upd(()=>{S.villagers=Math.max(0,S.villagers+(+o.k))}),
- "vill-dmg":()=>upd(()=>{const dmg=+document.getElementById("villdmg").value||0;const k=Math.min(S.villagers,dmg>0?1+Math.floor(dmg/3):0);S.villagers-=k;log(`${dmg} danni ai paesani: ${k} sconfitti (${S.villagers} restano)`);if(k&&!S.flags.peaceUsed)toast("Un PG ha attaccato un paesano: l'Anziano può usare CI SARÀ PACE (2 Paura)")}),
- "vill-attack":()=>upd(()=>{addFear(-1,"Attacco di Gruppo");const r=rollShow("1d20","Attacco di Gruppo dei Paesani").total;foeRoll.res=`Attacco di Gruppo dei Paesani: d20+0 = ${r}. Se ≥ Evasione del bersaglio: 2 danni fisici per ogni paesano a distanza Vicina (con tutti i ${S.villagers}: ${2*S.villagers}).`;log(foeRoll.res,"fear");toast(foeRoll.res)}),
+ swarm:o=>upd(()=>{const f=foe(o.id);if(f&&f.swarm)S[f.swarm]=Math.max(0,(S[f.swarm]||0)+(+o.k))}),
+ "vill-attack":()=>upd(villAttack),
  "bargain-used":()=>upd(()=>{S.flags.bargainUsed=true;log("Il patto fatato è stato riscosso ad Hush","fear")}),
  "ritual-here":o=>upd(()=>{const here=o.k==="1";if(!here&&S.flags.ritualHere!==false)counterAdd(1,"rituale alla Valle Aperta");S.flags.ritualHere=here;if(here)log("I paesani accettano il rituale nel villaggio")}),
  rest:o=>upd(()=>{const r=pcRaw(o.id),p=P(r);const x=rollShow("1d4+1",`${pcName(o.id)}: ${{wounds:"Curare ferite",stress:"Ricomporsi",armor:"Riparare armatura",prep:"Prepararsi"}[o.k]}`);if(o.k==="prep")pendingShow.pop();(S.rest[r.id]=S.rest[r.id]||[]).push(o.k);
@@ -3600,7 +3606,7 @@ const A={
  "foe-acted":o=>upd(()=>{const f=foe(o.id);f.acted=!f.acted}),
  "foe-cond":o=>upd(()=>{const f=foe(o.id);f.cond=toggleCond(f.cond,o.k,"");log(`${f.name}: ${o.k} ${f.cond.includes(o.k)?"attivo":"rimosso"}`)}),
  "foe-feat":o=>upd(()=>{const f=foe(o.id),x=f.feats[+o.i];
-  if(x.fx==="no-hosp"){noHosp();f.acted=true;return}if(x.fx==="peace"){peace();f.acted=true;return}
+  if(x.fx==="no-hosp"){noHosp();f.acted=true;return}if(x.fx==="vill-attack"){if(S.fear<1||!S.villagers){toast(S.villagers?"Paura insufficiente":"Nessun paesano in scena");return}villAttack();f.acted=true;return}if(x.fx==="peace"){peace();f.acted=true;return}
   if(x.c){const [k,n]=x.c.split(":");if(k==="fear"){if(S.fear<+n){toast("Paura insufficiente");return}addFear(-n,`${f.name}: ${x.n}`)}else{foeMark(f,"st",+n);log(`${f.name} segna ${n} Stress per ${x.n}`)}}
   f.acted=true;log(`${f.name} usa ${x.n}`,"fear")}),
  "foe-hit":o=>upd(()=>{const f=foe(o.id);const v=+document.getElementById("fd-in-"+o.id).value||0;if(!v)return;foeTakeDamage(f,v)}),
