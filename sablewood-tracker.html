@@ -843,9 +843,9 @@ body.hub .page{padding-top:22px}
 .nc input,.nc select{padding:6px 9px}
 .camps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
 .camp{border:1px solid var(--line);background:var(--paper);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;animation:sbIn .25s ease-out both;animation-delay:calc(var(--i,0)*25ms)}
-.camp-cov{position:relative;display:block;width:100%;height:150px;border:0;padding:0;background:var(--plate);cursor:pointer;overflow:hidden}
-.camp-cov img{width:100%;height:100%;object-fit:cover;filter:sepia(.3) contrast(1.05);opacity:.9;transition:transform .5s ease-out,opacity .3s}
-.camp-cov:hover img,.camp-cov:focus-visible img{transform:scale(1.015);opacity:1}
+.camp-cov{position:relative;display:block;width:100%;height:150px;border:0;padding:0;background:url(diario/parchment-a.jpg) center/cover,#eadcb8;cursor:pointer;overflow:hidden}
+.camp-cov img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease-out}
+.camp-cov:hover img,.camp-cov:focus-visible img{transform:scale(1.015)}
 .camp-act{position:absolute;left:10px;bottom:10px;background:var(--plate);color:var(--plate-fg);font-family:var(--f-display);padding:1px 11px;border-radius:999px}
 .camp-b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
 .camp-b h3{overflow-wrap:anywhere}
