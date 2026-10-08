@@ -531,7 +531,7 @@ details summary{cursor:pointer}
 /* viste alternative: giocatore e schermo */
 #alt{display:none}
 body.alt #alt{display:block}
-body.alt .bar,body.alt .page,body.alt #rollpop,body.alt #dice-fx{display:none!important}
+body.alt .bar,body.alt .page,body.alt #rollpop{display:none!important}
 .alt-wait{min-height:60vh;display:grid;place-items:center;color:var(--muted);font-family:var(--f-display);font-size:1.4rem}
 .pips.ro .pip{display:inline-block;cursor:default}
 .pv-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:8px 16px}
@@ -821,7 +821,7 @@ body.lb-on{overflow:hidden}
 }
 .tabs button.sub{margin-left:auto;font-weight:600;font-size:.85rem;color:var(--muted)}.tabs button.sub.on{color:var(--ink)}
 /* ---- tavolo del GM: campagne e avversari ---- */
-body.hub .party-pane,body.hub #rollpop,body.hub #dice-fx,body.hub #tabs{display:none!important}
+body.hub .party-pane,body.hub #rollpop,body.hub #tabs{display:none!important}
 .hub-nav{display:flex;gap:3px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:999px;margin-left:12px}
 .hub-nav button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;border-radius:999px;padding:6px 14px 6px 12px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s}
 .hub-nav button:hover{color:var(--ink);background:var(--paper)}
@@ -981,6 +981,10 @@ body.hub .page{padding-top:22px}
 .pl-official-sheet .pl-paper-experiences input[type=number]{background:linear-gradient(180deg,#d7cce6,#a898c0);color:#2d2340;font-weight:700;box-shadow:inset 0 -2px 0 rgba(45,30,65,.35),inset 0 2px 0 rgba(255,255,255,.4)}
 .pl-official-sheet .pl-gold-count button{border:2px solid #6f5a25;box-shadow:0 1px 0 rgba(60,40,10,.3)}
 .pl-official-sheet .pl-gold-count button.on{background:linear-gradient(180deg,#e8cf8d,#b89545)}
+.pl-paper-roll[hidden]{display:block!important;visibility:hidden;height:0;margin:0;padding:0;overflow:hidden}
+#pl-rollpop{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;width:min(560px,calc(100% - 32px));background:#fbf7ee;color:#2b2430;border:2px solid #2b2430;border-radius:12px;box-shadow:0 10px 36px rgba(0,0,0,.45);padding:12px 16px;display:grid;gap:6px;cursor:pointer;animation:pl-in .2s ease-out}
+#pl-rollpop .rp-dice{display:flex;gap:6px;flex-wrap:wrap}#pl-rollpop b{font:600 15px/1.35 "DH Overpass",system-ui,sans-serif}#pl-rollpop small{opacity:.55;font-size:11px}
+.eq-attack-btn{font-weight:700}
 
 /* PLAYER_STYLE_END */
 /* RULES_STYLE_START */
@@ -1373,7 +1377,8 @@ function flushSave(){if(saveTimer){clearTimeout(saveTimer);pushDb()}if(idxTimer)
 
 /* ================= utilità ================= */
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const d=n=>1+Math.floor(Math.random()*n);
+let DREC=null;
+const d=n=>{const v=1+Math.floor(Math.random()*n);if(DREC)DREC.push({v,s:n});return v};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const sgn=n=>(n>=0?"+":"")+n;
 function rollExpr(expr){
@@ -1525,6 +1530,13 @@ function loadThree(){
     sc.onload=()=>window.THREE?res(D3.lib=window.THREE):rej();sc.onerror=()=>{D3.loading=null;rej()};document.head.appendChild(sc)});
 }
 setTimeout(()=>loadThree().catch(()=>{}),1500); // precarica: il primo tiro è già in 3D
+function loadCannon(){
+  if(window.CANNON)return Promise.resolve(D3.phys=window.CANNON);
+  if(D3.loadingPhys)return D3.loadingPhys;
+  return D3.loadingPhys=new Promise((res,rej)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js";
+    sc.onload=()=>window.CANNON?res(D3.phys=window.CANNON):rej();sc.onerror=()=>{D3.loadingPhys=null;rej()};document.head.appendChild(sc)});
+}
+setTimeout(()=>loadCannon().catch(()=>{}),1700);
 const DIE_COL={h:["#c48a20","#fff6e0"],f:["#6a3f86","#f3e9fb"],n:["#2f3833","#eef1ea"]};
 // facce del dado: elenco di poligoni (indici di vertici), ognuno con il suo numero
 function dieShape(T,s){
@@ -1566,10 +1578,11 @@ function buildDie(T,s,col){
     for(let k=1;k<P.length-1;k++)[P[0],P[k],P[k+1]].forEach(q=>{pos.push(q.x,q.y,q.z);const d=q.clone().sub(c);uv.push(.5+d.dot(rt)/(2*R),.5+d.dot(up)/(2*R))});
     geo.addGroup(start,pos.length/3-start,fi);
     mats.push(new T.MeshStandardMaterial({map:numTex(T,fi+1,col,{4:40,8:42,20:38,10:46}[s]||60),roughness:.45,metalness:.1,flatShading:true}));
+    mats[mats.length-1].userData.n=fi+1;
     faces.push({n,up});
   });
   geo.setAttribute("position",new T.Float32BufferAttribute(pos,3));geo.setAttribute("uv",new T.Float32BufferAttribute(uv,2));geo.computeVertexNormals();
-  const m=new T.Mesh(geo,mats);m.userData.faces=faces;m.scale.setScalar(s===6?.95:s===4?1.25:1.05);return m;
+  const m=new T.Mesh(geo,mats);m.userData.faces=faces;m.userData.shape={v,f};m.userData.sides=s;m.scale.setScalar(s===6?.95:s===4?1.25:1.05);return m;
 }
 // quaternione che porta la faccia «v» verso la camera, con il numero dritto
 function restQuat(T,mesh,val){
@@ -1578,7 +1591,7 @@ function restQuat(T,mesh,val){
   const up=fc.up.clone().applyQuaternion(q),tw=new T.Quaternion().setFromAxisAngle(z,Math.PI/2-Math.atan2(up.y,up.x)+(Math.random()-.5)*.3);
   return tw.multiply(q);
 }
-function roll3D(faces,done){
+function roll3DScripted(faces,done){
   const T=D3.lib,fx=document.getElementById("dice-fx"),W=innerWidth,H=innerHeight;
   const r=new T.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.setSize(W,H);
   fx.innerHTML="";fx.appendChild(r.domElement);fx.hidden=false;
@@ -1604,6 +1617,88 @@ function roll3D(faces,done){
     dice.forEach(d=>{d.m.geometry.dispose();d.m.material.forEach(x=>x.dispose())});r.dispose();fx.innerHTML="";done()};
   fx.onclick=finish;raf=requestAnimationFrame(frame);
 }
+
+/* dadi con fisica vera (cannon.js): lancio, rimbalzi contro le sponde, urti tra dadi, assestamento sul tavolo.
+   La simulazione gira prima, a passo fisso; poi si riproduce. Il risultato è già stabilito: a dado fermo
+   la faccia in alto riceve il numero uscito (si scambiano i materiali), così fisica e valore coincidono. */
+function dieBody(C,T,mesh,mat){
+  const sc=mesh.scale.x,{v,f}=mesh.userData.shape,uniq=[];
+  const map=v.map(p=>{const i=uniq.findIndex(q=>q.distanceTo(p)<1e-4);if(i>=0)return i;uniq.push(p.clone());return uniq.length-1});
+  const verts=uniq.map(p=>new C.Vec3(p.x*sc,p.y*sc,p.z*sc));
+  const faces=f.map(poly=>{
+    let idx=poly.map(i=>map[i]).filter((x,i,a)=>a.indexOf(x)===i);
+    const P=idx.map(i=>uniq[i]),c=P.reduce((m,q)=>m.add(q.clone()),new T.Vector3()).divideScalar(P.length);
+    const n=new T.Vector3().crossVectors(P[1].clone().sub(P[0]),P[2].clone().sub(P[0]));
+    if(n.dot(c)<0)idx=idx.slice().reverse();
+    return idx;
+  });
+  const b=new C.Body({mass:1,material:mat,linearDamping:.04,angularDamping:.12});
+  b.addShape(new C.ConvexPolyhedron(verts,faces));
+  return b;
+}
+function topFace(T,mesh,q){
+  const up=new T.Vector3(0,1,0);let best=0,bd=-2;
+  mesh.userData.faces.forEach((fc,i)=>{const d=fc.n.clone().applyQuaternion(q).dot(up);if(d>bd){bd=d;best=i}});
+  return best;
+}
+function roll3DPhysics(faces,done){
+  const T=D3.lib,C=D3.phys,fx=document.getElementById("dice-fx"),W=innerWidth,H=innerHeight;
+  const r=new T.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.setSize(W,H);
+  r.shadowMap.enabled=true;r.shadowMap.type=T.PCFSoftShadowMap;
+  fx.innerHTML="";fx.appendChild(r.domElement);fx.hidden=false;
+  const sc=new T.Scene(),cam=new T.PerspectiveCamera(34,W/H,.1,100);cam.position.set(0,13.5,8.5);cam.lookAt(0,0,0);cam.updateMatrixWorld();
+  sc.add(new T.AmbientLight(0xffffff,.62));
+  const dl=new T.DirectionalLight(0xffffff,.95);dl.position.set(-4,14,7);dl.castShadow=true;dl.shadow.mapSize.set(1024,1024);
+  Object.assign(dl.shadow.camera,{left:-12,right:12,top:12,bottom:-12,near:1,far:40});sc.add(dl);
+  const floor=new T.Mesh(new T.PlaneGeometry(60,60),new T.ShadowMaterial({opacity:.38}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;sc.add(floor);
+  const ground=(nx,ny)=>{const ray=new T.Raycaster();ray.setFromCamera({x:nx,y:ny},cam);const p=new T.Vector3();ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),p);return p};
+  const halfX=Math.max(3.4,Math.min(9,ground(.82,-.05).x)),zNear=ground(0,-.62).z,zFar=ground(0,.5).z;
+  // mondo fisico: tavolo, quattro sponde invisibili, gravità forte (i dadi cadono secchi)
+  const world=new C.World();world.gravity.set(0,-70,0);world.broadphase=new C.NaiveBroadphase();world.solver.iterations=18;world.allowSleep=true;
+  const mTable=new C.Material("table"),mDie=new C.Material("die");
+  world.addContactMaterial(new C.ContactMaterial(mTable,mDie,{friction:.42,restitution:.34}));
+  world.addContactMaterial(new C.ContactMaterial(mDie,mDie,{friction:.2,restitution:.3}));
+  const plane=(pos,axis,ang)=>{const b=new C.Body({mass:0,material:mTable});b.addShape(new C.Plane());b.position.set(...pos);b.quaternion.setFromAxisAngle(new C.Vec3(...axis),ang);world.addBody(b)};
+  plane([0,0,0],[1,0,0],-Math.PI/2);plane([-halfX,0,0],[0,1,0],Math.PI/2);plane([halfX,0,0],[0,1,0],-Math.PI/2);plane([0,0,zFar+.2],[0,1,0],0);plane([0,0,zNear-.2],[0,1,0],Math.PI);
+  const shown=faces.slice(0,8),dice=shown.map(f=>{const m=buildDie(T,f.s,DIE_COL[f.c]||DIE_COL.n);m.castShadow=true;m.visible=false;sc.add(m);return m});
+  let bodies,rec,N0;
+  for(let attempt=0;attempt<6;attempt++){
+  if(bodies)bodies.forEach(b=>world.removeBody(b));
+  bodies=dice.map((m,i)=>{
+    const b=dieBody(C,T,m,mDie),n=shown.length;
+    b.position.set(-halfX+1.4+Math.random()*.8,3.2+i*1.5+Math.random(),zFar+1.8+((i+.5)/n)*(zNear-zFar-3.6)+(Math.random()-.5)*.5);
+    b.quaternion.setFromEuler(Math.random()*6.28,Math.random()*6.28,Math.random()*6.28);
+    b.velocity.set(9+Math.random()*8,-1-Math.random()*3,(Math.random()-.5)*6);
+    b.angularVelocity.set((Math.random()-.5)*34,(Math.random()-.5)*34,(Math.random()-.5)*34);
+    b.allowSleep=true;b.sleepSpeedLimit=.2;b.sleepTimeLimit=.25;world.addBody(b);return b});
+  // simulazione completa a 60 Hz, registrata fotogramma per fotogramma
+  rec=bodies.map(()=>[]);let calm=0;
+  for(let step=0;step<640;step++){
+    world.step(1/60);
+    bodies.forEach((b,i)=>rec[i].push([b.position.x,b.position.y,b.position.z,b.quaternion.x,b.quaternion.y,b.quaternion.z,b.quaternion.w]));
+    const moving=bodies.some(b=>b.velocity.length()>.08||b.angularVelocity.length()>.15);calm=moving?0:calm+1;
+    if(step>50&&calm>18)break;
+  }
+  const bad=dice.some((m,i)=>{if(m.userData.sides===4)return false;const e=rec[i][rec[i].length-1],q=new T.Quaternion(e[3],e[4],e[5],e[6]);return m.userData.faces[topFace(T,m,q)].n.clone().applyQuaternion(q).y<.995});
+  if(!bad)break;
+  }
+  const N=rec[0].length;D3.check=[];
+  dice.forEach((m,i)=>{ // la faccia in alto mostra il valore uscito
+    const e=rec[i][N-1],q=new T.Quaternion(e[3],e[4],e[5],e[6]),top=topFace(T,m,q),want=Math.min(shown[i].v,m.material.length)-1;
+    if(want!==top){const mt=m.material;[mt[top],mt[want]]=[mt[want],mt[top]]}
+    D3.check.push({want:shown[i].v,got:m.material[top].userData.n,up:m.userData.faces[top].n.clone().applyQuaternion(q).y});
+  });
+  const t0=performance.now(),hold=.75;let raf=0,ended=false;
+  const pose=k=>dice.forEach((m,i)=>{const e=rec[i][Math.min(k,N-1)];m.position.set(e[0],e[1],e[2]);m.quaternion.set(e[3],e[4],e[5],e[6]);m.visible=true});
+  const frame=now=>{
+    const t=(now-t0)/1000;pose(Math.max(0,Math.floor(t*60)));r.render(sc,cam);
+    if(t<N/60+hold)raf=requestAnimationFrame(frame);else finish();
+  };
+  const finish=()=>{if(ended)return;ended=true;cancelAnimationFrame(raf);fx.onclick=null;fx.hidden=true;
+    dice.forEach(m=>{m.geometry.dispose();m.material.forEach(x=>x.dispose())});r.dispose();fx.innerHTML="";done()};
+  fx.onclick=finish;raf=requestAnimationFrame(frame);
+}
+function roll3D(faces,done){if(D3.phys||window.CANNON){D3.phys=D3.phys||window.CANNON;try{return roll3DPhysics(faces,done)}catch(e){console.warn("fisica dadi non disponibile",e);document.getElementById("dice-fx").innerHTML=""}}return roll3DScripted(faces,done)}
 let fxTimer=null,fxTick=null;
 function animateDice(faces,done){
   const fx=document.getElementById("dice-fx");
@@ -4269,7 +4364,7 @@ function eqTarget(){return EQ.draft?PL.draft:PL.chars.find(x=>x.id===EQ.characte
 function eqPicker(c,kind='all',draft=false){if(!c)throw Error('Apri o crea prima un personaggio.');eqEnsure(c);EQ.character=c.id;EQ.draft=draft;EQ.start=draft;EQ.kind=kind;EQ.query='';EQ.book='all';EQ.tier='all';EQ.magic='all';EQ.page=0;EQ.detail=null;EQ.owned=null;EQ.inventorySlot=null;PL.modal={kind:'gear-picker'};PL.error='';EQ.message='';}
 function eqPickerHTML(){const c=eqTarget();if(EQ.owned&&EQ.detail)return `<div class="eq-picker eq-owned-detail">${eqDetailHTML(true)}</div>`;return `<div class="eq-picker"><p class="pl-note">${esc(c.name||c.className)} · scegli le carte da aggiungere allo zaino. Puoi equipaggiare armi e armature direttamente.${EQ.start?' Starting equipment · Tier 1.':''}</p>${PL.error?`<p class="pl-error" role="alert">${esc(PL.error)}</p>`:''}${EQ.message?`<p class="eq-notice" role="status">${esc(EQ.message)}</p>`:''}${EQ.detail?eqDetailHTML(true):eqGridHTML(true)}</div>`}
 function eqDetailHTML(inline){const e=eqItem(EQ.detail);if(!e)return '';const owned=inline&&eqTarget()?.items.find(x=>x.uid===EQ.owned&&x.gear===e.id);const body=`<div class="pl-head"><h2>${esc(e.name)}</h2>${owned?'':eqBtn('detail-close','← Indietro')}</div><div class="eq-detail">${owned?`<div class="eq-detail-card">${eqOwnedCard(eqTarget(),owned)}</div>`:eqArtHTML(e,'eq-detail-art')}<div><div class="pl-actions"><span class="pl-badge">${eqLabel(e.kind)}</span>${e.tier?`<span class="pl-badge">Tier ${e.tier}</span>`:''}${e.magic?'<span class="pl-badge">Magic</span>':''}<span class="pl-badge">${e.book==='hf'?'Hope & Fear':'Core Rulebook'} · p.${e.page}</span></div><h3>${e.kind==='armor'?`${e.major}/${e.severe} · Armor Score ${e.score}`:e.damage?`${esc(e.damage)} · ${e.hands} hand${e.hands>1?'s':''}`:e.rarity||'Item'}</h3>${e.trait?`<p>${esc(e.trait)} · ${esc(e.range)}</p>`:''}<p class="eq-feature-full">${eqFeatureHTML(e.feature)}</p>${e.campaign?`<p class="pl-note">Campaign: ${esc(e.campaign)}</p>`:''}${owned?'<p class="pl-note">Gestisci questo oggetto dai comandi sulla carta.</p>':inline?`<div class="pl-actions">${eqBtn('add','＋ Aggiungi',`data-id="${e.id}"`,'pri')}${['primary','secondary','armor'].includes(e.kind)?eqBtn('add-equip','Aggiungi & equipaggia',`data-id="${e.id}"`):''}</div>`:PL.chars.length?`<label>Personaggio<select id="eq-target">${PL.chars.map(c=>`<option value="${c.id}">${esc(c.name)} · Level ${c.level}</option>`).join('')}</select></label>${eqBtn('catalog-add','＋ Aggiungi allo zaino',`data-id="${e.id}"`,'pri')}`:'<p>Crea un personaggio per aggiungere questo oggetto.</p>'}</div></div>`;return inline?body:`<div class="pl-overlay"><section class="pl-dialog" role="dialog" aria-modal="true" aria-label="${esc(e.name)}">${body}</section></div>`}
-function eqOwnedActions(c,x){const e=eqItem(x.gear),active=[c.primary,c.secondary,c.armorId].includes(e.id)||x.equipped;return `<div class="eq-owned-actions">${e.kind==='consumable'?eqBtn('use','Usa',`data-uid="${x.uid}"`):active?eqBtn('unequip','Rimuovi',`data-uid="${x.uid}"`):eqBtn('equip','Equipaggia',`data-uid="${x.uid}"`)}${e.damage&&active?eqBtn('attack','⚄',`data-id="${e.id}" aria-label="Attack with ${esc(e.name)}"`):''}${active&&c.equipmentState.reload[e.id]?eqBtn('reload','Reload',`data-id="${e.id}" title="Reload · 1 Stress"`):''}${active&&e.feature.startsWith('Six Shot:')?`<span class="eq-ammo-count">${c.equipmentState.ammo[e.id]??6}/6 Ammo</span>${eqBtn('ammo-reload','Reload',`data-id="${e.id}" title="Reload · 1 Stress"`)}`:''}${active&&e.feature!=='—'?eqBtn('keyword','✦',`data-id="${e.id}" aria-label="Keyword ${esc(e.name)}"`):''}${eqBtn('trade','⇄',`data-uid="${x.uid}" aria-label="Scambia ${esc(e.name)}"`)}${eqBtn('sell','Vendi',`data-uid="${x.uid}"`)}</div>`}
+function eqOwnedActions(c,x){const e=eqItem(x.gear),active=[c.primary,c.secondary,c.armorId].includes(e.id)||x.equipped;return `<div class="eq-owned-actions">${e.kind==='consumable'?eqBtn('use','Usa',`data-uid="${x.uid}"`):active?eqBtn('unequip','Rimuovi',`data-uid="${x.uid}"`):eqBtn('equip','Equipaggia',`data-uid="${x.uid}"`)}${e.damage&&active?eqBtn('attack','⚄ Attacca',`data-id="${e.id}" aria-label="Attack with ${esc(e.name)}" title="Tira attacco e danni"`,'primary eq-attack-btn'):''}${active&&c.equipmentState.reload[e.id]?eqBtn('reload','Reload',`data-id="${e.id}" title="Reload · 1 Stress"`):''}${active&&e.feature.startsWith('Six Shot:')?`<span class="eq-ammo-count">${c.equipmentState.ammo[e.id]??6}/6 Ammo</span>${eqBtn('ammo-reload','Reload',`data-id="${e.id}" title="Reload · 1 Stress"`)}`:''}${active&&e.feature!=='—'?eqBtn('keyword','✦',`data-id="${e.id}" aria-label="Keyword ${esc(e.name)}"`):''}${eqBtn('trade','⇄',`data-uid="${x.uid}" aria-label="Scambia ${esc(e.name)}"`)}${eqBtn('sell','Vendi',`data-uid="${x.uid}"`)}</div>`}
 function eqOwnedCard(c,x){const e=eqItem(x.gear);if(!e)return '';let html=eqCard(e).replace(`data-eq="detail" data-id="${e.id}"`,`data-eq="inspect-owned" data-uid="${x.uid}"`).replace(`data-pl-card="${e.id}"`,`data-pl-card="owned-${x.uid}"`).replace('class="eq-card"','class="eq-card eq-owned-card"');if(e.damage)html=html.replace(esc(e.damage),esc(eqWeaponFormula(c,e)));return html.replace('</article>',`<span class="eq-owned-quantity">×${x.qty}</span>${eqOwnedActions(c,x)}</article>`)}
 function eqEmptySlot(label,action,attrs){return `<button type="button" class="eq-empty-slot" data-eq="${action}" ${attrs}><span>＋</span><b>${label}</b><small>Scegli una carta</small></button>`}
 function eqEquippedCards(c){eqEnsure(c);return `<div class="eq-equipped-grid">${[['primary','Primary'],['secondary','Secondary'],['armorId','Armor']].map(([key,label])=>{const e=eqItem(c[key]),held=c.items.find(x=>x.gear===e?.id);return `<div class="eq-equipment-slot"><div class="eq-slot-heading"><b>${label}</b>${eqBtn('pick-slot','⇄',`data-kind="${key==='armorId'?'armor':key}" aria-label="Change ${label}"`)}</div>${held?eqOwnedCard(c,held):e?eqCard(e):eqEmptySlot(label,'pick-slot',`data-kind="${key==='armorId'?'armor':key}"`)}</div>`}).join('')}</div>`}
@@ -4302,7 +4397,7 @@ case'trade-download':plDownload(c.outgoingTrades[Number(o.index)],'equipment-tra
 case'trade-import':document.getElementById('eq-import').click();return;
 case'effect-end':eqEnsure(c);c.equipmentState.effects.splice(Number(o.index),1);plClampTracks(c);plSave(c);break;
 case'attack':PL.modal={kind:'gear-attack',id:o.id};break;
-case'attack-confirm':{const difficulty=Number(document.getElementById('eq-difficulty').value);if(!Number.isFinite(difficulty)||difficulty<1)throw Error('Difficulty non valida.');eqAttack(c,o.id,{difficulty,versatile:!!document.getElementById('eq-versatile')?.checked,ignoreAimed:!!document.getElementById('eq-ignore-aimed')?.checked,range:document.getElementById('eq-range').value,advantage:document.getElementById('eq-advantage').value,followUp:!!document.getElementById('eq-follow-up')?.checked,boost:!!document.getElementById('eq-boost')?.checked,devastating:!!document.getElementById('eq-devastating')?.checked});plSave(c);PL.modal=null;break}
+case'attack-confirm':{const difficulty=Number(document.getElementById('eq-difficulty').value);if(!Number.isFinite(difficulty)||difficulty<1)throw Error('Difficulty non valida.');plFx(()=>{eqAttack(c,o.id,{difficulty,versatile:!!document.getElementById('eq-versatile')?.checked,ignoreAimed:!!document.getElementById('eq-ignore-aimed')?.checked,range:document.getElementById('eq-range').value,advantage:document.getElementById('eq-advantage').value,followUp:!!document.getElementById('eq-follow-up')?.checked,boost:!!document.getElementById('eq-boost')?.checked,devastating:!!document.getElementById('eq-devastating')?.checked});plSave(c);PL.modal=null});break}
 case'ammo-reload':eqPay(c,'stress',1);c.equipmentState.ammo[o.id]=6;plSave(c);break;
 case'reload':eqPay(c,'stress',1);c.equipmentState.reload[o.id]=false;plSave(c);break;
 case'keyword':PL.modal={kind:'gear-keyword',id:o.id};break;
@@ -4489,7 +4584,7 @@ function plSheet(c){const st=plStats(c),k=plClass(c),a=plEquip(c.armorId),accent
  const equipment=`<div class="pl-proficiency"><span>PROFICIENCY</span>${Array.from({length:6},(_,i)=>`<i class="${i<st.proficiency?'on':''}"></i>`).join('')}</div>${eqEquippedCards(c)}`;
  const inventory=`${eqInventory(c)}<div class="eq-mundane-notes">${plField('Mundane items · annotazioni libere','inventory',c.inventory,{area:true})}</div><details class="eq-inventory-notes"><summary>Class item & custom items</summary>${plField('Class item','classItem',c.classItem)}${[0,1].filter(i=>c['inventoryWeapon'+i+'Name']).map(i=>`<details><summary>Custom weapon · ${esc(c['inventoryWeapon'+i+'Name'])}</summary>${['Name','Trait','Damage','Feature'].map((field,j)=>plField(['Name','Trait & range','Damage dice & type','Feature'][j],'inventoryWeapon'+i+field,c['inventoryWeapon'+i+field]||'')).join('')}</details>`).join('')}</details>`;
 
- return `<div class="pl-head pl-sheet-toolbar"><div class="pl-actions">${plBtn('back','← Personaggi')}<span class="pl-saved">${esc(PL.sync)}</span></div><div class="pl-actions">${plBtn('join','Campagne',`data-id="${c.id}"`)}${c.level<10?plBtn('level','Level up →','','pri'):''}${plBtn('rest','Riposo')}${plBtn('scene','Fine scena')}${plBtn('session','Nuova sessione')}${eqBtn('open-picker','＋ Add oggetto')}${plBtn('export','Esporta',`data-id="${c.id}"`)}</div></div><div class="pl-paper-scroll"><article class="pl-paper pl-official-sheet" style="--sheet-accent:${accent};--sheet-second:${second}"><header class="pl-paper-header"><div class="pl-class-banner"><h1>${esc(c.className)}</h1><div>${k.domains.map(i=>`<img src="${cdomimg(i)}" alt="">`).join('')}</div><p>${k.domains.map(i=>CDOM[i].k).join(' & ')}</p></div><div class="pl-paper-identity"><div>${plField('Name','name',c.name)}${plField('Pronouns','pronouns',c.pronouns)}</div><div><label>Heritage<output>${esc(plCard(c.ancestry)?.n)}${c.mixed!==''?' / '+esc(plCard(c.mixed)?.n):''} · ${esc(plCard(c.community)?.n)}</output></label><label>Subclass<output>${esc(c.subclass)}</output></label></div></div><button class="pl-level-shield" ${c.level<10?'data-pl="level"':''} aria-label="Level ${c.level}${c.level<10?' · Level up':''}"><b>${c.level}</b><small>LEVEL</small></button></header><div class="pl-paper-top"><div class="pl-defense"><div class="pl-defense-values"><div class="pl-defense-icon evasion"><b>${st.evasion}</b><small>EVASION</small></div><div class="pl-defense-icon armor"><b>${st.armor}</b><small>ARMOR</small></div></div>${plSheetPips(c,'armor',st.armor,'#328e8c')}</div><div class="pl-paper-traits">${PL_TRAITS.map((n,i)=>`<button class="pl-trait-shield ${c.marked.includes(i)?'marked':''}" data-pl="roll" data-trait="${i}" aria-label="Roll ${n}"><strong>${n}</strong><span class="pl-trait-flag"><i></i><b>${sgn(st.traits[i])}</b></span><small>${PL_VERBS[i].split(' · ').join('<br>')}</small></button>`).join('')}</div></div>${PL.lastRoll?`<div class="pl-paper-roll" role="status">${esc(PL.lastRoll)}</div>`:''}<div class="pl-paper-columns"><div class="pl-paper-left">${section('Damage & Health',damage,'pl-health-panel')}${section('Hope',hope,'pl-hope-panel')}${section('Experience',experience,'pl-experience-panel')}${section('Gold',gold,'pl-gold-panel')}${section('Class Feature',`<div class="pl-class-feature">${plSheetFeature(k.features)}${c.multiclass?plReference(c.multiclass.className,PLAYER_RULES.classes[c.multiclass.className].features):''}</div>`,'pl-feature-panel')}</div><div class="pl-paper-right eq-compact-inventory">${section('Equipment',equipment,'eq-equipped-panel')}${section('Inventory',inventory,'eq-inventory-panel')}</div></div><footer class="pl-paper-footer"><span>Daggerheart © Darrington Press 2025</span><span>${esc(c.name)} · LEVEL ${c.level}</span></footer></article></div>${c.hp>=st.hp?'<p class="pl-error">Ultimo Hit Point segnato: scegli una Death Move con il GM.</p>':''}<section class="pl-card-workspace" style="--pl-accent:${accent}"><div class="pl-head"><div><div class="pl-kicker">Your abilities, at hand</div><h2>Cards & abilities</h2></div><span class="pl-badge">Loadout ${plActive(c).length} / ${eqLoadoutMax(c)}</span></div><nav class="pl-tabs" aria-label="Gestione carte">${[['loadout','Loadout'],['vault','Vault'],['used','Used'],['features','Heritage & subclass']].map(([v,n])=>plBtn('tab',n,`data-tab="${v}"`,PL.tab===v?'on':'')).join('')}</nav><p class="pl-note">${PL.tab==='vault'?'Recall Cost in Stress · scegli quale carta sostituire quando il loadout è pieno.':PL.tab==='features'?'Carte sempre attive · non occupano spazio nel loadout.':'Apri una carta per leggerla. Gestisci utilizzo, Vault e token direttamente sulla carta.'}</p>${plCardGrid((PL.tab==='features'?plFoundations(c):c.cards.filter(x=>PL.tab==='loadout'?x.active&&!x.banned:PL.tab==='vault'?!x.active:!!c.cardState[x.i]?.used).map(x=>plCard(x.i))).filter(Boolean),[],'manage')}${plReference('Loadout & vault',PLAYER_RULES.rules.cards)}</section><div class="pl-sheet-extras"><section class="pl-box"><h3>Story & notes</h3>${plField('Appearance','description',c.description,{area:true})}${plField('Background','background',c.background,{area:true})}${plField('Connections','connections',c.connections,{area:true})}${plField('Private notes','notes',c.notes,{area:true})}${plField('Conditions','conditionsText',(c.conditions||[]).join(', '))}${plEquipmentEditor(c)}<details><summary>Level-up history</summary><div class="pl-log">${c.history.map(x=>`<div>${new Date(x.at).toLocaleDateString('it-IT')} · ${esc(x.text)}</div>`).join('')}</div></details></section><div class="pl-stack">${plSpecialSheet(c)}</div></div>`}
+ return `<div class="pl-head pl-sheet-toolbar"><div class="pl-actions">${plBtn('back','← Personaggi')}<span class="pl-saved">${esc(PL.sync)}</span></div><div class="pl-actions">${plBtn('join','Campagne',`data-id="${c.id}"`)}${c.level<10?plBtn('level','Level up →','','pri'):''}${plBtn('rest','Riposo')}${plBtn('scene','Fine scena')}${plBtn('session','Nuova sessione')}${eqBtn('open-picker','＋ Add oggetto')}${plBtn('export','Esporta',`data-id="${c.id}"`)}</div></div><div class="pl-paper-scroll"><article class="pl-paper pl-official-sheet" style="--sheet-accent:${accent};--sheet-second:${second}"><header class="pl-paper-header"><div class="pl-class-banner"><h1>${esc(c.className)}</h1><div>${k.domains.map(i=>`<img src="${cdomimg(i)}" alt="">`).join('')}</div><p>${k.domains.map(i=>CDOM[i].k).join(' & ')}</p></div><div class="pl-paper-identity"><div>${plField('Name','name',c.name)}${plField('Pronouns','pronouns',c.pronouns)}</div><div><label>Heritage<output>${esc(plCard(c.ancestry)?.n)}${c.mixed!==''?' / '+esc(plCard(c.mixed)?.n):''} · ${esc(plCard(c.community)?.n)}</output></label><label>Subclass<output>${esc(c.subclass)}</output></label></div></div><button class="pl-level-shield" ${c.level<10?'data-pl="level"':''} aria-label="Level ${c.level}${c.level<10?' · Level up':''}"><b>${c.level}</b><small>LEVEL</small></button></header><div class="pl-paper-top"><div class="pl-defense"><div class="pl-defense-values"><div class="pl-defense-icon evasion"><b>${st.evasion}</b><small>EVASION</small></div><div class="pl-defense-icon armor"><b>${st.armor}</b><small>ARMOR</small></div></div>${plSheetPips(c,'armor',st.armor,'#328e8c')}</div><div class="pl-paper-traits">${PL_TRAITS.map((n,i)=>`<button class="pl-trait-shield ${c.marked.includes(i)?'marked':''}" data-pl="roll" data-trait="${i}" aria-label="Roll ${n}"><strong>${n}</strong><span class="pl-trait-flag"><i></i><b>${sgn(st.traits[i])}</b></span><small>${PL_VERBS[i].split(' · ').join('<br>')}</small></button>`).join('')}</div></div><div class="pl-paper-roll" role="status" ${PL.lastRoll?'':'hidden'}>${esc(PL.lastRoll||'')}</div><div class="pl-paper-columns"><div class="pl-paper-left">${section('Damage & Health',damage,'pl-health-panel')}${section('Hope',hope,'pl-hope-panel')}${section('Experience',experience,'pl-experience-panel')}${section('Gold',gold,'pl-gold-panel')}${section('Class Feature',`<div class="pl-class-feature">${plSheetFeature(k.features)}${c.multiclass?plReference(c.multiclass.className,PLAYER_RULES.classes[c.multiclass.className].features):''}</div>`,'pl-feature-panel')}</div><div class="pl-paper-right eq-compact-inventory">${section('Equipment',equipment,'eq-equipped-panel')}${section('Inventory',inventory,'eq-inventory-panel')}</div></div><footer class="pl-paper-footer"><span>Daggerheart © Darrington Press 2025</span><span>${esc(c.name)} · LEVEL ${c.level}</span></footer></article></div>${c.hp>=st.hp?'<p class="pl-error">Ultimo Hit Point segnato: scegli una Death Move con il GM.</p>':''}<section class="pl-card-workspace" style="--pl-accent:${accent}"><div class="pl-head"><div><div class="pl-kicker">Your abilities, at hand</div><h2>Cards & abilities</h2></div><span class="pl-badge">Loadout ${plActive(c).length} / ${eqLoadoutMax(c)}</span></div><nav class="pl-tabs" aria-label="Gestione carte">${[['loadout','Loadout'],['vault','Vault'],['used','Used'],['features','Heritage & subclass']].map(([v,n])=>plBtn('tab',n,`data-tab="${v}"`,PL.tab===v?'on':'')).join('')}</nav><p class="pl-note">${PL.tab==='vault'?'Recall Cost in Stress · scegli quale carta sostituire quando il loadout è pieno.':PL.tab==='features'?'Carte sempre attive · non occupano spazio nel loadout.':'Apri una carta per leggerla. Gestisci utilizzo, Vault e token direttamente sulla carta.'}</p>${plCardGrid((PL.tab==='features'?plFoundations(c):c.cards.filter(x=>PL.tab==='loadout'?x.active&&!x.banned:PL.tab==='vault'?!x.active:!!c.cardState[x.i]?.used).map(x=>plCard(x.i))).filter(Boolean),[],'manage')}${plReference('Loadout & vault',PLAYER_RULES.rules.cards)}</section><div class="pl-sheet-extras"><section class="pl-box"><h3>Story & notes</h3>${plField('Appearance','description',c.description,{area:true})}${plField('Background','background',c.background,{area:true})}${plField('Connections','connections',c.connections,{area:true})}${plField('Private notes','notes',c.notes,{area:true})}${plField('Conditions','conditionsText',(c.conditions||[]).join(', '))}${plEquipmentEditor(c)}<details><summary>Level-up history</summary><div class="pl-log">${c.history.map(x=>`<div>${new Date(x.at).toLocaleDateString('it-IT')} · ${esc(x.text)}</div>`).join('')}</div></details></section><div class="pl-stack">${plSpecialSheet(c)}</div></div>`}
 function playerAfterRender(){cardsObserve(document.querySelector('.pl'))}
 
 function plEquipmentEditor(c){const p=plEquip(c.primary);return `<details><summary>Modifica equipaggiamento, tratti e bonus</summary><div class="pl-fields" style="margin-top:14px">${['hpBonus','stressBonus','evasionBonus','armorBonus','majorBonus','severeBonus'].map((key,i)=>plField(['Extra HP slots','Extra Stress slots','Evasion bonus','Armor Score bonus','Major threshold bonus','Severe threshold bonus'][i],key,c[key],{type:'number',min:-5,max:20})).join('')}${PL_TRAITS.map((n,i)=>plField(n+' · base','traits.'+i,c.traits[i],{type:'number',min:-3,max:10})).join('')}</div><p class="pl-note">Usa i bonus per effetti permanenti di carte e capacità che non vengono applicati automaticamente.</p></details>`}
@@ -4547,7 +4642,20 @@ function plMorph(old,next){
  if(open)old.open=true;
  if(!focused&&['INPUT','TEXTAREA','SELECT'].includes(old.tagName)){if(old.value!==next.value)old.value=next.value;if(old.tagName==='INPUT')old.checked=next.checked}
 }
-function plRender(){const root=document.querySelector('.pl'),y=scrollY,dialog=document.querySelector('.pl-dialog'),sy=dialog?.scrollTop||0,phase=dialog?.getAttribute('data-pl-phase');
+/* tiri con dadi 3D (stessa animazione della campagna): la logica gira subito, i dadi lanciati vengono registrati
+   e riprodotti; la scheda si aggiorna solo a dadi fermi (PL.hold) così non lampeggia a metà lancio */
+function plFx(run){
+ DREC=[];let rec;try{run()}finally{rec=DREC;DREC=null}
+ const faces=rec.filter(x=>[4,6,8,10,12,20].includes(x.s)).slice(0,8).map((x,i)=>({v:x.v,s:x.s,c:x.s===12&&i<2?(i?'f':'h'):'n'}));
+ const text=PL.lastRoll;if(!faces.length)return;
+ document.getElementById('pl-rollpop')?.remove();PL.hold=true;let ended=false;if(!PL.modal)document.querySelectorAll('.pl-overlay,[data-pl-overlay]').forEach(n=>n.style.display='none');
+ const end=()=>{if(ended)return;ended=true;PL.hold=false;plPop(text,faces);plRender()};
+ try{animateDice(faces,end)}catch(e){end()}
+ setTimeout(end,9000);
+}
+function plPop(text,faces){let el=document.getElementById('pl-rollpop');if(!el){el=document.createElement('div');el.id='pl-rollpop';el.setAttribute('role','status');el.onclick=()=>el.remove();document.body.appendChild(el)}
+ el.innerHTML=`<div class="rp-dice">${faces.map(f=>faceHTML(f.v,f.s,f.c)).join('')}</div><b>${esc(text)}</b><small>tocca per chiudere</small>`;clearTimeout(el._t);el._t=setTimeout(()=>el.remove(),12000)}
+function plRender(){if(PL.hold)return;const root=document.querySelector('.pl'),y=scrollY,dialog=document.querySelector('.pl-dialog'),sy=dialog?.scrollTop||0,phase=dialog?.getAttribute('data-pl-phase');
  if(root?.tagName==='MAIN'&&!PL.legacy&&typeof document.createElement==='function'){const template=document.createElement('template');template.innerHTML=APP.sec==='equipaggiamenti'?renderEquipment():renderPlayerWorkspace();plMorph(root,template.content.firstElementChild);playerAfterRender()}else render();
  scrollTo(0,y);const nextDialog=document.querySelector('.pl-dialog');if(nextDialog){nextDialog.scrollTop=PL.error||phase!==nextDialog.getAttribute('data-pl-phase')?0:sy;if(!dialog)nextDialog.focus({preventScroll:true})}
 }
@@ -4599,7 +4707,7 @@ async function plAction(a,o){const c=plCurrent();PL.error='';switch(a){
  case'ban-confirm':{const card=c.cards.find(x=>x.i===+o.i);card.active=false;card.banned=true;plRecord(c,plCard(card.i).n+' → permanent vault');PL.modal=null;plSave(c);break}
  case'hope-feature':eqPay(c,'hope',3);plSave(c);break;
  case'experience':eqPay(c,'hope',1);plSave(c);break;
- case'roll':{const h=d(12),f=d(12),mod=plStats(c).traits[+o.trait]+eqRollBonus(c,+o.trait),critical=h===f;PL.lastRoll=`Hope ${h} · Fear ${f} ${sgn(mod)} = ${h+f+mod} · ${critical?'Critical success':h>f?'with Hope':'with Fear'}`;if(critical){c.hope=clamp(c.hope+1,0,plStats(c).hope);c.stress=Math.max(0,c.stress-1)}else if(h>f)c.hope=clamp(c.hope+1,0,plStats(c).hope);if(c.className==='Wizard'&&(h===+c.classChoices.pattern||f===+c.classChoices.pattern))toast('Strange Patterns: scegli se guadagnare Hope o liberare Stress.');eqEnsure(c);c.equipmentState.effects=c.equipmentState.effects.filter(x=>!(x.expiry==='next-roll'&&x.trait===+o.trait));if(f>h)c.equipmentState.effects=c.equipmentState.effects.filter(x=>x.expiry!=='fear');plRecord(c,PL.lastRoll);plSave(c);break}
+ case'roll':plFx(()=>{const h=d(12),f=d(12),mod=plStats(c).traits[+o.trait]+eqRollBonus(c,+o.trait),critical=h===f;PL.lastRoll=`Hope ${h} · Fear ${f} ${sgn(mod)} = ${h+f+mod} · ${critical?'Critical success':h>f?'with Hope':'with Fear'}`;if(critical){c.hope=clamp(c.hope+1,0,plStats(c).hope);c.stress=Math.max(0,c.stress-1)}else if(h>f)c.hope=clamp(c.hope+1,0,plStats(c).hope);if(c.className==='Wizard'&&(h===+c.classChoices.pattern||f===+c.classChoices.pattern))toast('Strange Patterns: scegli se guadagnare Hope o liberare Stress.');eqEnsure(c);c.equipmentState.effects=c.equipmentState.effects.filter(x=>!(x.expiry==='next-roll'&&x.trait===+o.trait));if(f>h)c.equipmentState.effects=c.equipmentState.effects.filter(x=>x.expiry!=='fear');plRecord(c,PL.lastRoll);plSave(c);});break
  case'damage':{const damage=+document.getElementById('pl-damage').value;if(damage<=0)throw Error('Inserisci un danno positivo.');const hp=eqDamage(c,damage,document.getElementById('eq-damage-type')?.value||'physical',document.getElementById('pl-use-armor').checked,document.getElementById('eq-armor-mode')?.value||'normal');if(hp===3||c.hp>=plStats(c).hp)c.activeStance='';if(c.hp>=plStats(c).hp||hp>=2&&PLAYER_RULES.beastformOptions.find(x=>x.name===c.beastform)?.text.includes('Fragile:'))c.beastform='';plRecord(c,'Damage '+damage+' → '+hp+' HP');plSave(c);break}
  case'potion':if(!c.potion||c.potion==='Potion used')throw Error('La pozione è già usata.');{const amount=d(4),key=c.potion==='Minor Health Potion'?'hp':'stress';c[key]=Math.max(0,c[key]-amount);plRecord(c,c.potion+' → clear '+amount);c.potion='Potion used';plSave(c);break}
  case'shift':if(c.counters.focus<1)throw Error('Serve 1 Focus.');c.counters.focus--;c.activeStance=o.name;plSave(c);break;
