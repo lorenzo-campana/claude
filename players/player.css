@@ -84,3 +84,6 @@
 #pl-rollpop{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;width:min(420px,calc(100% - 32px));background:#fbf7ee;color:#2b2430;border:2px solid #2b2430;border-radius:12px;box-shadow:0 10px 36px rgba(0,0,0,.45);padding:8px 12px;display:grid;gap:4px;cursor:pointer;animation:pl-in .2s ease-out}
 #pl-rollpop .rp-dice{display:flex;gap:6px;flex-wrap:wrap}#pl-rollpop b{font:600 13px/1.3 "DH Overpass",system-ui,sans-serif}#pl-rollpop small{opacity:.55;font-size:11px}
 .eq-attack-btn{font-weight:700}
+.pl-official-sheet .pl-defense-icon.evasion b{padding-top:31px}.pl-official-sheet .pl-defense-icon.armor b{padding-top:33px}
+.pl-official-sheet .pl-defense-values>div:nth-child(1) small{bottom:14.5%}.pl-official-sheet .pl-defense-values>div:nth-child(2) small{bottom:16.8%}
+.pl-official-sheet .pl-defense-values small{display:flex;align-items:center;justify-content:center;height:12px}
