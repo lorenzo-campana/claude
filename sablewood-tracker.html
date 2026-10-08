@@ -150,8 +150,18 @@ button,input,select,textarea{font:inherit;color:inherit}
 .act-h{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .act-h .num{font-family:var(--f-mono);font-size:.8rem;background:var(--ink);color:var(--paper);padding:2px 8px;border-radius:3px;letter-spacing:.08em}
 
-.read{font-family:var(--f-read);font-size:1.08rem;line-height:1.55;background:var(--moss-soft);border-left:3px solid var(--moss);padding:12px 16px;border-radius:0 var(--r) var(--r) 0}
+/* «leggi ad alta voce»: un foglio di pergamena appoggiato sulla pagina, uguale in ogni tema */
+.read{--ink-p:#2e2215;position:relative;font-family:var(--f-read);font-style:italic;font-size:1.14rem;line-height:1.6;color:var(--ink-p);
+ background:radial-gradient(ellipse at 50% 45%,rgba(255,250,232,.55),rgba(255,250,232,0) 70%),url("diario/parchment-a.jpg") center/160% auto,#eadcb8;
+ padding:20px 24px 18px;margin:6px 4px;border-radius:3px 7px 4px 6px/6px 3px 7px 4px;transform:rotate(-.25deg);
+ box-shadow:inset 0 0 26px rgba(122,78,28,.38),inset 0 0 3px rgba(90,55,20,.45),0 1px 1px rgba(0,0,0,.12),0 8px 18px -6px rgba(40,25,10,.35)}
+.read:nth-of-type(even){transform:rotate(.2deg)}
+.read::before{content:"";position:absolute;top:-9px;left:50%;width:92px;height:20px;transform:translateX(-50%) rotate(-2deg);background:rgba(236,226,196,.62);
+ box-shadow:0 1px 2px rgba(0,0,0,.12);backdrop-filter:blur(1px);border-left:1px dashed rgba(120,100,60,.25);border-right:1px dashed rgba(120,100,60,.25)}
 .read p{margin:0 0 .6em} .read p:last-child{margin:0}
+.read b,.read strong{font-style:normal;font-family:var(--f-display);font-weight:400}
+.read .cue{color:#7a2e22;font-style:normal;margin-bottom:8px}
+@media (prefers-reduced-motion:reduce){.read,.read:nth-of-type(even){transform:none}}
 .cue{font-family:var(--f-body);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--moss);font-weight:700;display:block;margin-bottom:4px}
 .note{border-left:3px solid var(--hope);padding:8px 12px;background:var(--hope-soft);border-radius:0 var(--r) var(--r) 0}
 .warn{border-left:3px solid var(--blood);padding:8px 12px;background:var(--blood-soft);border-radius:0 var(--r) var(--r) 0}
