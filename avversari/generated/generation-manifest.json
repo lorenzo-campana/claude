@@ -1,0 +1,734 @@
+{
+  "tool": "built-in image_gen",
+  "images": [
+    {
+      "key": "book-bear",
+      "name": "BEAR",
+      "description": "A large bear with thick fur and powerful claws.",
+      "motives": "Climb, defend territory, pummel, track",
+      "file": "bear.png",
+      "status": "generated",
+      "attack": "Claws: Melee | 1d8+3 phy"
+    },
+    {
+      "key": "book-cave-ogre",
+      "name": "CAVE OGRE",
+      "description": "A massive humanoid who sees all sapient life as food.",
+      "motives": "Bite off heads, feast, rip limbs, stomp, throw enemies",
+      "file": "cave-ogre.png",
+      "status": "generated",
+      "attack": "Club: Very Close | 1d10+2 phy"
+    },
+    {
+      "key": "book-construct",
+      "name": "CONSTRUCT",
+      "description": "A roughly humanoid being of stone and steel, assembled and animated by magic.",
+      "motives": "Destroy environment, serve creator, smash target, trample groups",
+      "file": "construct-v2.png",
+      "status": "generated",
+      "attack": "Fist Slam: Melee | 1d20 phy",
+      "edit_note": "Removed mace and shield; empty oversized fists match Fist Slam."
+    },
+    {
+      "key": "book-deeproot-defender",
+      "name": "DEEPROOT DEFENDER",
+      "description": "A burly vegetable-person with grasping vines.",
+      "motives": "Ambush, grab, protect, pummel",
+      "file": "deeproot-defender.png",
+      "status": "generated",
+      "attack": "Vines: Close | 1d8+3 phy"
+    },
+    {
+      "key": "book-dire-wolf",
+      "name": "DIRE WOLF",
+      "description": "A large wolf with menacing teeth, seldom encountered alone.",
+      "motives": "Defend territory, harry, protect pack, surround, trail",
+      "file": "dire-wolf.png",
+      "status": "generated",
+      "attack": "Claws: Melee | 1d6+2 phy"
+    },
+    {
+      "key": "book-giant-mosquitoes",
+      "name": "GIANT MOSQUITOES",
+      "description": "Dozens of fist-sized mosquitoes, flying together for protection.",
+      "motives": "Fly away, harass, steal blood",
+      "file": "giant-mosquitoes.png",
+      "status": "generated",
+      "attack": "Proboscis: Melee | 1d8+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: GIANT MOSQUITOES. Dozens of fist-sized mosquitoes, flying together for protection. Its standard attack is Proboscis; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-giant-rat",
+      "name": "GIANT RAT",
+      "description": "A cat-sized rodent skilled at scavenging and survival.",
+      "motives": "Burrow, hunger, scavenge, wear down",
+      "file": "giant-rat.png",
+      "status": "generated",
+      "attack": "Claws: Melee | 1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: GIANT RAT. A cat-sized rodent skilled at scavenging and survival. Its standard attack is Claws; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-giant-scorpion",
+      "name": "GIANT SCORPION",
+      "description": "A human-sized insect with tearing claws and a stinging tail.",
+      "motives": "Ambush, feed, grapple, poison",
+      "file": "giant-scorpion.png",
+      "status": "generated",
+      "attack": "Pincers: Melee | 1d12+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: GIANT SCORPION. A human-sized insect with tearing claws and a stinging tail. Its standard attack is Pincers; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-harrier",
+      "name": "HARRIER",
+      "description": "A nimble fighter armed with javelins.",
+      "motives": "Flank, harry, kite, profit",
+      "file": "harrier.png",
+      "status": "generated",
+      "attack": "Javelin: Close | 1d6+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: HARRIER. A nimble fighter armed with javelins. Its standard attack is Javelin; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-archer-guard",
+      "name": "ARCHER GUARD",
+      "description": "A tall guard bearing a longbow and quiver with arrows fletched in the settlement’s colors.",
+      "motives": "Arrest, close gates, make it through the day, pin down",
+      "file": "archer-guard.png",
+      "status": "generated",
+      "attack": "Longbow: Far | 1d8+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: ARCHER GUARD. A tall guard bearing a longbow and quiver with arrows fletched in the settlement’s colors. Its standard attack is Longbow; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-bladed-guard",
+      "name": "BLADED GUARD",
+      "description": "An armored guard bearing a sword and shield painted in the settlement’s colors.",
+      "motives": "Arrest, close gates, make it through the day, pin down",
+      "file": "bladed-guard.png",
+      "status": "generated",
+      "attack": "Longsword: Melee | 1d6+1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: BLADED GUARD. An armored guard bearing a sword and shield painted in the settlement’s colors. Its standard attack is Longsword; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-head-guard",
+      "name": "HEAD GUARD",
+      "description": "A seasoned guard with a mace, a whistle, and a bellowing voice.",
+      "motives": "Arrest, close gates, pin down, seek glory",
+      "file": "head-guard.png",
+      "status": "generated",
+      "attack": "Mace: Melee | 1d10+4 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: HEAD GUARD. A seasoned guard with a mace, a whistle, and a bellowing voice. Its standard attack is Mace; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-jagged-knife-kneebreaker",
+      "name": "JAGGED KNIFE KNEEBREAKER",
+      "description": "An imposing brawler carrying a large club.",
+      "motives": "Grapple, intimidate, profit, steal",
+      "file": "jagged-knife-kneebreaker.png",
+      "status": "generated",
+      "attack": "Club: Melee | 1d4+6 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: JAGGED KNIFE KNEEBREAKER. An imposing brawler carrying a large club. Its standard attack is Club; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-jagged-knife-lackey",
+      "name": "JAGGED KNIFE LACKEY",
+      "description": "A thief with simple clothes and small daggers, eager to prove themselves.",
+      "motives": "Escape, profit, throw smoke",
+      "file": "jagged-knife-lackey.png",
+      "status": "generated",
+      "attack": "Daggers: Melee | 2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: JAGGED KNIFE LACKEY. A thief with simple clothes and small daggers, eager to prove themselves. Its standard attack is Daggers; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-jagged-knife-shadow",
+      "name": "JAGGED KNIFE SHADOW",
+      "description": "A nimble scoundrel bearing a wicked knife and utilizing shadow magic to isolate targets.",
+      "motives": "Ambush, conceal, divide, profit",
+      "file": "jagged-knife-shadow.png",
+      "status": "generated",
+      "attack": "Daggers: Melee | 1d4+4 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: JAGGED KNIFE SHADOW. A nimble scoundrel bearing a wicked knife and utilizing shadow magic to isolate targets. Its standard attack is Daggers; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-jagged-knife-sniper",
+      "name": "JAGGED KNIFE SNIPER",
+      "description": "A lanky bandit striking from cover with a shortbow.",
+      "motives": "Ambush, hide, profit, reposition",
+      "file": "jagged-knife-sniper.png",
+      "status": "generated",
+      "attack": "Shortbow: Far | 1d10+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: JAGGED KNIFE SNIPER. A lanky bandit striking from cover with a shortbow. Its standard attack is Shortbow; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-tiny-green-ooze",
+      "name": "TINY GREEN OOZE",
+      "description": "A small moving mound of translucent green slime.",
+      "motives": "Camouflage, creep up",
+      "file": "tiny-green-ooze.png",
+      "status": "generated",
+      "attack": "Ooze Appendage: Melee | 1d4+1 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: TINY GREEN OOZE. A small moving mound of translucent green slime. Its standard attack is Ooze Appendage; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-pirate-captain",
+      "name": "PIRATE CAPTAIN",
+      "description": "A charismatic sea dog with an impressive hat, eager to raid and plunder.",
+      "motives": "Command, make ’em walk the plank, plunder, raid",
+      "file": "pirate-captain.png",
+      "status": "generated",
+      "attack": "Cutlass: Melee | 1d12+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: PIRATE CAPTAIN. A charismatic sea dog with an impressive hat, eager to raid and plunder. Its standard attack is Cutlass; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-pirate-raiders",
+      "name": "PIRATE RAIDERS",
+      "description": "Seafaring scoundrels moving in a ravaging pack.",
+      "motives": "Gang up, plunder, raid",
+      "file": "pirate-raiders.png",
+      "status": "generated",
+      "attack": "Cutlass: Melee | 1d8+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: PIRATE RAIDERS. Seafaring scoundrels moving in a ravaging pack. Its standard attack is Cutlass; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-pirate-tough",
+      "name": "PIRATE TOUGH",
+      "description": "A thickly muscled and tattooed pirate with melon-sized fists.",
+      "motives": "Plunder, raid, smash, terrorize",
+      "file": "pirate-tough.png",
+      "status": "generated",
+      "attack": "Massive Fists: Melee | 2d6 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: PIRATE TOUGH. A thickly muscled and tattooed pirate with melon-sized fists. Its standard attack is Massive Fists; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-sellsword",
+      "name": "SELLSWORD",
+      "description": "An armed mercenary testing their luck.",
+      "motives": "Charge, lacerate, overwhelm, profit",
+      "file": "sellsword.png",
+      "status": "generated",
+      "attack": "Longsword: Melee | 3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SELLSWORD. An armed mercenary testing their luck. Its standard attack is Longsword; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-spellblade",
+      "name": "SPELLBLADE",
+      "description": "A mercenary combining swordplay and magic to deadly effect.",
+      "motives": "Blast, command, endure",
+      "file": "spellblade.png",
+      "status": "generated",
+      "attack": "Empowered Longsword: Melee | 1d8+4 phy/mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SPELLBLADE. A mercenary combining swordplay and magic to deadly effect. Its standard attack is Empowered Longsword; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-swarm-of-rats",
+      "name": "SWARM OF RATS",
+      "description": "A skittering mass of ordinary rodents moving as one like a ravenous wave.",
+      "motives": "Consume, obscure, swarm",
+      "file": "swarm-of-rats.png",
+      "status": "generated",
+      "attack": "Claws: Melee | 1d8+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SWARM OF RATS. A skittering mass of ordinary rodents moving as one like a ravenous wave. Its standard attack is Claws; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-sylvan-soldier",
+      "name": "SYLVAN SOLDIER",
+      "description": "A faerie warrior adorned in armor made of leaves and bark.",
+      "motives": "Ambush, hide, overwhelm, protect, trail",
+      "file": "sylvan-soldier.png",
+      "status": "generated",
+      "attack": "Scythe: Melee | 1d8+1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SYLVAN SOLDIER. A faerie warrior adorned in armor made of leaves and bark. Its standard attack is Scythe; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-tangle-bramble-swarm",
+      "name": "TANGLE BRAMBLE SWARM",
+      "description": "A cluster of animate, blood-drinking tumbleweeds, each the size of a large gourd.",
+      "motives": "Digest, entangle, immobilize",
+      "file": "tangle-bramble-swarm.png",
+      "status": "generated",
+      "attack": "Thorns: Melee | 1d6+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: TANGLE BRAMBLE SWARM. A cluster of animate, blood-drinking tumbleweeds, each the size of a large gourd. Its standard attack is Thorns; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-tangle-bramble",
+      "name": "TANGLE BRAMBLE",
+      "description": "An animate, blood-drinking tumbleweed.",
+      "motives": "Combine, drain, entangle",
+      "file": "tangle-bramble.png",
+      "status": "generated",
+      "attack": "Thorns: Melee | 2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: TANGLE BRAMBLE. An animate, blood-drinking tumbleweed. Its standard attack is Thorns; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-weaponmaster",
+      "name": "WEAPONMASTER",
+      "description": "A master-at-arms wielding a sword twice their size.",
+      "motives": "Act first, aim for the weakest, intimidate",
+      "file": "weaponmaster.png",
+      "status": "generated",
+      "attack": "Claymore: Very Close | 1d12+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: WEAPONMASTER. A master-at-arms wielding a sword twice their size. Its standard attack is Claymore; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-young-dryad",
+      "name": "YOUNG DRYAD",
+      "description": "An imperious tree-person leading their forest’s defenses.",
+      "motives": "Command, nurture, prune the unwelcome",
+      "file": "young-dryad.png",
+      "status": "generated",
+      "attack": "Scythe: Melee | 1d8+5 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: YOUNG DRYAD. An imperious tree-person leading their forest’s defenses. Its standard attack is Scythe; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-shambling-zombie",
+      "name": "SHAMBLING ZOMBIE",
+      "description": "An animated corpse that moves shakily, driven only by hunger.",
+      "motives": "Devour, hungry, mob enemy, shred flesh",
+      "file": "shambling-zombie.png",
+      "status": "generated",
+      "attack": "Bite: Melee | 1d6+1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SHAMBLING ZOMBIE. An animated corpse that moves shakily, driven only by hunger. Its standard attack is Bite; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-zombie-pack",
+      "name": "ZOMBIE PACK",
+      "description": "A group of shambling corpses instinctively moving together.",
+      "motives": "Consume flesh, hunger, maul",
+      "file": "zombie-pack.png",
+      "status": "generated",
+      "attack": "Bite: Melee | 1d10+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: ZOMBIE PACK. A group of shambling corpses instinctively moving together. Its standard attack is Bite; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-archer-squadron",
+      "name": "ARCHER SQUADRON",
+      "description": "A group of trained archers bearing massive bows.",
+      "motives": "Stick together, survive, volley fire",
+      "file": "archer-squadron.png",
+      "status": "generated",
+      "attack": "Longbow: Far | 2d6+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: ARCHER SQUADRON. A group of trained archers bearing massive bows. Its standard attack is Longbow; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-conscript",
+      "name": "CONSCRIPT",
+      "description": "A poorly trained civilian pressed into war.",
+      "motives": "Follow orders, gang up, survive",
+      "file": "conscript.png",
+      "status": "generated",
+      "attack": "Spears: Very Close | 6 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: CONSCRIPT. A poorly trained civilian pressed into war. Its standard attack is Spears; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-cult-adept",
+      "name": "CULT ADEPT",
+      "description": "An experienced mage wielding shadow and fear.",
+      "motives": "Curry favor, hinder foes, uncover knowledge",
+      "file": "cult-adept.png",
+      "status": "generated",
+      "attack": "Rune-Covered Rod: Far | 2d4+3 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: CULT ADEPT. An experienced mage wielding shadow and fear. Its standard attack is Rune-Covered Rod; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-cult-fang",
+      "name": "CULT FANG",
+      "description": "A professional killer-turned-cultist.",
+      "motives": "Capture sacrifices, isolate prey, rise in the ranks",
+      "file": "cult-fang.png",
+      "status": "generated",
+      "attack": "Long Knife: Melee | 2d8+4 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: CULT FANG. A professional killer-turned-cultist. Its standard attack is Long Knife; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-cult-initiate",
+      "name": "CULT INITIATE",
+      "description": "A low-ranking cultist in simple robes, eager to gain power.",
+      "motives": "Follow orders, gain power, seek forbidden knowledge",
+      "file": "cult-initiate.png",
+      "status": "generated",
+      "attack": "Ritual Dagger: Melee | 5 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: CULT INITIATE. A low-ranking cultist in simple robes, eager to gain power. Its standard attack is Ritual Dagger; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-electric-eels",
+      "name": "ELECTRIC EELS",
+      "description": "A swarm of eels that encircle and electrocute.",
+      "motives": "Avoid larger predators, shock prey, tear apart",
+      "file": "electric-eels.png",
+      "status": "generated",
+      "attack": "Shocking Bite: Melee | 2d6+4 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: ELECTRIC EELS. A swarm of eels that encircle and electrocute. Its standard attack is Shocking Bite; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-elite-soldier",
+      "name": "ELITE SOLDIER",
+      "description": "An armored squire or experienced commoner looking to advance.",
+      "motives": "Gain glory, keep order, make alliances",
+      "file": "elite-soldier.png",
+      "status": "generated",
+      "attack": "Spear: Very Close | 2d8+4 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: ELITE SOLDIER. An armored squire or experienced commoner looking to advance. Its standard attack is Spear; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-failed-experiment",
+      "name": "FAILED EXPERIMENT",
+      "description": "A magical necromantic experiment gone wrong, leaving them warped and ungainly.",
+      "motives": "Devour, hunt, track",
+      "file": "failed-experiment.png",
+      "status": "generated",
+      "attack": "Bite and Claw: Melee | 2d6+5 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: FAILED EXPERIMENT. A magical necromantic experiment gone wrong, leaving them warped and ungainly. Its standard attack is Bite and Claw; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-giant-beastmaster",
+      "name": "GIANT BEASTMASTER",
+      "description": "A leather-clad warrior bearing a whip and massive bow.",
+      "motives": "Command, make a living, maneuver, pin down, protect companion animals",
+      "file": "giant-beastmaster.png",
+      "status": "generated",
+      "attack": "Longbow: Far | 2d8+4 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: GIANT BEASTMASTER. A leather-clad warrior bearing a whip and massive bow. Its standard attack is Longbow; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-giant-recruit",
+      "name": "GIANT RECRUIT",
+      "description": "A giant fighter wearing borrowed armor.",
+      "motives": "Batter, make a living, overwhelm, terrify",
+      "file": "giant-recruit.png",
+      "status": "generated",
+      "attack": "Warhammer: Very Close | 5 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: GIANT RECRUIT. A giant fighter wearing borrowed armor. Its standard attack is Warhammer; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-giant-eagle",
+      "name": "GIANT EAGLE",
+      "description": "A giant bird of prey with blood-stained talons.",
+      "motives": "Hunt prey, stay mobile, strike decisively",
+      "file": "giant-eagle.png",
+      "status": "generated",
+      "attack": "Claws and Beak: Very Close | 2d6+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: GIANT EAGLE. A giant bird of prey with blood-stained talons. Its standard attack is Claws and Beak; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-masked-thief",
+      "name": "MASKED THIEF",
+      "description": "A cunning thief with acrobatic skill and a flair for the dramatic.",
+      "motives": "Evade, hide, pilfer, profit",
+      "file": "masked-thief.png",
+      "status": "generated",
+      "attack": "Backsword: Melee | 2d8+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: MASKED THIEF. A cunning thief with acrobatic skill and a flair for the dramatic. Its standard attack is Backsword; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-mortal-hunter",
+      "name": "MORTAL HUNTER",
+      "description": "An undead figure wearing a heavy leather coat, with searching eyes and a casually cruel demeanor.",
+      "motives": "Devour, hunt, track",
+      "file": "mortal-hunter.png",
+      "status": "generated",
+      "attack": "Tear at Flesh: Very Close | 2d12+1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: MORTAL HUNTER. An undead figure wearing a heavy leather coat, with searching eyes and a casually cruel demeanor. Its standard attack is Tear at Flesh; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-secret-keeper",
+      "name": "SECRET-KEEPER",
+      "description": "A clandestine leader with a direct channel to the Fallen Gods.",
+      "motives": "Amass great power, plot, take command",
+      "file": "secret-keeper.png",
+      "status": "generated",
+      "attack": "Sigil-laden Staff : Far | 2d12 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SECRET-KEEPER. A clandestine leader with a direct channel to the Fallen Gods. Its standard attack is Sigil-laden Staff; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-shark",
+      "name": "SHARK",
+      "description": "A large aquatic predator, always on the move.",
+      "motives": "Find the blood, isolate prey, target the weak",
+      "file": "shark.png",
+      "status": "generated",
+      "attack": "Toothy Maw: Very Close | 2d12+1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SHARK. A large aquatic predator, always on the move. Its standard attack is Toothy Maw; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-siren",
+      "name": "SIREN",
+      "description": "A half-fish person with shimmering scales and an irresistible voice.",
+      "motives": "Consume, lure prey, subdue with song",
+      "file": "siren.png",
+      "status": "generated",
+      "attack": "Distended Jaw Bite: Melee | 2d6+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SIREN. A half-fish person with shimmering scales and an irresistible voice. Its standard attack is Distended Jaw Bite; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-spectral-archer",
+      "name": "SPECTRAL ARCHER",
+      "description": "A ghostly fighter with an ethereal bow, unable to move on while their charge is vulnerable.",
+      "motives": "Move through solid objects, stay out of the fray, rehash old battles",
+      "file": "spectral-archer.png",
+      "status": "generated",
+      "attack": "Longbow: Far | 2d10+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SPECTRAL ARCHER. A ghostly fighter with an ethereal bow, unable to move on while their charge is vulnerable. Its standard attack is Longbow; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-spectral-captain",
+      "name": "SPECTRAL CAPTAIN",
+      "description": "A ghostly commander leading their troops beyond death.",
+      "motives": "Move through solid objects, rally troops, rehash old battles",
+      "file": "spectral-captain.png",
+      "status": "generated",
+      "attack": "Longbow: Far | 2d10+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SPECTRAL CAPTAIN. A ghostly commander leading their troops beyond death. Its standard attack is Longbow; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-spectral-guardian",
+      "name": "SPECTRAL GUARDIAN",
+      "description": "A ghostly fighter with spears and swords, anchored by duty.",
+      "motives": "Move through solid objects, protect treasure, rehash old battles",
+      "file": "spectral-guardian.png",
+      "status": "generated",
+      "attack": "Spear: Very Close | 2d8+1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: SPECTRAL GUARDIAN. A ghostly fighter with spears and swords, anchored by duty. Its standard attack is Spear; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-dryad",
+      "name": "DRYAD",
+      "description": "A nature spirit in the form of a humanoid tree.",
+      "motives": "Command, cultivate, drive out, preserve the forest",
+      "file": "dryad.png",
+      "status": "generated",
+      "attack": "Deadfall Shortbow: Far | 3d10+1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: DRYAD. A nature spirit in the form of a humanoid tree. Its standard attack is Deadfall Shortbow; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-elemental-spark",
+      "name": "ELEMENTAL SPARK",
+      "description": "A blazing mote of elemental fire.",
+      "motives": "Blast, consume, gain mass",
+      "file": "elemental-spark.png",
+      "status": "generated",
+      "attack": "Bursts of Fire: Close | 5 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: ELEMENTAL SPARK. A blazing mote of elemental fire. Its standard attack is Bursts of Fire; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-greater-water-elemental",
+      "name": "GREATER WATER ELEMENTAL",
+      "description": "A huge living wave that crashes down upon enemies.",
+      "motives": "Deluge, disperse, drown",
+      "file": "greater-water-elemental.png",
+      "status": "generated",
+      "attack": "Crashing Wave: Very Close | 3d4+1 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: GREATER WATER ELEMENTAL. A huge living wave that crashes down upon enemies. Its standard attack is Crashing Wave; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-huge-green-ooze",
+      "name": "HUGE GREEN OOZE",
+      "description": "A translucent green mound of acid taller than most humans.",
+      "motives": "Camouflage, creep up, envelop, multiply",
+      "file": "huge-green-ooze.png",
+      "status": "generated",
+      "attack": "Ooze Appendage: Melee | 3d8+1 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: HUGE GREEN OOZE. A translucent green mound of acid taller than most humans. Its standard attack is Ooze Appendage; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-stag-knight",
+      "name": "STAG KNIGHT",
+      "description": "A knight with huge, majestic antlers wearing armor made of dangerous thorns.",
+      "motives": "Isolate, maneuver, protect the forest, weed the unwelcome",
+      "file": "stag-knight.png",
+      "status": "generated",
+      "attack": "Bramble Sword: Melee | 3d8+3 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: STAG KNIGHT. A knight with huge, majestic antlers wearing armor made of dangerous thorns. Its standard attack is Bramble Sword; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-oak-treant",
+      "name": "OAK TREANT",
+      "description": "A sturdy animate old-growth tree.",
+      "motives": "Hide in plain sight, preserve the forest, root down, swing branches",
+      "file": "oak-treant.png",
+      "status": "generated",
+      "attack": "Branch: Very Close | 3d8+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: OAK TREANT. A sturdy animate old-growth tree. Its standard attack is Branch; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-treant-sapling",
+      "name": "TREANT SAPLING",
+      "description": "A small, sentient tree sapling.",
+      "motives": "Blend in, preserve the forest, pummel, surround",
+      "file": "treant-sapling.png",
+      "status": "generated",
+      "attack": "Branches: Melee | 8 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: TREANT SAPLING. A small, sentient tree sapling. Its standard attack is Branches; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-vampire",
+      "name": "VAMPIRE",
+      "description": "An intelligent undead with blood-stained lips and a predator’s smile.",
+      "motives": "Bite, charm, deceive, feed, intimidate",
+      "file": "vampire.png",
+      "status": "generated",
+      "attack": "Rapier: Melee | 3d8 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: VAMPIRE. An intelligent undead with blood-stained lips and a predator’s smile. Its standard attack is Rapier; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-vault-guardian-gaoler",
+      "name": "VAULT GUARDIAN GAOLER",
+      "description": "A boxy, dust-covered construct with thick metallic swinging doors on their torso.",
+      "motives": "Carry away, entrap, protect, pummel",
+      "file": "vault-guardian-gaoler.png",
+      "status": "generated",
+      "attack": "Body Bash: Very Close | 3d6+2 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: VAULT GUARDIAN GAOLER. A boxy, dust-covered construct with thick metallic swinging doors on their torso. Its standard attack is Body Bash; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-vault-guardian-sentinel",
+      "name": "VAULT GUARDIAN SENTINEL",
+      "description": "A dust-covered golden construct with boxy limbs and a huge mace for a hand.",
+      "motives": "Destroy at any cost, expunge, protect",
+      "file": "vault-guardian-sentinel.png",
+      "status": "generated",
+      "attack": "Charged Mace: Very Close | 2d12+1 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: VAULT GUARDIAN SENTINEL. A dust-covered golden construct with boxy limbs and a huge mace for a hand. Its standard attack is Charged Mace; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-fallen-shock-troop",
+      "name": "FALLEN SHOCK TROOP",
+      "description": "A cursed soul bound to the Fallen’s will.",
+      "motives": "Crush, dominate, earn relief, punish",
+      "file": "fallen-shock-troop.png",
+      "status": "generated",
+      "attack": "Cursed Axe: Very Close | 12 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: FALLEN SHOCK TROOP. A cursed soul bound to the Fallen’s will. Its standard attack is Cursed Axe; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-fallen-sorcerer",
+      "name": "FALLEN SORCERER",
+      "description": "A powerful mage bound by the bargains they made in life.",
+      "motives": "Acquire, dishearten, dominate, torment",
+      "file": "fallen-sorcerer.png",
+      "status": "generated",
+      "attack": "Corrupted Staff : Far | 4d6+10 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: FALLEN SORCERER. A powerful mage bound by the bargains they made in life. Its standard attack is Corrupted Staff; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-hallowed-archer",
+      "name": "HALLOWED ARCHER",
+      "description": "Spirit soldiers with sanctified bows.",
+      "motives": "Focus fire, obey, reposition, volley",
+      "file": "hallowed-archer.png",
+      "status": "generated",
+      "attack": "Sanctified Longbow: Far | 4d8+8 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: HALLOWED ARCHER. Spirit soldiers with sanctified bows. Its standard attack is Sanctified Longbow; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-hallowed-soldier",
+      "name": "HALLOWED SOLDIER",
+      "description": "Souls of the faithful, lifted up with divine weaponry.",
+      "motives": "Obey, outmaneuver, punish, swarm",
+      "file": "hallowed-soldier.png",
+      "status": "generated",
+      "attack": "Sword and Shield: Melee | 10 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: HALLOWED SOLDIER. Souls of the faithful, lifted up with divine weaponry. Its standard attack is Sword and Shield; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-high-seraph",
+      "name": "HIGH SERAPH",
+      "description": "A divine champion, head of a hallowed host of warriors who enforce their god’s will.",
+      "motives": "Enforce dogma, fly, pronounce judgment, smite",
+      "file": "high-seraph.png",
+      "status": "generated",
+      "attack": "Holy Sword: Very Close | 4d10+10 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: HIGH SERAPH. A divine champion, head of a hallowed host of warriors who enforce their god’s will. Its standard attack is Holy Sword; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-outer-realms-abomination",
+      "name": "OUTER REALMS ABOMINATION",
+      "description": "A chaotic mockery of life, constantly in flux.",
+      "motives": "Demolish, devour, undermine",
+      "file": "outer-realms-abomination.png",
+      "status": "generated",
+      "attack": "Massive Pseudopod: Very Close | 4d6+13 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: OUTER REALMS ABOMINATION. A chaotic mockery of life, constantly in flux. Its standard attack is Massive Pseudopod; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-outer-realms-corrupter",
+      "name": "OUTER REALMS CORRUPTER",
+      "description": "A shifting, formless mass seemingly made of chromatic light.",
+      "motives": "Confuse, distract, overwhelm",
+      "file": "outer-realms-corrupter.png",
+      "status": "generated",
+      "attack": "Corroding Pseudopod: Very Close | 4d8+5 mag",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: OUTER REALMS CORRUPTER. A shifting, formless mass seemingly made of chromatic light. Its standard attack is Corroding Pseudopod; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-outer-realms-thrall",
+      "name": "OUTER REALMS THRALL",
+      "description": "A vaguely humanoid form stripped of memory and identity.",
+      "motives": "Destroy, disgust, disorient, intimidate",
+      "file": "outer-realms-thrall.png",
+      "status": "generated",
+      "attack": "Claws and Teeth: Very Close | 11 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: OUTER REALMS THRALL. A vaguely humanoid form stripped of memory and identity. Its standard attack is Claws and Teeth; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-perfected-zombie",
+      "name": "PERFECTED ZOMBIE",
+      "description": "A towering, muscular zombie with magically infused strength and skill.",
+      "motives": "Consume, hound, maim, terrify",
+      "file": "perfected-zombie.png",
+      "status": "generated",
+      "attack": "Greataxe: Very Close | 4d12+15 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: PERFECTED ZOMBIE. A towering, muscular zombie with magically infused strength and skill. Its standard attack is Greataxe; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "book-zombie-legion",
+      "name": "ZOMBIE LEGION",
+      "description": "A large pack of undead, still powerful despite their rotting flesh.",
+      "motives": "Consume brain, shred flesh, surround",
+      "file": "zombie-legion.png",
+      "status": "generated",
+      "attack": "Tentacles: Close | 4d6+10 phy",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: ZOMBIE LEGION. A large pack of undead, still powerful despite their rotting flesh. Its standard attack is Tentacles; represent only equipment or natural anatomy consistent with this attack. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "campaign-strixwolf",
+      "name": "Strixwolf",
+      "description": "A majestic white wolf forest spirit with an owl head; guardian of rare woodland species. Huge snowy owl facial disk, white fur, powerful wolf body, mystical presence.",
+      "file": "sablewood-strixwolf.png",
+      "status": "generated",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: Strixwolf. A majestic white wolf forest spirit with an owl head; guardian of rare woodland species. Huge snowy owl facial disk, white fur, powerful wolf body, mystical presence. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "campaign-scarshade",
+      "name": "Scarshade",
+      "description": "An eerie humanoid tear in reality, made of ancient truths. Its translucent body reveals an ancient primordial forest within its silhouette. Ghostlike limbs and a haunting spectral face.",
+      "file": "sablewood-scarshade.png",
+      "status": "generated",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: Scarshade. An eerie humanoid tear in reality, made of ancient truths. Its translucent body reveals an ancient primordial forest within its silhouette. Ghostlike limbs and a haunting spectral face. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "campaign-villager",
+      "name": "Paesano Preoccupato",
+      "description": "A worried woodland villager in simple practical medieval clothes, clutching a small dagger. Ordinary adult, apprehensive defensive stance, no armor.",
+      "file": "sablewood-villager.png",
+      "status": "generated",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: Paesano Preoccupato. A worried woodland villager in simple practical medieval clothes, clutching a small dagger. Ordinary adult, apprehensive defensive stance, no armor. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "campaign-skeleton",
+      "name": "Scheletro Antico",
+      "description": "An ancient undead skeleton with a rusty sword, remnants of weathered armor, faint eerie magic in the eye sockets. Full skeletal figure, no gore.",
+      "file": "sablewood-skeleton.png",
+      "status": "generated",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: Scheletro Antico. An ancient undead skeleton with a rusty sword, remnants of weathered armor, faint eerie magic in the eye sockets. Full skeletal figure, no gore. Clearly distinguish this subject from other bestiary enemies."
+    },
+    {
+      "key": "campaign-hero",
+      "name": "Eroe Dimenticato",
+      "description": "A forgotten spectral warrior hero, an ancient ghostly commander with a translucent magical blade and tattered old armor. Dignified but threatening, restrained teal spectral glow.",
+      "file": "sablewood-hero.png",
+      "status": "generated",
+      "prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: Eroe Dimenticato. A forgotten spectral warrior hero, an ancient ghostly commander with a translucent magical blade and tattered old armor. Dignified but threatening, restrained teal spectral glow. Clearly distinguish this subject from other bestiary enemies."
+    }
+  ],
+  "style_prompt": "Hand-painted fantasy tabletop bestiary illustration, matte gouache and expressive digital brushwork, visible painted planes, organic edges, muted earthy colors and restrained magical accents. Slightly stylized yet grounded anatomy, matching the painterly visual language of the Daggerheart rulebook illustrations. Full-body subject in a three-quarter view, isolated on a genuinely transparent background, complete silhouette with all limbs and specified equipment visible and 8% empty margins. No scenery, card frame, text, labels, logos or watermarks. No photographic rendering, chibi, anime, glossy 3D, extra weapons, or extra characters except the indicated swarm/squad/pack. No graphic gore. Subject: ",
+  "prompt_recipe": "style_prompt + name + description + standard attack equipment constraint + distinguish subject",
+  "use_case": "stylized-concept"
+}
