@@ -832,7 +832,7 @@ body.lb-on{overflow:hidden}
 .tabs button.sub{margin-left:auto;font-weight:600;font-size:.85rem;color:var(--muted)}.tabs button.sub.on{color:var(--ink)}
 /* ---- tavolo del GM: campagne e avversari ---- */
 body.hub .party-pane,body.hub #rollpop,body.hub #tabs{display:none!important}
-.bar2{border-top:1px solid var(--line);background:var(--bg)}.bar2 .bar-in{padding-block:6px}.bar2 .brand b{font-size:1.2rem}body.hub .bar2,#bar2:empty{display:none}.bar2:has(#bar2:empty){display:none}.tabs:empty{display:none}
+.bar2{border-top:1px solid var(--line);background:var(--bg)}body #bar2 .camp-brand b{max-width:none;overflow:visible;white-space:normal;text-overflow:clip}.bar2 .bar-in{padding-block:6px}.bar2 .brand b{font-size:1.2rem}body.hub .bar2,#bar2:empty{display:none}.bar2:has(#bar2:empty){display:none}.tabs:empty{display:none}
 @media (min-width:1101px){body:not(.hub) .party-pane{top:calc(env(safe-area-inset-top,0px) + var(--bar-h,120px));max-height:calc(100vh - var(--bar-h,120px) - 16px)}}
 .hub-nav{display:flex;gap:3px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:999px;margin-left:12px}
 .hub-nav button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;border-radius:999px;padding:6px 14px 6px 12px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s}
@@ -2863,7 +2863,7 @@ function renderBar(){
   document.getElementById("bar").innerHTML=hubTopHTML(APP.sec||"campagne");
   document.getElementById("bar2").innerHTML=`
   <button class="tgl home-btn" data-a="go-home" title="Torna all'elenco delle campagne">← Tutte</button>
-  <div class="brand"><b title="${esc(campById(APP.camp)?.name||"")}">${esc(campById(APP.camp)?.name||"Campagna")}</b><span>${(()=>{const c=campById(APP.camp),m=MODULES[c?.module]?.name||"";return esc(m&&m!==c.name?m.toUpperCase()+" · ":"")})()}TRACKER DEL GM</span></div>
+  <div class="brand camp-brand"><b>${esc(campById(APP.camp)?.name||"Campagna")}</b>${(()=>{const c=campById(APP.camp),m=MODULES[c?.module]?.name||"";return m&&m!==c.name?`<span>${esc(m.toUpperCase())}</span>`:""})()}</div>
   <div class="meter"><span class="lab" style="color:var(--fear)">Paura</span><span class="mono" style="font-weight:600;color:var(--fear)">${S.fear}</span>
    <div class="fear-pips">${Array.from({length:12},(_,i)=>`<button class="fp ${i<S.fear?"on":""}" data-a="fear-set" data-i="${i}" aria-label="Paura ${i+1}"></button>`).join("")}</div></div>
   <div class="counter ${S.counter.on?"live":""}"><span class="lab">Assalto alla Città</span>
