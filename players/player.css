@@ -255,3 +255,21 @@
 .pl-dt-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px 18px}
 .pl-dt-choices>h3,.pl-dt-choices>details,.pl-dt-choices>.pl-actions,.pl-dt-choices>.pl-fields{grid-column:1/-1}
 @media (max-width:760px){.pl-dt-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.pl-dt-row{grid-template-columns:1fr}}
+/* Martial Stances: regole e una scheda per stance */
+.pl-dt-wide{grid-column:1/-1;display:flex;flex-direction:column;gap:12px}
+.pl-dt-wide .pl-ci-h{margin:6px 0 0}
+.pl-stance-rules{padding:0}
+.pl-stance-pick{display:flex;flex-direction:column;gap:10px}
+.pl-stance-count{font-size:.88rem;color:var(--muted,#666)}
+.pl-stance-count b{color:#56476b;font-size:1rem}
+.pl-stance-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:10px}
+.pl-stance-rules .pl-rb-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.pl-stance-rules .pl-rb-card h5{font-size:15px}
+.pl-stance-rules .pl-rb-body{font-size:13px}
+.pl-stance{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:10px;background:#fffdf8;border:1px solid #d9d0dd;border-top:3px solid #5b4a6e;box-shadow:0 2px 6px rgba(45,30,65,.08);transition:box-shadow .15s,border-color .15s}
+.pl-stance.on{border-color:#5b4a6e;box-shadow:0 0 0 2px #5b4a6e,0 8px 18px -10px rgba(45,30,65,.45);background:#f7f2fb}
+.pl-stance header{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.pl-stance header b{font:17px/1.1 DH Eveleth,Arial,sans-serif;text-transform:uppercase;color:#5b4a6e}
+.pl-stance-tier{white-space:nowrap;font:800 9px/1 var(--f-body,sans-serif);letter-spacing:.1em;text-transform:uppercase;color:#8b809a;border:1px solid #d9d0dd;border-radius:999px;padding:3px 7px}
+.pl-stance p{margin:0;flex:1;font:13.5px/1.5 DH Overpass,Arial,sans-serif;color:#37343a}
+.pl-stance .btn{align-self:flex-start;margin:0;border-radius:999px;padding:5px 14px;font-weight:700}
