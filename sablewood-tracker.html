@@ -617,7 +617,14 @@ details.pv-sec>summary{font-size:.95rem}
 .tbl-sheet-h{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#141a16;color:#e9ece5;cursor:move;user-select:none;touch-action:none}
 .tbl-sheet-h b{font-family:var(--f-display);font-weight:400;font-size:1.1rem;white-space:nowrap}.tbl-sheet-h span{font-size:.75rem;color:#9aa69c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tbl-x{border:1px solid #3a463d;background:transparent;color:#e9ece5;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:700;flex:none}.tbl-sheet-h{padding:3px 6px 3px 10px;gap:6px}.tbl-sheet-h b{font-size:.92rem}.tbl-sheet-h span{font-size:.68rem}.tbl-x{width:20px;height:20px;border-radius:5px;font-size:.7rem;line-height:1;padding:0}
-.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-modal{position:static;padding:0;max-width:none;animation:none;pointer-events:auto}.tbl-modal:empty{display:none}.tbl-rs{position:absolute;z-index:2}.tbl-app i svg{width:14px;height:14px}.tbl-app.note i{border-color:#8fb79a}.tbl-app.mon i{border-color:#e0786e}
+.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-modal{position:static;padding:0;max-width:none;animation:none;pointer-events:auto}
+/* le finestre a comparsa della campaign mode: entrano morbide e stanno sempre tra la barra in alto e la taskbar */
+.tbl-modal .pl-overlay{padding:calc(var(--tbl-hb,50px) + 12px) 16px calc(var(--tbl-task,40px) + 12px);animation:tblFade .22s ease-out both;z-index:9}
+.tbl-modal .pl-dialog{max-height:100%;max-width:min(100%,1100px);overflow:auto;animation:tblDlg .32s cubic-bezier(.2,.9,.25,1) both;will-change:transform,opacity}
+.tbl-modal .pl-dialog.wide{max-width:min(100%,1240px)}
+@keyframes tblFade{from{opacity:0;backdrop-filter:blur(0)}to{opacity:1}}
+@keyframes tblDlg{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.tbl-modal .pl-overlay,.tbl-modal .pl-dialog{animation:none}}.tbl-modal:empty{display:none}.tbl-rs{position:absolute;z-index:2}.tbl-app i svg{width:14px;height:14px}.tbl-app.note i{border-color:#8fb79a}.tbl-app.mon i{border-color:#e0786e}
 .tbl-mon-b{background:#0b0d0c;display:grid;place-items:center}.tbl-mon-b img{width:100%;height:100%;object-fit:cover;display:block}.tbl-mon-none{color:#f1f3ee;font-family:var(--f-display);font-size:1.6rem}
 .tbl-notes-b{display:grid;grid-template-columns:170px 1fr;background:#f6f3ec;color:#222}.tbl-notes-list{display:flex;flex-direction:column;gap:4px;padding:8px;border-right:1px solid #0001;overflow:auto;background:#efeae0}.tbl-notes-list .tbl-b{background:#2a2f2b;color:#f1f3ee;border:0;border-radius:8px;padding:6px 10px;font-weight:700;cursor:pointer}
 .tbl-note-i{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;border:0;border-radius:8px;background:transparent;padding:6px 8px;cursor:pointer;color:#222}.tbl-note-i b{font-size:.85rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tbl-note-i small{font-size:.7rem;color:#777}.tbl-note-i:hover{background:#0000000d}.tbl-note-i.on{background:#fff;box-shadow:0 1px 4px #0002}
@@ -3172,7 +3179,7 @@ function tblSync(on){
   pop.hidden=!TBL.diceOpen;
   tblSet(pop,TBL.diceOpen?`<div class="tbl-pop-grid">${TBL_DICE.map(s=>`<div class="tbl-die ${cnt(s)?"on":""}"><button data-t="add" data-s="${s}" title="Aggiungi un d${s}">${TBL_ICO["d"+s]}<b>d${s}</b>${cnt(s)?`<em>${cnt(s)}</em>`:""}</button>${cnt(s)?`<button class="less" data-t="sub" data-s="${s}" aria-label="Togli un d${s}">−</button>`:""}</div>`).join("")}</div>
     <div class="tbl-pop-row"><button class="tbl-b" data-t="pool-clear" ${TBL.pool.length?"":"disabled"}>Svuota</button><button class="tbl-b go" data-t="throw" ${TBL.pool.length?"":"disabled"} title="Lancia (Invio)">${TBL.pool.length?"Lancia "+esc(pool):"Scegli i dadi"}</button></div>`:"");
-  document.documentElement.style.setProperty("--tbl-task",bar.offsetHeight+"px");
+  document.documentElement.style.setProperty("--tbl-task",bar.offsetHeight+"px");document.documentElement.style.setProperty("--tbl-hb",(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+"px");
   // schede flottanti: una finestra per personaggio, trascinabile e ridimensionabile
   TBL.el.querySelectorAll(".tbl-sheet").forEach(n=>{if(!TBL.open.includes(n.dataset.id))n.remove()});
   TBL.open.forEach((id,i)=>{
@@ -3200,7 +3207,7 @@ function tblSync(on){
   // finestre della scheda (level up, carte, oggetti…) aperte dalla scheda del proprio personaggio
   let md=TBL.el.querySelector(".tbl-modal");if(!md){md=document.createElement("div");md.className="pl tbl-modal";TBL.el.appendChild(md)}
   const owned=TBL.open.map(id=>PL.chars.find(y=>y.id===id)).find(Boolean);
-  if(PL.modal&&owned){const keepId=PL.id;PL.id=PL.focusOwn||owned.id;try{md.innerHTML=plModal()}catch(e){md.innerHTML=""}finally{PL.id=keepId}}else md.innerHTML="";
+  if(PL.modal&&owned){const keepId=PL.id;PL.id=PL.focusOwn||owned.id;let mh="";try{mh=plModal()}catch(e){mh=""}finally{PL.id=keepId}tblSet(md,mh)}else md.innerHTML="";
   md.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(k=>k.classList.add("in")); // le carte delle finestre compaiono subito
   tblWorld();if(TBL.w&&((document.querySelector(".pv-hub.glass")?.offsetHeight||0)!==TBL.w.hb||bar.offsetHeight!==TBL.w.tb))tblResize();else tblBlocks();
 }
