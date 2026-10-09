@@ -3177,7 +3177,7 @@ function tblSync(on){
     const x=pcs.find(y=>y.r.id===id);if(!x)return;
     let w=TBL.el.querySelector(`.tbl-sheet[data-id="${CSS.escape(id)}"]`);
     if(!w){w=document.createElement("section");w.className="tbl-sheet";w.dataset.id=id;
-      const sw=Math.max(340,Math.round(innerWidth*.5)-12);const hb=(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+8;Object.assign(w.style,{width:sw+"px",height:(innerHeight-hb-(TBL.el.querySelector(".tbl-task")?.offsetHeight||0)-16)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:hb+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>{tblFit(w);tblBlocks()}).observe(w)}
+      const sw=Math.min(innerWidth-16,Math.max(460,Math.round(innerWidth*.64)));const hb=(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+8;Object.assign(w.style,{width:sw+"px",height:(innerHeight-hb-(TBL.el.querySelector(".tbl-task")?.offsetHeight||0)-16)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:hb+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>{tblFit(w);tblBlocks()}).observe(w)}
     // il proprio personaggio è la scheda vera, interattiva come nella vista giocatore; gli altri restano in sola lettura
     const own=PL.chars.find(y=>y.id===id);w.toggleAttribute("data-own",!!own);
     if(own&&w.contains(document.activeElement)&&document.activeElement.matches("input,textarea,select"))return; // non interrompere chi sta scrivendo
