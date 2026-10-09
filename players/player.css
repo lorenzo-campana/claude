@@ -191,3 +191,6 @@
 .pl-sc-pick{display:flex;justify-content:center}
 .pl-sc-pick .btn{padding:8px 18px;border-radius:999px;font-weight:700}
 @media (prefers-reduced-motion:reduce){.pl-sc-card{transition:none}}
+/* Heritage: carte più piccole, tre per riga */
+.pl-creation-main .pl-heritage-grid .pl-cards.cg{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 12px}
+@media (max-width:640px){.pl-creation-main .pl-heritage-grid .pl-cards.cg{grid-template-columns:repeat(2,minmax(0,1fr))}}
