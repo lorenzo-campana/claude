@@ -4263,8 +4263,9 @@ const RB_GLOSS=[["speran*","hope"],["paur*","fear"],["stress*","stress"],["armat
  ["aiut*","help ally"],["squadra","tag team"],["gruppo","group"],["cadut*","falling fall"],["cad*","falling fall"],["acqua","underwater water"],["subacque*","underwater"],["copertur*","cover"],["muov*","movement move"],["movimento","movement"],["scatt*","sprint"],["sorpres*","surprise"],
  ["iniziativ*","turn order spotlight"],["turn*","turn order spotlight"],["destino","fate"],["riposare","rest"],["progett*","project"],["lungo","long"],["breve","short"],["interrott*","interrupted"],["cicatric*","scar"],["gloria","blaze glory"],["rischi*","risk"],["evitare","avoid"],
  ["classe","class"],["classi","class"],["sottoclass*","subclass"],["stirpe","ancestry"],["stirpi","ancestry"],["comunit*","community"],["dominio","domain"],["domini","domain"],["carta","card"],["carte","cards"],["deposito","vault loadout"],["dotazione","loadout"],["competenza","proficiency"],
- ["ritir*","reroll"],["arrotond*","rounding"],["sommar*","stacking"],["cumul*","stacking"],["somma*","stacking"],["effett*","effect"],["durata","duration"],["combattiment*","combat"],["combatt*","combat"],["passiv*","passive"],["reazion*","reaction"],["narrativ*","fiction"],["mondo","world"],["png","npc"],["npc","npc"],];
-const RB_STOP=new Set(("il lo la i gli le un uno una di a da in con su per tra fra e o ma che chi cosa come quando quanto quanti quanta quante quale quali dove se si non è sono ho ha hanno posso può puoi devo deve fa fare fanno del della dei delle dello degli nel nella nei nelle sul sulla al alla ai alle allo agli mi ti ci vi mio mia suo sua loro anche più succede succedere accade accadere del dal dalla dai dalle cosa fa funziona funzionano regola regole the an of to is are do does can my you your what how when which for on and or if it its be with as at by from this that there their they them has have not").split(" "));
+ ["ritir*","reroll"],["arrotond*","rounding"],["sommar*","stacking"],["cumul*","stacking"],["somma*","stacking"],["effett*","effect"],["durata","duration"],["combattiment*","combat"],["combatt*","combat"],["passiv*","passive"],["reazion*","reaction"],["narrativ*","fiction"],["mondo","world"],["png","npc"],["npc","npc"],
+ ["oggett*","item items inventory"],["inventari*","inventory"],["zain*","inventory"],["borsa","inventory"],["portare","carry"],["port*","carry"],["tener*","carry"],["consumabil*","consumable"],["pozion*","potion consumable"],["monet*","gold coin"],["soldi","gold"],["armatur*","armor"],["equipaggi*","equip equipment"],["impugn*","wield hand"],["mani","hands"],["mano","hand"],["limit*","maximum limit"],["massim*","maximum"],];
+const RB_STOP=new Set(("il lo la i gli le un uno una di a da in con su per tra fra e o ma nell dell all sull dall coll quell l un che chi cosa come quando quanto quanti quanta quante quale quali dove se si non è sono ho ha hanno posso può puoi devo deve fa fare fanno del della dei delle dello degli nel nella nei nelle sul sulla al alla ai alle allo agli mi ti ci vi mio mia suo sua loro anche più succede succedere accade accadere del dal dalla dai dalle cosa fa funziona funzionano regola regole the an of to is are do does can my you your what how when which for on and or if it its be with as at by from this that there their they them has have not").split(" "));
 const rbNorm=s=>String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
 const rbStem=w=>w.length>4?w.replace(/(ing|ed|es|s)$/,""):w;
 const rbToks=s=>rbNorm(s).split(/[^a-z0-9]+/).filter(w=>w.length>1&&!RB_STOP.has(w));
@@ -4313,11 +4314,18 @@ ${hits.map((h,i)=>`[${i+1}] ${rbPath(h.c)}\n${h.c.t}`).join("\n")}`;
 }
 async function rbAsk(q){
   q=String(q||"").trim();if(!q||RB.busy)return;
-  RB.q=q;RB.ans="";RB.err="";RB.cited=[];RB.tier="";RB.open=null;
-  const hits=rbSearch(q);RB.srcs=hits.map(h=>h.c);
+  RB.q=q;RB.ans="";RB.err="";RB.cited=[];RB.tier="";RB.open=null;RB.kw="";RB.phase="";
+  let hits=rbSearch(q),sample=null;
+  try{sample=window.claude?.use?await window.claude.use("sample"):null}catch(e){sample=null}
+  /* se le parole italiane non agganciano nessun passaggio, Claude traduce la domanda nei termini del manuale e cerco di nuovo */
+  if(!hits.length&&sample){
+    RB.busy=true;RB.ctl=new AbortController();RB.srcs=[];RB.phase="kw";rbPaint();
+    try{const r=await sample(`Rewrite this Italian question about the Daggerheart tabletop RPG as 4-10 English search keywords, using the official rulebook terms (e.g. Hit Points, Stress, Hope, Fear, inventory, weapon, armor, rest, countdown, adversary). Reply with the keywords only, separated by spaces.\nQuestion: ${q}`,{modelTier:"quick",signal:RB.ctl.signal});RB.kw=String(r.text||"").replace(/\s+/g," ").trim().slice(0,200);hits=rbSearch(q+" "+RB.kw)}catch(e){}
+    RB.busy=false;RB.ctl=null;RB.phase="";
+  }
+  RB.srcs=hits.map(h=>h.c);
   if(!hits.length){RB.err="Non trovo passaggi del manuale su questo. Prova con altre parole (anche in inglese, come «damage threshold»).";rbPaint();return}
   const prompt=rbPrompt(q,hits);RB.tokens=Math.round(prompt.length/3.6);
-  let sample=null;try{sample=window.claude?.use?await window.claude.use("sample"):null}catch(e){sample=null}
   if(!sample){RB.err="Per la risposta scritta serve Claude: apri il tracker su claude.ai. Intanto ecco i passaggi trovati.";rbPaint();return}
   RB.busy=true;RB.ctl=new AbortController();rbPaint();
   try{
@@ -4396,8 +4404,8 @@ function rbPaint(){
   const el=document.getElementById("rb-out");if(!el)return;
   const btn=document.getElementById("rb-btn");if(btn){btn.disabled=RB.busy;btn.textContent=RB.busy?"Cerco…":"Chiedi"}
   const stop=RB.busy?`<button class="btn xs" data-a="rb-stop">Interrompi</button>`:"";
-  const think=RB.busy&&!RB.ans?`<p class="small muted blink">Sto leggendo i passaggi…</p>`:"";
-  const cost=RB.srcs.length&&RB.tokens?`<p class="xsmall muted">${RB.srcs.length} passagg${RB.srcs.length===1?"io":"i"} inviati (≈ ${RB.tokens.toLocaleString("it-IT")} token in ingresso) · modello veloce${RB.tier&&RB.tier!=="quick"?` (risposto dal livello «${esc(RB.tier)}»)`:""} · ricerca fatta sul dispositivo.</p>`:"";
+  const think=RB.busy&&!RB.ans?`<p class="small muted blink">${RB.phase==="kw"?"Non trovo le parole esatte: cerco con i termini del manuale…":"Sto leggendo i passaggi…"}</p>`:"";
+  const cost=RB.srcs.length&&RB.tokens?`<p class="xsmall muted">${RB.srcs.length} passagg${RB.srcs.length===1?"io":"i"} inviati (≈ ${RB.tokens.toLocaleString("it-IT")} token in ingresso) · modello veloce${RB.tier&&RB.tier!=="quick"?` (risposto dal livello «${esc(RB.tier)}»)`:""} · ricerca fatta sul dispositivo${RB.kw?` (con i termini «${esc(RB.kw)}»)`:""}.</p>`:"";
   el.innerHTML=`${RB.q?`<p class="rb-qq"><span class="lab">Domanda</span> ${esc(RB.q)}</p>`:""}${rbAnswerHTML()}${think}${RB.err?`<div class="${RB.srcs.length?"note":"warn"} small">${esc(RB.err)}</div>`:""}${stop}${RB.busy?"":rbGameCardsHTML()}${rbSourcesHTML()}${cost}`;
 }
 function rvAsk(){

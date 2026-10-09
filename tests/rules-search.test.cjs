@@ -17,6 +17,8 @@ const cases=[
  ['Come funziona il vantaggio?',/Advantage/],
  ['Cosa succede quando un PG muore?',/Death/],
  ['what is a critical success on damage',/Critical/],
+ ['Quanti oggetti posso tenere nell\'inventario?',/Equipment/],
+ ['Quante armi posso impugnare?',/Burden|Equipment/],
 ];
 let bad=0;
 for(const [q,re] of cases){const r=rbSearch(q);const ok=r.slice(0,3).some(x=>re.test(x.c.h));if(!ok)bad++;
