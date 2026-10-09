@@ -610,7 +610,7 @@ details.pv-sec>summary{font-size:.95rem}
 .tbl-sheet-h{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#141a16;color:#e9ece5;cursor:move;user-select:none;touch-action:none}
 .tbl-sheet-h b{font-family:var(--f-display);font-weight:400;font-size:1.1rem;white-space:nowrap}.tbl-sheet-h span{font-size:.75rem;color:#9aa69c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tbl-x{border:1px solid #3a463d;background:transparent;color:#e9ece5;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:700;flex:none}.tbl-sheet-h{padding:3px 6px 3px 10px;gap:6px}.tbl-sheet-h b{font-size:.92rem}.tbl-sheet-h span{font-size:.68rem}.tbl-x{width:20px;height:20px;border-radius:5px;font-size:.7rem;line-height:1;padding:0}
-.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-rs{position:absolute;z-index:2}.tbl-sheet-h{border-radius:14px 14px 0 0}.tbl-sheet-b{border-radius:0 0 14px 14px}.tbl-rs.l{left:-4px;top:30px;bottom:12px;width:9px;cursor:ew-resize}.tbl-rs.r{right:-4px;top:30px;bottom:12px;width:9px;cursor:ew-resize}.tbl-rs.b{left:12px;right:12px;bottom:-4px;height:9px;cursor:ns-resize}.tbl-rs.bl{left:-4px;bottom:-4px;width:16px;height:16px;cursor:nesw-resize}.tbl-rs.br{right:-4px;bottom:-4px;width:16px;height:16px;cursor:nwse-resize}.tbl-sheet[hidden]{display:none}.tbl-dock{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto;z-index:3}.tbl-ico{width:52px;height:52px;border-radius:50%;border:2px solid #e0aa4c;background:#141a16;color:#e9ece5;font-family:var(--f-display);font-size:1.1rem;cursor:pointer;box-shadow:0 6px 20px #0008}.tbl-ico:hover{background:#243028}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
+.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-modal{position:static;padding:0;max-width:none;animation:none;pointer-events:auto}.tbl-modal:empty{display:none}.tbl-rs{position:absolute;z-index:2}.tbl-sheet-h{border-radius:14px 14px 0 0}.tbl-sheet-b{border-radius:0 0 14px 14px}.tbl-rs.l{left:-4px;top:30px;bottom:12px;width:9px;cursor:ew-resize}.tbl-rs.r{right:-4px;top:30px;bottom:12px;width:9px;cursor:ew-resize}.tbl-rs.b{left:12px;right:12px;bottom:-4px;height:9px;cursor:ns-resize}.tbl-rs.bl{left:-4px;bottom:-4px;width:16px;height:16px;cursor:nesw-resize}.tbl-rs.br{right:-4px;bottom:-4px;width:16px;height:16px;cursor:nwse-resize}.tbl-sheet[hidden]{display:none}.tbl-dock{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto;z-index:3}.tbl-ico{width:52px;height:52px;border-radius:50%;border:2px solid #e0aa4c;background:#141a16;color:#e9ece5;font-family:var(--f-display);font-size:1.1rem;cursor:pointer;box-shadow:0 6px 20px #0008}.tbl-ico:hover{background:#243028}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
 .scr-ctl{position:fixed;top:calc(12vh + env(safe-area-inset-top,0px));left:3vw;z-index:7;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start;max-width:50vw;opacity:.35;transition:opacity .3s}
 .tgl.back{background:var(--hope-soft);border-color:var(--hope)}
 .scr-ctl:hover,.scr-ctl:focus-within{opacity:1}
@@ -3106,6 +3106,9 @@ const TBL_DICE=[4,6,8,10,12,20];
 function tblSync(on){
   if(!TBL.el){TBL.el=document.createElement("div");TBL.el.id="tbl";document.body.appendChild(TBL.el);
     TBL.el.addEventListener("click",tblClick);TBL.el.addEventListener("pointerdown",tblDrag);
+    // le azioni della scheda agiscono sul personaggio corrente: prima di ogni clic o campo, diventa quello della finestra toccata
+    const focusOwn=e=>{const s=e.target.closest?.(".tbl-sheet[data-own]");if(s){PL.id=s.dataset.id;PL.focusOwn=s.dataset.id}};
+    TBL.el.addEventListener("pointerdown",focusOwn,true);TBL.el.addEventListener("focusin",focusOwn,true);
     // zoom della scheda col pinch del trackpad (arriva come rotella con ctrl) e coi gesti di Safari
     const zoomBy=(el,f)=>{const s=el.closest(".tbl-sheet"),pl=s?.querySelector(".tbl-pl");if(!pl)return;const id=s.dataset.id;TBL.zoom[id]=Math.min(1.6,Math.max(.3,(TBL.zoom[id]||tblFitZoom(s))*f));pl.style.zoom=TBL.zoom[id]};
     TBL.el.addEventListener("wheel",e=>{if(!e.ctrlKey||!e.target.closest?.(".tbl-sheet"))return;e.preventDefault();zoomBy(e.target,Math.exp(-e.deltaY*.006))},{passive:false});
@@ -3140,9 +3143,13 @@ function tblSync(on){
     let w=TBL.el.querySelector(`.tbl-sheet[data-id="${CSS.escape(id)}"]`);
     if(!w){w=document.createElement("section");w.className="tbl-sheet";w.dataset.id=id;
       const sw=Math.max(340,Math.round(innerWidth*.5)-12);const hb=(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+8;Object.assign(w.style,{width:sw+"px",height:(innerHeight-hb-(TBL.el.querySelector(".tbl-task")?.offsetHeight||0)-16)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:hb+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>{tblFit(w);tblBlocks()}).observe(w)}
-    const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||tblFitZoom(w),c=tblChar(x.r);
+    // il proprio personaggio è la scheda vera, interattiva come nella vista giocatore; gli altri restano in sola lettura
+    const own=PL.chars.find(y=>y.id===id);w.toggleAttribute("data-own",!!own);
+    if(own&&w.contains(document.activeElement)&&document.activeElement.matches("input,textarea,select"))return; // non interrompere chi sta scrivendo
+    const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||tblFitZoom(w),c=own||tblChar(x.r);
     let inner="";
-    if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
+    if(own){const keepId=PL.id;PL.id=own.id;try{inner=`<div class="pl tbl-pl" style="zoom:${z}">${plSheet(own)}</div>`}catch(e){inner=""}finally{PL.id=keepId}}
+    else if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
       try{inner=`<div class="pl tbl-pl" style="zoom:${z}"><div inert>${plSheet(c)}</div></div>`}catch(e){inner=""}finally{PL.chars=keep;PL.id=keepId}}
     if(!inner)inner=tblCompact(x.r,x.p);
     w.innerHTML=`<header class="tbl-sheet-h" data-drag="1"><b>${esc(x.p.name||"PG")}</b><span>${esc([x.p.her,x.p.cls].filter(Boolean).join(" · "))}</span>
@@ -3152,6 +3159,10 @@ function tblSync(on){
     w.querySelector(".tbl-sheet-b").scrollTop=sy;w.hidden=TBL.min.includes(id);
   });
   TBL.el.querySelector(".tbl-dock")?.remove();
+  // finestre della scheda (level up, carte, oggetti…) aperte dalla scheda del proprio personaggio
+  let md=TBL.el.querySelector(".tbl-modal");if(!md){md=document.createElement("div");md.className="pl tbl-modal";TBL.el.appendChild(md)}
+  const owned=TBL.open.map(id=>PL.chars.find(y=>y.id===id)).find(Boolean);
+  if(PL.modal&&owned){const keepId=PL.id;PL.id=PL.focusOwn||owned.id;try{md.innerHTML=plModal()}catch(e){md.innerHTML=""}finally{PL.id=keepId}}else md.innerHTML="";
   tblWorld();if(TBL.w&&((document.querySelector(".pv-hub.glass")?.offsetHeight||0)!==TBL.w.hb||bar.offsetHeight!==TBL.w.tb))tblResize();else tblBlocks();
 }
 // la scheda completa: personaggio pregenerato, del giocatore o del GM, con lo stato che arriva dal tracker
@@ -3179,7 +3190,7 @@ function sheetCardOpen(box,e){const k=sheetCardAt(box,e);if(!k)return false;cons
 document.addEventListener("mousemove",e=>{const box=e.target.closest?.(".tbl-sheet-b,.gm-sheet-wrap");if(box)box.style.cursor=sheetCardAt(box,e)?"zoom-in":""},{passive:true});
 document.addEventListener("click",e=>{const box=e.target.closest?.(".gm-sheet-wrap");if(box)sheetCardOpen(box,e)});
 function tblClick(e){
-  const sb=e.target.closest?.(".tbl-sheet-b");if(sb){sheetCardOpen(sb,e);return}
+  const sb=e.target.closest?.(".tbl-sheet-b");if(sb){if(!sb.closest(".tbl-sheet[data-own]"))sheetCardOpen(sb,e);return}
   const b=e.target.closest("[data-t]");if(!b||!TBL.el.contains(b))return;
   const t=b.dataset.t;
   if(t==="add"){TBL.pool.push(+b.dataset.s);if(TBL.pool.length>20)TBL.pool.shift()}
