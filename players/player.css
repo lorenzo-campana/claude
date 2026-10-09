@@ -360,3 +360,4 @@
 .pl-level-picked>div{border-radius:8px;padding-left:8px;padding-right:8px}
 
 .pl-local{border-color:var(--hope);background:color-mix(in srgb,var(--hope) 10%,var(--paper));margin-bottom:18px}.pl-local p{margin:6px 0 0}
+.pv-hub{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}.pv-hub .bar-in{max-width:1500px;margin:0 auto;padding:8px 16px;display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}.pv-page{max-width:1280px;margin:0 auto;padding:20px 16px 80px}
