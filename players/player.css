@@ -196,13 +196,35 @@
 @media (max-width:640px){.pl-creation-main .pl-heritage-grid .pl-cards.cg{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* Tratti in creazione: lo scudo della scheda (senza il cerchio del level up), sei in fila, verbi allineati sotto */
 .pl-trait-assignment.pl-trait-sheet{grid-template-columns:repeat(6,minmax(0,1fr));gap:18px 12px;padding:4px 0;background:none;border:0}
-.pl-trait-sheet .pl-trait-pick{display:flex;flex-direction:column;align-items:center;gap:10px;padding:0;background:none;clip-path:none;text-transform:none;letter-spacing:0;font-size:inherit}
+.pl-trait-sheet .pl-trait-pick{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pl-tp-flag{position:relative;display:block;width:100%;max-width:118px;aspect-ratio:62/54.4;background:transparent url("players/assets/trait-plain.svg") center/100% 100% no-repeat;filter:drop-shadow(0 2px 2px rgba(45,30,65,.35));transition:transform .15s,filter .15s}
 .pl-trait-pick:hover .pl-tp-flag{transform:translateY(-3px);filter:drop-shadow(0 5px 5px rgba(45,30,65,.35))}
-.pl-trait-pick:focus-within .pl-tp-flag{filter:drop-shadow(0 0 3px rgba(86,71,107,.8))}
+.pl-trait-pick:focus-visible .pl-tp-flag{filter:drop-shadow(0 0 0 #56476b) drop-shadow(0 0 4px rgba(86,71,107,.9))}
 .pl-tp-flag strong{position:absolute;z-index:1;left:4%;right:4%;top:9%;height:14%;display:grid;place-items:center;color:#fff;font:11px/1 DH Eveleth,Arial,sans-serif;text-transform:uppercase;letter-spacing:.02em;pointer-events:none;white-space:nowrap}
-.pl-trait-sheet .pl-tp-flag select{position:absolute;inset:0;z-index:2;width:100%;height:100%;appearance:none;-webkit-appearance:none;border:0;background:transparent;cursor:pointer;padding:22% 0 0;font:34px/1 DH Overpass,Arial,sans-serif;color:#56476b;text-align:center;text-align-last:center}
-.pl-trait-sheet .pl-tp-flag select:focus-visible{outline:none}
-.pl-tp-flag i{position:absolute;z-index:1;left:0;right:0;bottom:8%;text-align:center;font-style:normal;font-size:9px;color:#a397ad;pointer-events:none}
+
+
+
 .pl-trait-sheet .pl-trait-pick small{display:flex;flex-direction:column;align-items:center;gap:1px;width:100%;padding-top:8px;border-top:1px solid #d9d0dd;font:600 10.5px/1.35 DH Overpass,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#7a7084}
 @media (max-width:860px){.pl-trait-assignment.pl-trait-sheet{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 16px}}
+
+.pl-tp-flag b{position:absolute;inset:22% 0 0;display:grid;place-items:center;font:400 34px/1 DH Overpass,Arial,sans-serif;color:#56476b}
+.pl-tp-flag b.up{color:#4a3a63;font-weight:700}.pl-tp-flag b.down{color:#9a4b5d}
+.pl-trait-pick.picked .pl-tp-flag{transform:translateY(-6px) scale(1.06);filter:drop-shadow(0 0 0 #c99a3c) drop-shadow(0 0 6px rgba(201,154,60,.95)) drop-shadow(0 8px 8px rgba(45,30,65,.3))}
+.pl-trait-sheet.picking .pl-trait-pick:not(.picked) .pl-tp-flag{animation:plTpWiggle 1.6s ease-in-out infinite}
+.pl-trait-sheet.picking .pl-trait-pick:not(.picked):hover .pl-tp-flag{animation:none;transform:translateY(-3px);filter:drop-shadow(0 0 4px rgba(201,154,60,.8))}
+.pl-trait-pick.swapped .pl-tp-flag b{animation:plTpSwap .5s cubic-bezier(.3,.7,.2,1.3)}
+@keyframes plTpWiggle{0%,100%{transform:none}50%{transform:translateY(-2px)}}
+@keyframes plTpSwap{0%{transform:scale(.4) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.pl-trait-sheet.picking .pl-trait-pick .pl-tp-flag,.pl-trait-pick.swapped .pl-tp-flag b{animation:none}}
+/* la regola dei tratti, in evidenza */
+.pl-trait-rule{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding:16px 18px;margin:4px 0 14px;border-radius:12px;background:linear-gradient(135deg,#f6f1fa,#ece4f3);border:1px solid #d8cde2;border-left:4px solid #56476b}
+.pl-tr-text{flex:1 1 280px;min-width:0}
+.pl-tr-kicker{display:block;font:800 10px/1 var(--f-body,sans-serif);letter-spacing:.14em;text-transform:uppercase;color:#7a6690;margin-bottom:4px}
+.pl-tr-text p{margin:0;font-size:.95rem;line-height:1.45;color:#3c3446}
+.pl-trait-pool{display:flex;gap:8px;flex-wrap:wrap}
+.pl-tok{display:grid;place-items:center;width:40px;height:44px;clip-path:polygon(50% 0,100% 22%,100% 70%,50% 100%,0 70%,0 22%);background:#56476b;color:#fff;font:700 15px/1 DH Overpass,Arial,sans-serif}
+.pl-tok.up{background:linear-gradient(180deg,#6b5a85,#4a3a63)}.pl-tok.zero{background:#8b809a}.pl-tok.down{background:#9a4b5d}
+.pl-tr-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 18px}
+.pl-tr-hint{font-size:.88rem;color:var(--muted,#666)}
+.pl-tr-hint b{color:#56476b}
+.pl-tr-bar .btn{margin:0}
