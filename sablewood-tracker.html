@@ -3854,7 +3854,7 @@ function navFx(){
     ind.style.transition="none";place(prev.l,prev.t,prev.w,prev.h);void ind.offsetWidth;ind.style.transition="";place(cur.l,cur.t,cur.w,cur.h);
     const content=key==="pv"?nav.closest(".pv-hub").nextElementSibling:document.getElementById("view"),dx=idx>prev.i?36:-36;
     content?.animate?.([{opacity:0,transform:`translateX(${dx}px)`,filter:"blur(3px)"},{opacity:1,transform:"none",filter:"blur(0)"}],{duration:380,easing:"cubic-bezier(.2,.85,.25,1)"});
-  }else place(cur.l,cur.t,cur.w,cur.h);
+  }else{ind.style.transition="none";place(cur.l,cur.t,cur.w,cur.h);void ind.offsetWidth;ind.style.transition=""} // nessuna animazione se la sezione non cambia
   NAVFX[key]=cur;
 }
 // la barra in alto è la stessa nella home e dentro una campagna: le sezioni del tavolo restano sempre a portata
