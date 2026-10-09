@@ -213,8 +213,7 @@ function rbPaint(){
 function rvAsk(){
   return `<div class="rbot stack"><div class="panel stack" style="gap:10px"><h4>Chiedi al manuale</h4>
    <p class="small muted" style="margin:0">Cerca nell'SRD ufficiale di Daggerheart (in inglese) e risponde in italiano citando i passaggi, con la sezione in cui si trovano. Usa un modello veloce e pochi passaggi per spendere poco.</p>
-   <div class="row"><input type="text" id="rb-q" class="rb-in" value="${esc(RB.q)}" placeholder="Es. Quanto danno fa una caduta da lontano?" autocomplete="off" aria-label="Domanda sulle regole"><button class="btn pri" id="rb-btn" data-a="rb-ask">Chiedi</button></div>
-   <div class="row">${RB_EXAMPLES.map((x,i)=>`<button class="cdc" data-a="rb-ex" data-i="${i}">${esc(x)}</button>`).join("")}</div></div>
+   <div class="row"><input type="text" id="rb-q" class="rb-in" value="${esc(RB.q)}" placeholder="Es. Quanto danno fa una caduta da lontano?" autocomplete="off" aria-label="Domanda sulle regole"><button class="btn pri" id="rb-btn" data-a="rb-ask">Chiedi</button></div></div>
    <div id="rb-out" class="stack" style="gap:10px"></div></div>`;
 }
 
