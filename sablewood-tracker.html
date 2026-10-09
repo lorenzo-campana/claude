@@ -832,7 +832,7 @@ body.lb-on{overflow:hidden}
 .tabs button.sub{margin-left:auto;font-weight:600;font-size:.85rem;color:var(--muted)}.tabs button.sub.on{color:var(--ink)}
 /* ---- tavolo del GM: campagne e avversari ---- */
 body.hub .party-pane,body.hub #rollpop,body.hub #tabs{display:none!important}
-.bar2{border-top:1px solid var(--line);background:var(--bg)}body #bar2 .camp-brand b{max-width:none;overflow:visible;white-space:normal;text-overflow:clip}.bar2 .bar-in{padding-block:6px}.bar2 .brand b{font-size:1.2rem}body.hub .bar2,#bar2:empty{display:none}.bar2:has(#bar2:empty){display:none}.tabs:empty{display:none}
+.bar2{border-top:1px solid var(--line);background:var(--bg)}body #bar2 .camp-brand b{max-width:none;overflow:visible;white-space:normal;text-overflow:clip}.bar2 .bar-in{padding-block:6px}.bar2 .brand b{font-size:1.2rem}body.hub .bar2,#bar2:empty{display:none}.bar2:has(#bar2:empty){display:none}.tabs:empty{display:none}#tabs:not(:empty){display:flex;align-items:center;gap:12px;border:0;padding-bottom:4px}#bar2 .ib.on,#bar2 .ib.on:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}#bar2.bar-in{gap:8px 12px}body #bar2 .fp{width:11px;height:11px}#bar2 .fear-pips{gap:2px}#bar2 .acts button{padding:2px 9px}#bar2 .bar-r{gap:4px}
 @media (min-width:1101px){body:not(.hub) .party-pane{top:calc(env(safe-area-inset-top,0px) + var(--bar-h,120px));max-height:calc(100vh - var(--bar-h,120px) - 16px)}}
 .hub-nav{display:flex;gap:3px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:999px;margin-left:12px}
 .hub-nav button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;border-radius:999px;padding:6px 14px 6px 12px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s}
@@ -1611,6 +1611,8 @@ const ICO={
  cloud:'<path d="M17.5 19H8a5 5 0 1 1 1.6-9.7A6 6 0 0 1 21 11.5a4 4 0 0 1-3.5 7.5z"/><path d="m9.5 14 2 2 3.5-3.5"/>',
  cloudOff:'<path d="M17.5 19H8a5 5 0 0 1-1.4-9.8"/><path d="M10.4 7.2A6 6 0 0 1 21 11.5a4 4 0 0 1-1.3 6.4"/><path d="m3 3 18 18"/>',
  device:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+ screen:'<rect x="2" y="3" width="20" height="13" rx="2"/><path d="M7 21h10M12 16v5"/><path d="M8.5 10.5a5 5 0 0 1 7 0M10.5 12.5a2 2 0 0 1 3 0"/>',
+ swords:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6M16 16l4 4M19 21l2-2"/><path d="M9.5 6.5 14 2h3v3l-4.5 4.5"/><path d="m5 14 4 4M7 17l-3 3M3 19l2 2"/>',
  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a5 5 0 0 1 6 4.8"/>'};
 const svgI=(k,extra="")=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${ICO[k]}</svg>`;
 function saveIco(){
@@ -2868,9 +2870,9 @@ function renderBar(){
   <div class="counter ${S.counter.on?"live":""}"><span class="lab">Assalto alla Città</span>
    ${S.counter.on?`<button class="btn xs" data-a="ctr" data-k="-1" aria-label="Contatore −1">−</button><span class="v">${S.counter.value}</span><button class="btn xs" data-a="ctr" data-k="1" aria-label="Contatore +1">+</button><button class="btn xs" data-a="ctr-close" title="Chiudi il Contatore" aria-label="Chiudi il Contatore">×</button>`:`<button class="btn xs" data-a="ctr-start">Avvia (15)</button>`}</div>
   <nav class="acts">${ACTS.map((a,i)=>`<button class="${a.id===S.act?"on":i<ai?"done":""}" data-a="goact" data-k="${a.id}" title="${a.t}">${a.n}</button>`).join("")}</nav>
-  <div class="bar-r"><button class="ib" id="undo-btn" data-a="undo" ${UNDO.length?"":"disabled"} title="${esc(undoTitle())}" aria-label="${esc(undoTitle())}">${svgI("undo")}</button>${saveIco()}</div>`;
+  <div class="bar-r">${S.tab==="scontro"||S.foes.length||S.cds.length?`<button class="ib ${S.tab==="scontro"&&APP.sec==="campagne"?"on":""}" data-a="tab" data-k="${S.tab==="scontro"&&APP.sec==="campagne"?"atto":"scontro"}" title="Scontri in corso e conti alla rovescia" aria-label="Scontri in corso e conti alla rovescia">${svgI("swords")}</button>`:""}<button class="ib ${S.tab==="schermo"&&APP.sec==="campagne"?"on":""}" data-a="tab" data-k="${S.tab==="schermo"&&APP.sec==="campagne"?"atto":"schermo"}" title="Schermo e giocatori" aria-label="Schermo e giocatori">${svgI("screen")}</button><button class="ib" id="undo-btn" data-a="undo" ${UNDO.length?"":"disabled"} title="${esc(undoTitle())}" aria-label="${esc(undoTitle())}">${svgI("undo")}</button>${saveIco()}</div>`;
 }
-function renderTabs(){if(APP.sec!=="campagne"){document.getElementById("tabs").innerHTML="";return}document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")
+function renderTabs(){const el=document.getElementById("tabs");if(APP.sec!=="campagne"||S.tab==="atto"){el.innerHTML="";return}el.innerHTML=`<button class="btn xs" data-a="tab" data-k="atto">← Torna all'atto</button>`;return;document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")
   +(S.tab==="scontro"||S.foes.length||S.cds.length?`<button class="sub ${S.tab==="scontro"?"on":""}" data-a="tab" data-k="scontro" title="Tutti gli scontri in corso e i conti alla rovescia">Scontri e conti</button>`:"")}
 
 let openPc=null,sheetPc=null;
@@ -3543,6 +3545,7 @@ function renderOpt(){
      <span class="sk ${k==="auto"?"auto":""}" ${k==="auto"?"":`data-skin="${k}"`}>${k==="auto"?"":`<span class="sk-bar"></span><span class="sk-card"><span class="sk-l"></span><span class="sk-l m"></span><span class="sk-d"><i style="background:var(--moss)"></i><i style="background:var(--hope)"></i><i style="background:var(--fear)"></i><i style="background:var(--blood)"></i></span></span>`}</span>
      <span class="skin-n">${n}<small>${d}</small></span></button>`).join("")}</div>
     ${APP.view==="camp"?optPartyHTML():""}
+    ${APP.view==="camp"?`<div class="opt-sec"><div class="lab">Diario dei giocatori</div><p class="small muted" style="margin:0">Copertina, compagnia, un capitolo per tappa e il finale: da scaricare in PDF o stampare.</p><div class="row"><button class="btn" data-a="opt-diary">Apri il diario</button></div></div>`:""}
     ${APP.view==="camp"?`<div class="opt-sec"><div class="lab">Partita</div><p class="small muted" style="margin:0">Riporta «${esc(campById(APP.camp)?.name||"")}» all'inizio: atti, scene, Paura, personaggi, registro. Si può annullare subito dopo con ↶.</p>
      <div class="row">${optReset?`<span class="small">Azzerare tutta la partita?</span><button class="btn xs bad" data-a="reset-yes">Sì, azzera</button><button class="btn xs" data-a="opt-reset-no">No</button>`:`<button class="btn" data-a="opt-reset-ask">Azzera la partita</button>`}</div></div>`:""}
    </div></div></div>`;
@@ -3574,6 +3577,7 @@ const OPTACT={
  "opt-reset-no":()=>{optReset=false;renderOpt()},
  undo:()=>undo(),
  "opt-open":(o,b)=>{optOpen=true;optReset=false;optReturn=b;renderOpt();document.querySelector("#opt .skin.on")?.focus()},
+ "opt-diary":()=>{optOpen=false;renderOpt();S.tab="diario";APP.sec="campagne";persist();render();top0()},
  "opt-close":(o,b,e)=>{optOpen=false;renderOpt();optReturn?.isConnected?optReturn.focus():document.querySelector(".opt-btn")?.focus()},
  skin:o=>{skin=o.k;try{localStorage.setItem(SKINKEY,skin)}catch(e){}applySkin();renderOpt();document.querySelector(`#opt .skin[data-k="${skin}"]`)?.focus()}
 };
