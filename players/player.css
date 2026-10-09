@@ -194,3 +194,14 @@
 /* Heritage: carte più piccole, tre per riga */
 .pl-creation-main .pl-heritage-grid .pl-cards.cg{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 12px}
 @media (max-width:640px){.pl-creation-main .pl-heritage-grid .pl-cards.cg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Tratti in creazione: gli stessi scudi della scheda ufficiale */
+.pl-trait-assignment.pl-trait-sheet{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 16px;padding:18px 12px;background:#fff;border:1px solid #d9d0dd;border-radius:10px}
+.pl-trait-sheet .pl-trait-pick{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;background:none;clip-path:none;text-transform:none;letter-spacing:0;font-size:inherit}
+.pl-tp-flag{position:relative;display:grid;place-items:center;width:min(100%,128px);aspect-ratio:65/52;background:transparent url("players/assets/trait.svg") center/100% 100% no-repeat;filter:drop-shadow(0 2px 2px rgba(45,30,65,.35));transition:transform .15s,filter .15s}
+.pl-trait-pick:hover .pl-tp-flag{transform:translateY(-2px);filter:drop-shadow(0 5px 6px rgba(45,30,65,.35))}
+.pl-tp-flag strong{position:absolute;z-index:1;top:11%;left:5%;color:#fff;font:11.5px/1 DH Eveleth,Arial,sans-serif;text-transform:uppercase;pointer-events:none}
+.pl-trait-sheet .pl-tp-flag select{position:absolute;inset:0;width:100%;height:100%;appearance:none;-webkit-appearance:none;border:0;background:transparent;cursor:pointer;padding:18% 10% 0 0;font:40px/1 DH Overpass,Arial,sans-serif;color:#66547f;text-align:center;text-align-last:center}
+.pl-trait-sheet .pl-tp-flag select:focus-visible{outline:2px solid #66547f;outline-offset:2px}
+.pl-tp-flag i{position:absolute;right:16%;bottom:22%;font-style:normal;font-size:11px;color:#9c90a6;pointer-events:none}
+.pl-trait-sheet .pl-trait-pick small{font:12px/1.3 DH Overpass,Arial,sans-serif;color:#5b5660;text-align:center}
+@media (max-width:640px){.pl-trait-assignment.pl-trait-sheet{grid-template-columns:repeat(2,minmax(0,1fr))}}
