@@ -596,7 +596,7 @@ details.pv-sec>summary{font-size:.95rem}
 .st-party .pips{gap:.3cqh;flex-wrap:nowrap}
 .st-party .pip.hp,.st-party .pip.st{width:2.2cqh;height:1.6cqh;border-width:max(1px,.2cqh)}
 .st-party .pip.hope{width:1.4cqh;height:1.4cqh;margin:.2cqh .35cqh;border-width:max(1px,.2cqh)}
-#tbl[hidden]{display:none}#tbl{position:fixed;inset:0;z-index:4;pointer-events:none}.tbl-gl{position:absolute;inset:0;pointer-events:none}
+#tbl[hidden]{display:none}#tbl{position:fixed;inset:0;z-index:6;pointer-events:none}.tbl-gl{position:absolute;inset:0;pointer-events:none;z-index:2}.tbl-sheet{z-index:1}.tbl-bar{z-index:3}body:has(.stage .st-party) .tbl-bar{bottom:calc(14vh + 8px)}
 .tbl-bar{position:absolute;left:12px;bottom:12px;pointer-events:auto;display:flex;flex-direction:column;gap:8px;align-items:flex-start;opacity:.6;transition:opacity .3s;max-width:calc(100vw - 24px)}.tbl-bar:hover,.tbl-bar:focus-within{opacity:1}
 .tbl-row,.tbl-menu{display:flex;gap:4px;flex-wrap:wrap;background:rgba(6,8,7,.8);border:1px solid #3a463d;border-radius:14px;padding:6px;backdrop-filter:blur(6px);color:#e9ece5}
 .tbl-b{border:1px solid #3a463d;background:#141a16;color:#e9ece5;border-radius:9px;padding:6px 10px;font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap}
@@ -611,7 +611,7 @@ details.pv-sec>summary{font-size:.95rem}
 .tbl-sheet-h b{font-family:var(--f-display);font-weight:400;font-size:1.1rem;white-space:nowrap}.tbl-sheet-h span{font-size:.75rem;color:#9aa69c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tbl-x{border:1px solid #3a463d;background:transparent;color:#e9ece5;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:700;flex:none}
 .tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
-.scr-ctl{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;opacity:.35;transition:opacity .3s}
+.scr-ctl{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start;opacity:.35;transition:opacity .3s}
 .tgl.back{background:var(--hope-soft);border-color:var(--hope)}
 .scr-ctl:hover,.scr-ctl:focus-within{opacity:1}
 @media (hover:none){.scr-ctl{opacity:.7}}
@@ -3110,7 +3110,7 @@ function tblSync(on){
     const x=pcs.find(y=>y.r.id===id);if(!x)return;
     let w=TBL.el.querySelector(`.tbl-sheet[data-id="${CSS.escape(id)}"]`);
     if(!w){w=document.createElement("section");w.className="tbl-sheet";w.dataset.id=id;
-      Object.assign(w.style,{left:(24+i*36)+"px",top:(24+i*36)+"px"});TBL.el.appendChild(w)}
+      Object.assign(w.style,{left:(24+i*36)+"px",top:(64+i*36)+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>tblBlocks()).observe(w)}
     const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||.55,c=tblChar(x.r);
     let inner="";
     if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
@@ -3122,7 +3122,7 @@ function tblSync(on){
     w.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(k=>k.classList.add("in"));
     w.querySelector(".tbl-sheet-b").scrollTop=sy;
   });
-  tblWorld();
+  tblWorld();tblBlocks();
 }
 // la scheda completa: personaggio pregenerato, del giocatore o del GM, con lo stato che arriva dal tracker
 function tblChar(r){
@@ -3160,7 +3160,7 @@ function tblDrag(e){
   const h=e.target.closest("[data-drag]");if(!h||e.target.closest("button"))return;
   const w=h.parentElement,r=w.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top;
   TBL.el.appendChild(w); // in primo piano
-  const mv=ev=>{w.style.left=Math.max(0,Math.min(innerWidth-80,ev.clientX-dx))+"px";w.style.top=Math.max(0,Math.min(innerHeight-40,ev.clientY-dy))+"px"};
+  const mv=ev=>{w.style.left=Math.max(0,Math.min(innerWidth-80,ev.clientX-dx))+"px";w.style.top=Math.max(0,Math.min(innerHeight-40,ev.clientY-dy))+"px";tblBlocks()};
   const up=()=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up)};
   addEventListener("pointermove",mv);addEventListener("pointerup",up);e.preventDefault();
 }
@@ -3192,7 +3192,7 @@ function tblInit(){
   world.addContactMaterial(new C.ContactMaterial(mTable,mDie,{friction:.4,restitution:.32}));
   world.addContactMaterial(new C.ContactMaterial(mDie,mDie,{friction:.2,restitution:.28}));
   const g=new C.Body({mass:0,material:mTable});g.addShape(new C.Plane());g.quaternion.setFromAxisAngle(new C.Vec3(1,0,0),-Math.PI/2);world.addBody(g);
-  TBL.w={T,C,r,sc,cam,world,mTable,mDie,dice:[],walls:[],raf:0,acc:0,t:0};
+  TBL.w={T,C,r,sc,cam,world,mTable,mDie,dice:[],walls:[],blocks:[],raf:0,acc:0,t:0};
   tblResize();addEventListener("resize",tblResize);tblKick();
 }
 function tblResize(){
@@ -3203,7 +3203,23 @@ function tblResize(){
   w.walls.forEach(b=>w.world.removeBody(b));
   const wall=(pos,ang)=>{const b=new C.Body({mass:0,material:w.mTable});b.addShape(new C.Plane());b.position.set(...pos);b.quaternion.setFromAxisAngle(new C.Vec3(0,1,0),ang);w.world.addBody(b);return b};
   w.walls=[wall([-hx,0,0],Math.PI/2),wall([hx,0,0],-Math.PI/2),wall([0,0,zf],0),wall([0,0,zn],Math.PI)];
-  w.dice.forEach(d=>{d.b.wakeUp()});tblKick();
+  tblBlocks();w.dice.forEach(d=>{d.b.wakeUp()});tblKick();
+}
+/* ogni scheda aperta è un gradino sul tavolo: i dadi ci rimbalzano contro, ci salgono sopra e ne cadono giù */
+const TBL_STEP=1.6;
+function tblBlocks(){
+  const w=TBL.w;if(!w||!w.cam)return;const T=w.T,C=w.C;
+  w.blocks.forEach(x=>{w.world.removeBody(x.b);w.sc.remove(x.m);x.m.geometry.dispose()});w.blocks=[];
+  const plane=new T.Plane(new T.Vector3(0,1,0),-TBL_STEP),ray=new T.Raycaster(),W=innerWidth,H=innerHeight;
+  TBL.el.querySelectorAll(".tbl-sheet").forEach(el=>{
+    const r=el.getBoundingClientRect();if(r.width<10||r.height<10)return;
+    const pts=[[r.left,r.top],[r.right,r.top],[r.left,r.bottom],[r.right,r.bottom]].map(([x,y])=>{ray.setFromCamera({x:x/W*2-1,y:-(y/H)*2+1},w.cam);const p=new T.Vector3();ray.ray.intersectPlane(plane,p);return p});
+    const x0=Math.min(...pts.map(p=>p.x)),x1=Math.max(...pts.map(p=>p.x)),z0=Math.min(...pts.map(p=>p.z)),z1=Math.max(...pts.map(p=>p.z));
+    const b=new C.Body({mass:0,material:w.mTable});b.addShape(new C.Box(new C.Vec3((x1-x0)/2,TBL_STEP/2,(z1-z0)/2)));b.position.set((x0+x1)/2,TBL_STEP/2,(z0+z1)/2);w.world.addBody(b);
+    const m=new T.Mesh(new T.PlaneGeometry(x1-x0,z1-z0),new T.ShadowMaterial({opacity:.35}));m.rotation.x=-Math.PI/2;m.position.set((x0+x1)/2,TBL_STEP+.01,(z0+z1)/2);m.receiveShadow=true;w.sc.add(m);
+    w.blocks.push({b,m});
+  });
+  w.dice.forEach(d=>d.b.wakeUp());tblKick();
 }
 function tblKick(){const w=TBL.w;if(!w||w.raf)return;w.last=performance.now();w.raf=requestAnimationFrame(tblFrame)}
 function tblStop(){const w=TBL.w;if(w&&w.raf){cancelAnimationFrame(w.raf);w.raf=0}}
@@ -3239,6 +3255,7 @@ function tblThrow(list,dual=false){
   const w=TBL.w;
   if(!w){if(TBL.noGL){const vals=list.map(x=>({...x,v:1+Math.floor(Math.random()*x.s)}));const h=dual&&vals[0].v,f=dual&&vals[1].v;TBL.hist.unshift({total:vals.reduce((a,x)=>a+x.v,0),label:dual?"Dualità":vals.map(x=>"d"+x.s+": "+x.v).join(" · "),dual:dual?(h===f?{cls:"crit",txt:"Critico!"}:h>f?{cls:"hope",txt:`con Speranza (${h} · ${f})`}:{cls:"fear",txt:`con Paura (${h} · ${f})`}):null});TBL.hist=TBL.hist.slice(0,3);tblSync(true)}else tblWorld();return}
   const T=w.T,{hx,zn,zf}=w.box;
+  w.dice.forEach(tblDrop);w.dice=[];w.pending=null;
   const made=list.map((f,i)=>{
     const m=buildDie(T,f.s,DIE_COL[f.c]||DIE_COL.n);m.castShadow=true;m.scale.multiplyScalar(1.25);w.sc.add(m);
     const b=dieBody(w.C,T,m,w.mDie);
