@@ -597,7 +597,7 @@ details.pv-sec>summary{font-size:.95rem}
 .st-party .pip.hp,.st-party .pip.st{width:2.2cqh;height:1.6cqh;border-width:max(1px,.2cqh)}
 .st-party .pip.hope{width:1.4cqh;height:1.4cqh;margin:.2cqh .35cqh;border-width:max(1px,.2cqh)}
 #tbl[hidden]{display:none}#tbl{position:fixed;inset:0;z-index:6;pointer-events:none}.tbl-gl{position:absolute;inset:0;pointer-events:none;z-index:2}.tbl-sheet{z-index:1}.tbl-bar{z-index:3}body:has(.stage .st-party) .tbl-bar{bottom:calc(14vh + 8px)}
-.tbl-bar{position:absolute;left:12px;bottom:12px;pointer-events:auto;display:flex;flex-direction:column;gap:8px;align-items:flex-start;opacity:.6;transition:opacity .3s;max-width:calc(100vw - 24px)}.tbl-bar:hover,.tbl-bar:focus-within{opacity:1}
+.tbl-bar{position:absolute;left:12px;bottom:calc(var(--tbl-task,52px) + 10px);pointer-events:none;display:flex;flex-direction:column;gap:8px;align-items:flex-start;max-width:calc(100vw - 24px)}.tbl-task{position:absolute;left:0;right:0;bottom:0;z-index:4;pointer-events:auto;display:flex;align-items:center;gap:10px;padding:7px 12px;background:rgba(8,10,9,.42);backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);border-top:1px solid rgba(255,255,255,.14);color:#f1f3ee;overflow-x:auto;scrollbar-width:none}.tbl-dice{display:flex;gap:4px;flex:none}.tbl-task .tbl-b{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#f1f3ee;border-radius:999px;padding:6px 12px}.tbl-task .tbl-b:hover:not(:disabled){background:rgba(255,255,255,.18)}.tbl-task .tbl-b.go{background:#8fb79a;border-color:#8fb79a;color:#0b0f0c}.tbl-task .tbl-b.dual{background:linear-gradient(90deg,#c48a20 50%,#6a3f86 50%);border-color:transparent}.tbl-task .tbl-sep{align-self:stretch;width:1px;background:rgba(255,255,255,.18)}.tbl-apps{display:flex;gap:4px;flex:1;min-width:0}.tbl-app{position:relative;display:flex;align-items:center;gap:8px;max-width:190px;min-width:0;border:1px solid transparent;background:transparent;color:rgba(241,243,238,.8);border-radius:10px;padding:5px 12px 5px 6px;cursor:pointer;font-weight:700;font-size:.85rem;transition:background .2s,color .2s}.tbl-app span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tbl-app i{font-style:normal;width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;background:#141a16;border:2px solid #e0aa4c;font-family:var(--f-display);font-size:.8rem;color:#f1f3ee}.tbl-app:hover{background:rgba(255,255,255,.12);color:#fff}.tbl-app.open{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.18)}.tbl-app::after{content:"";position:absolute;left:50%;bottom:1px;height:3px;width:0;border-radius:3px;background:#e0aa4c;transform:translateX(-50%);transition:width .25s cubic-bezier(.3,1.3,.4,1)}.tbl-app.min::after{width:8px;background:rgba(241,243,238,.6)}.tbl-app.open::after{width:22px}.tbl-empty{font-size:.8rem;color:rgba(241,243,238,.6)}body.alt .stage:not(.mini) .st-party{bottom:var(--tbl-task,52px)}
 .tbl-row,.tbl-menu{display:flex;gap:4px;flex-wrap:wrap;background:rgba(6,8,7,.8);border:1px solid #3a463d;border-radius:14px;padding:6px;backdrop-filter:blur(6px);color:#e9ece5}
 .tbl-b{border:1px solid #3a463d;background:#141a16;color:#e9ece5;border-radius:9px;padding:6px 10px;font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap}
 .tbl-b:hover:not(:disabled){background:#243028}.tbl-b.on{background:#e9ece5;color:#141a16}.tbl-b:disabled{opacity:.4;cursor:default}
@@ -3107,24 +3107,28 @@ function tblSync(on){
   TBL.open=TBL.open.filter(id=>pcs.some(x=>x.r.id===id));TBL.min=TBL.min.filter(id=>TBL.open.includes(id));
   const pool=TBL.pool.length?Object.entries(TBL.pool.reduce((m,s)=>(m[s]=(m[s]||0)+1,m),{})).map(([s,n])=>n+"d"+s).join(" + "):"";
   const lastHTML=TBL.hist.map((h,i)=>`<div class="tbl-res ${h.dual?h.dual.cls:""} ${i?"old":""}"><b>${h.total}</b><span>${esc(h.label)}</span>${h.dual?`<em>${esc(h.dual.txt)}</em>`:""}</div>`).reverse().join("");
-  let bar=TBL.el.querySelector(".tbl-bar");if(!bar){bar=document.createElement("div");bar.className="tbl-bar";TBL.el.appendChild(bar)}
-  bar.innerHTML=`${lastHTML}<div class="tbl-row">
+  // taskbar in basso, come su Windows: a sinistra i dadi, poi una voce per ogni personaggio (aperta, ridotta o chiusa)
+  let res=TBL.el.querySelector(".tbl-bar");if(!res){res=document.createElement("div");res.className="tbl-bar";TBL.el.appendChild(res)}
+  res.innerHTML=lastHTML;
+  let bar=TBL.el.querySelector(".tbl-task");if(!bar){bar=document.createElement("nav");bar.className="tbl-task";bar.setAttribute("aria-label","Taskbar del tavolo");TBL.el.appendChild(bar)}
+  const ini=n=>esc((n||"PG").split(/\s+/).map(s=>s[0]).join("").slice(0,2).toUpperCase());
+  bar.innerHTML=`<div class="tbl-dice">
     <button class="tbl-b dual" data-t="dual" title="Tiro di Dualità: d12 Speranza + d12 Paura (tasto D)">2d12</button>
     ${TBL_DICE.map(s=>`<button class="tbl-b" data-t="add" data-s="${s}" title="Aggiungi un d${s}">d${s}</button>`).join("")}
     <button class="tbl-b go" data-t="throw" ${TBL.pool.length?"":"disabled"} title="Lancia i dadi scelti (Invio)">${TBL.pool.length?"Lancia "+esc(pool):"Lancia"}</button>
     ${TBL.pool.length?`<button class="tbl-b" data-t="pool-clear" title="Svuota la mano">×</button>`:""}
-    <button class="tbl-b" data-t="clear" title="Togli tutti i dadi dal tavolo (tasto C)">Pulisci</button>
-    <span class="tbl-sep"></span>
-    <button class="tbl-b ${TBL.menu?"on":""}" data-t="menu" title="Schede dei personaggi (tasti 1–${Math.max(1,pcs.length)})">Schede</button>
-   </div>
-   ${TBL.menu?`<div class="tbl-menu">${pcs.length?pcs.map((x,i)=>`<button class="tbl-b ${TBL.open.includes(x.r.id)?"on":""}" data-t="sheet" data-id="${esc(x.r.id)}"><kbd>${i+1}</kbd> ${esc(x.p.name||"PG")}</button>`).join(""):`<span class="small">Nessun personaggio nel gruppo.</span>`}</div>`:""}`;
+    <button class="tbl-b" data-t="clear" title="Togli tutti i dadi dal tavolo (tasto C)">Pulisci</button></div>
+   <span class="tbl-sep"></span>
+   <div class="tbl-apps">${pcs.length?pcs.map((x,i)=>{const id=x.r.id,st=!TBL.open.includes(id)?"":TBL.min.includes(id)?"min":"open";
+     return `<button class="tbl-app ${st}" data-t="task" data-id="${esc(id)}" title="${esc(x.p.name||"PG")} · ${st==="open"?"riduci":st==="min"?"ripristina":"apri la scheda"} (tasto ${i+1})"><i>${ini(x.p.name)}</i><span>${esc(x.p.name||"PG")}</span></button>`}).join(""):`<span class="tbl-empty">Nessun personaggio nel gruppo</span>`}</div>`;
+  document.documentElement.style.setProperty("--tbl-task",bar.offsetHeight+"px");
   // schede flottanti: una finestra per personaggio, trascinabile e ridimensionabile
   TBL.el.querySelectorAll(".tbl-sheet").forEach(n=>{if(!TBL.open.includes(n.dataset.id))n.remove()});
   TBL.open.forEach((id,i)=>{
     const x=pcs.find(y=>y.r.id===id);if(!x)return;
     let w=TBL.el.querySelector(`.tbl-sheet[data-id="${CSS.escape(id)}"]`);
     if(!w){w=document.createElement("section");w.className="tbl-sheet";w.dataset.id=id;
-      const sw=Math.min(560,Math.max(320,innerWidth*.42));const hb=(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+8;Object.assign(w.style,{width:sw+"px",height:(innerHeight-hb-8)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:hb+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>tblBlocks()).observe(w)}
+      const sw=Math.min(560,Math.max(320,innerWidth*.42));const hb=(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+8;Object.assign(w.style,{width:sw+"px",height:(innerHeight-hb-(TBL.el.querySelector(".tbl-task")?.offsetHeight||0)-16)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:hb+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>tblBlocks()).observe(w)}
     const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||.55,c=tblChar(x.r);
     let inner="";
     if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
@@ -3136,10 +3140,8 @@ function tblSync(on){
     w.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(k=>k.classList.add("in"));
     w.querySelector(".tbl-sheet-b").scrollTop=sy;w.hidden=TBL.min.includes(id);
   });
-  // schede ridotte a icona: un bottone tondo con le iniziali, sul bordo destro
-  let dock=TBL.el.querySelector(".tbl-dock");if(!dock){dock=document.createElement("div");dock.className="tbl-dock";TBL.el.appendChild(dock)}
-  dock.innerHTML=TBL.min.map(id=>{const p=pcs.find(x=>x.r.id===id)?.p;const n=p?.name||"PG";return `<button class="tbl-ico" data-t="min" data-id="${esc(id)}" title="Apri la scheda di ${esc(n)}">${esc(n.split(/\s+/).map(s=>s[0]).join("").slice(0,2).toUpperCase())}</button>`}).join("");
-  tblWorld();if(TBL.w&&(document.querySelector(".pv-hub.glass")?.offsetHeight||0)!==TBL.w.hb)tblResize();else tblBlocks();
+  TBL.el.querySelector(".tbl-dock")?.remove();
+  tblWorld();if(TBL.w&&((document.querySelector(".pv-hub.glass")?.offsetHeight||0)!==TBL.w.hb||bar.offsetHeight!==TBL.w.tb))tblResize();else tblBlocks();
 }
 // la scheda completa: personaggio pregenerato, del giocatore o del GM, con lo stato che arriva dal tracker
 function tblChar(r){
@@ -3168,7 +3170,7 @@ function tblClick(e){
   else if(t==="throw"){if(!TBL.pool.length)return;tblThrow(TBL.pool.map(s=>({s,c:"n"})));TBL.pool=[]}
   else if(t==="dual")tblThrow([{s:12,c:"h"},{s:12,c:"f"}],true);
   else if(t==="clear"){tblClear();TBL.hist=[]}
-  else if(t==="menu")TBL.menu=!TBL.menu;
+  else if(t==="task"){const id=b.dataset.id;if(!TBL.open.includes(id))TBL.open=[...TBL.open,id];else if(TBL.min.includes(id))TBL.min=TBL.min.filter(x=>x!==id);else TBL.min=[...TBL.min,id]}
   else if(t==="sheet"){const id=b.dataset.id;if(TBL.min.includes(id))TBL.min=TBL.min.filter(x=>x!==id);else TBL.open=TBL.open.includes(id)?TBL.open.filter(x=>x!==id):[...TBL.open,id]}
   else if(t==="min"){const id=b.dataset.id;TBL.min=TBL.min.includes(id)?TBL.min.filter(x=>x!==id):[...TBL.min,id]}
   tblSync(true);
@@ -3217,7 +3219,8 @@ function tblResize(){
   w.r.setSize(W,H);w.cam.aspect=W/H;w.cam.position.set(0,40,10);w.cam.lookAt(0,0,0);w.cam.updateProjectionMatrix();w.cam.updateMatrixWorld();
   const T=w.T,C=w.C,ground=(nx,ny)=>{const ray=new T.Raycaster();ray.setFromCamera({x:nx,y:ny},w.cam);const p=new T.Vector3();ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),p);return p};
   w.hb=document.querySelector(".pv-hub.glass")?.offsetHeight||0; // il bordo alto del tavolo è la barra: i dadi ci rimbalzano contro
-  const hx=Math.abs(ground(.97,0).x),zn=ground(0,-.97).z,zf=ground(0,1-2*(w.hb+2)/H).z;w.box={hx,zn,zf};
+  w.tb=TBL.el.querySelector(".tbl-task")?.offsetHeight||0;
+  const hx=Math.abs(ground(.97,0).x),zn=ground(0,-1+2*(w.tb+2)/H).z,zf=ground(0,1-2*(w.hb+2)/H).z;w.box={hx,zn,zf};
   w.walls.forEach(b=>w.world.removeBody(b));
   const wall=(pos,ang)=>{const b=new C.Body({mass:0,material:w.mTable});b.addShape(new C.Plane());b.position.set(...pos);b.quaternion.setFromAxisAngle(new C.Vec3(0,1,0),ang);w.world.addBody(b);return b};
   w.walls=[wall([-hx,0,0],Math.PI/2),wall([hx,0,0],-Math.PI/2),wall([0,0,zf],0),wall([0,0,zn],Math.PI)];
