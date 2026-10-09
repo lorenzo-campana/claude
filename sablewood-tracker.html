@@ -78,6 +78,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .bar-r{gap:4px}
 @media (max-width:1400px){body .bar-in{gap:10px 12px}body .brand b{max-width:14ch;font-size:1.25rem}body .fp{width:12px;height:12px}body .counter .lab{font-size:.62rem}}
 .opt-sec{border-top:1px solid var(--line);margin-top:8px;padding-top:12px;display:flex;flex-direction:column;gap:8px}
+#gm-sheet .pl-overlay{z-index:300}.gm-sheet-dlg{padding:14px}.gm-sheet-dlg .pl-head{margin-bottom:10px}.gm-sheet-dlg .pl-head h2{font-size:1.2rem;margin:0}.gm-sheet-wrap{padding:0;max-width:none;animation:none}.gm-sheet-wrap .pl-preview-sheet{overflow:auto}
+@media print{body.gm-sheet-printing>*:not(#gm-sheet){display:none!important}body.gm-sheet-printing #gm-sheet .pl-overlay{position:static;background:none;backdrop-filter:none;padding:0;display:block}body.gm-sheet-printing .gm-sheet-dlg{max-height:none;overflow:visible;box-shadow:none;width:100%;padding:0}body.gm-sheet-printing .gm-sheet-dlg .pl-head{display:none}body.gm-sheet-printing .pl-preview-sheet{overflow:visible;border:0}body.gm-sheet-printing .pl-official-sheet{min-width:0;box-shadow:none;zoom:.82}}
 .party-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .party-list li{display:flex;align-items:center;gap:10px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
 .party-list li>div{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -2869,7 +2871,26 @@ function renderBar(){
 function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")
   +(S.tab==="scontro"||S.foes.length||S.cds.length?`<button class="sub ${S.tab==="scontro"?"on":""}" data-a="tab" data-k="scontro" title="Tutti gli scontri in corso e i conti alla rovescia">Scontri e conti</button>`:"")}
 
-let openPc=null;
+let openPc=null,sheetPc=null;
+// scheda completa in popup, come la scheda ufficiale: personaggio del giocatore, proprio o pregenerato, con lo stato del tracker
+function pcFullChar(r){
+  const row=PL.roster.find(x=>x.campaign===APP.camp&&x.character?.id===r.id),own=PL.chars.find(x=>x.id===r.id);
+  let c=row?.character||own||null;
+  if(!c&&typeof PL_PREGENS!=="undefined"&&PL_PREGENS[r.id])try{c=plPregenChar(r.id)}catch{c=null}
+  if(!c)return null;
+  c=JSON.parse(JSON.stringify(c));Object.assign(c,{hp:r.hp,stress:r.st,hope:r.hope,armor:r.ar,conditions:[...(r.cond||[])]});
+  if(r.over?.name)c.name=r.over.name;return c;
+}
+function renderPcSheet(){
+  let el=document.getElementById("gm-sheet");if(!el){el=document.createElement("div");el.id="gm-sheet";document.body.appendChild(el)}
+  const r=sheetPc&&pcRaw(sheetPc),c=r&&pcFullChar(r);if(!c){sheetPc=null;el.innerHTML="";return}
+  let body="";const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(x=>x.id!==c.id),c];PL.id=c.id;
+  try{body=plSheet(c)}catch(e){body=`<p class="warn">Non riesco a disegnare la scheda: ${esc(e.message)}</p>`}finally{PL.chars=keep;PL.id=keepId}
+  el.innerHTML=`<div class="pl-overlay"><section class="pl-dialog wide gm-sheet-dlg" role="dialog" aria-modal="true" aria-label="${esc(c.name)} · scheda completa" tabindex="-1">
+   <div class="pl-head"><h2>${esc(c.name)} · scheda completa</h2><span class="row" style="gap:6px"><button class="btn xs" data-a="gm-sheet-print">Stampa</button><button class="btn xs" data-a="pc-sheet-close">× Chiudi</button></span></div>
+   <div class="pl gm-sheet-wrap"><div class="pl-preview-sheet"><div inert>${body}</div></div></div></section></div>`;
+  el.querySelector(".pl-dialog")?.focus();
+}
 function pcCard(r){
   const p=P(r),x=openPc===r.id;
   return `<article class="pcc ${r.hp>=p.hpMax?"down":""}">
@@ -2883,7 +2904,7 @@ function pcCard(r){
    <div><span class="lab" style="color:var(--hope)">Speranza ${r.hope}</span>${pips(6,r.hope,"hope","pc-pip",`data-id="${r.id}" data-k="hope"`)}</div>
    <div><span class="lab">Armatura ${r.ar}/${p.arMax}</span>${pips(p.arMax,r.ar,"ar","pc-pip",`data-id="${r.id}" data-k="ar"`)}</div></div>
   ${deathFor===r.id||r.hp>=p.hpMax?`<div class="warn small"><b>Mossa di Morte</b><div class="row" style="margin-top:4px"><button class="btn xs" data-a="death" data-k="blaze" data-id="${r.id}">Gloria Finale</button><button class="btn xs has-die" data-a="death" data-k="avoid" data-id="${r.id}">${DIE_SVG}Evitare la Morte</button><button class="btn xs has-die" data-a="death" data-k="risk" data-id="${r.id}">${DIE_SVG}Rischiare Tutto</button></div></div>`:""}
-  <button class="btn xs" data-a="pc-open" data-id="${r.id}" aria-expanded="${x}">${x?"Chiudi scheda":"Scheda completa"}</button>
+  <div class="row" style="gap:6px">${pcFullChar(r)?`<button class="btn xs pri" data-a="pc-sheet" data-id="${r.id}">Scheda completa</button>`:""}<button class="btn xs" data-a="pc-open" data-id="${r.id}" aria-expanded="${x}">${x?"Chiudi dettagli":"Dettagli e tiri"}</button></div>
   ${x?pcDetail(r,p):""}
   </article>`;
 }
@@ -3546,7 +3567,8 @@ const OPTACT={
 };
 document.addEventListener("keydown",e=>{
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&APP.view==="camp"&&VIEW.mode==="gm"&&!e.target.closest?.("input,textarea,select,[contenteditable]")){e.preventDefault();undo()}});
-document.addEventListener("keydown",e=>{if(optOpen&&e.key==="Escape"){e.preventDefault();e.stopPropagation();OPTACT["opt-close"]()}},true);
+document.addEventListener("click",e=>{if(e.target.matches?.("#gm-sheet .pl-overlay"))A["pc-sheet-close"]({})});
+document.addEventListener("keydown",e=>{if(sheetPc&&e.key==="Escape"){e.preventDefault();e.stopPropagation();A["pc-sheet-close"]({});return}if(optOpen&&e.key==="Escape"){e.preventDefault();e.stopPropagation();OPTACT["opt-close"]()}},true);
 addEventListener("storage",e=>{if(e.key===SKINKEY){skin=SKINS.some(x=>x[0]===e.newValue)?e.newValue:"auto";applySkin();renderOpt()}});
 const HUBACT={
  ...OPTACT,
@@ -4228,6 +4250,9 @@ const A={
  // dadi
  // PG
  "pc-open":o=>{openPc=openPc===o.id?null:o.id;renderParty()},
+ "pc-sheet":o=>{sheetPc=o.id;renderPcSheet()},
+ "pc-sheet-close":()=>{sheetPc=null;renderPcSheet()},
+ "gm-sheet-print":()=>{document.body.classList.add("gm-sheet-printing");const done=()=>{document.body.classList.remove("gm-sheet-printing");removeEventListener("afterprint",done)};addEventListener("afterprint",done);print()},
  "pc-show":o=>{openPc=o.id;UI.party=true;saveUI();renderBar();renderParty()},
  "pc-pip":o=>upd(()=>{const r=pcRaw(o.id),k=o.k,n=+o.i+1;r[k]=r[k]===n?n-1:n;if(k==="hp"){if(r.hp<P(r).hpMax&&deathFor===r.id)deathFor=null;checkDown(r.id)}}),
  "pc-thr":o=>upd(()=>pcMarkHp(o.id,+o.k,`danni ${["","minori","gravi","severi"][+o.k]}`)),
