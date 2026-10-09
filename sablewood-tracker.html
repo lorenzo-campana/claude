@@ -583,7 +583,7 @@ details.pv-sec>summary{font-size:.95rem}
 @keyframes st-in{from{opacity:0;transform:scale(1.005)}to{opacity:1;transform:none}}
 .st-cap{position:absolute;left:0;right:0;bottom:0;padding:8cqh 6cqw 4cqh;background:linear-gradient(transparent,rgba(0,0,0,.85));font-family:var(--f-read);font-size:max(10px,4.6cqh);text-align:center;text-wrap:balance}
 .stage:has(.st-party) .st-cap{bottom:15cqh}
-.st-fear{position:absolute;top:3cqh;right:3cqw;display:flex;flex-direction:column;align-items:flex-end;gap:.8cqh;font-size:max(8px,1.8cqh);letter-spacing:.2em;text-transform:uppercase;color:var(--fear);font-weight:800}
+.st-fear{position:absolute;top:3cqh;left:3cqw;display:flex;flex-direction:column;align-items:flex-start;gap:.8cqh;font-size:max(8px,1.8cqh);letter-spacing:.2em;text-transform:uppercase;color:var(--fear);font-weight:800}
 .st-fear div{display:flex;gap:.7cqh}
 .st-fear i{width:2.2cqh;height:2.2cqh;transform:rotate(45deg);border:max(1px,.25cqh) solid var(--fear);border-radius:2px}
 .st-fear i.on{background:var(--fear)}
@@ -611,7 +611,7 @@ details.pv-sec>summary{font-size:.95rem}
 .tbl-sheet-h b{font-family:var(--f-display);font-weight:400;font-size:1.1rem;white-space:nowrap}.tbl-sheet-h span{font-size:.75rem;color:#9aa69c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tbl-x{border:1px solid #3a463d;background:transparent;color:#e9ece5;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:700;flex:none}
 .tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
-.scr-ctl{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start;opacity:.35;transition:opacity .3s}
+.scr-ctl{position:fixed;top:calc(12vh + env(safe-area-inset-top,0px));left:3vw;z-index:7;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start;max-width:50vw;opacity:.35;transition:opacity .3s}
 .tgl.back{background:var(--hope-soft);border-color:var(--hope)}
 .scr-ctl:hover,.scr-ctl:focus-within{opacity:1}
 @media (hover:none){.scr-ctl{opacity:.7}}
@@ -3110,7 +3110,7 @@ function tblSync(on){
     const x=pcs.find(y=>y.r.id===id);if(!x)return;
     let w=TBL.el.querySelector(`.tbl-sheet[data-id="${CSS.escape(id)}"]`);
     if(!w){w=document.createElement("section");w.className="tbl-sheet";w.dataset.id=id;
-      Object.assign(w.style,{left:(24+i*36)+"px",top:(64+i*36)+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>tblBlocks()).observe(w)}
+      const sw=Math.min(560,Math.max(320,innerWidth*.42));Object.assign(w.style,{width:sw+"px",height:(innerHeight-16)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:"8px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>tblBlocks()).observe(w)}
     const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||.55,c=tblChar(x.r);
     let inner="";
     if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
@@ -3256,12 +3256,14 @@ function tblThrow(list,dual=false){
   if(!w){if(TBL.noGL){const vals=list.map(x=>({...x,v:1+Math.floor(Math.random()*x.s)}));const h=dual&&vals[0].v,f=dual&&vals[1].v;TBL.hist.unshift({total:vals.reduce((a,x)=>a+x.v,0),label:dual?"Dualità":vals.map(x=>"d"+x.s+": "+x.v).join(" · "),dual:dual?(h===f?{cls:"crit",txt:"Critico!"}:h>f?{cls:"hope",txt:`con Speranza (${h} · ${f})`}:{cls:"fear",txt:`con Paura (${h} · ${f})`}):null});TBL.hist=TBL.hist.slice(0,3);tblSync(true)}else tblWorld();return}
   const T=w.T,{hx,zn,zf}=w.box;
   w.dice.forEach(tblDrop);w.dice=[];w.pending=null;
+  const sh=[...TBL.el.querySelectorAll(".tbl-sheet")].map(el=>{const r=el.getBoundingClientRect();return r.left+r.width/2});
+  const side=sh.length&&sh.reduce((a,x)=>a+x,0)/sh.length>innerWidth/2?-1:1; // i dadi partono dal lato senza schede e ci rimbalzano contro
   const made=list.map((f,i)=>{
     const m=buildDie(T,f.s,DIE_COL[f.c]||DIE_COL.n);m.castShadow=true;m.scale.multiplyScalar(1.25);w.sc.add(m);
     const b=dieBody(w.C,T,m,w.mDie);
-    b.position.set(hx-2-Math.random(),4+i*1.3+Math.random(),zf+3+Math.random()*(zn-zf-6));
+    b.position.set(side*(hx-2-Math.random()),4+i*1.3+Math.random(),zf+3+Math.random()*(zn-zf-6));
     b.quaternion.setFromEuler(Math.random()*6.28,Math.random()*6.28,Math.random()*6.28);
-    b.velocity.set(-(10+Math.random()*9),-2-Math.random()*3,(Math.random()-.5)*10);
+    b.velocity.set(-side*(22+Math.random()*12),-2-Math.random()*3,(Math.random()-.5)*10);
     b.angularVelocity.set((Math.random()-.5)*36,(Math.random()-.5)*36,(Math.random()-.5)*36);
     b.allowSleep=true;b.sleepSpeedLimit=.15;b.sleepTimeLimit=.3;w.world.addBody(b);
     const d={m,b,s:f.s,c:f.c};w.dice.push(d);return d});
