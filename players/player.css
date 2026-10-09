@@ -310,3 +310,22 @@
 .pl-dom-chips{display:flex;gap:3px;padding:3px;border-radius:999px;background:#ece6f1}
 .pl-dom-chips button{border:0;background:transparent;border-radius:999px;padding:5px 12px;font:700 12px/1 DH Overpass,Arial,sans-serif;color:#6a6170;cursor:pointer}
 .pl-dom-chips button.on{background:#56476b;color:#fff}
+/* Card effects: cosa modificano le carte in gioco */
+.pl-fx-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pl-fx{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;border:1px solid #e3dbe7;background:#fbf9fc;opacity:.62}
+.pl-fx.ok{opacity:1;background:#fff;border-color:#cfc3d8}
+.pl-fx-dot{flex:none;width:9px;height:9px;border-radius:50%;background:#c9bfd2}
+.pl-fx.ok .pl-fx-dot{background:#5b9a6b;box-shadow:0 0 0 3px rgba(91,154,107,.18)}
+.pl-fx>div:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.pl-fx b{font:12px/1.2 var(--sheet-font,DH Eveleth),Arial,sans-serif;text-transform:uppercase;color:#493d57}
+.pl-fx small{font:11.5px/1.35 var(--sheet-text,DH Overpass),Arial,sans-serif;color:#6a6170}
+.pl-fx em{color:#9a4b5d;font-style:normal}
+.pl-fx-ctl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pl-fx-ctl select{font-size:11px;padding:2px 4px;border-radius:6px;border:1px solid #d8cde2;background:#fff}
+.pl-fx-switch{position:relative;width:34px;height:19px;border-radius:999px;border:0;background:#d8cfdf;cursor:pointer;padding:0;transition:background .15s}
+.pl-fx-switch i{position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.pl-fx-switch.on{background:#56476b}.pl-fx-switch.on i{transform:translateX(15px)}
+.pl-fx-picks{display:flex;gap:3px;flex-wrap:wrap}
+.pl-fx-picks button{border:1px solid #d8cde2;background:#fff;border-radius:999px;padding:2px 8px;font:600 10.5px/1.3 DH Overpass,Arial,sans-serif;color:#6a6170;cursor:pointer}
+.pl-fx-picks button.on{background:#56476b;border-color:#56476b;color:#fff}
+.pl-fx-sum{margin:8px 0 0;font:11px/1.4 var(--sheet-text,DH Overpass),Arial,sans-serif;color:#7a7084}

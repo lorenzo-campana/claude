@@ -7,6 +7,7 @@ The player creator, character sheets, level advancement and interactive card con
 - `pregens.js`: the five Sablewood pregenerated characters (Marlowe, Barnacle, Garrick, Khari, Varian) built on the creator's character model; the dashboard offers them as ready-made characters. They keep the pregenerated ids so a player who joins the campaign takes the existing seat in the GM tracker.
 - `rules.json`: Core + Hope & Fear character rules and equipment.
 - `card-controls.json`: reviewed card resource and dice profiles.
+- `card-effects.js`: passive and switchable card effects on the sheet (Evasion, Armor, thresholds, HP/Stress slots, traits, Proficiency, roll and damage bonuses), applied only while the card is in play: domain cards in the active loadout, subclass features from their tier, ancestry, community and transformation.
 - `card-resources.js`: counters, shared dice pools, progressive dice and reset handling.
 - `card-review.md`: review provenance and persistent resource inventory.
 
