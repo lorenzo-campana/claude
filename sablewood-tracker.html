@@ -3167,7 +3167,13 @@ function tblCompact(r,p){
    ${(p.exp||[]).length?`<div class="row">${p.exp.map(e=>`<span class="chip hope">${esc(e[0])} ${sgn(e[1])}</span>`).join("")}</div>`:""}
    ${(r.cond||[]).length?`<div class="row">${r.cond.map(c=>`<span class="chip bad">${esc(c)}</span>`).join("")}</div>`:""}</div>`;
 }
+// le schede sono in sola lettura (inert), ma le carte si aprono nel viewer come nella galleria: si cerca la carta sotto il puntatore
+function sheetCardAt(box,e){return [...box.querySelectorAll(".kcard[data-i]")].find(el=>{const r=el.getBoundingClientRect();return r.width&&e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom})}
+function sheetCardOpen(box,e){const k=sheetCardAt(box,e);if(!k)return false;const list=k.closest("[data-pl-card-list]");CV.list=(list?.dataset.plCardList||k.dataset.i).split(",").map(plCard).filter(Boolean);cardOpen(Number(k.dataset.i),k);return true}
+document.addEventListener("mousemove",e=>{const box=e.target.closest?.(".tbl-sheet-b,.gm-sheet-wrap");if(box)box.style.cursor=sheetCardAt(box,e)?"zoom-in":""},{passive:true});
+document.addEventListener("click",e=>{const box=e.target.closest?.(".gm-sheet-wrap");if(box)sheetCardOpen(box,e)});
 function tblClick(e){
+  const sb=e.target.closest?.(".tbl-sheet-b");if(sb){sheetCardOpen(sb,e);return}
   const b=e.target.closest("[data-t]");if(!b||!TBL.el.contains(b))return;
   const t=b.dataset.t;
   if(t==="add"){TBL.pool.push(+b.dataset.s);if(TBL.pool.length>20)TBL.pool.shift()}
@@ -4664,7 +4670,7 @@ document.addEventListener("click",e=>{
 // le correzioni scritte sulle pagine del diario restano salvate
 document.addEventListener("focusout",e=>{const el=e.target;if(el.matches?.("[data-dy]")){dyCfg().edits[el.dataset.dy]=el.innerHTML;persist();fitDiary()}});
 document.addEventListener("toggle",e=>{const d=e.target;if(d.matches?.("details.enc-rules"))rulesOpen.set(d.dataset.k,d.open)},true);
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&VIEW.mode!=="gm"&&VIEW.canGM&&!document.fullscreenElement){A["view-mode"]({k:"gm"});return}if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".mc[data-a],.enc[data-a]")){e.preventDefault();A[e.target.dataset.a](e.target.dataset)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!e.defaultPrevented&&VIEW.mode!=="gm"&&VIEW.canGM&&!document.fullscreenElement){A["view-mode"]({k:"gm"});return}if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".mc[data-a],.enc[data-a]")){e.preventDefault();A[e.target.dataset.a](e.target.dataset)}});
 document.addEventListener("change",e=>{
   const el=e.target,o=el.dataset;if(!o.f)return;const v=el.value;
   switch(o.f){
