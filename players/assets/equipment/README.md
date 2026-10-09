@@ -1,11 +1,11 @@
-# Equipment illustrations — first group
+# Equipment illustrations
 
-Generated with the built-in image_gen tool, using the three supplied Daggerheart manual screenshots as style references. Files are optimized WebP derivatives; original PNGs are saved in the workspace `sablewood images/output/equipment-art`.
+129 horizontal equipment illustrations generated with the built-in image_gen tool, using the Daggerheart domain artwork and the approved painterly equipment examples as style references.
 
-Shared prompt: isolated complete fantasy equipment on pure white, delicate graphite outlines, restrained crosshatching and sparse muted watercolor accents; no labels, text, scenery, UI, glow or photorealism. Match the reference manual sketches.
+Shared direction: handmade fantasy book painting with visible gouache brush strokes, simplified shapes, teal-blue shadows, warm ochre highlights and plum accents. Large readable objects in varied settings; no text, card frames or photorealistic rendering.
 
-- **Scepter**: slender long shaft, geometric diamond ceremonial head, wrapped grip, pointed pommel; horizontal slight diagonal; pale lavender and warm grey.
-- **Leather Armor**: empty fitted leather cuirass, layered shoulder guards, side straps, brass buckles, stitched geometric trim; front three-quarter view; muted ochre and brown.
-- **Minor Health Potion**: small round glass flask, cork and twine, etched geometric detail, dusty rose liquid; three-quarter view.
+WebP derivatives retain the original 1536 × 1024 resolution. Original PNGs remain in the local workspace `sablewood images/output/equipment-art/pittoriche`.
 
-Mappings live in `players/equipment-art.json`. The build embeds images in the standalone HTML so Claude artifacts do not depend on relative asset URLs. Objects without a mapping retain a blank illustration area.
+All 108 equipment entries marked Tier 1 are covered, including campaign equipment from the core manual and Hope & Fear. Brawler’s Strike is an unarmed class feature and has no equipment illustration.
+
+Mappings by catalog ID live in `players/equipment-art.json`. The player build embeds illustrations in the standalone HTML for Claude artifacts. Cards without generated artwork retain their blank illustration area.
