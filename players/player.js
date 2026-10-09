@@ -76,7 +76,92 @@ function playerGMChanges(){if(!VIEW.canGM||!APP.camp)return;for(const r of S.pcs
 function plPregenView(c){const g=c.pregen&&PREGEN[c.pregen];return g?{her:g.her,pron:g.pron,sage:!!g.sage,q:g.q||'',feats:g.feats,cards:g.cards,hopeF:g.hopeF,item:g.item,desc:g.desc}:{}}
 function plAdapter(c){const st=plStats(c),wp=plEquip(c.primary),a=plEquip(c.armorId),hf=(plClass(c)?.hope||'').split(':');return {name:c.name,pron:c.pronouns,her:plCard(c.ancestry)?.n+' '+plCard(c.community)?.n,cls:c.className,sub:c.subclass,dom:(plClass(c)?.domains||[]).map(i=>CDOM[i].k).join(' & '),eva:st.evasion,arMax:st.armor,major:st.major,severe:st.severe,hpMax:st.hp,stMax:st.stress,tr:st.traits,spell:plSpell(c),wpn:{n:wp?.name||'Unarmed',t:Math.max(0,PL_TRAITS.indexOf(wp?.brawler?(c.classChoices.strikeTrait||'Agility'):wp?.trait)),r:wp?.range||'Melee',d:wp?eqWeaponFormula(c,wp):'d4 phy',ty:wp?.magic?'mag':'phy'},arm:{n:a?.name||'No Armor',b:(a?.major||0)+'/'+(a?.severe||0),s:st.armor,f:''},exp:st.experiences.map(x=>[x.name,x.value]),hopeF:[hf.shift()||'Hope feature',hf.join(':')],feats:[['Class features','Class',plClass(c)?.features||'']],cards:plActive(c).map(x=>[plCard(x.i)?.n||'',CDOM[plCard(x.i)?.d]?.k||'','Vedi la carta HD nella scheda giocatore']),item:[c.potion||'Potion','Clear 1d4 HP or Stress','hp'],desc:c.description||'',q:'',sage:false,...plPregenView(c)}}
 function plDownload(value,name){const u=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-function plReference(title,text){return `<details><summary>${esc(title)}</summary><div class="pl-ref">${esc(text||'Leggi la carta HD per le regole complete.')}</div></details>`}
+function plReference(title,text){return `<details class="pl-ref-box"><summary>${esc(title)}</summary><div class="pl-ref pl-rulebook">${text?plRuleHTML(text):esc('Leggi la carta HD per le regole complete.')}</div></details>`}
+/* Parole chiave del manuale con una spiegazione breve: diventano tooltip cliccabili nel testo delle regole. */
+const PL_KEYWORDS=[
+ ['Hit Points?','Hit Points','The damage your character can take. Mark HP when you take damage; when you mark your last one, you make a death move.'],
+ ['Stress','Stress','Mental and physical strain. You mark Stress to pay for some features; if you must mark Stress with none left, mark 1 HP instead and become Vulnerable.'],
+ ['Hope','Hope','A metagame currency. You gain Hope when you roll with Hope; spend it on Experiences, to Help an Ally, on Hope features or Tag Team rolls.'],
+ ['Fear','Fear','The GM’s currency. The GM gains Fear when you roll with Fear and spends it to make extra moves or use adversary features.'],
+ ['Evasion','Evasion','The Difficulty an adversary must meet or beat to hit you with an attack.'],
+ ['Proficiency','Proficiency','How many damage dice you roll for a weapon attack. It starts at 1 and grows as you level up.'],
+ ['Vulnerable','Vulnerable','A condition: rolls targeting a Vulnerable creature have advantage.'],
+ ['Restrained','Restrained','A condition: the creature can’t move, but can still act from where it is.'],
+ ['Hidden','Hidden','A condition: while out of sight, rolls against you have disadvantage. It ends if you move into view or attack.'],
+ ['Cloaked','Cloaked','Like Hidden, but you stay unseen even when stationary in an adversary’s line of sight; it ends when you attack or move into view.'],
+ ['Spellcast Rolls?','Spellcast Roll','An action roll using your subclass’s Spellcast trait, made to cast spells and use magical features.'],
+ ['action rolls?','Action roll','Roll your Duality Dice (2d12) plus a trait and modifiers against a Difficulty. The higher die decides whether you roll with Hope or Fear.'],
+ ['reaction rolls?','Reaction roll','A roll to avoid or withstand an effect. It doesn’t generate Hope or Fear and allies can’t Help with it.'],
+ ['Duality Dice','Duality Dice','The two d12s you roll for action rolls: one Hope Die and one Fear Die.'],
+ ['advantage','Advantage','Roll a d6 and add it to your total. Advantage and disadvantage cancel each other out.'],
+ ['disadvantage','Disadvantage','Roll a d6 and subtract it from your total.'],
+ ['Melee','Melee range','Close enough to touch, up to a few feet away.'],
+ ['Very Close','Very Close range','About 5 to 10 feet: a few steps away.'],
+ ['Close range','Close range','About 10 to 30 feet: a short dash away.'],
+ ['Far range','Far range','About 30 to 100 feet: across a large room or field.'],
+ ['Very Far','Very Far range','About 100 to 300 feet: at the edge of sight in most scenes.'],
+ ['Severe damage threshold','Severe threshold','Damage equal to or above it makes you mark 3 HP.'],
+ ['Major damage threshold','Major threshold','Damage equal to or above it makes you mark 2 HP.'],
+ ['damage thresholds?','Damage thresholds','Below Major you mark 1 HP, from Major 2 HP, from Severe 3 HP.'],
+ ['Armor Slots?','Armor Slots','Mark one to reduce the damage you take by one threshold (for example from Severe to Major).'],
+ ['Experiences?','Experience','A word or phrase about your character’s background. Spend a Hope to add its modifier to a relevant roll.'],
+ ['short rest','Short rest','About an hour of rest: each PC chooses two downtime moves, such as clearing 1d4+Tier HP or Stress.'],
+ ['long rest','Long rest','Several hours of rest: each PC chooses two downtime moves, such as clearing all HP or Stress. The GM gains Fear.'],
+ ['downtime','Downtime','The time spent resting. During a rest each PC chooses downtime moves.'],
+ ['Rally Dice?','Rally Die','A die given to allies by the Bard’s Rally feature. They can spend it to add the result to a roll or clear that much Stress.'],
+ ['Combo Die','Combo Die','Starts as a d4 and can grow once per tier. Keep rolling it while each result is not lower than the previous one.'],
+ ['Spotlight','Spotlight','The table’s attention: whoever is acting right now in the scene.'],
+ ['Tag Team','Tag Team roll','Once per session, spend 3 Hope to make a joint roll with another PC and choose whose result to use.'],
+ ['countdown','Countdown','A die that ticks down toward an event; when it reaches 0 the event happens.'],
+ ['Beastform','Beastform','The Druid’s transformation into a creature, with its own traits, attacks and features.'],
+ ['domain cards?','Domain card','The cards of your class’s two domains: abilities, spells and grimoires you can keep in your loadout.'],
+ ['loadout','Loadout','The domain cards you can use, up to 5. The others stay in your vault.'],
+ ['vault','Vault','Where you keep inactive domain cards. Swapping one into the loadout costs its Recall Cost in Stress, or nothing during a rest.'],
+ ['Recall Cost','Recall Cost','The Stress you mark to move this card from the vault into the loadout outside a rest.'],
+ ['tier','Tier','Level 1 is Tier 1, levels 2–4 Tier 2, 5–7 Tier 3, 8–10 Tier 4.'],
+ ['critical success','Critical success','Matching numbers on the Duality Dice: automatic success, you gain a Hope and clear a Stress. On attacks it deals extra damage.'],
+ ['Active Weapons?','Active Weapons','The weapons you have equipped and can attack with.'],
+ ['Inventory Weapons?','Inventory Weapon','Up to two weapons you carry but don’t have equipped. Swapping costs a Stress outside of calm moments.'],
+ ['Help an Ally','Help an Ally','Spend 1 Hope to describe how you help: the ally rolls a d6 advantage die.'],
+];
+let PL_KW_RE=null;
+function plKeywords(html,seen){
+ if(!PL_KW_RE)PL_KW_RE=new RegExp(`\\b(${PL_KEYWORDS.map(k=>k[0]).join('|')})\\b`,'gi');
+ return html.split(/(<[^>]+>)/).map(part=>part.startsWith('<')?part:part.replace(PL_KW_RE,m=>{const k=PL_KEYWORDS.find(x=>new RegExp(`^(?:${x[0]})$`,'i').test(m));if(!k||seen.has(k[1]))return m;seen.add(k[1]);return `<button type="button" class="pl-tip pl-kw" aria-expanded="false" data-tip="${esc(k[1]+': '+k[2])}">${m}</button>`})).join('');
+}
+/* Il testo delle classi viene dal PDF riga per riga: ricompongo paragrafi, titoli di feature ed elenchi e li mostro come schede del manuale. */
+function plRuleBlocks(text){
+ const lines=String(text).replace(/­/g,'').split('\n').map(x=>x.trim()).filter(Boolean),blocks=[];let cur=null,para=null,prev='';
+ const card=title=>{cur={title,parts:[]};blocks.push(cur);para=null};
+ const isCaps=l=>/[A-Z]/.test(l)&&l===l.toUpperCase()&&l.length<60&&!/^[•]/.test(l);
+ const isTitle=(l,i)=>l.length<34&&!/[.,:;)]$/.test(l)&&!/^[•\d(]/.test(l)&&/^[A-Z]/.test(l)&&(!prev||/[.!?)]$/.test(prev)||isCaps(prev))&&lines[i+1]&&!isCaps(lines[i+1]);
+ lines.forEach((l,i)=>{
+  let m;
+  if(isCaps(l)){blocks.push({section:l});cur=null;para=null}
+  else if((m=l.match(/^•\s*(.*)$/))){if(!cur)card('');para={li:true,t:m[1]};cur.parts.push(para)}
+  else if(isTitle(l,i))card(l);
+  else if((m=l.match(/^([A-Z][A-Za-z’'\- ]{2,40}):\s+(.*)$/))&&(!prev||/[.!?)]$/.test(prev)||isCaps(prev))){card(m[1]);para={t:m[2]};cur.parts.push(para)}
+  else{if(!cur)card('');if(para&&!(/[.!?]$/.test(prev)&&prev.length<44&&!para.li))para.t+=' '+l;else{para={t:l};cur.parts.push(para)}}
+  prev=l;
+ });
+ return blocks;
+}
+function plRuleHTML(text){
+ const seen=new Set(),blocks=plRuleBlocks(text);let html='',open=false;
+ const close=()=>{if(open){html+='</div>';open=false}};
+ const cap=t=>t.toLowerCase().replace(/(^|\s)\S/g,x=>x.toUpperCase());
+ const isStat=i=>blocks[i]?.section&&blocks[i+1]&&!blocks[i+1].section&&!blocks[i+1].title&&blocks[i+1].parts.length===1&&!blocks[i+1].parts[0].li&&blocks[i+1].parts[0].t.length<90;
+ for(let i=0;i<blocks.length;i++){const b=blocks[i];
+  if(isStat(i)){close();let stats='';while(isStat(i)){stats+=`<div><small>${esc(cap(blocks[i].section))}</small><b>${esc(blocks[i+1].parts[0].t)}</b></div>`;i+=2}i--;html+=`<div class="pl-rb-stats">${stats}</div>`;continue}
+  if(b.section){close();html+=`<h4 class="pl-rb-sec"><span>${esc(cap(b.section))}</span></h4>`;continue}
+  if(!open){html+='<div class="pl-rb-grid">';open=true}
+  let body='',ul=false;
+  for(const p of b.parts){const t=plKeywords(esc(p.t),seen);if(p.li){if(!ul){body+='<ul>';ul=true}body+=`<li>${t}</li>`}else{if(ul){body+='</ul>';ul=false}body+=`<p>${t}</p>`}}
+  if(ul)body+='</ul>';
+  html+=`<article class="pl-rb-card ${b.title?'':'plain'}">${b.title?`<h5>${esc(b.title)}</h5>`:''}<div class="pl-rb-body">${body}</div></article>`;
+ }
+ close();return html;
+}
 function plField(label,key,value,{type='text',draft=false,min,max,options,area=false}={}){const data=`aria-label="${esc(label)}" data-pl-field="${esc(key)}" ${draft?'data-pl-draft="1"':''}`;return `<label>${esc(label)}${options?`<select ${data}>${options.map(x=>{const v=Array.isArray(x)?x[0]:x,n=Array.isArray(x)?x[1]:x;return `<option value="${esc(v)}" ${String(v)===String(value)?'selected':''}>${esc(n)}</option>`}).join('')}</select>`:area?`<textarea ${data}>${esc(value)}</textarea>`:`<input ${data} type="${type}" value="${esc(value)}" ${min!==undefined?`min="${min}"`:''} ${max!==undefined?`max="${max}"`:''} maxlength="${type==='number'?'10':'300'}">`}</label>`}
 function plBtn(a,label,extra='',cls=''){return `<button ${['choose','level-domain','stance','level-stance','adv-detail','tab','rest-type','level-loadout','rest-loadout'].includes(a)?`aria-pressed="${cls.includes('pri')||cls==='on'}"`:''} class="btn ${cls}" data-pl="${a}" ${extra}>${label}</button>`}
 function plCardGrid(cards,selected=[],mode='choose'){return `<div class="pl-cards cg" data-pl-card-list="${cards.map(x=>x.i).join(',')}">${cards.map(card=>{const state=mode==='manage'?plProfileState(plCurrent(),card.i):{},owned=plCurrent()?.cards.find(x=>x.i===card.i),chosen=selected.includes(card.i),selectModes=['level-sub','level-domain','exchange-new','level-loadout','rest-loadout'];const iconButton=(action,label,icon,extra='',cls='')=>`<button type="button" class="pl-card-tool ${cls}" data-pl="${action}" data-i="${card.i}" ${extra} aria-label="${esc(label)}" title="${esc(label)}">${icon}</button>`;return `<article data-pl-card="${card.i}" class="pl-card ${chosen?'on':''} ${state.used?'used':''}"><div class="pl-card-surface">${cardEl(card).replace('data-a="cd-open"','data-pl="gallery-preview"')}${mode==='manage'?`<div class="pl-card-toolbar">${iconButton('card-used',state.used?'Rendi disponibile':'Segna usata',state.used?'✓ Usata':'○ Pronta',`aria-pressed="${!!state.used}"`,'pl-availability '+(state.used?'is-used':''))}<div class="pl-card-corner">${card.c==='d'&&!owned?.banned?iconButton(owned?.active?'vault':'recall',owned?.active?'Sposta nel Vault':'Richiama nel Loadout',owned?.active?'↧':'↥'):''}<details class="pl-card-menu"><summary aria-label="Opzioni ${esc(card.n)}" title="Opzioni carta">⋯</summary><div class="pl-card-popover"><b>Opzioni carta</b>${plResourceMenu(plCurrent(),card.i)}<label>Reset utilizzo<select aria-label="Reset utilizzo ${esc(card.n)}" data-pl-card-reset="${card.i}"><option value="manual" ${!state.reset||state.reset==='manual'?'selected':''}>Manuale</option>${['rest','long','session'].map(x=>`<option value="${x}" ${state.reset===x?'selected':''}>${{rest:'Riposo',long:'Riposo lungo',session:'Sessione'}[x]}</option>`).join('')}</select></label>${card.c==='d'&&!owned?.banned?plBtn('ban','Vault permanente…',`data-i="${card.i}"`):''}${owned?.banned?'<small>Vault permanente</small>':''}</div></details></div></div>${plCardResourcesUI(plCurrent(),card,iconButton)}`:selectModes.includes(mode)||mode==='choose'?`<div class="pl-card-select">${plBtn(mode==='choose'?'choose':mode,chosen?'✓ Scelta':'＋ Scegli',`data-i="${card.i}"`,chosen?'pri':'')}</div>`:''}</div></article>`}).join('')}</div>`}
