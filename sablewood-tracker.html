@@ -610,7 +610,7 @@ details.pv-sec>summary{font-size:.95rem}
 .tbl-sheet-h{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#141a16;color:#e9ece5;cursor:move;user-select:none;touch-action:none}
 .tbl-sheet-h b{font-family:var(--f-display);font-weight:400;font-size:1.1rem;white-space:nowrap}.tbl-sheet-h span{font-size:.75rem;color:#9aa69c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tbl-x{border:1px solid #3a463d;background:transparent;color:#e9ece5;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:700;flex:none}
-.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
+.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-sheet[hidden]{display:none}.tbl-dock{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto;z-index:3}.tbl-ico{width:52px;height:52px;border-radius:50%;border:2px solid #e0aa4c;background:#141a16;color:#e9ece5;font-family:var(--f-display);font-size:1.1rem;cursor:pointer;box-shadow:0 6px 20px #0008}.tbl-ico:hover{background:#243028}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
 .scr-ctl{position:fixed;top:calc(12vh + env(safe-area-inset-top,0px));left:3vw;z-index:7;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start;max-width:50vw;opacity:.35;transition:opacity .3s}
 .tgl.back{background:var(--hope-soft);border-color:var(--hope)}
 .scr-ctl:hover,.scr-ctl:focus-within{opacity:1}
@@ -3083,14 +3083,19 @@ function renderScreen(){
   return `${screenStage(VIEW.screen,liveData(),false)}<div class="scr-ctl"><button class="tgl" data-a="fullscreen">Schermo intero</button>${viewSwitch()}</div>`;
 }
 /* ---- schermo: il tavolo. Dadi 3D con fisica che restano sull'immagine proiettata, e schede flottanti dei PG ---- */
-var TBL={el:null,pool:[],hist:[],open:[],zoom:{},menu:false,w:null};
+var TBL={el:null,pool:[],hist:[],min:[],open:[],zoom:{},menu:false,w:null};
 const TBL_DICE=[4,6,8,10,12,20];
 function tblSync(on){
   if(!TBL.el){TBL.el=document.createElement("div");TBL.el.id="tbl";document.body.appendChild(TBL.el);
-    TBL.el.addEventListener("click",tblClick);TBL.el.addEventListener("pointerdown",tblDrag)}
+    TBL.el.addEventListener("click",tblClick);TBL.el.addEventListener("pointerdown",tblDrag);
+    // zoom della scheda col pinch del trackpad (arriva come rotella con ctrl) e coi gesti di Safari
+    const zoomBy=(el,f)=>{const s=el.closest(".tbl-sheet"),pl=s?.querySelector(".tbl-pl");if(!pl)return;const id=s.dataset.id;TBL.zoom[id]=Math.min(1.4,Math.max(.3,(TBL.zoom[id]||.55)*f));pl.style.zoom=TBL.zoom[id]};
+    TBL.el.addEventListener("wheel",e=>{if(!e.ctrlKey||!e.target.closest?.(".tbl-sheet"))return;e.preventDefault();zoomBy(e.target,Math.exp(-e.deltaY*.006))},{passive:false});
+    let g0=1;TBL.el.addEventListener("gesturestart",e=>{if(e.target.closest?.(".tbl-sheet")){e.preventDefault();g0=e.scale}});
+    TBL.el.addEventListener("gesturechange",e=>{if(e.target.closest?.(".tbl-sheet")){e.preventDefault();zoomBy(e.target,e.scale/g0);g0=e.scale}})}
   TBL.el.hidden=!on;if(!on){tblStop();return}
   const pcs=(liveData()?.pcs||[]).map(r=>({r,p:P(Object.assign({cond:[],over:{}},r))})).filter(x=>x.p);
-  TBL.open=TBL.open.filter(id=>pcs.some(x=>x.r.id===id));
+  TBL.open=TBL.open.filter(id=>pcs.some(x=>x.r.id===id));TBL.min=TBL.min.filter(id=>TBL.open.includes(id));
   const pool=TBL.pool.length?Object.entries(TBL.pool.reduce((m,s)=>(m[s]=(m[s]||0)+1,m),{})).map(([s,n])=>n+"d"+s).join(" + "):"";
   const lastHTML=TBL.hist.map((h,i)=>`<div class="tbl-res ${h.dual?h.dual.cls:""} ${i?"old":""}"><b>${h.total}</b><span>${esc(h.label)}</span>${h.dual?`<em>${esc(h.dual.txt)}</em>`:""}</div>`).reverse().join("");
   let bar=TBL.el.querySelector(".tbl-bar");if(!bar){bar=document.createElement("div");bar.className="tbl-bar";TBL.el.appendChild(bar)}
@@ -3117,11 +3122,14 @@ function tblSync(on){
       try{inner=`<div class="pl tbl-pl" style="zoom:${z}"><div inert>${plSheet(c)}</div></div>`}catch(e){inner=""}finally{PL.chars=keep;PL.id=keepId}}
     if(!inner)inner=tblCompact(x.r,x.p);
     w.innerHTML=`<header class="tbl-sheet-h" data-drag="1"><b>${esc(x.p.name||"PG")}</b><span>${esc([x.p.her,x.p.cls].filter(Boolean).join(" · "))}</span>
-      ${c?`<button class="tbl-x" data-t="zoom" data-id="${esc(id)}" data-k="-1" aria-label="Rimpicciolisci">−</button><button class="tbl-x" data-t="zoom" data-id="${esc(id)}" data-k="1" aria-label="Ingrandisci">+</button>`:""}
+      <button class="tbl-x" data-t="min" data-id="${esc(id)}" aria-label="Riduci a icona" title="Riduci a icona">▁</button>
       <button class="tbl-x" data-t="sheet" data-id="${esc(id)}" aria-label="Chiudi la scheda">×</button></header><div class="tbl-sheet-b">${inner}</div>`;
     w.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(k=>k.classList.add("in"));
-    w.querySelector(".tbl-sheet-b").scrollTop=sy;
+    w.querySelector(".tbl-sheet-b").scrollTop=sy;w.hidden=TBL.min.includes(id);
   });
+  // schede ridotte a icona: un bottone tondo con le iniziali, sul bordo destro
+  let dock=TBL.el.querySelector(".tbl-dock");if(!dock){dock=document.createElement("div");dock.className="tbl-dock";TBL.el.appendChild(dock)}
+  dock.innerHTML=TBL.min.map(id=>{const p=pcs.find(x=>x.r.id===id)?.p;const n=p?.name||"PG";return `<button class="tbl-ico" data-t="min" data-id="${esc(id)}" title="Apri la scheda di ${esc(n)}">${esc(n.split(/\s+/).map(s=>s[0]).join("").slice(0,2).toUpperCase())}</button>`}).join("");
   tblWorld();tblBlocks();
 }
 // la scheda completa: personaggio pregenerato, del giocatore o del GM, con lo stato che arriva dal tracker
@@ -3152,8 +3160,8 @@ function tblClick(e){
   else if(t==="dual")tblThrow([{s:12,c:"h"},{s:12,c:"f"}],true);
   else if(t==="clear"){tblClear();TBL.hist=[]}
   else if(t==="menu")TBL.menu=!TBL.menu;
-  else if(t==="sheet"){const id=b.dataset.id;TBL.open=TBL.open.includes(id)?TBL.open.filter(x=>x!==id):[...TBL.open,id]}
-  else if(t==="zoom"){const id=b.dataset.id;TBL.zoom[id]=Math.min(1,Math.max(.35,(TBL.zoom[id]||.55)+(+b.dataset.k)*.1))}
+  else if(t==="sheet"){const id=b.dataset.id;if(TBL.min.includes(id))TBL.min=TBL.min.filter(x=>x!==id);else TBL.open=TBL.open.includes(id)?TBL.open.filter(x=>x!==id):[...TBL.open,id]}
+  else if(t==="min"){const id=b.dataset.id;TBL.min=TBL.min.includes(id)?TBL.min.filter(x=>x!==id):[...TBL.min,id]}
   tblSync(true);
 }
 function tblDrag(e){
@@ -3170,7 +3178,7 @@ document.addEventListener("keydown",e=>{
   if(k==="d"){e.preventDefault();tblThrow([{s:12,c:"h"},{s:12,c:"f"}],true);tblSync(true)}
   else if(k==="c"){tblClear();TBL.hist=[];tblSync(true)}
   else if(k==="enter"&&TBL.pool.length){e.preventDefault();tblThrow(TBL.pool.map(s=>({s,c:"n"})));TBL.pool=[];tblSync(true)}
-  else if(/^[1-9]$/.test(k)){const r=(liveData()?.pcs||[])[+k-1];if(r){TBL.open=TBL.open.includes(r.id)?TBL.open.filter(x=>x!==r.id):[...TBL.open,r.id];tblSync(true)}}
+  else if(/^[1-9]$/.test(k)){const r=(liveData()?.pcs||[])[+k-1];if(r){if(TBL.min.includes(r.id))TBL.min=TBL.min.filter(x=>x!==r.id);else TBL.open=TBL.open.includes(r.id)?TBL.open.filter(x=>x!==r.id):[...TBL.open,r.id];tblSync(true)}}
 });
 /* mondo fisico persistente: il pavimento è l'immagine, i dadi lanciati restano dove si fermano */
 function tblWorld(){
