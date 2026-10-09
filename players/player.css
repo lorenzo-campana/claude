@@ -297,3 +297,16 @@
 .pl-eq-pack span{padding:5px 11px;border-radius:999px;background:#f3eef7;border:1px solid #ddd3e2;font:13px/1.2 DH Overpass,Arial,sans-serif;color:#37343a}
 .pl-eq-packnote{margin:8px 0 0;font-size:.78rem;color:#8b809a}
 @media (max-width:760px){.pl-eq-slots,.pl-eq-more{grid-template-columns:1fr}}
+/* Passo 8: carte dominio */
+.pl-dom-badges{display:flex;gap:10px;flex-wrap:wrap}
+.pl-dom-badges span{display:flex;align-items:center;gap:6px;padding:4px 12px 4px 4px;border-radius:999px;background:#fff;border:1px solid #d8cde2;font:700 13px/1 DH Overpass,Arial,sans-serif;color:#37343a}
+.pl-dom-badges img{width:26px;height:26px;object-fit:contain}
+.pl-dom-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:0 0 16px}
+.pl-dom-slots{display:flex;gap:8px;flex-wrap:wrap}
+.pl-dom-slots span{padding:6px 12px;border-radius:8px;border:1.5px dashed #cbbfd5;font:600 12.5px/1.2 DH Overpass,Arial,sans-serif;color:#9a90a6}
+.pl-dom-slots span.on{border:1.5px solid #56476b;background:#f3eef7;color:#37343a}
+.pl-dom-filter{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pl-dom-filter input{width:180px;padding:6px 12px;border-radius:999px;border:1px solid #d8cde2;background:#fff}
+.pl-dom-chips{display:flex;gap:3px;padding:3px;border-radius:999px;background:#ece6f1}
+.pl-dom-chips button{border:0;background:transparent;border-radius:999px;padding:5px 12px;font:700 12px/1 DH Overpass,Arial,sans-serif;color:#6a6170;cursor:pointer}
+.pl-dom-chips button.on{background:#56476b;color:#fff}
