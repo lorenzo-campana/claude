@@ -1289,6 +1289,10 @@ body.hub .page{padding-top:22px}
 
 .pl-local{border-color:var(--hope);background:color-mix(in srgb,var(--hope) 10%,var(--paper));margin-bottom:18px}.pl-local p{margin:6px 0 0}
 .pv-hub{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}.pv-hub .bar-in{max-width:1500px;margin:0 auto;padding:8px 16px;display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}.pv-page{max-width:1280px;margin:0 auto;padding:20px 16px 80px}
+.pv-hub.glass{position:fixed;top:0;left:0;right:0;z-index:8;background:rgba(8,10,9,.38);backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);border-bottom:1px solid rgba(255,255,255,.14);color:#f1f3ee}.pv-hub.glass .brand span{color:rgba(241,243,238,.7)}.pv-hub.glass .hub-nav{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}.pv-hub.glass .hub-nav button{color:rgba(241,243,238,.78)}.pv-hub.glass .hub-nav button:hover{background:rgba(255,255,255,.14);color:#fff}.pv-hub.glass .hub-nav button.on{background:#f1f3ee;color:#111}.pv-hub.glass .hub-nav .nb{background:rgba(255,255,255,.18);color:#fff}.pv-hub.glass .tgl{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#f1f3ee}
+.pv-fear{display:flex;align-items:center;gap:8px;color:#c9a3e6;font-weight:800;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase}.pv-fear b{font-size:1.1rem;letter-spacing:0}.pv-fear div{display:flex;gap:4px}.pv-fear i{width:12px;height:12px;transform:rotate(45deg);border:1.5px solid #c9a3e6;border-radius:2px}.pv-fear i.on{background:#c9a3e6}
+body.alt .stage:not(.mini) .st-fear{display:none}
+.pv-hub.glass .bar-in{gap:8px 14px}.pv-hub.glass .hub-nav .nb{display:none}.pv-hub.glass .hub-nav button{padding:6px 11px}.pv-hub.glass .pv-fear i{width:10px;height:10px}.pv-hub.glass .pv-fear div{gap:3px}.pv-hub.glass .ib{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#f1f3ee}
 
 /* PLAYER_STYLE_END */
 /* RULES_STYLE_START */
@@ -3083,7 +3087,8 @@ function screenStage(scr,L,mini){
   </div>`;
 }
 function renderScreen(){
-  return `${screenStage(VIEW.screen,liveData(),false)}<div class="scr-ctl"><button class="tgl" data-a="fullscreen">Schermo intero</button>${viewSwitch()}</div>`;
+  const L=liveData(),fear=(VIEW.screen||{}).fear&&L?`<div class="pv-fear" title="Paura del GM"><span>Paura</span><b>${L.fear}</b><div>${Array.from({length:12},(_,i)=>`<i class="${i<L.fear?"on":""}"></i>`).join("")}</div></div>`:"";
+  return `${pvHub("campagna",`${fear}<button class="ib" data-a="fullscreen" title="Schermo intero" aria-label="Schermo intero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>`)}${screenStage(VIEW.screen,L,false)}`;
 }
 /* ---- schermo: il tavolo. Dadi 3D con fisica che restano sull'immagine proiettata, e schede flottanti dei PG ---- */
 var TBL={el:null,pool:[],hist:[],min:[],open:[],zoom:{},menu:false,w:null};
@@ -3118,7 +3123,7 @@ function tblSync(on){
     const x=pcs.find(y=>y.r.id===id);if(!x)return;
     let w=TBL.el.querySelector(`.tbl-sheet[data-id="${CSS.escape(id)}"]`);
     if(!w){w=document.createElement("section");w.className="tbl-sheet";w.dataset.id=id;
-      const sw=Math.min(560,Math.max(320,innerWidth*.42));Object.assign(w.style,{width:sw+"px",height:(innerHeight-16)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:"8px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>tblBlocks()).observe(w)}
+      const sw=Math.min(560,Math.max(320,innerWidth*.42));const hb=(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+8;Object.assign(w.style,{width:sw+"px",height:(innerHeight-hb-8)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:hb+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>tblBlocks()).observe(w)}
     const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||.55,c=tblChar(x.r);
     let inner="";
     if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
@@ -4583,7 +4588,7 @@ const A={
   S.foes.push(mkFoe({name:r[0],type:"PNG",desc:r[1]||"",mot:r[2]||"",diff:parseInt(r[3])||12,feats:[]},dv.act+":dev:"+dv.id,""));log(`In scena: ${r[0]}`)}),
  "dev-cd":o=>upd(()=>{const dv=S.devs.find(x=>x.id===o.id);const c=parseDev(dv.raw).conti[+o.i];if(!c)return;const m=clamp(parseInt(c[1])||4,1,12);S.cds.push({id:uid(),name:c[0],max:m,v:m,note:c[2]||""});toast("Conto aggiunto nella scheda Scontro")}),
  // viste e schermo
- "pv-sec":o=>{if(o.k==="campagna"){VIEW.mode="screen";saveView();render();top0();return}APP.sec=o.k;PL.modal=null;if(o.k==="carte")CV.still=false;if(o.k==="regole"&&!RV.pv){RV.pv=1;RV.tab="ask"}saveRoute();render();top0()},
+ "pv-sec":o=>{if(o.k==="campagna"){VIEW.mode="screen";saveView();render();top0();return}if(VIEW.mode==="screen"){VIEW.mode="player";saveView()}APP.sec=o.k;PL.modal=null;if(o.k==="carte")CV.still=false;if(o.k==="regole"&&!RV.pv){RV.pv=1;RV.tab="ask"}saveRoute();render();top0()},
  "view-mode":o=>{if(o.k==="gm"&&!VIEW.canGM)return;VIEW.mode=o.k;saveView();render();top0()},
  "view-pc":o=>{VIEW.pc=o.k||null;saveView();render();top0()},
  fullscreen:()=>{if(document.fullscreenElement){document.exitFullscreen?.();return}
@@ -5391,10 +5396,13 @@ function plHero(){return `<div class="pl-head"><div><div class="pl-kicker">Il tu
 const PV_SECS=[['personaggi','Personaggi'],['regole','Regole'],['equipaggiamenti','Equipaggiamenti'],['carte','Carte dominio'],['campagna','Campaign mode']];
 function plSecNow(){return PV_SECS.some(([k])=>k===APP.sec)&&APP.sec!=='campagna'?APP.sec:'personaggi'}
 function renderPlayer(){if(PL.legacy)return `<div class="pl">${plBtn('legacy-back','← I miei personaggi')}</div>`+renderLegacyPlayer();
- const sec=plSecNow(),ic=k=>k==='campagna'?ICO.screen:(HUB_SECTIONS.find(s=>s.k===k)?.ic||''),n=k=>k==='personaggi'?PL.chars.length:k==='carte'?CARDS.length:k==='equipaggiamenti'?EQ_CATALOG.filter(x=>!x.brawler).length:null;
- const nav=PV_SECS.map(([k,l])=>{const on=k===sec,c=n(k);return `<button class="${on?'on':''}" data-a="pv-sec" data-k="${k}" ${on?'aria-current="page"':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ic(k)}</svg>${l}${c!=null?`<span class="nb">${c}</span>`:''}</button>`}).join('');
+ const sec=plSecNow();
  const body=sec==='equipaggiamenti'?renderEquipment():sec==='regole'?`<div class="pv-page"><div class="stack">${rulesView()}</div></div>`:sec==='carte'?`<div class="pv-page"><div class="stack">${renderCards()}</div></div>`:renderPlayerWorkspace();
- return `<header class="pv-hub"><div class="bar-in"><div class="brand"><b>Sablewood</b><span>DAGGERHEART · GIOCATORI</span></div><nav class="hub-nav" aria-label="Sezioni">${nav}</nav><div class="bar-r">${VIEW.canGM?`<button class="tgl back" data-a="view-mode" data-k="gm">← Torna al GM</button>`:''}</div></div></header>${body}`}
+ return pvHub(sec)+body}
+// la stessa barra serve anche in campaign mode, trasparente sopra l'immagine e con la Paura dentro
+function pvHub(sec,extra=''){const ic=k=>k==='campagna'?ICO.screen:(HUB_SECTIONS.find(s=>s.k===k)?.ic||''),n=k=>k==='personaggi'?PL.chars.length:k==='carte'?CARDS.length:k==='equipaggiamenti'?EQ_CATALOG.filter(x=>!x.brawler).length:null;
+ const nav=PV_SECS.map(([k,l])=>{const on=k===sec,c=n(k);return `<button class="${on?'on':''}" data-a="pv-sec" data-k="${k}" ${on?'aria-current="page"':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ic(k)}</svg>${l}${c!=null?`<span class="nb">${c}</span>`:''}</button>`}).join('');
+ return `<header class="pv-hub ${sec==='campagna'?'glass':''}"><div class="bar-in"><div class="brand"><b>Sablewood</b><span>DAGGERHEART · GIOCATORI</span></div><nav class="hub-nav" aria-label="Sezioni">${nav}</nav><div class="bar-r">${extra}${VIEW.canGM?`<button class="tgl back" data-a="view-mode" data-k="gm">${sec==='campagna'?'← GM':'← Torna al GM'}</button>`:''}</div></div></header>`}
 function renderPlayerWorkspace(){const c=plCurrent();return `<main class="pl">${!PL.loaded?'<div class="pl-empty">Carico i tuoi personaggi…</div>':PL.draft&&!PL.paused?plWizard():c?plSheet(c):plDashboard()}${plModal()}</main>`}
 function plDashboard(){return `${plHero()}${PL.localOnly?`<div class="pl-box pl-local"><b>I personaggi sono salvati solo in questo browser.</b><p class="pl-note">${PL.localOnly==='identity'?'Questo tavolo non riconosce il tuo account (succede se sei fuori dall’organizzazione del master o non hai fatto l’accesso).':'Il tuo account può leggere il tavolo ma non salvarci sopra.'} Puoi creare e giocare i personaggi qui; usa <b>Esporta</b> per farne una copia. Per salvarli nel tuo account e unirti alle campagne, chiedi al master di invitarti per email come Editor (senza link pubblico), oppure mandagli il file esportato.</p></div>`:''}${PL.chars.length?`<div class="pl-grid">${PL.chars.map(c=>`<article class="pl-box pl-person" style="--pl-accent:${CDOM[plClass(c)?.domains[0]||0].c||'#72539f'}"><div class="pl-actions"><div class="pl-avatar">${esc((c.name||'?').slice(0,1))}</div><div><h3>${esc(c.name)}</h3><span class="pl-note">${esc(c.className)} · ${esc(c.subclass)}</span></div></div><div><span class="pl-badge">Level ${c.level} · Tier ${plTier(c.level)}</span><span class="pl-badge">${esc(plCard(c.ancestry)?.n)}</span><span class="pl-badge">${esc(plCard(c.community)?.n)}</span></div><div class="pl-actions">${plBtn('open','Apri scheda',`data-id="${c.id}"`,'pri')}${plBtn('join','Campagne',`data-id="${c.id}"`)}${plBtn('export','↓',`data-id="${c.id}" aria-label="Esporta ${esc(c.name)}"`)}${plBtn('delete','Elimina',`data-id="${c.id}"`)}</div>${c.campaigns.length?`<span class="pl-note">${c.campaigns.map(id=>esc(PL.directory.find(x=>x.id===id)?.name||id)).join(' · ')}</span>`:''}</article>`).join('')}</div>`:`<div class="pl-empty"><div class="pl-kicker">Una storia ancora da scrivere</div><h2 style="margin:12px 0">Chi sarai al prossimo tavolo?</h2><p>Scegli classe e origini. Costruiamo insieme la tua prima scheda.</p>${plBtn('new','Inizia la creazione','','pri')}</div>`}${PL.draft?plBtn('resume','Riprendi bozza'):''}${plPregenStrip()}<section class="pl-box" style="margin-top:24px"><h3>Campagne del master</h3><p class="pl-note">Apri un personaggio e scegli Campagne per unirti al tavolo. Nome, statistiche, equipaggiamento e carte vengono condivisi con il master; background, connessioni e appunti restano nel tuo account.</p>${PL.directory.length?PL.directory.map(x=>`<span class="pl-badge">${esc(x.name)}</span>`).join(''):'<p class="pl-note">Il master deve aprire questo artifact per pubblicare le campagne.</p>'}${plBtn('refresh','Aggiorna campagne')}</section>`}
 function plWizard(){const c=PL.draft,k=plClass(c),step=PL.step,sub=plSub(c);let body='';const draft={draft:true};
