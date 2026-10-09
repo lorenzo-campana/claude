@@ -832,6 +832,8 @@ body.lb-on{overflow:hidden}
 .tabs button.sub{margin-left:auto;font-weight:600;font-size:.85rem;color:var(--muted)}.tabs button.sub.on{color:var(--ink)}
 /* ---- tavolo del GM: campagne e avversari ---- */
 body.hub .party-pane,body.hub #rollpop,body.hub #tabs{display:none!important}
+.bar2{border-top:1px solid var(--line);background:var(--bg)}.bar2 .bar-in{padding-block:6px}.bar2 .brand b{font-size:1.2rem}body.hub .bar2,#bar2:empty{display:none}.bar2:has(#bar2:empty){display:none}.tabs:empty{display:none}
+@media (min-width:1101px){body:not(.hub) .party-pane{top:calc(env(safe-area-inset-top,0px) + var(--bar-h,120px));max-height:calc(100vh - var(--bar-h,120px) - 16px)}}
 .hub-nav{display:flex;gap:3px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:999px;margin-left:12px}
 .hub-nav button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;border-radius:999px;padding:6px 14px 6px 12px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s}
 .hub-nav button:hover{color:var(--ink);background:var(--paper)}
@@ -1334,7 +1336,7 @@ body.hub .page{padding-top:22px}
 /* RULES_STYLE_END */
 </style>
 
-<header class="bar"><div class="bar-in" id="bar"></div></header>
+<header class="bar"><div class="bar-in" id="bar"></div><div class="bar2"><div class="bar-in" id="bar2"></div></div></header>
 <div class="page" id="page">
   <main class="main">
     <nav class="tabs" id="tabs"></nav>
@@ -2855,20 +2857,21 @@ function composerForm(w,prefill){
 }
 
 /* ================= viste ================= */
-const TABS=[["atto","Atto"],["carte","Carte"],["regole","Regole"],["diario","Diario"],["schermo","Schermo e giocatori"]];
+const TABS=[["atto","Atto"],["diario","Diario"],["schermo","Schermo e giocatori"]];
 function renderBar(){
   const ai=ACTS.findIndex(a=>a.id===S.act);
-  document.getElementById("bar").innerHTML=`
-  <button class="tgl home-btn" data-a="go-home" title="Torna al tavolo del GM: campagne, carte, avversari, regole">← Campagne</button>
+  document.getElementById("bar").innerHTML=hubTopHTML(APP.sec||"campagne");
+  document.getElementById("bar2").innerHTML=`
+  <button class="tgl home-btn" data-a="go-home" title="Torna all'elenco delle campagne">← Tutte</button>
   <div class="brand"><b title="${esc(campById(APP.camp)?.name||"")}">${esc(campById(APP.camp)?.name||"Campagna")}</b><span>${(()=>{const c=campById(APP.camp),m=MODULES[c?.module]?.name||"";return esc(m&&m!==c.name?m.toUpperCase()+" · ":"")})()}TRACKER DEL GM</span></div>
   <div class="meter"><span class="lab" style="color:var(--fear)">Paura</span><span class="mono" style="font-weight:600;color:var(--fear)">${S.fear}</span>
    <div class="fear-pips">${Array.from({length:12},(_,i)=>`<button class="fp ${i<S.fear?"on":""}" data-a="fear-set" data-i="${i}" aria-label="Paura ${i+1}"></button>`).join("")}</div></div>
   <div class="counter ${S.counter.on?"live":""}"><span class="lab">Assalto alla Città</span>
    ${S.counter.on?`<button class="btn xs" data-a="ctr" data-k="-1" aria-label="Contatore −1">−</button><span class="v">${S.counter.value}</span><button class="btn xs" data-a="ctr" data-k="1" aria-label="Contatore +1">+</button><button class="btn xs" data-a="ctr-close" title="Chiudi il Contatore" aria-label="Chiudi il Contatore">×</button>`:`<button class="btn xs" data-a="ctr-start">Avvia (15)</button>`}</div>
   <nav class="acts">${ACTS.map((a,i)=>`<button class="${a.id===S.act?"on":i<ai?"done":""}" data-a="goact" data-k="${a.id}" title="${a.t}">${a.n}</button>`).join("")}</nav>
-  <div class="bar-r"><button class="ib" id="undo-btn" data-a="undo" ${UNDO.length?"":"disabled"} title="${esc(undoTitle())}" aria-label="${esc(undoTitle())}">${svgI("undo")}</button>${saveIco()}${optBtn()}</div>`;
+  <div class="bar-r"><button class="ib" id="undo-btn" data-a="undo" ${UNDO.length?"":"disabled"} title="${esc(undoTitle())}" aria-label="${esc(undoTitle())}">${svgI("undo")}</button>${saveIco()}</div>`;
 }
-function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")
+function renderTabs(){if(APP.sec!=="campagne"){document.getElementById("tabs").innerHTML="";return}document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?"on":""}" data-a="tab" data-k="${k}">${l}</button>`).join("")
   +(S.tab==="scontro"||S.foes.length||S.cds.length?`<button class="sub ${S.tab==="scontro"?"on":""}" data-a="tab" data-k="scontro" title="Tutti gli scontri in corso e i conti alla rovescia">Scontri e conti</button>`:"")}
 
 let openPc=null,sheetPc=null;
@@ -3350,7 +3353,11 @@ function render(){
   const hub=APP.view==="home";document.body.classList.toggle("hub",hub);
   if(hub)document.getElementById("party-tab").hidden=true;
   if(hub){renderHub();return}
+  if(S.tab==="carte"||S.tab==="regole"){if(APP.sec==="campagne")APP.sec=S.tab;S.tab="atto"}
+  const sec=APP.sec!=="campagne"&&hubSections().find(s=>s.k===APP.sec);if(!sec)APP.sec="campagne";
   renderBar();renderTabs();renderParty();renderRoll();
+  document.documentElement.style.setProperty("--bar-h",(document.querySelector("header.bar")?.offsetHeight||110)+8+"px");
+  if(sec){document.getElementById("view").innerHTML=`<div class="stack">${sec.html()}</div>`;sec.after?.();return}
   document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct():S.tab==="carte"?renderCards():S.tab==="scontro"?renderCombat():S.tab==="regole"?rulesView():S.tab==="schermo"?renderScreenCtl():renderDiary()}</div>`;
   if(S.tab==="carte")cardsAfterRender();if(S.tab==="regole")rulesAfter();
 }
@@ -3386,7 +3393,7 @@ function resetTransient(){
 function openCampaign(id){
   if(!campById(id))return;
   flushSave();resetTransient();
-  APP.view="camp";APP.camp=id;APP.delAsk=APP.renaming=null;APP.newOpen=false;
+  APP.view="camp";APP.camp=id;APP.sec="campagne";APP.delAsk=APP.renaming=null;APP.newOpen=false;
   S=readState(campLocalKey(id));plReceiveRoster();undoReset();
   try{localStorage.setItem(ACTIVEKEY,id)}catch(e){}
   dbDoc=userCol?userCol.doc(campDocName(id)):null;
@@ -3498,13 +3505,19 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="Escape"){e.preventDefault();t.id==="nc-name"?A["camp-new-no"]():A["camp-ren-no"]()}
 });
 
+// la barra in alto è la stessa nella home e dentro una campagna: le sezioni del tavolo restano sempre a portata
+function hubTopHTML(cur,extra=""){
+  const secs=hubSections();
+  return `<div class="brand"><b>Tavolo del GM</b><span>DAGGERHEART · CAMPAGNE E STRUMENTI</span></div>
+   <nav class="hub-nav" aria-label="Sezioni">${secs.map(s=>{const n=s.n?.(),on=s.k===cur;return `<button class="${on?"on":""}" data-a="hub-sec" data-k="${s.k}" ${on?'aria-current="page"':""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${s.ic}</svg>${s.l}${n!=null?`<span class="nb">${n}</span>`:""}</button>`}).join("")}</nav>
+   <div class="bar-r">${extra}${optBtn()}</div>`;
+}
 function renderHub(){
   const secs=hubSections(),sec=secs.find(s=>s.k===APP.sec)||secs[0];
   let lastId=null;try{lastId=localStorage.getItem(ACTIVEKEY)}catch(e){}
   const last=campById(lastId);
-  document.getElementById("bar").innerHTML=`<div class="brand"><b>Tavolo del GM</b><span>DAGGERHEART · CAMPAGNE E STRUMENTI</span></div>
-   <nav class="hub-nav" aria-label="Sezioni">${secs.map(s=>{const n=s.n?.();return `<button class="${s===sec?"on":""}" data-a="hub-sec" data-k="${s.k}" ${s===sec?'aria-current="page"':""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${s.ic}</svg>${s.l}${n!=null?`<span class="nb">${n}</span>`:""}</button>`}).join("")}</nav>
-   <div class="bar-r">${last?`<button class="btn ok" data-a="camp-open" data-k="${esc(last.id)}">Riprendi «${esc(last.name)}»</button>`:""}${optBtn()}</div>`;
+  document.getElementById("bar").innerHTML=hubTopHTML(sec.k,last?`<button class="btn ok" data-a="camp-open" data-k="${esc(last.id)}">Riprendi «${esc(last.name)}»</button>`:"");
+  document.getElementById("bar2").innerHTML="";
   document.getElementById("tabs").innerHTML="";
   document.getElementById("page").classList.remove("party");document.getElementById("party").innerHTML="";
   document.getElementById("view").innerHTML=`<div class="stack">${sec.html()}</div>`;
@@ -3573,7 +3586,7 @@ addEventListener("storage",e=>{if(e.key===SKINKEY){skin=SKINS.some(x=>x[0]===e.n
 const HUBACT={
  ...OPTACT,
  "go-home":()=>goHome(),
- "hub-sec":o=>{APP.sec=o.k;APP.newOpen=false;APP.renaming=APP.delAsk=null;if(o.k==="carte")CV.still=false;saveRoute();render();top0()},
+ "hub-sec":o=>{if(APP.view==="camp"&&o.k==="campagne"&&APP.sec==="campagne"){APP.sec="campagne";goHome();return}APP.sec=o.k;APP.newOpen=false;APP.renaming=APP.delAsk=null;if(o.k==="carte")CV.still=false;saveRoute();render();top0()},
  "camp-open":o=>openCampaign(o.k),
  "camp-new":()=>{APP.newOpen=true;APP.renaming=APP.delAsk=null;render();document.getElementById("nc-name")?.focus()},
  "camp-new-no":()=>{APP.newOpen=false;render()},
@@ -4169,8 +4182,8 @@ const top0=()=>setTimeout(()=>scrollTo({top:0}),0);
 const A={
  ...CARDACT,
  ...HUBACT,
- tab:o=>{S.tab=o.k;if(o.k==="carte")CV.still=false;persist();render();top0()},
- goact:o=>upd(()=>{S.act=o.k;S.tab="atto";const a=ACTS.find(x=>x.id===o.k);log(`→ Atto ${a.n}: ${a.t}`);top0()}),
+ tab:o=>{S.tab=o.k;APP.sec="campagne";if(o.k==="carte")CV.still=false;persist();render();top0()},
+ goact:o=>upd(()=>{S.act=o.k;S.tab="atto";APP.sec="campagne";const a=ACTS.find(x=>x.id===o.k);log(`→ Atto ${a.n}: ${a.t}`);top0()}),
  "party-toggle":()=>{UI.party=!UI.party;saveUI();renderBar();renderParty()},
  "fear-set":o=>upd(()=>{const n=+o.i+1;addFear((S.fear===n?n-1:n)-S.fear,"manuale")}),
  ctr:o=>upd(()=>counterAdd(+o.k,"manuale")),
@@ -5013,7 +5026,7 @@ async function playerConnect(db,user){
  else PL.rosterRefresh=async()=>{if(typeof roster.get!=='function')throw Error('Roster API unavailable');const s=await roster.get(),rows=[];s.forEach(x=>{const o=JSON.parse(x.data().json);if(o.joined)rows.push(o)});PL.roster=rows;plStoreRoster();plReceiveRoster();};
  PL.chars.forEach(plWatchGM);if(VIEW.canGM)playerPublishCampaigns();else if(PL.rosterRefresh)await PL.rosterRefresh().catch(()=>{});plRenderIfVisible();
 }
-function plRenderIfVisible(){if((VIEW.mode==='player'||APP.view==='home'&&APP.sec==='personaggi')&&!document.activeElement?.matches?.('.pl input,.pl textarea,.pl select'))plRender()}
+function plRenderIfVisible(){if((VIEW.mode==='player'||(APP.view==='home'||APP.view==='camp')&&APP.sec==='personaggi')&&!document.activeElement?.matches?.('.pl input,.pl textarea,.pl select'))plRender()}
 function playerPublishCampaigns(){if(!VIEW.canGM)return;PL.directory=CAMPS.list.map(c=>({id:c.id,name:c.name,module:c.module,updated:c.updated,owner:PL.account}));try{localStorage.setItem(PL_DIR,JSON.stringify(PL.directory))}catch(e){}if(VIEW.tdb&&PL.account!=='browser')dbWrite('tavolo/campagne',{json:JSON.stringify(PL.directory)});plStoreRoster()}
 function plStoreRoster(){try{localStorage.setItem(PL_ROSTER,JSON.stringify(PL.roster))}catch(e){}}
 function plPublic(c){const x=plClone(c);delete x.notes;delete x.background;delete x.connections;delete x.history;delete x.campaigns;delete x.outgoingTrades;delete x.receivedTrades;return x}

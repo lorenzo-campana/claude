@@ -56,7 +56,7 @@ async function playerConnect(db,user){
  else PL.rosterRefresh=async()=>{if(typeof roster.get!=='function')throw Error('Roster API unavailable');const s=await roster.get(),rows=[];s.forEach(x=>{const o=JSON.parse(x.data().json);if(o.joined)rows.push(o)});PL.roster=rows;plStoreRoster();plReceiveRoster();};
  PL.chars.forEach(plWatchGM);if(VIEW.canGM)playerPublishCampaigns();else if(PL.rosterRefresh)await PL.rosterRefresh().catch(()=>{});plRenderIfVisible();
 }
-function plRenderIfVisible(){if((VIEW.mode==='player'||APP.view==='home'&&APP.sec==='personaggi')&&!document.activeElement?.matches?.('.pl input,.pl textarea,.pl select'))plRender()}
+function plRenderIfVisible(){if((VIEW.mode==='player'||(APP.view==='home'||APP.view==='camp')&&APP.sec==='personaggi')&&!document.activeElement?.matches?.('.pl input,.pl textarea,.pl select'))plRender()}
 function playerPublishCampaigns(){if(!VIEW.canGM)return;PL.directory=CAMPS.list.map(c=>({id:c.id,name:c.name,module:c.module,updated:c.updated,owner:PL.account}));try{localStorage.setItem(PL_DIR,JSON.stringify(PL.directory))}catch(e){}if(VIEW.tdb&&PL.account!=='browser')dbWrite('tavolo/campagne',{json:JSON.stringify(PL.directory)});plStoreRoster()}
 function plStoreRoster(){try{localStorage.setItem(PL_ROSTER,JSON.stringify(PL.roster))}catch(e){}}
 function plPublic(c){const x=plClone(c);delete x.notes;delete x.background;delete x.connections;delete x.history;delete x.campaigns;delete x.outgoingTrades;delete x.receivedTrades;return x}
