@@ -78,6 +78,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .bar-r{gap:4px}
 @media (max-width:1400px){body .bar-in{gap:10px 12px}body .brand b{max-width:14ch;font-size:1.25rem}body .fp{width:12px;height:12px}body .counter .lab{font-size:.62rem}}
 .opt-sec{border-top:1px solid var(--line);margin-top:8px;padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.party-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.party-list li{display:flex;align-items:center;gap:10px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.party-list li>div{flex:1;min-width:0;display:flex;flex-direction:column}
+.party-list li b{font-weight:800;line-height:1.2}
+.party-list li small{font-size:.76rem;color:var(--muted)}
+.party-list.add li{border-style:dashed;background:transparent}
+.party-ava{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--plate);color:var(--plate-fg);font-family:var(--f-display);font-size:1rem}
 .log-undo{margin-left:auto}
 .party-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:35;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px 12px;border:1px solid var(--line);border-right:0;border-radius:12px 0 0 12px;background:var(--paper);color:var(--ink);cursor:pointer;box-shadow:-6px 0 18px rgba(0,0,0,.14);transition:padding .2s,background .2s}
 .party-tab:hover{background:var(--bg)}
@@ -3502,12 +3509,34 @@ function renderOpt(){
     <div class="skins" role="radiogroup" aria-label="Tema">${SKINS.map(([k,n,d])=>`<button class="skin ${skin===k?"on":""}" role="radio" aria-checked="${skin===k}" data-a="skin" data-k="${k}">
      <span class="sk ${k==="auto"?"auto":""}" ${k==="auto"?"":`data-skin="${k}"`}>${k==="auto"?"":`<span class="sk-bar"></span><span class="sk-card"><span class="sk-l"></span><span class="sk-l m"></span><span class="sk-d"><i style="background:var(--moss)"></i><i style="background:var(--hope)"></i><i style="background:var(--fear)"></i><i style="background:var(--blood)"></i></span></span>`}</span>
      <span class="skin-n">${n}<small>${d}</small></span></button>`).join("")}</div>
+    ${APP.view==="camp"?optPartyHTML():""}
     ${APP.view==="camp"?`<div class="opt-sec"><div class="lab">Partita</div><p class="small muted" style="margin:0">Riporta «${esc(campById(APP.camp)?.name||"")}» all'inizio: atti, scene, Paura, personaggi, registro. Si può annullare subito dopo con ↶.</p>
      <div class="row">${optReset?`<span class="small">Azzerare tutta la partita?</span><button class="btn xs bad" data-a="reset-yes">Sì, azzera</button><button class="btn xs" data-a="opt-reset-no">No</button>`:`<button class="btn" data-a="opt-reset-ask">Azzera la partita</button>`}</div></div>`:""}
    </div></div></div>`;
 }
+/* Opzioni · Party: chi siede al tavolo in questa campagna. Si può togliere chiunque e aggiungere
+   pregenerati, personaggi dei giocatori che hanno raggiunto la campagna o personaggi propri. */
+let optPartyAsk=null;
+function optPartyCands(){
+  const inParty=new Set(S.pcs.map(r=>r.id)),out=[];
+  for(const k of Object.keys(PREGEN))if(!inParty.has(k)){const q=P(mkPC(k));out.push({src:"pregen",id:k,name:q.name,sub:[q.cls,"pregenerato"].filter(Boolean).join(" · ")})}
+  const seen=new Set();
+  for(const row of (typeof PL!=="undefined"?PL.roster:[]).filter(x=>x.campaign===APP.camp)){const c=row.character;if(!c||inParty.has(c.id)||seen.has(c.id))continue;seen.add(c.id);out.push({src:"roster",id:c.id,name:c.name||"Senza nome",sub:[c.className,"Lv "+(c.level||1),"giocatore"].filter(Boolean).join(" · ")})}
+  for(const c of (typeof PL!=="undefined"?PL.chars:[]))if(c?.id&&!inParty.has(c.id)&&!seen.has(c.id)&&c.className){seen.add(c.id);out.push({src:"mine",id:c.id,name:c.name||"Senza nome",sub:[c.className,"Lv "+(c.level||1),"tuo personaggio"].filter(Boolean).join(" · ")})}
+  return out;
+}
+function optPartyHTML(){
+  const cands=optPartyCands(),who=r=>{const q=P(r)||{};return {name:q.name||"PG",sub:[q.cls,q.sub].filter(Boolean).join(" · "),tag:r.playerOwner?"giocatore":PREGEN[r.id]&&!r.over?.name?"pregenerato":"personaggio"}};
+  return `<div class="opt-sec"><div class="lab">Party · ${S.pcs.length} ${S.pcs.length===1?"personaggio":"personaggi"}</div><p class="small muted" style="margin:0">Chi partecipa a «${esc(campById(APP.camp)?.name||"")}». Togliere un personaggio non cancella la sua scheda; si può annullare con ↶.</p>
+   <ul class="party-list">${S.pcs.map(r=>{const w=who(r);return `<li><span class="party-ava">${esc((w.name[0]||"?").toUpperCase())}</span><div><b>${esc(w.name)}</b><small>${esc(w.sub)}${w.sub?" · ":""}${w.tag}</small></div>${optPartyAsk===r.id?`<span class="small">Togliere?</span><button class="btn xs bad" data-a="party-rm" data-id="${esc(r.id)}">Sì</button><button class="btn xs" data-a="party-rm-no">No</button>`:`<button class="btn xs" data-a="party-rm-ask" data-id="${esc(r.id)}" aria-label="Togli ${esc(w.name)} dal party">Togli</button>`}</li>`}).join("")||'<li class="muted small">Nessun personaggio nel party.</li>'}</ul>
+   ${cands.length?`<div class="lab" style="margin-top:4px">Aggiungi al party</div><ul class="party-list add">${cands.map(x=>`<li><span class="party-ava">${esc((x.name[0]||"?").toUpperCase())}</span><div><b>${esc(x.name)}</b><small>${esc(x.sub)}</small></div><button class="btn xs ok" data-a="party-add" data-src="${x.src}" data-id="${esc(x.id)}">＋ Aggiungi</button></li>`).join("")}</ul>`:'<p class="small muted" style="margin:0">Nessun altro personaggio disponibile: i giocatori compaiono qui quando raggiungono la campagna dalla loro scheda.</p>'}</div>`;
+}
 let optReturn=null;
 const OPTACT={
+ "party-rm-ask":o=>{optPartyAsk=o.id;renderOpt()},
+ "party-rm-no":()=>{optPartyAsk=null;renderOpt()},
+ "party-rm":o=>{const r=pcRaw(o.id);optPartyAsk=null;S.pcs=S.pcs.filter(x=>x.id!==o.id);if(openPc===o.id)openPc=null;persist();render();renderOpt();toast((P(r)?.name||"Personaggio")+" tolto dal party · ↶ per annullare")},
+ "party-add":o=>{if(S.pcs.some(x=>x.id===o.id))return;let r;if(o.src==="pregen")r=mkPC(o.id);else{const row=o.src==="roster"?PL.roster.find(x=>x.campaign===APP.camp&&x.character?.id===o.id):null,c=row?row.character:PL.chars.find(x=>x.id===o.id);if(!c)return;r=Object.assign(mkPC(c.id),{over:plAdapter(c),hp:c.hp||0,st:c.stress||0,hope:c.hope??2,ar:c.armor||0,cond:c.conditions||[]});if(row){r.playerOwner=row.owner;r.playerAt=row.at}}S.pcs.push(r);persist();render();renderOpt();toast((P(r)?.name||"Personaggio")+" aggiunto al party")},
  "opt-reset-ask":()=>{optReset=true;renderOpt()},
  "opt-reset-no":()=>{optReset=false;renderOpt()},
  undo:()=>undo(),
