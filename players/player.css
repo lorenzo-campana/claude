@@ -228,3 +228,30 @@
 .pl-tr-hint{font-size:.88rem;color:var(--muted,#666)}
 .pl-tr-hint b{color:#56476b}
 .pl-tr-bar .btn{margin:0}
+/* Passo 4: dettagli del personaggio */
+.pl-dt-stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:6px}
+.pl-dt-stat{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 6px 8px;border-radius:12px;background:#fff;border:1px solid #ddd3e2;box-shadow:0 2px 8px -5px rgba(45,30,65,.35)}
+.pl-dt-ico{width:24px;height:24px;margin-bottom:2px;background:#56476b;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
+.pl-dt-stat b{font:700 26px/1 DH Overpass,Arial,sans-serif;color:#37343a}
+.pl-dt-stat small{font:11px/1.2 DH Eveleth,Arial,sans-serif;text-transform:uppercase;color:#56476b;letter-spacing:.02em;text-align:center}
+.pl-dt-stat i{font-style:normal;font-size:10px;color:#8b809a}
+.pl-dt-stat.lvl{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 2h16v13l-8 7-8-7z'/%3E%3C/svg%3E")}
+.pl-dt-stat.eva{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l9 4v6c0 5-4 9-9 10-5-1-9-5-9-10V6z'/%3E%3C/svg%3E")}
+.pl-dt-stat.hp{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z'/%3E%3C/svg%3E");--c:#b55a6b}
+.pl-dt-stat.str{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13 2L4 14h7l-1 8 9-12h-7z'/%3E%3C/svg%3E")}
+.pl-dt-stat.hope{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l8 10-8 10-8-10z'/%3E%3C/svg%3E")}
+.pl-dt-stat.prof{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3C/svg%3E")}
+.pl-dt-stat.hp .pl-dt-ico{background:#b55a6b}.pl-dt-stat.str .pl-dt-ico{background:#7d65a8}.pl-dt-stat.hope .pl-dt-ico{background:#b08737}
+.pl-dt-note{margin:8px 0 18px!important;font-size:.82rem;color:var(--muted,#777)}
+.pl-dt-card{--sheet-font:DH Eveleth,Arial,sans-serif;--sheet-text:DH Overpass,Arial,sans-serif;--rb:#5b4a6e;margin:0 0 16px;padding:12px 18px 18px;border-radius:12px;background:#fff;border:1px solid #ddd3e2}
+.pl-dt-card .pl-rb-sec{margin:0 -18px 14px}
+.pl-dt-row{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+.pl-dt-card label{display:flex;flex-direction:column;gap:4px;font:11px/1 DH Eveleth,Arial,sans-serif;text-transform:uppercase;color:#56476b;letter-spacing:.03em}
+.pl-dt-card input,.pl-dt-card select{width:100%;border:0;border-bottom:1.5px solid #b9aec4;border-radius:0;background:transparent;padding:6px 2px;font:18px/1.3 DH Overpass,Arial,sans-serif;color:#37343a;text-transform:none;letter-spacing:0}
+.pl-dt-card input:focus,.pl-dt-card select:focus,.pl-dt-card textarea:focus{outline:none;border-color:#56476b}
+.pl-dt-area{margin-top:16px;display:flex;flex-direction:column;gap:4px}
+.pl-dt-card textarea{width:100%;min-height:104px;resize:vertical;border:0;border-radius:0;padding:3px 2px;font:15px/26px DH Overpass,Arial,sans-serif;color:#37343a;text-transform:none;letter-spacing:0;background:repeating-linear-gradient(transparent 0,transparent 25px,#d7cfda 25px,#d7cfda 26px)}
+.pl-dt-area small{font-size:.78rem;color:#8b809a}
+.pl-dt-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px 18px}
+.pl-dt-choices>h3,.pl-dt-choices>details,.pl-dt-choices>.pl-actions,.pl-dt-choices>.pl-fields{grid-column:1/-1}
+@media (max-width:760px){.pl-dt-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.pl-dt-row{grid-template-columns:1fr}}
