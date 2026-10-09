@@ -353,3 +353,8 @@
 .pl-adv-xp span{font:700 14px/1 DH Overpass,Arial,sans-serif;color:#56476b}
 .pl-adv-foot{display:flex;justify-content:flex-end}
 .pl-adv-foot .btn{margin:0;border-radius:999px;padding:7px 18px}
+/* Level up: la scelta confermata vola nella lista "assegnati" */
+.pl-adv-ghost{position:fixed;z-index:200;pointer-events:none;display:flex;align-items:center;padding:10px 14px;box-sizing:border-box;background:#f3eef7;border:2px solid #56476b;color:#37343a;font:700 14px/1.2 DH Overpass,Arial,sans-serif;box-shadow:0 12px 28px -10px rgba(45,30,65,.5);overflow:hidden;white-space:nowrap}
+.pl-level-picked>div.pl-picked-new{animation:plPickedIn .9s ease-out}
+@keyframes plPickedIn{0%{background:#efe3c6;box-shadow:0 0 0 3px #c99a3c}100%{background:transparent;box-shadow:0 0 0 0 transparent}}
+.pl-level-picked>div{border-radius:8px;padding-left:8px;padding-right:8px}
