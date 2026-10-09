@@ -849,7 +849,8 @@ body.lb-on{overflow:hidden}
 body.hub .party-pane,body.hub #rollpop,body.hub #tabs{display:none!important}
 .bar2{border-top:1px solid var(--line);background:var(--bg)}body #bar2 .camp-brand b{max-width:none;overflow:visible;white-space:normal;text-overflow:clip}.bar2 .bar-in{padding-block:6px}.bar2 .brand b{font-size:1.2rem}body.hub .bar2,#bar2:empty{display:none}.bar2:has(#bar2:empty){display:none}.tabs:empty{display:none}#tabs:not(:empty){display:flex;align-items:center;gap:12px;border:0;padding-bottom:4px}#bar2 .ib.on,#bar2 .ib.on:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}#bar2.bar-in{gap:8px 12px}body #bar2 .fp{width:11px;height:11px}#bar2 .fear-pips{gap:2px}#bar2 .acts button{padding:2px 9px}#bar2 .bar-r{gap:4px}
 @media (min-width:1101px){body:not(.hub) .party-pane{top:calc(env(safe-area-inset-top,0px) + var(--bar-h,120px));max-height:calc(100vh - var(--bar-h,120px) - 16px)}}
-.hub-nav{display:flex;gap:3px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:999px;margin-left:12px}
+.hub-ind{position:absolute;left:0;top:0;border-radius:999px;background:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.2);transition:transform .42s cubic-bezier(.3,1.3,.4,1),width .42s cubic-bezier(.3,1.3,.4,1),height .3s;pointer-events:none;z-index:0}.hub-nav.has-ind button{position:relative;z-index:1}.hub-nav.has-ind button.on{background:transparent;box-shadow:none}.pv-hub.glass .hub-ind{background:#f1f3ee}@media (max-width:560px){.hub-ind{border-radius:12px}}
+.hub-nav{position:relative;display:flex;gap:3px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:999px;margin-left:12px}
 .hub-nav button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;border-radius:999px;padding:6px 14px 6px 12px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s}
 .hub-nav button:hover{color:var(--ink);background:var(--paper)}
 .hub-nav button.on{background:var(--ink);color:var(--paper);box-shadow:0 2px 8px rgba(0,0,0,.18)}
@@ -3034,8 +3035,8 @@ function viewSwitch(){
 function renderAlt(){
   const el=document.getElementById("alt");
   if(!VIEW.ready){el.innerHTML=`<div class="alt-wait">Apro il tavolo…</div>`;return}
-  if(VIEW.mode!=="screen"){el.innerHTML=renderPlayer();playerAfterRender();const ps=plSecNow();if(ps==="carte")cardsAfterRender();if(ps==="regole")rulesAfter();return}
-  const old=el.querySelector(".stage .st-img");el.innerHTML=renderScreen();
+  if(VIEW.mode!=="screen"){el.innerHTML=renderPlayer();playerAfterRender();const ps=plSecNow();if(ps==="carte")cardsAfterRender();if(ps==="regole")rulesAfter();navFx();return}
+  const old=el.querySelector(".stage .st-img");el.innerHTML=renderScreen();navFx();
   const nw=el.querySelector(".stage .st-img"); // stessa immagine: tieni il nodo già caricato, niente sfarfallio
   if(old&&nw&&old.getAttribute("src")===nw.getAttribute("src")){old.classList.remove("fresh");nw.replaceWith(old)}
 }
@@ -3581,9 +3582,9 @@ function render(){
   const sec=APP.sec!=="campagne"&&hubSections().find(s=>s.k===APP.sec);if(!sec)APP.sec="campagne";
   renderBar();renderTabs();renderParty();renderRoll();
   document.documentElement.style.setProperty("--bar-h",(document.querySelector("header.bar")?.offsetHeight||110)+8+"px");
-  if(sec){document.getElementById("view").innerHTML=`<div class="stack">${sec.html()}</div>`;sec.after?.();return}
+  if(sec){document.getElementById("view").innerHTML=`<div class="stack">${sec.html()}</div>`;sec.after?.();navFx();return}
   document.getElementById("view").innerHTML=`<div class="stack">${S.tab==="atto"?renderAct():S.tab==="carte"?renderCards():S.tab==="scontro"?renderCombat():S.tab==="regole"?rulesView():S.tab==="schermo"?renderScreenCtl():renderDiary()}</div>`;
-  if(S.tab==="carte")cardsAfterRender();if(S.tab==="regole")rulesAfter();
+  if(S.tab==="carte")cardsAfterRender();if(S.tab==="regole")rulesAfter();navFx();
 }
 
 /* ================= tavolo del GM: home con campagne, carte, avversari e regole =================
@@ -3729,6 +3730,23 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="Escape"){e.preventDefault();t.id==="nc-name"?A["camp-new-no"]():A["camp-ren-no"]()}
 });
 
+// passaggio tra sezioni: la pill scivola sulla nuova voce e il contenuto entra dal lato verso cui ti muovi
+const NAVFX={};
+function navFx(){
+  const nav=document.querySelector(VIEW.mode==="gm"&&!document.body.classList.contains("alt")?"#bar .hub-nav":"#alt .pv-hub .hub-nav");if(!nav)return;
+  const on=nav.querySelector("button.on");if(!on)return;
+  const key=nav.closest(".pv-hub")?"pv":"gm",btns=[...nav.querySelectorAll("button")],idx=btns.indexOf(on),k=on.dataset.k;
+  const ind=document.createElement("span");ind.className="hub-ind";ind.setAttribute("aria-hidden","true");nav.prepend(ind);nav.classList.add("has-ind");
+  const place=(l,t,w,h)=>{ind.style.transform=`translate(${l}px,${t}px)`;ind.style.width=w+"px";ind.style.height=h+"px"};
+  const prev=NAVFX[key],cur={k,i:idx,l:on.offsetLeft,t:on.offsetTop,w:on.offsetWidth,h:on.offsetHeight};
+  const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(prev&&prev.k!==k&&!still){
+    ind.style.transition="none";place(prev.l,prev.t,prev.w,prev.h);void ind.offsetWidth;ind.style.transition="";place(cur.l,cur.t,cur.w,cur.h);
+    const content=key==="pv"?nav.closest(".pv-hub").nextElementSibling:document.getElementById("view"),dx=idx>prev.i?36:-36;
+    content?.animate?.([{opacity:0,transform:`translateX(${dx}px)`,filter:"blur(3px)"},{opacity:1,transform:"none",filter:"blur(0)"}],{duration:380,easing:"cubic-bezier(.2,.85,.25,1)"});
+  }else place(cur.l,cur.t,cur.w,cur.h);
+  NAVFX[key]=cur;
+}
 // la barra in alto è la stessa nella home e dentro una campagna: le sezioni del tavolo restano sempre a portata
 function hubTopHTML(cur,extra=""){
   const secs=hubSections();
@@ -3745,7 +3763,7 @@ function renderHub(){
   document.getElementById("tabs").innerHTML="";
   document.getElementById("page").classList.remove("party");document.getElementById("party").innerHTML="";
   document.getElementById("view").innerHTML=`<div class="stack">${sec.html()}</div>`;
-  sec.after?.();
+  sec.after?.();navFx();
 }
 
 /* ---- opzioni: per ora i temi, salvati in questo browser ---- */
