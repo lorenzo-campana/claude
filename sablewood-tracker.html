@@ -4105,7 +4105,7 @@ const SRD_CHUNKS=[{"h":"Introduction","a":"introduction","t":"Welcome to DAGGERH
    Il bot cerca i passaggi sul dispositivo, poi manda a Claude (modelTier "quick") solo i 4 migliori: poche migliaia di token. */
 const RV={tab:"cheat"};
 const RB={q:"",busy:false,ans:"",srcs:[],cited:[],err:"",tokens:0,tier:"",ctl:null,open:null};
-const RV_TABS=[["cheat","Cheat sheet del GM"],["ask","Chiedi al manuale"],["ref","Regole complete"]];
+const RV_TABS=[["cheat","Cheat sheet del GM"],["ask","Chiedi al manuale"]];
 const SRD_BASE="https://github.com/seansbox/daggerheart-srd#";
 const RB_EXAMPLES=["Come funziona la Paura del GM?","Quando un PG segna Stress e non può?","Quanti punti battaglia servono per un incontro?","Come funziona un tiro di gruppo?","Cosa succede se un riposo viene interrotto?","Quanto danno fa una caduta?"];
 
@@ -4319,31 +4319,9 @@ function rvAsk(){
    <div id="rb-out" class="stack" style="gap:10px"></div></div>`;
 }
 
-/* ---------- regole complete (riordinate per argomento) ---------- */
-function rvRef2(){
-  const g=(t,cards)=>`<h3 class="rv-g">${t}</h3><div class="grid2">${cards.map(([h,b])=>`<div class="panel"><h4>${h}</h4>${b}</div>`).join("")}</div>`;
-  return `<div class="stack">
-  ${g("Tirare i dadi",[
-   ["Tiro d'azione","<p>Tira 2d12 (Speranza e Paura), somma il tratto e i bonus: ≥ Difficoltà è un successo.</p><ul class='tight'><li><b>Con Speranza</b>: il PG ottiene 1 Speranza.</li><li><b>Con Paura</b>: il GM ottiene 1 Paura e di solito fa una mossa.</li><li><b>Critico</b> (dadi uguali): successo automatico, +1 Speranza, −1 Stress; in attacco danni massimi più il tiro.</li></ul>"],
-   ["Vantaggio, Esperienze, Aiuto","<ul class='tight'><li><b>Vantaggio</b> +d6, <b>svantaggio</b> −d6; si annullano.</li><li><b>Esperienza</b>: 1 Speranza per aggiungere il bonus (+2).</li><li><b>Aiutare</b>: 1 Speranza per dare un d6 di vantaggio a un alleato.</li><li><b>Tiro di Squadra</b>: 3 Speranza; tirano due PG, si tiene il migliore.</li></ul>"],
-   ["Tiri reazione","<p>Per resistere a un effetto. Non generano Speranza né Paura.</p>"]])}
-  ${g("Combattimento",[
-   ["Soglie di danno","<p>Sotto la soglia <b>Grave</b>: 1 PF. Da Grave: 2 PF. Da <b>Severa</b>: 3 PF. Le soglie vengono dall'armatura più il livello. Uno slot <b>Armatura</b> riduce la gravità di una soglia. Se devi segnare Stress e non puoi, segni 1 PF. All'ultimo PF: Mossa di Morte.</p>"],
-   ["Attacchi","<p>I PG attaccano con il tratto dell'arma contro la Difficoltà dell'avversario; i danni usano i dadi dell'arma per la Competenza. Gli avversari tirano d20 + ATK contro l'Evasione del PG.</p>"],
-   ["Condizioni","<ul class='tight'><li><b>Vulnerabile</b>: i tiri contro di te hanno vantaggio.</li><li><b>Trattenuto</b>: non puoi muoverti; essendo temporanea, si toglie con un'azione riuscita.</li><li><b>Nascosto</b>: i tiri contro di te hanno svantaggio.</li></ul>"],
-   ["Distanze","<p>Mischia · Molto Vicina · Vicina · Lontana · Molto Lontana.</p>"]])}
-  ${g("Fra una scena e l'altra",[
-   ["Riposo breve","<p>Due mosse a testa tra Curare ferite (1d4+1 PF), Ricomporsi (1d4+1 Stress), Riparare armatura (1d4+1 slot), Prepararsi (+1 Speranza, +2 se insieme). Il GM ottiene 1d4 Paura.</p>"],
-   ["Mosse di Morte","<ul class='tight'><li><b>Gloria Finale</b>: un'ultima azione con successo critico automatico, poi il PG muore.</li><li><b>Evitare la Morte</b>: perdi i sensi; tira il dado Speranza: se ≤ livello ottieni una cicatrice.</li><li><b>Rischiare Tutto</b>: tira i Dadi della Dualità. Speranza più alto: recuperi PF/Stress per il suo valore. Paura più alto: muori. Critico: recuperi tutto.</li></ul>"]])}
-  ${g("Il GM",[
-   ["Il GM e la Paura","<p>Il GM inizia con 1 Paura per PG (massimo 12). Spende Paura per mosse extra, per mettere altri avversari sotto i riflettori, per azioni che costano Paura e per complicazioni. Non c'è ordine di turno: i riflettori passano a chi agisce.</p>"],
-   ["Scene","<p>Una scena ha un luogo, dei personaggi e una posta in gioco. Il GM la inquadra, fa domande ai giocatori per coinvolgerli, sposta i riflettori e la chiude quando la posta è risolta. Se i PG prendono una strada inattesa, nasce una nuova scena: qui la improvvisi alla fine di quella appena giocata.</p>"]])}
-  </div>`;
-}
-
 function rulesView(){
   const t=RV.tab,tabs=`<nav class="rv-nav" role="tablist" aria-label="Sezioni delle regole">${RV_TABS.map(([k,l])=>`<button role="tab" class="${t===k?"on":""}" aria-selected="${t===k}" data-a="rv-tab" data-k="${k}">${l}</button>`).join("")}</nav>`;
-  return `<div class="stack rv"><div class="cd-head"><h2>Regole</h2><p class="small muted">Per il GM: cheat sheet, risposte dal manuale con riferimenti, regole complete.</p></div>${tabs}${t==="cheat"?rvCheat():t==="ask"?rvAsk():rvRef2()}</div>`;
+  return `<div class="stack rv"><div class="cd-head"><h2>Regole</h2><p class="small muted">Per il GM: cheat sheet e risposte dal manuale con riferimenti.</p></div>${tabs}${t==="ask"?rvAsk():rvCheat()}</div>`;
 }
 function rulesAfter(){if(RV.tab==="ask")rbPaint()}
 const RULES_ACT={
