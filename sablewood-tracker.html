@@ -3062,6 +3062,7 @@ function renderAlt(){
   const el=document.getElementById("alt");
   if(!VIEW.ready){el.innerHTML=`<div class="alt-wait">Apro il tavolo…</div>`;return}
   if(VIEW.mode!=="screen"){el.innerHTML=renderPlayer();playerAfterRender();const ps=plSecNow();if(ps==="carte")cardsAfterRender();if(ps==="regole")rulesAfter();navFx();return}
+  if(el.querySelector(".stage:not(.mini)")){tblSet(el,renderScreen());navFx();return}
   const old=el.querySelector(".stage .st-img");el.innerHTML=renderScreen();navFx();
   const nw=el.querySelector(".stage .st-img"); // stessa immagine: tieni il nodo già caricato, niente sfarfallio
   if(old&&nw&&old.getAttribute("src")===nw.getAttribute("src")){old.classList.remove("fresh");nw.replaceWith(old)}
@@ -3130,6 +3131,8 @@ const TBL_ICO=(()=>{const s=(d,extra="")=>`<svg viewBox="0 0 24 24" fill="none" 
  eye:s('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>')}})();
 var TBL={el:null,pool:[],hist:[],min:[],open:[],zoom:{},menu:false,w:null};
 const TBL_DICE=[4,6,8,10,12,20];
+// aggiorna un elemento cambiando solo ciò che è diverso: niente sfarfallio di immagini e carte a ogni clic
+function tblSet(el,html){if(!el.firstChild||typeof plMorph!=="function"){el.innerHTML=html;return}const nx=el.cloneNode(false);nx.innerHTML=html;plMorph(el,nx)}
 function tblSync(on){
   if(!TBL.el){TBL.el=document.createElement("div");TBL.el.id="tbl";document.body.appendChild(TBL.el);
     TBL.el.addEventListener("click",tblClick);TBL.el.addEventListener("pointerdown",tblDrag);
@@ -3151,10 +3154,10 @@ function tblSync(on){
   const lastHTML=TBL.hist.map((h,i)=>`<div class="tbl-res ${h.dual?h.dual.cls:""} ${i?"old":""}"><b>${h.total}</b><span>${esc(h.label)}</span>${h.dual?`<em>${esc(h.dual.txt)}</em>`:""}</div>`).reverse().join("");
   // taskbar in basso, come su Windows: a sinistra i dadi, poi una voce per ogni personaggio (aperta, ridotta o chiusa)
   let res=TBL.el.querySelector(".tbl-bar");if(!res){res=document.createElement("div");res.className="tbl-bar";TBL.el.appendChild(res)}
-  res.innerHTML=lastHTML;
+  tblSet(res,lastHTML);
   let bar=TBL.el.querySelector(".tbl-task");if(!bar){bar=document.createElement("nav");bar.className="tbl-task";bar.setAttribute("aria-label","Taskbar del tavolo");TBL.el.appendChild(bar)}
   const ini=n=>esc((n||"PG").split(/\s+/).map(s=>s[0]).join("").slice(0,2).toUpperCase());
-  bar.innerHTML=`<div class="tbl-dice">
+  tblSet(bar,`<div class="tbl-dice">
     <button class="tbl-b dual" data-t="dual" title="Tiro di Dualità: d12 Speranza + d12 Paura (tasto D)"><span class="tbl-hf"><i class="h"></i><i class="f"></i></span>Speranza e Paura</button>
     <button class="tbl-b tbl-dicebtn ${TBL.diceOpen?"on":""}" data-t="dice-open" aria-expanded="${!!TBL.diceOpen}" title="Scegli i dadi da tirare">${TBL_ICO.d20}<span>${TBL.pool.length?esc(pool):"Dadi"}</span><em>▴</em></button>
     <button class="tbl-b tbl-ib" data-t="clear" title="Pulisci il tavolo (tasto C)" aria-label="Pulisci il tavolo">${TBL_ICO.broom}</button></div>
@@ -3162,13 +3165,13 @@ function tblSync(on){
    <div class="tbl-apps">${shown.map(m=>{const id="mon:"+m.id,st=!TBL.open.includes(id)?"":TBL.min.includes(id)?"min":"open";return `<button class="tbl-app mon ${st}" data-t="task" data-id="${esc(id)}" title="${esc(m.name)}"><i>${TBL_ICO.eye}</i><span>${esc(m.name)}</span></button>`}).join("")}
    ${(()=>{const st=!TBL.open.includes("notes")?"":TBL.min.includes("notes")?"min":"open";return `<button class="tbl-app note ${st}" data-t="task" data-id="notes" title="Note"><i>${TBL_ICO.note}</i><span>Note</span></button>`})()}
    ${mine.length?mine.map((x,i)=>{const id=x.r.id,st=!TBL.open.includes(id)?"":TBL.min.includes(id)?"min":"open";
-     return `<button class="tbl-app ${st}" data-t="task" data-id="${esc(id)}" title="${esc(x.p.name||"PG")} · ${st==="open"?"riduci":st==="min"?"ripristina":"apri la scheda"} "><i>${ini(x.p.name)}</i><span>${esc(x.p.name||"PG")}</span></button>`}).join(""):`<span class="tbl-empty">Nessun tuo personaggio in questa campagna</span>`}</div>`;
+     return `<button class="tbl-app ${st}" data-t="task" data-id="${esc(id)}" title="${esc(x.p.name||"PG")} · ${st==="open"?"riduci":st==="min"?"ripristina":"apri la scheda"} "><i>${ini(x.p.name)}</i><span>${esc(x.p.name||"PG")}</span></button>`}).join(""):`<span class="tbl-empty">Nessun tuo personaggio in questa campagna</span>`}</div>`);
   // il selettore dei dadi: si apre sopra la taskbar, un tasto per tipo con il conteggio, e il lancio
   let pop=TBL.el.querySelector(".tbl-pop");if(!pop){pop=document.createElement("div");pop.className="tbl-pop";TBL.el.appendChild(pop)}
   const cnt=s=>TBL.pool.filter(x=>x===s).length;
   pop.hidden=!TBL.diceOpen;
-  pop.innerHTML=TBL.diceOpen?`<div class="tbl-pop-grid">${TBL_DICE.map(s=>`<div class="tbl-die ${cnt(s)?"on":""}"><button data-t="add" data-s="${s}" title="Aggiungi un d${s}">${TBL_ICO["d"+s]}<b>d${s}</b>${cnt(s)?`<em>${cnt(s)}</em>`:""}</button>${cnt(s)?`<button class="less" data-t="sub" data-s="${s}" aria-label="Togli un d${s}">−</button>`:""}</div>`).join("")}</div>
-    <div class="tbl-pop-row"><button class="tbl-b" data-t="pool-clear" ${TBL.pool.length?"":"disabled"}>Svuota</button><button class="tbl-b go" data-t="throw" ${TBL.pool.length?"":"disabled"} title="Lancia (Invio)">${TBL.pool.length?"Lancia "+esc(pool):"Scegli i dadi"}</button></div>`:"";
+  tblSet(pop,TBL.diceOpen?`<div class="tbl-pop-grid">${TBL_DICE.map(s=>`<div class="tbl-die ${cnt(s)?"on":""}"><button data-t="add" data-s="${s}" title="Aggiungi un d${s}">${TBL_ICO["d"+s]}<b>d${s}</b>${cnt(s)?`<em>${cnt(s)}</em>`:""}</button>${cnt(s)?`<button class="less" data-t="sub" data-s="${s}" aria-label="Togli un d${s}">−</button>`:""}</div>`).join("")}</div>
+    <div class="tbl-pop-row"><button class="tbl-b" data-t="pool-clear" ${TBL.pool.length?"":"disabled"}>Svuota</button><button class="tbl-b go" data-t="throw" ${TBL.pool.length?"":"disabled"} title="Lancia (Invio)">${TBL.pool.length?"Lancia "+esc(pool):"Scegli i dadi"}</button></div>`:"");
   document.documentElement.style.setProperty("--tbl-task",bar.offsetHeight+"px");
   // schede flottanti: una finestra per personaggio, trascinabile e ridimensionabile
   TBL.el.querySelectorAll(".tbl-sheet").forEach(n=>{if(!TBL.open.includes(n.dataset.id))n.remove()});
@@ -3187,9 +3190,9 @@ function tblSync(on){
     else if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
       try{inner=`<div class="pl tbl-pl" style="zoom:${z}"><div inert>${plSheet(c)}</div></div>`}catch(e){inner=""}finally{PL.chars=keep;PL.id=keepId}}
     if(!inner)inner=tblCompact(x.r,x.p);
-    w.innerHTML=`<header class="tbl-sheet-h" data-drag="1"><b>${esc(x.p.name||"PG")}</b><span>${esc([x.p.her,x.p.cls].filter(Boolean).join(" · "))}</span>
+    tblSet(w,`<header class="tbl-sheet-h" data-drag="1"><b>${esc(x.p.name||"PG")}</b><span>${esc([x.p.her,x.p.cls].filter(Boolean).join(" · "))}</span>
       <button class="tbl-x" data-t="min" data-id="${esc(id)}" aria-label="Riduci a icona" title="Riduci a icona">▁</button>
-      <button class="tbl-x" data-t="sheet" data-id="${esc(id)}" aria-label="Chiudi la scheda">×</button></header><div class="tbl-sheet-b">${inner}</div>${["l","r","b","bl","br"].map(k=>`<i class="tbl-rs ${k}" data-rs="${k}" aria-hidden="true"></i>`).join("")}`;
+      <button class="tbl-x" data-t="sheet" data-id="${esc(id)}" aria-label="Chiudi la scheda">×</button></header><div class="tbl-sheet-b">${inner}</div>${["l","r","b","bl","br"].map(k=>`<i class="tbl-rs ${k}" data-rs="${k}" aria-hidden="true"></i>`).join("")}`);
     w.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(k=>k.classList.add("in"));
     w.querySelector(".tbl-sheet-b").scrollTop=sy;w.hidden=TBL.min.includes(id);
   });
@@ -3212,10 +3215,10 @@ function tblSpecialWin(id,i,shown){
   if(w.contains(document.activeElement)&&document.activeElement.matches("input,textarea"))return;
   const head=(t,s)=>`<header class="tbl-sheet-h" data-drag="1"><b>${esc(t)}</b><span>${esc(s)}</span><button class="tbl-x" data-t="min" data-id="${esc(id)}" aria-label="Riduci a icona">▁</button><button class="tbl-x" data-t="sheet" data-id="${esc(id)}" aria-label="Chiudi">×</button></header>`;
   const rs=["l","r","b","bl","br"].map(k=>`<i class="tbl-rs ${k}" data-rs="${k}" aria-hidden="true"></i>`).join("");
-  if(mon){w.innerHTML=head(mon.name,"Mostrato dal GM")+`<div class="tbl-sheet-b tbl-mon-b">${mon.art?`<img src="${esc(mon.art)}" alt="${esc(mon.name)}">`:`<div class="tbl-mon-none">${esc(mon.name)}</div>`}</div>`+rs;return}
+  if(mon){tblSet(w,head(mon.name,"Mostrato dal GM")+`<div class="tbl-sheet-b tbl-mon-b">${mon.art?`<img src="${esc(mon.art)}" alt="${esc(mon.name)}">`:`<div class="tbl-mon-none">${esc(mon.name)}</div>`}</div>`+rs);return}
   notesLoad();const cur=NOTES.list.find(n=>n.id===NOTES.cur)||NOTES.list[0];
-  w.innerHTML=head("Note","Solo tue · salvate "+(NOTES.where||"in questo browser"))+`<div class="tbl-sheet-b tbl-notes-b"><nav class="tbl-notes-list"><button class="tbl-b" data-t="note-new">＋ Nuova</button>${NOTES.list.map(n=>`<button class="tbl-note-i ${n===cur?"on":""}" data-t="note-pick" data-id="${esc(n.id)}"><b>${esc(n.title||"Senza titolo")}</b><small>${new Date(n.at).toLocaleDateString("it-IT",{day:"numeric",month:"short"})}</small></button>`).join("")}</nav>
-   <div class="tbl-note-ed">${cur?`<input class="tbl-note-t" data-note="title" value="${esc(cur.title)}" placeholder="Titolo"><textarea class="tbl-note-x" data-note="text" placeholder="Scrivi qui i tuoi appunti…">${esc(cur.text)}</textarea><div class="tbl-note-f"><button class="tbl-b" data-t="note-del" data-id="${esc(cur.id)}">Elimina</button></div>`:`<p class="tbl-note-empty">Nessuna nota. Creane una con «Nuova».</p>`}</div></div>`+rs;
+  tblSet(w,head("Note","Solo tue · salvate "+(NOTES.where||"in questo browser"))+`<div class="tbl-sheet-b tbl-notes-b"><nav class="tbl-notes-list"><button class="tbl-b" data-t="note-new">＋ Nuova</button>${NOTES.list.map(n=>`<button class="tbl-note-i ${n===cur?"on":""}" data-t="note-pick" data-id="${esc(n.id)}"><b>${esc(n.title||"Senza titolo")}</b><small>${new Date(n.at).toLocaleDateString("it-IT",{day:"numeric",month:"short"})}</small></button>`).join("")}</nav>
+   <div class="tbl-note-ed">${cur?`<input class="tbl-note-t" data-note="title" value="${esc(cur.title)}" placeholder="Titolo"><textarea class="tbl-note-x" data-note="text" placeholder="Scrivi qui i tuoi appunti…">${esc(cur.text)}</textarea><div class="tbl-note-f"><button class="tbl-b" data-t="note-del" data-id="${esc(cur.id)}">Elimina</button></div>`:`<p class="tbl-note-empty">Nessuna nota. Creane una con «Nuova».</p>`}</div></div>`+rs);
 }
 // blocco note: ogni persona ha le sue note, nel proprio spazio privato dell'account (o nel browser se non può salvare)
 const NOTES={list:[],cur:null,loaded:false,where:"",t:null};
