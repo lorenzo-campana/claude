@@ -371,3 +371,6 @@ body.alt .stage:not(.mini) .st-fear{display:none}
 /* la barra resta identica passando alla campaign mode: stessi conteggi, stesso spazio per la barra di scorrimento */
 html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#bar .hub-nav,.pv-hub .hub-nav{flex:none}
 .pv-hub .tgl{white-space:nowrap}.pv-hub.glass .pv-fear>span{display:none}.pv-hub.glass .pv-fear div{gap:2px}.pv-hub.glass .pv-fear i{width:9px;height:9px}.pv-hub .bar-r{flex-wrap:nowrap;min-width:0}
+/* le illustrazioni dipinte degli equipaggiamenti riempiono sempre tutto il riquadro dell'immagine: stessa grandezza su ogni carta */
+.eq-art:has(img){background:#1d1f22}.eq-art img,.eq-detail-art img{object-fit:cover!important;padding:0!important;background:none!important}.eq-detail-art:has(img){aspect-ratio:3/2;height:auto}
+.eq-art:has(img){flex:0 0 auto!important;aspect-ratio:3/2;min-height:0!important;height:auto!important}
