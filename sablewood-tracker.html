@@ -3139,7 +3139,7 @@ function tblSync(on){
   // schede ridotte a icona: un bottone tondo con le iniziali, sul bordo destro
   let dock=TBL.el.querySelector(".tbl-dock");if(!dock){dock=document.createElement("div");dock.className="tbl-dock";TBL.el.appendChild(dock)}
   dock.innerHTML=TBL.min.map(id=>{const p=pcs.find(x=>x.r.id===id)?.p;const n=p?.name||"PG";return `<button class="tbl-ico" data-t="min" data-id="${esc(id)}" title="Apri la scheda di ${esc(n)}">${esc(n.split(/\s+/).map(s=>s[0]).join("").slice(0,2).toUpperCase())}</button>`}).join("");
-  tblWorld();tblBlocks();
+  tblWorld();if(TBL.w&&(document.querySelector(".pv-hub.glass")?.offsetHeight||0)!==TBL.w.hb)tblResize();else tblBlocks();
 }
 // la scheda completa: personaggio pregenerato, del giocatore o del GM, con lo stato che arriva dal tracker
 function tblChar(r){
@@ -3216,7 +3216,8 @@ function tblResize(){
   const w=TBL.w;if(!w)return;const W=innerWidth,H=innerHeight;
   w.r.setSize(W,H);w.cam.aspect=W/H;w.cam.position.set(0,40,10);w.cam.lookAt(0,0,0);w.cam.updateProjectionMatrix();w.cam.updateMatrixWorld();
   const T=w.T,C=w.C,ground=(nx,ny)=>{const ray=new T.Raycaster();ray.setFromCamera({x:nx,y:ny},w.cam);const p=new T.Vector3();ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),p);return p};
-  const hx=Math.abs(ground(.97,0).x),zn=ground(0,-.97).z,zf=ground(0,.97).z;w.box={hx,zn,zf};
+  w.hb=document.querySelector(".pv-hub.glass")?.offsetHeight||0; // il bordo alto del tavolo è la barra: i dadi ci rimbalzano contro
+  const hx=Math.abs(ground(.97,0).x),zn=ground(0,-.97).z,zf=ground(0,1-2*(w.hb+2)/H).z;w.box={hx,zn,zf};
   w.walls.forEach(b=>w.world.removeBody(b));
   const wall=(pos,ang)=>{const b=new C.Body({mass:0,material:w.mTable});b.addShape(new C.Plane());b.position.set(...pos);b.quaternion.setFromAxisAngle(new C.Vec3(0,1,0),ang);w.world.addBody(b);return b};
   w.walls=[wall([-hx,0,0],Math.PI/2),wall([hx,0,0],-Math.PI/2),wall([0,0,zf],0),wall([0,0,zn],Math.PI)];
