@@ -1279,8 +1279,7 @@ body.hub .page{padding-top:22px}
 .rv-nav button{border:0;background:transparent;border-radius:999px;padding:6px 16px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap;transition:background .2s,color .2s}
 .rv-nav button:hover{color:var(--ink);background:var(--paper)}
 .rv-nav button.on{background:var(--ink);color:var(--paper)}
-.rv-jump{display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:5;padding:6px 0;background:var(--bg)}
-@media (max-width:700px){.rv-jump{position:static}}
+.rv-head{align-items:center}.rv-head .rv-nav{margin-left:auto}
 .rv-g{margin:10px 0 0;padding-bottom:4px;border-bottom:2px solid var(--line);scroll-margin-top:110px}
 .rv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px;align-items:start}
 .rv-card{display:flex;flex-direction:column;gap:8px}
@@ -4524,8 +4523,7 @@ function rvCheat(){
    <li><b>Sott'acqua:</b> attacchi con svantaggio; per chi non respira, conto alla rovescia (3) che avanza a ogni azione.</li>
    <li><b>Tiro del destino:</b> un giocatore tira un solo dado (Speranza o Paura) e lo interpreti come hai stabilito.</li>
    <li><b>Conflitto tra PG:</b> parlatene; attacco contro un PG = contro la sua Evasione; altri tiri = tiro di chi agisce contro il tiro reazione del bersaglio.</li></ul>`;
-  const nav=`<nav class="rv-jump" aria-label="Sezioni della cheat sheet"><button class="cdc" data-a="rv-jump" data-k="rv-g1">Al tavolo</button><button class="cdc" data-a="rv-jump" data-k="rv-g2">Personaggi</button><button class="cdc" data-a="rv-jump" data-k="rv-g3">Scena e campagna</button></nav>`;
-  return `${nav}
+  return `
   <h3 class="rv-g" id="rv-g1">Al tavolo</h3><div class="rv-grid">
    ${rvCard("Esito di un tiro",outcomes,"Core Mechanics › Making Moves & Taking Action · Running an Adventure › Core GM Mechanics › Making Moves",true)}
    ${rvCard("Quando e come fai una mossa",gm,"Core Mechanics › GM Moves and Adversary Actions · Running an Adventure › Core GM Mechanics › Making Moves")}
@@ -4715,7 +4713,7 @@ function rvAsk(){
 
 function rulesView(){
   const t=RV.tab,tabs=`<nav class="rv-nav" role="tablist" aria-label="Sezioni delle regole">${RV_TABS.map(([k,l])=>`<button role="tab" class="${t===k?"on":""}" aria-selected="${t===k}" data-a="rv-tab" data-k="${k}">${l}</button>`).join("")}</nav>`;
-  return `<div class="stack rv"><div class="cd-head"><h2>Regole</h2><p class="small muted">Per il GM: cheat sheet e risposte dal manuale con riferimenti.</p></div>${tabs}${t==="ask"?rvAsk():rvCheat()}</div>`;
+  return `<div class="stack rv"><div class="cd-head rv-head"><h2>Regole</h2><p class="small muted">Per il GM: cheat sheet e risposte dal manuale con riferimenti.</p>${tabs}</div>${t==="ask"?rvAsk():rvCheat()}</div>`;
 }
 function rulesAfter(){if(RV.tab==="ask")rbPaint()}
 const RULES_ACT={

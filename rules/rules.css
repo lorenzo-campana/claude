@@ -3,8 +3,7 @@
 .rv-nav button{border:0;background:transparent;border-radius:999px;padding:6px 16px;cursor:pointer;font-weight:700;color:var(--muted);white-space:nowrap;transition:background .2s,color .2s}
 .rv-nav button:hover{color:var(--ink);background:var(--paper)}
 .rv-nav button.on{background:var(--ink);color:var(--paper)}
-.rv-jump{display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:5;padding:6px 0;background:var(--bg)}
-@media (max-width:700px){.rv-jump{position:static}}
+.rv-head{align-items:center}.rv-head .rv-nav{margin-left:auto}
 .rv-g{margin:10px 0 0;padding-bottom:4px;border-bottom:2px solid var(--line);scroll-margin-top:110px}
 .rv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px;align-items:start}
 .rv-card{display:flex;flex-direction:column;gap:8px}

@@ -94,8 +94,7 @@ function rvCheat(){
    <li><b>Sott'acqua:</b> attacchi con svantaggio; per chi non respira, conto alla rovescia (3) che avanza a ogni azione.</li>
    <li><b>Tiro del destino:</b> un giocatore tira un solo dado (Speranza o Paura) e lo interpreti come hai stabilito.</li>
    <li><b>Conflitto tra PG:</b> parlatene; attacco contro un PG = contro la sua Evasione; altri tiri = tiro di chi agisce contro il tiro reazione del bersaglio.</li></ul>`;
-  const nav=`<nav class="rv-jump" aria-label="Sezioni della cheat sheet"><button class="cdc" data-a="rv-jump" data-k="rv-g1">Al tavolo</button><button class="cdc" data-a="rv-jump" data-k="rv-g2">Personaggi</button><button class="cdc" data-a="rv-jump" data-k="rv-g3">Scena e campagna</button></nav>`;
-  return `${nav}
+  return `
   <h3 class="rv-g" id="rv-g1">Al tavolo</h3><div class="rv-grid">
    ${rvCard("Esito di un tiro",outcomes,"Core Mechanics › Making Moves & Taking Action · Running an Adventure › Core GM Mechanics › Making Moves",true)}
    ${rvCard("Quando e come fai una mossa",gm,"Core Mechanics › GM Moves and Adversary Actions · Running an Adventure › Core GM Mechanics › Making Moves")}
@@ -285,7 +284,7 @@ function rvAsk(){
 
 function rulesView(){
   const t=RV.tab,tabs=`<nav class="rv-nav" role="tablist" aria-label="Sezioni delle regole">${RV_TABS.map(([k,l])=>`<button role="tab" class="${t===k?"on":""}" aria-selected="${t===k}" data-a="rv-tab" data-k="${k}">${l}</button>`).join("")}</nav>`;
-  return `<div class="stack rv"><div class="cd-head"><h2>Regole</h2><p class="small muted">Per il GM: cheat sheet e risposte dal manuale con riferimenti.</p></div>${tabs}${t==="ask"?rvAsk():rvCheat()}</div>`;
+  return `<div class="stack rv"><div class="cd-head rv-head"><h2>Regole</h2><p class="small muted">Per il GM: cheat sheet e risposte dal manuale con riferimenti.</p>${tabs}</div>${t==="ask"?rvAsk():rvCheat()}</div>`;
 }
 function rulesAfter(){if(RV.tab==="ask")rbPaint()}
 const RULES_ACT={
