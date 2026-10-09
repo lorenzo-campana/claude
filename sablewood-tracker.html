@@ -606,11 +606,11 @@ details.pv-sec>summary{font-size:.95rem}
 .tbl-res{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;background:rgba(6,8,7,.86);border:1px solid #3a463d;border-radius:14px;padding:8px 14px;color:#e9ece5}
 .tbl-res b{font-family:var(--f-display);font-weight:400;font-size:2.4rem;line-height:1}.tbl-res span{font-size:.85rem;color:#9aa69c}.tbl-res em{font-style:normal;font-weight:800}
 .tbl-res.old{opacity:.55;transform:scale(.85);transform-origin:left bottom;padding:4px 12px}.tbl-res.old b{font-size:1.6rem}.tbl-pl .pl-sheet-toolbar,.gm-sheet-wrap .pl-sheet-toolbar{display:none}.tbl-res.hope em{color:#e0aa4c}.tbl-res.fear em{color:#b892d6}.tbl-res.crit em{color:#8fb79a}
-.tbl-sheet{position:absolute;width:min(560px,90vw);height:min(72vh,660px);resize:both;overflow:hidden;pointer-events:auto;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);border-radius:14px;box-shadow:0 18px 60px #000a;border:1px solid #0005;min-width:260px;min-height:160px}
+.tbl-sheet{position:absolute;width:min(560px,90vw);height:min(72vh,660px);overflow:visible;pointer-events:auto;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);border-radius:14px;box-shadow:0 18px 60px #000a;border:1px solid #0005;min-width:260px;min-height:160px}
 .tbl-sheet-h{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#141a16;color:#e9ece5;cursor:move;user-select:none;touch-action:none}
 .tbl-sheet-h b{font-family:var(--f-display);font-weight:400;font-size:1.1rem;white-space:nowrap}.tbl-sheet-h span{font-size:.75rem;color:#9aa69c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tbl-x{border:1px solid #3a463d;background:transparent;color:#e9ece5;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:700;flex:none}.tbl-sheet-h{padding:3px 6px 3px 10px;gap:6px}.tbl-sheet-h b{font-size:.92rem}.tbl-sheet-h span{font-size:.68rem}.tbl-x{width:20px;height:20px;border-radius:5px;font-size:.7rem;line-height:1;padding:0}
-.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-sheet[hidden]{display:none}.tbl-dock{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto;z-index:3}.tbl-ico{width:52px;height:52px;border-radius:50%;border:2px solid #e0aa4c;background:#141a16;color:#e9ece5;font-family:var(--f-display);font-size:1.1rem;cursor:pointer;box-shadow:0 6px 20px #0008}.tbl-ico:hover{background:#243028}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
+.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-rs{position:absolute;z-index:2}.tbl-sheet-h{border-radius:14px 14px 0 0}.tbl-sheet-b{border-radius:0 0 14px 14px}.tbl-rs.l{left:-4px;top:30px;bottom:12px;width:9px;cursor:ew-resize}.tbl-rs.r{right:-4px;top:30px;bottom:12px;width:9px;cursor:ew-resize}.tbl-rs.b{left:12px;right:12px;bottom:-4px;height:9px;cursor:ns-resize}.tbl-rs.bl{left:-4px;bottom:-4px;width:16px;height:16px;cursor:nesw-resize}.tbl-rs.br{right:-4px;bottom:-4px;width:16px;height:16px;cursor:nwse-resize}.tbl-sheet[hidden]{display:none}.tbl-dock{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto;z-index:3}.tbl-ico{width:52px;height:52px;border-radius:50%;border:2px solid #e0aa4c;background:#141a16;color:#e9ece5;font-family:var(--f-display);font-size:1.1rem;cursor:pointer;box-shadow:0 6px 20px #0008}.tbl-ico:hover{background:#243028}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
 .scr-ctl{position:fixed;top:calc(12vh + env(safe-area-inset-top,0px));left:3vw;z-index:7;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start;max-width:50vw;opacity:.35;transition:opacity .3s}
 .tgl.back{background:var(--hope-soft);border-color:var(--hope)}
 .scr-ctl:hover,.scr-ctl:focus-within{opacity:1}
@@ -3099,7 +3099,7 @@ function tblSync(on){
   if(!TBL.el){TBL.el=document.createElement("div");TBL.el.id="tbl";document.body.appendChild(TBL.el);
     TBL.el.addEventListener("click",tblClick);TBL.el.addEventListener("pointerdown",tblDrag);
     // zoom della scheda col pinch del trackpad (arriva come rotella con ctrl) e coi gesti di Safari
-    const zoomBy=(el,f)=>{const s=el.closest(".tbl-sheet"),pl=s?.querySelector(".tbl-pl");if(!pl)return;const id=s.dataset.id;TBL.zoom[id]=Math.min(1.4,Math.max(.3,(TBL.zoom[id]||.55)*f));pl.style.zoom=TBL.zoom[id]};
+    const zoomBy=(el,f)=>{const s=el.closest(".tbl-sheet"),pl=s?.querySelector(".tbl-pl");if(!pl)return;const id=s.dataset.id;TBL.zoom[id]=Math.min(1.6,Math.max(.3,(TBL.zoom[id]||tblFitZoom(s))*f));pl.style.zoom=TBL.zoom[id]};
     TBL.el.addEventListener("wheel",e=>{if(!e.ctrlKey||!e.target.closest?.(".tbl-sheet"))return;e.preventDefault();zoomBy(e.target,Math.exp(-e.deltaY*.006))},{passive:false});
     let g0=1;TBL.el.addEventListener("gesturestart",e=>{if(e.target.closest?.(".tbl-sheet")){e.preventDefault();g0=e.scale}});
     TBL.el.addEventListener("gesturechange",e=>{if(e.target.closest?.(".tbl-sheet")){e.preventDefault();zoomBy(e.target,e.scale/g0);g0=e.scale}})}
@@ -3132,15 +3132,15 @@ function tblSync(on){
     const x=pcs.find(y=>y.r.id===id);if(!x)return;
     let w=TBL.el.querySelector(`.tbl-sheet[data-id="${CSS.escape(id)}"]`);
     if(!w){w=document.createElement("section");w.className="tbl-sheet";w.dataset.id=id;
-      const sw=Math.min(560,Math.max(320,innerWidth*.42));const hb=(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+8;Object.assign(w.style,{width:sw+"px",height:(innerHeight-hb-(TBL.el.querySelector(".tbl-task")?.offsetHeight||0)-16)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:hb+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>tblBlocks()).observe(w)}
-    const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||.55,c=tblChar(x.r);
+      const sw=Math.max(340,Math.round(innerWidth*.5)-12);const hb=(document.querySelector(".pv-hub.glass")?.offsetHeight||0)+8;Object.assign(w.style,{width:sw+"px",height:(innerHeight-hb-(TBL.el.querySelector(".tbl-task")?.offsetHeight||0)-16)+"px",left:Math.max(8,innerWidth-sw-8-i*40)+"px",top:hb+"px"});TBL.el.appendChild(w);if(window.ResizeObserver)new ResizeObserver(()=>{tblFit(w);tblBlocks()}).observe(w)}
+    const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||tblFitZoom(w),c=tblChar(x.r);
     let inner="";
     if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
       try{inner=`<div class="pl tbl-pl" style="zoom:${z}"><div inert>${plSheet(c)}</div></div>`}catch(e){inner=""}finally{PL.chars=keep;PL.id=keepId}}
     if(!inner)inner=tblCompact(x.r,x.p);
     w.innerHTML=`<header class="tbl-sheet-h" data-drag="1"><b>${esc(x.p.name||"PG")}</b><span>${esc([x.p.her,x.p.cls].filter(Boolean).join(" · "))}</span>
       <button class="tbl-x" data-t="min" data-id="${esc(id)}" aria-label="Riduci a icona" title="Riduci a icona">▁</button>
-      <button class="tbl-x" data-t="sheet" data-id="${esc(id)}" aria-label="Chiudi la scheda">×</button></header><div class="tbl-sheet-b">${inner}</div>`;
+      <button class="tbl-x" data-t="sheet" data-id="${esc(id)}" aria-label="Chiudi la scheda">×</button></header><div class="tbl-sheet-b">${inner}</div>${["l","r","b","bl","br"].map(k=>`<i class="tbl-rs ${k}" data-rs="${k}" aria-hidden="true"></i>`).join("")}`;
     w.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(k=>k.classList.add("in"));
     w.querySelector(".tbl-sheet-b").scrollTop=sy;w.hidden=TBL.min.includes(id);
   });
@@ -3179,7 +3179,17 @@ function tblClick(e){
   else if(t==="min"){const id=b.dataset.id;TBL.min=TBL.min.includes(id)?TBL.min.filter(x=>x!==id):[...TBL.min,id]}
   tblSync(true);
 }
+function tblFitZoom(w){return Math.min(1.4,Math.max(.3,((w.clientWidth||600)-18)/1010))}
+function tblFit(w){if(TBL.zoom[w.dataset.id])return;const pl=w.querySelector(".tbl-pl");if(pl)pl.style.zoom=tblFitZoom(w)}
 function tblDrag(e){
+  const rs=e.target.closest?.("[data-rs]");
+  if(rs){const w=rs.closest(".tbl-sheet"),k=rs.dataset.rs,r=w.getBoundingClientRect(),x0=e.clientX,y0=e.clientY;TBL.el.appendChild(w);
+    const mv=ev=>{const dx=ev.clientX-x0,dy=ev.clientY-y0;
+      if(k.includes("r"))w.style.width=Math.max(260,r.width+dx)+"px";
+      if(k.includes("l")){const nw=Math.max(260,r.width-dx);w.style.width=nw+"px";w.style.left=(r.right-nw)+"px"}
+      if(k.includes("b"))w.style.height=Math.max(160,r.height+dy)+"px";tblFit(w)};
+    const up=()=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);tblBlocks()};
+    addEventListener("pointermove",mv);addEventListener("pointerup",up);e.preventDefault();return}
   const h=e.target.closest("[data-drag]");if(!h||e.target.closest("button"))return;
   const w=h.parentElement,r=w.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top;
   TBL.el.appendChild(w); // in primo piano
