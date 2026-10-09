@@ -329,3 +329,27 @@
 .pl-fx-picks button{border:1px solid #d8cde2;background:#fff;border-radius:999px;padding:2px 8px;font:600 10.5px/1.3 DH Overpass,Arial,sans-serif;color:#6a6170;cursor:pointer}
 .pl-fx-picks button.on{background:#56476b;border-color:#56476b;color:#fff}
 .pl-fx-sum{margin:8px 0 0;font:11px/1.4 var(--sheet-text,DH Overpass),Arial,sans-serif;color:#7a7084}
+/* Level up: l'opzione scelta si allarga nella griglia e mostra la selezione */
+.pl-level-options.has-open .pl-choice.dim{opacity:.38;filter:grayscale(.4);transform:scale(.98);transition:opacity .25s,transform .25s}
+.pl-adv-open{grid-column:1/-1;display:flex;flex-direction:column;gap:12px;padding:16px 18px;border-radius:14px;background:#fff;border:2px solid #56476b;box-shadow:0 14px 32px -18px rgba(45,30,65,.55);transform-origin:top left;animation:plAdvOpen .42s cubic-bezier(.2,.85,.25,1) both}
+@keyframes plAdvOpen{0%{clip-path:inset(0 66% 72% 0 round 14px);opacity:.6;transform:scale(.98)}60%{opacity:1}100%{clip-path:inset(0 0 0 0 round 14px);transform:none}}
+.pl-adv-open>*:not(header){animation:plAdvIn .35s .18s ease-out both}
+@keyframes plAdvIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pl-adv-open,.pl-adv-open>*{animation:none}}
+.pl-adv-open header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.pl-adv-open header small{display:block;font:800 10px/1 var(--f-body,sans-serif);letter-spacing:.12em;text-transform:uppercase;color:#7a6690;margin-bottom:4px}
+.pl-adv-open header b{font:400 20px/1.1 DH Eveleth,var(--f-display,serif);text-transform:uppercase;color:#37343a}
+.pl-adv-open header .btn{margin:0;border-radius:999px}
+.pl-adv-hint{margin:0;font-size:.92rem;color:#4a4252}
+.pl-adv-traits{padding:4px 0}
+.pl-adv-traits .pl-trait-pick.marked{opacity:.45;cursor:not-allowed}
+.pl-adv-traits .pl-trait-pick:disabled:not(.marked){opacity:.55;cursor:not-allowed}
+.pl-adv-traits .pl-tp-flag em{position:absolute;right:-4px;top:30%;z-index:3;font:800 11px/1 DH Overpass,Arial,sans-serif;font-style:normal;color:#fff;background:#c48a20;border-radius:999px;padding:3px 6px;box-shadow:0 2px 4px rgba(0,0,0,.25);animation:plAdvPop .3s cubic-bezier(.3,.7,.2,1.4)}
+@keyframes plAdvPop{from{transform:scale(0)}to{transform:none}}
+.pl-adv-xp{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.pl-adv-xp button{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;border:1.5px solid #d8cde2;background:#fbf9fc;cursor:pointer;font:600 13px/1.2 DH Overpass,Arial,sans-serif;color:#37343a}
+.pl-adv-xp button.on{border-color:#56476b;background:#f3eef7;box-shadow:0 0 0 2px rgba(86,71,107,.15)}
+.pl-adv-xp button:disabled{opacity:.5;cursor:not-allowed}
+.pl-adv-xp span{font:700 14px/1 DH Overpass,Arial,sans-serif;color:#56476b}
+.pl-adv-foot{display:flex;justify-content:flex-end}
+.pl-adv-foot .btn{margin:0;border-radius:999px;padding:7px 18px}
