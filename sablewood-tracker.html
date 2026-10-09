@@ -617,7 +617,7 @@ details.pv-sec>summary{font-size:.95rem}
 .tbl-sheet-h{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#141a16;color:#e9ece5;cursor:move;user-select:none;touch-action:none}
 .tbl-sheet-h b{font-family:var(--f-display);font-weight:400;font-size:1.1rem;white-space:nowrap}.tbl-sheet-h span{font-size:.75rem;color:#9aa69c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tbl-x{border:1px solid #3a463d;background:transparent;color:#e9ece5;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:700;flex:none}.tbl-sheet-h{padding:3px 6px 3px 10px;gap:6px}.tbl-sheet-h b{font-size:.92rem}.tbl-sheet-h span{font-size:.68rem}.tbl-x{width:20px;height:20px;border-radius:5px;font-size:.7rem;line-height:1;padding:0}
-.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-modal{position:static;padding:0;max-width:none;animation:none;pointer-events:auto}
+.tbl-sheet-b{flex:1;overflow:auto;background:#fff}#tbl .tbl-modal{position:relative;z-index:20;padding:0;max-width:none;animation:none!important;transform:none!important;pointer-events:auto} /* niente animazione .pl qui: creerebbe un livello sotto le schede */
 /* le finestre a comparsa della campaign mode: entrano morbide e stanno sempre tra la barra in alto e la taskbar */
 .tbl-modal .pl-overlay{padding:calc(var(--tbl-hb,50px) + 12px) 16px calc(var(--tbl-task,40px) + 12px);animation:tblFade .22s ease-out both;z-index:9}
 .tbl-modal .pl-dialog{max-height:100%;max-width:min(100%,1100px);overflow:auto;animation:tblDlg .32s cubic-bezier(.2,.9,.25,1) both;will-change:transform,opacity}
