@@ -2892,7 +2892,7 @@ function renderPcSheet(){
   el.innerHTML=`<div class="pl-overlay"><section class="pl-dialog wide gm-sheet-dlg" role="dialog" aria-modal="true" aria-label="${esc(c.name)} · scheda completa" tabindex="-1">
    <div class="pl-head"><h2>${esc(c.name)} · scheda completa</h2><span class="row" style="gap:6px"><button class="btn xs" data-a="gm-sheet-print">Stampa</button><button class="btn xs" data-a="pc-sheet-close">× Chiudi</button></span></div>
    <div class="pl gm-sheet-wrap"><div class="pl-preview-sheet"><div inert>${body}</div></div></div></section></div>`;
-  el.querySelector(".pl-dialog")?.focus();
+  el.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(x=>x.classList.add("in"));el.querySelector(".pl-dialog")?.focus();
 }
 function pcCard(r){
   const p=P(r),x=openPc===r.id;
