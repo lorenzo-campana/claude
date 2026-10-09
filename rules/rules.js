@@ -168,7 +168,14 @@ function rbSearch(q,k=4){
 }
 const rbPath=c=>c.h+(c.p?` (${c.p})`:"");
 function rbPrompt(q,hits){
-  return `Assistente regole Daggerheart per il GM. Rispondi in italiano, massimo 90 parole, usando SOLO gli estratti del manuale (SRD) qui sotto. Dopo ogni affermazione metti il numero dell'estratto, es. [2]. Includi una citazione letterale breve (inglese, massimo 25 parole) tra «», seguita dal numero. Se gli estratti non bastano, scrivilo e non inventare.
+  return `Assistente regole Daggerheart per il GM. Rispondi in italiano usando SOLO gli estratti del manuale (SRD) qui sotto. Dopo ogni affermazione metti il numero dell'estratto, es. [2]. Niente markdown. Usa esattamente questo formato, una voce per riga:
+IN BREVE: risposta diretta in una frase (massimo 30 parole) [n]
+PUNTI:
+- dettaglio o eccezione utile al tavolo (massimo 22 parole) [n]
+(da 2 a 4 punti)
+CITAZIONE [n]: «frase letterale in inglese dall'estratto, massimo 25 parole»
+CARTE: nomi esatti (in inglese) di carte, abilità o avversari del gioco nominati nella domanda o negli estratti, separati da virgola; altrimenti nessuna
+Se gli estratti non bastano, scrivilo nella riga IN BREVE e non inventare.
 Domanda: ${q}
 ${hits.map((h,i)=>`[${i+1}] ${rbPath(h.c)}\n${h.c.t}`).join("\n")}`;
 }
@@ -190,17 +197,68 @@ async function rbAsk(q){
     RB.err=(m[e&&e.code]||"La risposta non è arrivata. I passaggi qui sotto restano consultabili.");
   }
   RB.busy=false;RB.ctl=null;
-  RB.cited=[...new Set([...RB.ans.matchAll(/\[(\d)\]/g)].map(m=>+m[1]).filter(n=>n>=1&&n<=RB.srcs.length))];
+  RB.cited=rbCited(RB.ans);
   rbPaint();
 }
+const rbCited=t=>[...new Set([...String(t).matchAll(/\[(\d)\]/g)].map(m=>+m[1]).filter(n=>n>=1&&n<=RB.srcs.length))];
+/* la risposta arriva in righe etichettate (IN BREVE / PUNTI / CITAZIONE / CARTE): le leggo anche a metà streaming */
+function rbParse(text){
+  const o={brief:"",points:[],quote:null,cards:[]};let last=null;
+  for(const raw of String(text).split("\n")){
+    const l=raw.trim();if(!l)continue;let m;
+    if((m=l.match(/^\**\s*in breve\s*\**\s*:\s*(.*)$/i))){o.brief=m[1];last="brief"}
+    else if(/^\**\s*punti\s*\**\s*:?\s*$/i.test(l))last="points";
+    else if((m=l.match(/^\**\s*citazione\s*(?:\[(\d)\])?\s*\**\s*:\s*(.*)$/i))){o.quote={n:+m[1]||0,t:m[2].replace(/^[«"“]+|[»"”]+$/g,"")};last="quote"}
+    else if((m=l.match(/^\**\s*carte\s*\**\s*:\s*(.*)$/i))){o.cards=/^nessun/i.test(m[1])?[]:m[1].split(/\s*[,;]\s*/).map(x=>x.replace(/[.\[\]\d]+$/,"").trim()).filter(Boolean);last="cards"}
+    else if((m=l.match(/^[-•*]\s+(.*)$/))){o.points.push(m[1]);last="points"}
+    else if(last==="points"&&o.points.length)o.points[o.points.length-1]+=" "+l;
+    else if(last==="quote")o.quote.t+=" "+l;
+    else o.brief+=(o.brief?" ":"")+l;
+  }
+  return o;
+}
+const rbInline=t=>esc(t).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/«([^»]+)»/g,'<q class="rb-q">$1</q>').replace(/\s*\[(\d)\]/g,(m,n)=>+n>=1&&+n<=RB.srcs.length?`<button class="rb-ref" data-a="rb-open" data-n="${n}" title="Vai al passaggio ${n}">${n}</button>`:m);
 function rbAnswerHTML(){
   if(!RB.ans)return "";
-  return esc(RB.ans).replace(/\[(\d)\]/g,(m,n)=>+n>=1&&+n<=RB.srcs.length?`<sup><button class="lnk rb-ref" data-a="rb-open" data-n="${n}">[${n}]</button></sup>`:m).replace(/«([^»]+)»/g,'<q class="rb-q">$1</q>').replace(/\n/g,"<br>");
+  const o=rbParse(RB.ans),q=o.quote&&o.quote.t;
+  return `<div class="rb-a">${o.brief?`<div class="rb-brief"><span class="lab">In breve</span><p>${rbInline(o.brief)}</p></div>`:""}${o.points.length?`<ul class="rb-pts">${o.points.map(x=>`<li>${rbInline(x)}</li>`).join("")}</ul>`:""}${q?`<blockquote class="rb-cite"><p>«${esc(q)}»</p>${o.quote.n&&o.quote.n<=RB.srcs.length?`<footer>— ${esc(rbPath(RB.srcs[o.quote.n-1]))} <button class="rb-ref" data-a="rb-open" data-n="${o.quote.n}">${o.quote.n}</button></footer>`:""}</blockquote>`:""}</div>`;
+}
+/* testo dell'SRD come sul manuale: paragrafi e elenchi puntati */
+function rbFormat(t){
+  let h="",ul=false;
+  for(const l of String(t).split("\n")){
+    const m=l.match(/^\s*[•●▪-]\s*(.*)$/);
+    if(m){if(!ul){h+="<ul>";ul=true}h+=`<li>${esc(m[1]).replace(/^([^.:()]{2,40}(?:\([^)]*\))?[.:])/,"<b>$1</b>")}</li>`}
+    else if(l.trim()){if(ul){h+="</ul>";ul=false}h+=`<p>${esc(l)}</p>`}
+  }
+  return h+(ul?"</ul>":"");
+}
+function rbCardHTML(c,n){
+  const parts=c.h.split(" › "),title=parts.pop(),long=c.t.length>520;
+  return `<article class="rb-card ${RB.cited.includes(n)?"cited":""} ${long&&RB.open!==n?"clip":""}" id="rb-s${n}">
+   <header><span class="rb-num">${n}</span><div><small>${esc(parts.join(" › ")||"SRD")}</small><b>${esc(title)}${c.p?` <i>${esc(c.p)}</i>`:""}</b></div></header>
+   <div class="rb-body">${rbFormat(c.t)}</div>
+   <footer>${long?`<button class="lnk rb-more" data-a="rb-more" data-n="${n}">${RB.open===n?"Mostra meno":"Leggi tutto"}</button>`:""}<a class="rb-ext" href="${SRD_BASE}${esc(c.a)}" target="_blank" rel="noopener noreferrer" title="Apri questa sezione dell'SRD su GitHub">SRD ↗</a></footer></article>`;
 }
 function rbSourcesHTML(){
   if(!RB.srcs.length)return "";
-  return `<div class="rb-srcs"><span class="lab">Passaggi del manuale usati${RB.cited.length?" · in evidenza quelli citati":""}</span>${RB.srcs.map((c,i)=>{const n=i+1;
-    return `<details class="rb-src ${RB.cited.includes(n)?"cited":""}" id="rb-s${n}" ${RB.open===n?"open":""}><summary><b class="mono">[${n}]</b> <span>${esc(rbPath(c))}</span><a class="rb-ext" href="${SRD_BASE}${esc(c.a)}" target="_blank" rel="noopener noreferrer" title="Apri questa sezione dell'SRD su GitHub">SRD ↗</a></summary><div class="rb-txt">${esc(c.t).replace(/\n/g,"<br>")}</div></details>`}).join("")}</div>`;
+  const all=RB.srcs.map((c,i)=>({c,n:i+1})),top=RB.cited.length?all.filter(x=>RB.cited.includes(x.n)):all,rest=RB.cited.length?all.filter(x=>!RB.cited.includes(x.n)):[];
+  return `<section class="rb-srcs"><h4 class="rb-h">Dal manuale</h4><div class="rb-cards">${top.map(x=>rbCardHTML(x.c,x.n)).join("")}</div>${rest.length?`<details class="rb-more-srcs"><summary>Altri passaggi consultati (${rest.length})</summary><div class="rb-cards">${rest.map(x=>rbCardHTML(x.c,x.n)).join("")}</div></details>`:""}</section>`;
+}
+/* carte del gioco nominate nella domanda o dalla risposta: le mostro come nella sezione Carte */
+function rbGameCards(){
+  if(typeof CARDS==="undefined"||typeof cardEl!=="function")return [];
+  const o=rbParse(RB.ans),hay=rbNorm([RB.q,o.cards.join(" , ")].join(" \n ")),out=[];
+  for(const c of CARDS){
+    const n=rbNorm(c.n||"");if(n.length<4)continue;
+    if(new RegExp(`(^|[^a-z0-9])${n.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}($|[^a-z0-9])`).test(hay)&&!out.some(x=>rbNorm(x.n)===n))out.push(c);
+    if(out.length>=6)break;
+  }
+  return out;
+}
+function rbGameCardsHTML(){
+  const cs=rbGameCards();if(!cs.length)return "";
+  return `<section class="rb-game"><h4 class="rb-h">Carte del gioco</h4><div class="cg rb-game-grid">${cs.map(cardEl).join("")}</div></section>`;
 }
 function rbPaint(){
   const el=document.getElementById("rb-out");if(!el)return;
@@ -208,7 +266,7 @@ function rbPaint(){
   const stop=RB.busy?`<button class="btn xs" data-a="rb-stop">Interrompi</button>`:"";
   const think=RB.busy&&!RB.ans?`<p class="small muted blink">Sto leggendo i passaggi…</p>`:"";
   const cost=RB.srcs.length&&RB.tokens?`<p class="xsmall muted">${RB.srcs.length} passagg${RB.srcs.length===1?"io":"i"} inviati (≈ ${RB.tokens.toLocaleString("it-IT")} token in ingresso) · modello veloce${RB.tier&&RB.tier!=="quick"?` (risposto dal livello «${esc(RB.tier)}»)`:""} · ricerca fatta sul dispositivo.</p>`:"";
-  el.innerHTML=`${RB.q?`<p class="rb-qq"><span class="lab">Domanda</span> ${esc(RB.q)}</p>`:""}${RB.ans?`<div class="rb-a">${rbAnswerHTML()}</div>`:""}${think}${RB.err?`<div class="${RB.srcs.length?"note":"warn"} small">${esc(RB.err)}</div>`:""}${stop}${cost}${rbSourcesHTML()}`;
+  el.innerHTML=`${RB.q?`<p class="rb-qq"><span class="lab">Domanda</span> ${esc(RB.q)}</p>`:""}${rbAnswerHTML()}${think}${RB.err?`<div class="${RB.srcs.length?"note":"warn"} small">${esc(RB.err)}</div>`:""}${stop}${RB.busy?"":rbGameCardsHTML()}${rbSourcesHTML()}${cost}`;
 }
 function rvAsk(){
   return `<div class="rbot stack"><div class="panel stack" style="gap:10px"><h4>Chiedi al manuale</h4>
@@ -228,7 +286,8 @@ const RULES_ACT={
  "rb-ask":()=>rbAsk(document.getElementById("rb-q")?.value),
  "rb-ex":o=>{const q=RB_EXAMPLES[+o.i];const i=document.getElementById("rb-q");if(i)i.value=q;rbAsk(q)},
  "rb-stop":()=>RB.ctl?.abort(),
- "rb-open":o=>{RB.open=+o.n;rbPaint();setTimeout(()=>document.getElementById("rb-s"+o.n)?.scrollIntoView({behavior:"smooth",block:"center"}),30)}
+ "rb-open":o=>{const n=+o.n;if(!RB.cited.includes(n))document.querySelector(".rb-more-srcs")?.setAttribute("open","");const el=document.getElementById("rb-s"+n);if(!el)return;el.closest("details")?.setAttribute("open","");el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")},
+ "rb-more":o=>{const n=+o.n;RB.open=RB.open===n?null:n;const el=document.getElementById("rb-s"+n);if(!el)return;el.classList.toggle("clip",RB.open!==n);const b=el.querySelector(".rb-more");if(b)b.textContent=RB.open===n?"Mostra meno":"Leggi tutto"}
 };
 document.addEventListener("input",e=>{if(e.target.id==="rb-q")RB.q=e.target.value});
 document.addEventListener("keydown",e=>{if(e.target.id==="rb-q"&&e.key==="Enter"){e.preventDefault();rbAsk(e.target.value)}});
