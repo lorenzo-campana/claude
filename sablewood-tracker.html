@@ -3198,6 +3198,7 @@ function tblSync(on){
   let md=TBL.el.querySelector(".tbl-modal");if(!md){md=document.createElement("div");md.className="pl tbl-modal";TBL.el.appendChild(md)}
   const owned=TBL.open.map(id=>PL.chars.find(y=>y.id===id)).find(Boolean);
   if(PL.modal&&owned){const keepId=PL.id;PL.id=PL.focusOwn||owned.id;try{md.innerHTML=plModal()}catch(e){md.innerHTML=""}finally{PL.id=keepId}}else md.innerHTML="";
+  md.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(k=>k.classList.add("in")); // le carte delle finestre compaiono subito
   tblWorld();if(TBL.w&&((document.querySelector(".pv-hub.glass")?.offsetHeight||0)!==TBL.w.hb||bar.offsetHeight!==TBL.w.tb))tblResize();else tblBlocks();
 }
 // la scheda completa: personaggio pregenerato, del giocatore o del GM, con lo stato che arriva dal tracker
