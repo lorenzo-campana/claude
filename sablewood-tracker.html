@@ -596,6 +596,21 @@ details.pv-sec>summary{font-size:.95rem}
 .st-party .pips{gap:.3cqh;flex-wrap:nowrap}
 .st-party .pip.hp,.st-party .pip.st{width:2.2cqh;height:1.6cqh;border-width:max(1px,.2cqh)}
 .st-party .pip.hope{width:1.4cqh;height:1.4cqh;margin:.2cqh .35cqh;border-width:max(1px,.2cqh)}
+#tbl[hidden]{display:none}#tbl{position:fixed;inset:0;z-index:4;pointer-events:none}.tbl-gl{position:absolute;inset:0;pointer-events:none}
+.tbl-bar{position:absolute;left:12px;bottom:12px;pointer-events:auto;display:flex;flex-direction:column;gap:8px;align-items:flex-start;opacity:.6;transition:opacity .3s;max-width:calc(100vw - 24px)}.tbl-bar:hover,.tbl-bar:focus-within{opacity:1}
+.tbl-row,.tbl-menu{display:flex;gap:4px;flex-wrap:wrap;background:rgba(6,8,7,.8);border:1px solid #3a463d;border-radius:14px;padding:6px;backdrop-filter:blur(6px);color:#e9ece5}
+.tbl-b{border:1px solid #3a463d;background:#141a16;color:#e9ece5;border-radius:9px;padding:6px 10px;font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap}
+.tbl-b:hover:not(:disabled){background:#243028}.tbl-b.on{background:#e9ece5;color:#141a16}.tbl-b:disabled{opacity:.4;cursor:default}
+.tbl-b.dual{background:linear-gradient(90deg,#c48a20 50%,#6a3f86 50%);color:#fff;border-color:transparent}.tbl-b.go{background:#8fb79a;color:#0b0f0c;border-color:#8fb79a}
+.tbl-sep{width:1px;background:#3a463d;margin:0 2px}.tbl-menu kbd{font:600 .7rem var(--f-mono);opacity:.6;margin-right:3px}
+.tbl-res{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;background:rgba(6,8,7,.86);border:1px solid #3a463d;border-radius:14px;padding:8px 14px;color:#e9ece5}
+.tbl-res b{font-family:var(--f-display);font-weight:400;font-size:2.4rem;line-height:1}.tbl-res span{font-size:.85rem;color:#9aa69c}.tbl-res em{font-style:normal;font-weight:800}
+.tbl-res.old{opacity:.55;transform:scale(.85);transform-origin:left bottom;padding:4px 12px}.tbl-res.old b{font-size:1.6rem}.tbl-pl .pl-sheet-toolbar,.gm-sheet-wrap .pl-sheet-toolbar{display:none}.tbl-res.hope em{color:#e0aa4c}.tbl-res.fear em{color:#b892d6}.tbl-res.crit em{color:#8fb79a}
+.tbl-sheet{position:absolute;width:min(560px,90vw);height:min(72vh,660px);resize:both;overflow:hidden;pointer-events:auto;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);border-radius:14px;box-shadow:0 18px 60px #000a;border:1px solid #0005;min-width:260px;min-height:160px}
+.tbl-sheet-h{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#141a16;color:#e9ece5;cursor:move;user-select:none;touch-action:none}
+.tbl-sheet-h b{font-family:var(--f-display);font-weight:400;font-size:1.1rem;white-space:nowrap}.tbl-sheet-h span{font-size:.75rem;color:#9aa69c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl-x{border:1px solid #3a463d;background:transparent;color:#e9ece5;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:700;flex:none}
+.tbl-sheet-b{flex:1;overflow:auto;background:#fff}.tbl-pl{padding:0;max-width:none;animation:none}.tbl-compact{padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--paper);min-height:100%}
 .scr-ctl{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;opacity:.35;transition:opacity .3s}
 .tgl.back{background:var(--hope-soft);border-color:var(--hope)}
 .scr-ctl:hover,.scr-ctl:focus-within{opacity:1}
@@ -3067,6 +3082,178 @@ function screenStage(scr,L,mini){
 function renderScreen(){
   return `${screenStage(VIEW.screen,liveData(),false)}<div class="scr-ctl"><button class="tgl" data-a="fullscreen">Schermo intero</button>${viewSwitch()}</div>`;
 }
+/* ---- schermo: il tavolo. Dadi 3D con fisica che restano sull'immagine proiettata, e schede flottanti dei PG ---- */
+var TBL={el:null,pool:[],hist:[],open:[],zoom:{},menu:false,w:null};
+const TBL_DICE=[4,6,8,10,12,20];
+function tblSync(on){
+  if(!TBL.el){TBL.el=document.createElement("div");TBL.el.id="tbl";document.body.appendChild(TBL.el);
+    TBL.el.addEventListener("click",tblClick);TBL.el.addEventListener("pointerdown",tblDrag)}
+  TBL.el.hidden=!on;if(!on){tblStop();return}
+  const pcs=(liveData()?.pcs||[]).map(r=>({r,p:P(Object.assign({cond:[],over:{}},r))})).filter(x=>x.p);
+  TBL.open=TBL.open.filter(id=>pcs.some(x=>x.r.id===id));
+  const pool=TBL.pool.length?Object.entries(TBL.pool.reduce((m,s)=>(m[s]=(m[s]||0)+1,m),{})).map(([s,n])=>n+"d"+s).join(" + "):"";
+  const lastHTML=TBL.hist.map((h,i)=>`<div class="tbl-res ${h.dual?h.dual.cls:""} ${i?"old":""}"><b>${h.total}</b><span>${esc(h.label)}</span>${h.dual?`<em>${esc(h.dual.txt)}</em>`:""}</div>`).reverse().join("");
+  let bar=TBL.el.querySelector(".tbl-bar");if(!bar){bar=document.createElement("div");bar.className="tbl-bar";TBL.el.appendChild(bar)}
+  bar.innerHTML=`${lastHTML}<div class="tbl-row">
+    <button class="tbl-b dual" data-t="dual" title="Tiro di Dualità: d12 Speranza + d12 Paura (tasto D)">2d12</button>
+    ${TBL_DICE.map(s=>`<button class="tbl-b" data-t="add" data-s="${s}" title="Aggiungi un d${s}">d${s}</button>`).join("")}
+    <button class="tbl-b go" data-t="throw" ${TBL.pool.length?"":"disabled"} title="Lancia i dadi scelti (Invio)">${TBL.pool.length?"Lancia "+esc(pool):"Lancia"}</button>
+    ${TBL.pool.length?`<button class="tbl-b" data-t="pool-clear" title="Svuota la mano">×</button>`:""}
+    <button class="tbl-b" data-t="clear" title="Togli tutti i dadi dal tavolo (tasto C)">Pulisci</button>
+    <span class="tbl-sep"></span>
+    <button class="tbl-b ${TBL.menu?"on":""}" data-t="menu" title="Schede dei personaggi (tasti 1–${Math.max(1,pcs.length)})">Schede</button>
+   </div>
+   ${TBL.menu?`<div class="tbl-menu">${pcs.length?pcs.map((x,i)=>`<button class="tbl-b ${TBL.open.includes(x.r.id)?"on":""}" data-t="sheet" data-id="${esc(x.r.id)}"><kbd>${i+1}</kbd> ${esc(x.p.name||"PG")}</button>`).join(""):`<span class="small">Nessun personaggio nel gruppo.</span>`}</div>`:""}`;
+  // schede flottanti: una finestra per personaggio, trascinabile e ridimensionabile
+  TBL.el.querySelectorAll(".tbl-sheet").forEach(n=>{if(!TBL.open.includes(n.dataset.id))n.remove()});
+  TBL.open.forEach((id,i)=>{
+    const x=pcs.find(y=>y.r.id===id);if(!x)return;
+    let w=TBL.el.querySelector(`.tbl-sheet[data-id="${CSS.escape(id)}"]`);
+    if(!w){w=document.createElement("section");w.className="tbl-sheet";w.dataset.id=id;
+      Object.assign(w.style,{left:(24+i*36)+"px",top:(24+i*36)+"px"});TBL.el.appendChild(w)}
+    const body=w.querySelector(".tbl-sheet-b"),sy=body?.scrollTop||0,z=TBL.zoom[id]||.55,c=tblChar(x.r);
+    let inner="";
+    if(c){const keep=PL.chars,keepId=PL.id;PL.chars=[...keep.filter(y=>y.id!==c.id),c];PL.id=c.id;
+      try{inner=`<div class="pl tbl-pl" style="zoom:${z}"><div inert>${plSheet(c)}</div></div>`}catch(e){inner=""}finally{PL.chars=keep;PL.id=keepId}}
+    if(!inner)inner=tblCompact(x.r,x.p);
+    w.innerHTML=`<header class="tbl-sheet-h" data-drag="1"><b>${esc(x.p.name||"PG")}</b><span>${esc([x.p.her,x.p.cls].filter(Boolean).join(" · "))}</span>
+      ${c?`<button class="tbl-x" data-t="zoom" data-id="${esc(id)}" data-k="-1" aria-label="Rimpicciolisci">−</button><button class="tbl-x" data-t="zoom" data-id="${esc(id)}" data-k="1" aria-label="Ingrandisci">+</button>`:""}
+      <button class="tbl-x" data-t="sheet" data-id="${esc(id)}" aria-label="Chiudi la scheda">×</button></header><div class="tbl-sheet-b">${inner}</div>`;
+    w.querySelectorAll(".kcard,.cds-h,.cg-l").forEach(k=>k.classList.add("in"));
+    w.querySelector(".tbl-sheet-b").scrollTop=sy;
+  });
+  tblWorld();
+}
+// la scheda completa: personaggio pregenerato, del giocatore o del GM, con lo stato che arriva dal tracker
+function tblChar(r){
+  let c=PL.roster?.find(x=>x.character?.id===r.id)?.character||PL.chars?.find(x=>x.id===r.id)||null;
+  if(!c&&typeof PL_PREGENS!=="undefined"&&PL_PREGENS[r.id])try{c=plPregenChar(r.id)}catch{c=null}
+  if(!c)return null;
+  c=JSON.parse(JSON.stringify(c));Object.assign(c,{hp:r.hp,stress:r.st,hope:r.hope,armor:r.ar,conditions:[...(r.cond||[])]});
+  if(r.over?.name)c.name=r.over.name;return c;
+}
+function tblCompact(r,p){
+  const w=p.wpn;
+  return `<div class="tbl-compact"><div class="row" style="gap:10px;align-items:center">${shield(p.eva,"EVASIONE","sm")}${shield(p.arMax,"ARMATURA","sm arm")}</div>
+   ${p.major?thrStrip(p.major,p.severe,{compact:true}):""}
+   <div class="trk"><div><span class="lab">PF ${r.hp}/${p.hpMax}</span>${roPips(p.hpMax||0,r.hp,"hp")}</div><div><span class="lab">Stress ${r.st}/${p.stMax}</span>${roPips(p.stMax||0,r.st,"st")}</div>
+    <div><span class="lab">Speranza ${r.hope}</span>${roPips(6,r.hope,"hope")}</div><div><span class="lab">Armatura ${r.ar}/${p.arMax}</span>${roPips(p.arMax||0,r.ar,"ar")}</div></div>
+   ${p.tr?`<div class="traits pv-traits">${TRAITS.map((t,i)=>`<div><b>${sgn(p.tr[i])}</b><span>${t}</span></div>`).join("")}</div>`:""}
+   ${w?`<div class="small"><b>${esc(w.n)}</b> · ${esc(w.d)} ${esc(w.ty||"")} · ${esc(w.r||"")}</div>`:""}
+   ${(p.exp||[]).length?`<div class="row">${p.exp.map(e=>`<span class="chip hope">${esc(e[0])} ${sgn(e[1])}</span>`).join("")}</div>`:""}
+   ${(r.cond||[]).length?`<div class="row">${r.cond.map(c=>`<span class="chip bad">${esc(c)}</span>`).join("")}</div>`:""}</div>`;
+}
+function tblClick(e){
+  const b=e.target.closest("[data-t]");if(!b||!TBL.el.contains(b))return;
+  const t=b.dataset.t;
+  if(t==="add"){TBL.pool.push(+b.dataset.s);if(TBL.pool.length>20)TBL.pool.shift()}
+  else if(t==="pool-clear")TBL.pool=[];
+  else if(t==="throw"){if(!TBL.pool.length)return;tblThrow(TBL.pool.map(s=>({s,c:"n"})));TBL.pool=[]}
+  else if(t==="dual")tblThrow([{s:12,c:"h"},{s:12,c:"f"}],true);
+  else if(t==="clear"){tblClear();TBL.hist=[]}
+  else if(t==="menu")TBL.menu=!TBL.menu;
+  else if(t==="sheet"){const id=b.dataset.id;TBL.open=TBL.open.includes(id)?TBL.open.filter(x=>x!==id):[...TBL.open,id]}
+  else if(t==="zoom"){const id=b.dataset.id;TBL.zoom[id]=Math.min(1,Math.max(.35,(TBL.zoom[id]||.55)+(+b.dataset.k)*.1))}
+  tblSync(true);
+}
+function tblDrag(e){
+  const h=e.target.closest("[data-drag]");if(!h||e.target.closest("button"))return;
+  const w=h.parentElement,r=w.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top;
+  TBL.el.appendChild(w); // in primo piano
+  const mv=ev=>{w.style.left=Math.max(0,Math.min(innerWidth-80,ev.clientX-dx))+"px";w.style.top=Math.max(0,Math.min(innerHeight-40,ev.clientY-dy))+"px"};
+  const up=()=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up)};
+  addEventListener("pointermove",mv);addEventListener("pointerup",up);e.preventDefault();
+}
+document.addEventListener("keydown",e=>{
+  if(!TBL.el||TBL.el.hidden||e.ctrlKey||e.metaKey||e.altKey||e.target.closest?.("input,textarea,select,[contenteditable]"))return;
+  const k=e.key.toLowerCase();
+  if(k==="d"){e.preventDefault();tblThrow([{s:12,c:"h"},{s:12,c:"f"}],true);tblSync(true)}
+  else if(k==="c"){tblClear();TBL.hist=[];tblSync(true)}
+  else if(k==="enter"&&TBL.pool.length){e.preventDefault();tblThrow(TBL.pool.map(s=>({s,c:"n"})));TBL.pool=[];tblSync(true)}
+  else if(/^[1-9]$/.test(k)){const r=(liveData()?.pcs||[])[+k-1];if(r){TBL.open=TBL.open.includes(r.id)?TBL.open.filter(x=>x!==r.id):[...TBL.open,r.id];tblSync(true)}}
+});
+/* mondo fisico persistente: il pavimento è l'immagine, i dadi lanciati restano dove si fermano */
+function tblWorld(){
+  if(TBL.w||TBL.loading)return;
+  TBL.loading=Promise.all([loadThree(),loadCannon()]).then(()=>{TBL.loading=null;if(!TBL.el.hidden)tblInit()}).catch(()=>{TBL.loading=null;TBL.noGL=true});
+}
+function tblInit(){
+  const T=window.THREE,C=window.CANNON;if(!T||!C||TBL.w)return;
+  let r;try{r=new T.WebGLRenderer({antialias:true,alpha:true})}catch(e){TBL.noGL=true;return}
+  r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.shadowMap.enabled=true;r.shadowMap.type=T.PCFSoftShadowMap;
+  r.domElement.className="tbl-gl";TBL.el.prepend(r.domElement);
+  const sc=new T.Scene(),cam=new T.PerspectiveCamera(30,1,.1,200);
+  sc.add(new T.AmbientLight(0xffffff,.6));
+  const dl=new T.DirectionalLight(0xffffff,.95);dl.position.set(-8,36,12);dl.castShadow=true;dl.shadow.mapSize.set(2048,2048);
+  Object.assign(dl.shadow.camera,{left:-32,right:32,top:32,bottom:-32,near:1,far:90});sc.add(dl);
+  const floor=new T.Mesh(new T.PlaneGeometry(120,120),new T.ShadowMaterial({opacity:.42}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;sc.add(floor);
+  const world=new C.World();world.gravity.set(0,-60,0);world.broadphase=new C.NaiveBroadphase();world.solver.iterations=16;world.allowSleep=true;
+  const mTable=new C.Material("table"),mDie=new C.Material("die");
+  world.addContactMaterial(new C.ContactMaterial(mTable,mDie,{friction:.4,restitution:.32}));
+  world.addContactMaterial(new C.ContactMaterial(mDie,mDie,{friction:.2,restitution:.28}));
+  const g=new C.Body({mass:0,material:mTable});g.addShape(new C.Plane());g.quaternion.setFromAxisAngle(new C.Vec3(1,0,0),-Math.PI/2);world.addBody(g);
+  TBL.w={T,C,r,sc,cam,world,mTable,mDie,dice:[],walls:[],raf:0,acc:0,t:0};
+  tblResize();addEventListener("resize",tblResize);tblKick();
+}
+function tblResize(){
+  const w=TBL.w;if(!w)return;const W=innerWidth,H=innerHeight;
+  w.r.setSize(W,H);w.cam.aspect=W/H;w.cam.position.set(0,40,10);w.cam.lookAt(0,0,0);w.cam.updateProjectionMatrix();w.cam.updateMatrixWorld();
+  const T=w.T,C=w.C,ground=(nx,ny)=>{const ray=new T.Raycaster();ray.setFromCamera({x:nx,y:ny},w.cam);const p=new T.Vector3();ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),p);return p};
+  const hx=Math.abs(ground(.97,0).x),zn=ground(0,-.97).z,zf=ground(0,.97).z;w.box={hx,zn,zf};
+  w.walls.forEach(b=>w.world.removeBody(b));
+  const wall=(pos,ang)=>{const b=new C.Body({mass:0,material:w.mTable});b.addShape(new C.Plane());b.position.set(...pos);b.quaternion.setFromAxisAngle(new C.Vec3(0,1,0),ang);w.world.addBody(b);return b};
+  w.walls=[wall([-hx,0,0],Math.PI/2),wall([hx,0,0],-Math.PI/2),wall([0,0,zf],0),wall([0,0,zn],Math.PI)];
+  w.dice.forEach(d=>{d.b.wakeUp()});tblKick();
+}
+function tblKick(){const w=TBL.w;if(!w||w.raf)return;w.last=performance.now();w.raf=requestAnimationFrame(tblFrame)}
+function tblStop(){const w=TBL.w;if(w&&w.raf){cancelAnimationFrame(w.raf);w.raf=0}}
+function tblFrame(now){
+  const w=TBL.w;w.raf=0;if(!w||TBL.el.hidden)return;
+  const dt=Math.min(.05,(now-w.last)/1000);w.last=now;w.acc+=dt;
+  while(w.acc>=1/60){w.world.step(1/60);w.acc-=1/60}
+  w.dice.forEach(d=>{d.m.position.copy(d.b.position);d.m.quaternion.copy(d.b.quaternion)});
+  w.r.render(w.sc,w.cam);
+  const moving=w.dice.some(d=>d.b.sleepState!==w.C.Body.SLEEPING&&(d.b.velocity.length()>.05||d.b.angularVelocity.length()>.1));
+  if(moving)w.calm=0;else w.calm=(w.calm||0)+1;
+  if(w.pending&&w.calm>10)tblSettle();
+  if(moving||w.calm<20||w.pending)w.raf=requestAnimationFrame(tblFrame);
+}
+function tblValue(d){
+  const w=TBL.w,T=w.T,q=new T.Quaternion(d.b.quaternion.x,d.b.quaternion.y,d.b.quaternion.z,d.b.quaternion.w);
+  const dir=d.s===4?-1:1;let best=0,bd=-2; // il d4 si legge sulla faccia appoggiata
+  d.m.userData.faces.forEach((fc,i)=>{const v=fc.n.clone().applyQuaternion(q).y*dir;if(v>bd){bd=v;best=i}});
+  return d.m.material[best].userData.n;
+}
+function tblSettle(){
+  const w=TBL.w,groups=w.pending||[];w.pending=null;
+  groups.filter(g=>g.dice.length).forEach(p=>{
+  const vals=p.dice.map(d=>({s:d.s,c:d.c,v:tblValue(d)})),total=vals.reduce((a,x)=>a+x.v,0);
+  let dual=null;
+  if(p.dual&&vals.length===2){const h=vals.find(x=>x.c==="h").v,f=vals.find(x=>x.c==="f").v;
+    dual=h===f?{cls:"crit",txt:"Critico!"}:h>f?{cls:"hope",txt:`con Speranza (${h} · ${f})`}:{cls:"fear",txt:`con Paura (${h} · ${f})`}}
+  const cnt=vals.reduce((m,x)=>(m["d"+x.s]=(m["d"+x.s]||0)+1,m),{});
+  TBL.hist.unshift({total,dual,label:p.dual?"Dualità":Object.entries(cnt).map(([k,n])=>n+k).join(" + ")+(vals.length>1?" · "+vals.map(x=>x.v).join(", "):"")});
+  });TBL.hist=TBL.hist.slice(0,3);tblSync(true);
+}
+function tblThrow(list,dual=false){
+  const w=TBL.w;
+  if(!w){if(TBL.noGL){const vals=list.map(x=>({...x,v:1+Math.floor(Math.random()*x.s)}));const h=dual&&vals[0].v,f=dual&&vals[1].v;TBL.hist.unshift({total:vals.reduce((a,x)=>a+x.v,0),label:dual?"Dualità":vals.map(x=>"d"+x.s+": "+x.v).join(" · "),dual:dual?(h===f?{cls:"crit",txt:"Critico!"}:h>f?{cls:"hope",txt:`con Speranza (${h} · ${f})`}:{cls:"fear",txt:`con Paura (${h} · ${f})`}):null});TBL.hist=TBL.hist.slice(0,3);tblSync(true)}else tblWorld();return}
+  const T=w.T,{hx,zn,zf}=w.box;
+  const made=list.map((f,i)=>{
+    const m=buildDie(T,f.s,DIE_COL[f.c]||DIE_COL.n);m.castShadow=true;m.scale.multiplyScalar(1.25);w.sc.add(m);
+    const b=dieBody(w.C,T,m,w.mDie);
+    b.position.set(hx-2-Math.random(),4+i*1.3+Math.random(),zf+3+Math.random()*(zn-zf-6));
+    b.quaternion.setFromEuler(Math.random()*6.28,Math.random()*6.28,Math.random()*6.28);
+    b.velocity.set(-(10+Math.random()*9),-2-Math.random()*3,(Math.random()-.5)*10);
+    b.angularVelocity.set((Math.random()-.5)*36,(Math.random()-.5)*36,(Math.random()-.5)*36);
+    b.allowSleep=true;b.sleepSpeedLimit=.15;b.sleepTimeLimit=.3;w.world.addBody(b);
+    const d={m,b,s:f.s,c:f.c};w.dice.push(d);return d});
+  w.dice.forEach(d=>d.b.wakeUp());
+  while(w.dice.length>40){const d=w.dice.shift();tblDrop(d);(w.pending||[]).forEach(g=>g.dice=g.dice.filter(x=>x!==d))}
+  (w.pending=w.pending||[]).push({dice:made,dual});w.calm=0;tblKick();
+}
+function tblDrop(d){const w=TBL.w;w.world.removeBody(d.b);w.sc.remove(d.m);d.m.geometry.dispose();d.m.material.forEach(x=>x.dispose())}
+function tblClear(){const w=TBL.w;if(!w)return;w.dice.forEach(tblDrop);w.dice=[];w.pending=null;w.r.render(w.sc,w.cam)}
 function renderScreenCtl(){
   const scr=VIEW.screen||{kind:"splash"},cur=curSceneTitle(),db=!!VIEW.tdb,canUp=db?!!VIEW.assets:true;
   return `<div class="stack"><h2>Schermo e giocatori</h2>
@@ -3349,6 +3536,7 @@ Rispondi SOLO con un oggetto JSON {"<key>": ["paragrafo", "paragrafo", ...], ...
 
 function render(){
   const alt=!VIEW.ready||VIEW.mode!=="gm";document.body.classList.toggle("alt",alt);
+  tblSync(alt&&VIEW.ready&&VIEW.mode==="screen");
   if(alt){renderAlt();return}
   document.getElementById("alt").innerHTML="";
   const hub=APP.view==="home";document.body.classList.toggle("hub",hub);
