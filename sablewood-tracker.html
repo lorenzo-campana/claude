@@ -1467,39 +1467,18 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pr-feats{overflow:visible;display:flex;flex-direction:column}.pr-feats-in{flex:1;min-height:0;overflow:hidden}
 .pr-flag small{font-size:4.6pt;letter-spacing:.04em;white-space:nowrap}
 
-/* mini card di stampa 41×63 mm: illustrazione intera 3:2, etichette sopra l'immagine */
+
+/* mini card di stampa: la card della galleria scalata a 41×63 mm */
 .eq-lb-scale{transform-origin:0 0;width:max-content}.eq-lb-print{font-size:12px;opacity:.75}
-.eq-print{--mc:#657d8b;width:41mm;height:63mm;box-sizing:border-box;display:flex;flex-direction:column;background:#fffdf8;border-radius:2.2mm;overflow:hidden;color:#2f2a33;font-family:'DH Overpass',Arial,sans-serif;border:.45mm solid var(--mc)}
-.eq-print-art{position:relative;flex:none;aspect-ratio:3/2;width:100%;background:color-mix(in srgb,var(--mc) 22%,#efe9df)}.eq-print-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
-.eq-print-kind,.eq-print-tier{position:absolute;top:1mm;padding:.5mm 1.4mm;border-radius:.9mm;background:var(--mc);color:#fff;font:800 5pt/1 'DH Overpass',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 .2mm .6mm rgba(0,0,0,.35)}.eq-print-kind{left:1mm}.eq-print-tier{right:1mm}
-.eq-print h3{margin:0;padding:1mm 1.8mm .8mm;background:var(--mc);color:#fff;font:9.5pt/1.02 'DH Eveleth',Arial,sans-serif;text-transform:uppercase;letter-spacing:.01em}
-.eq-print-stats{display:flex;gap:.6mm;padding:1mm 1.4mm 0}.eq-print-stats span{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;padding:.4mm .4mm .5mm;border-radius:.8mm;background:color-mix(in srgb,var(--mc) 13%,#fff);border:.2mm solid color-mix(in srgb,var(--mc) 45%,#fff)}.eq-print-stats span.w{flex:1.6}.eq-print-stats span.n{flex:.7}
-.eq-print-stats small{font:800 4.4pt/1.1 'DH Overpass',Arial,sans-serif;text-transform:uppercase;letter-spacing:.03em;color:color-mix(in srgb,var(--mc) 75%,#000);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.eq-print-stats b{font:800 6.8pt/1.05 'DH Overpass',Arial,sans-serif;color:#2c2433;text-align:center}
-.eq-print-text{flex:1 1 auto;min-height:0;padding:1mm 1.8mm 0;font-size:9pt;line-height:1.2}.eq-print-text p{margin:0 0 .6mm}.eq-print-text .eq-keyword{color:color-mix(in srgb,var(--mc) 80%,#000)}
-.eq-print-note{font-style:italic;opacity:.75}
-.eq-print footer{flex:none;padding:0 1.8mm .8mm;font:600 4.2pt/1 'DH Overpass',Arial,sans-serif;color:#8a8190;text-align:right}
-.eq-print-text{overflow:hidden}
-.eq-print-src{position:absolute;right:1mm;bottom:.8mm;padding:.3mm .9mm;border-radius:.6mm;background:rgba(255,253,248,.85);color:#5c5363;font:700 4pt/1 'DH Overpass',Arial,sans-serif}
-.eq-print-stats b{white-space:nowrap;font-size:6.4pt}.eq-print-text{line-height:1.14;padding-bottom:1mm}
-/* badge equilibrati: griglia 2×2, etichetta e valore sulla stessa riga */
-.eq-print-stats{display:grid;grid-template-columns:1fr 1fr;gap:.7mm;padding:1mm 1.4mm 0}
-.eq-print-stats span{flex-direction:row;justify-content:space-between;align-items:baseline;gap:1mm;padding:.6mm 1.2mm;border-radius:.8mm;min-width:0}
-.eq-print-stats small{font-size:4.4pt;flex:none}.eq-print-stats b{font-size:6.6pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.eq-print-stats span{flex-direction:column;align-items:center;justify-content:center;gap:0;padding:.35mm .8mm .45mm}
-.eq-print-stats small{font-size:4.2pt;line-height:1}.eq-print-stats b{font-size:6.6pt;line-height:1.08;max-width:100%}
-.eq-print h3{padding:.8mm 1.8mm .6mm}.eq-print-stats{padding-top:.8mm;gap:.6mm}.eq-print-text{padding-top:.8mm;line-height:1.12}
-.eq-print-stats b{white-space:normal;text-align:center}
-.eq-print-art{margin:0 auto;border-radius:0 0 1mm 1mm;overflow:hidden}
-/* mini card più piccola ed equilibrata: margini uguali (1.6 mm), gerarchia nome > badge > testo */
-.eq-print{border-width:.35mm}
-.eq-print h3{padding:.9mm 1.6mm .8mm;font-size:8pt;line-height:1.05;letter-spacing:.02em}
-.eq-print-kind,.eq-print-tier{top:1.2mm;font-size:4.4pt;padding:.45mm 1.1mm;letter-spacing:.08em}.eq-print-kind{left:1.2mm}.eq-print-tier{right:1.2mm}
-.eq-print-src{font-size:3.8pt;right:1.2mm;bottom:1mm}
-.eq-print-stats{padding:1.2mm 1.6mm 0;gap:.8mm}
-.eq-print-stats span{padding:.45mm .6mm .55mm;border-width:.15mm}
-.eq-print-stats small{font-size:3.7pt;letter-spacing:.08em}.eq-print-stats b{font-size:5.8pt;line-height:1.1}
-.eq-print-text{padding:1.3mm 1.6mm 1.2mm;font-size:7.2pt;line-height:1.24}
+.eq-print{width:41mm;height:63mm;overflow:hidden;border-radius:2.4mm;position:relative;background:#faf7f0}
+.eq-print-in{position:absolute;left:0;top:0;transform-origin:0 0;transform:scale(.53618)}
+.eq-print-in .eq-card,.eq-print-in .kcard{width:100%!important;height:100%!important;max-width:none!important;margin:0!important}
+.eq-print-in .kcard{display:flex;flex-direction:column}.eq-print-in .cd-i{flex:1;height:100%!important;aspect-ratio:auto!important;display:flex;flex-direction:column;border-radius:0!important}
+.eq-print-in .cd-cap,.eq-print-in .cd-glare{display:none!important}
+.eq-print-in .eq-art{flex:none;aspect-ratio:3/2;height:auto!important}.eq-print-in .eq-art img{width:100%;height:100%;object-fit:cover}
+.eq-print-in .eq-card-content{flex:1;min-height:0;overflow:hidden}
+.eq-print-in.pl{padding:0!important;margin:0!important;min-height:0!important;background:none!important}.eq-print-in .cd-i{border-radius:17px!important;overflow:hidden}
+.eq-print-in .eq-feature{display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;max-height:none!important;overflow:visible!important;flex:none!important;line-height:1.35}
 
 /* PLAYER_STYLE_END */
 /* RULES_STYLE_START */
@@ -5385,14 +5364,11 @@ const EQ_LB={list:[],uid:{}};
 function eqLbOpen(id,src,uid){const box=src?.closest('.eq-catalog,.pl-official-panel,.pl-dialog,section,main')||document,els=[...box.querySelectorAll('[data-eq="detail"][data-id],[data-eq="inspect-owned"][data-id]')];EQ_LB.uid={};els.forEach(x=>{if(x.dataset.uid)EQ_LB.uid[x.dataset.id]=x.dataset.uid});if(uid)EQ_LB.uid[id]=uid;EQ_LB.ro=!!src?.closest('.tbl-sheet:not([data-own]),.gm-sheet-wrap');EQ_LB.list=[...new Set(els.map(x=>x.dataset.id))];if(!EQ_LB.list.includes(id))EQ_LB.list=[id];eqLbShow(id,'from',src)}
 /* Carta equipaggiamento in formato stampa: mini card 41×63 mm (Mini American), testo grande e niente spazi vuoti.
    Le misure sono in mm così l'anteprima è proporzionata alla stampa; il testo dell'effetto si adatta allo spazio rimasto. */
-function eqPrintCard(e){const color={primary:'#926475',secondary:'#ae8443',armor:'#448b89',consumable:'#7963a3',item:'#657d8b'}[e.kind]||'#657d8b',kind={primary:'Primaria',secondary:'Secondaria',armor:'Armatura',consumable:'Consumabile',item:'Oggetto'}[e.kind]||e.kind;
- const b=(l,v)=>`<span><small>${l}</small><b>${esc(String(v))}</b></span>`,stats=e.kind==='armor'?b('Soglie',e.major+' / '+e.severe)+b('Armor',e.score):e.damage?b('Tratto',e.trait||'—')+b('Range',e.range||'—')+b('Danno',e.damage)+b('Mani',e.hands||1):'';
- const feat=e.feature&&e.feature!=='—'?eqFeatureHTML(e.feature):'';
- return `<div class="eq-print" style="--mc:${color}"><div class="eq-print-art">${eqArtSource(e)?`<img src="${esc(eqArtSource(e))}" alt="">`:''}<span class="eq-print-kind">${esc(kind)}</span><span class="eq-print-tier">${e.tier?'T'+e.tier:esc(e.rarity||'')}${e.magic?' ✦':''}</span><span class="eq-print-src">${e.book==='hf'?'H&F':'DH'}${e.page?' p.'+e.page:''}</span></div><h3>${esc(e.name)}</h3>${stats?`<div class="eq-print-stats">${stats}</div>`:''}<div class="eq-print-text">${feat?`<p>${feat}</p>`:''}${e.kind==='consumable'?'<p class="eq-print-note">Monouso · max 5</p>':''}</div></div>`}
-// nome e testo il più grandi possibile senza uscire dalla carta (testo mai sotto 5pt); l'illustrazione resta sempre 3:2 (se il testo proprio non ci sta si rimpicciolisce, mai ritagliata)
-function eqPrintFit(root){root.querySelectorAll('.eq-print').forEach(card=>{const t=card.querySelector('.eq-print-text'),h=card.querySelector('h3'),mm=card.offsetWidth/41,over=()=>card.scrollHeight>card.clientHeight+1||(t&&t.scrollHeight>t.clientHeight+1);
- if(h){let hp=8;h.style.fontSize=hp+'pt';while(h.offsetHeight>7*mm&&hp>6){hp-=.25;h.style.fontSize=hp+'pt'}}
- if(t){let pt=7.2;t.style.fontSize=pt+'pt';while(over()&&pt>4.8){pt-=.2;t.style.fontSize=pt+'pt'}}const art=card.querySelector('.eq-print-art');if(art){let w=100;art.style.width='';while(over()&&w>60){w-=4;art.style.width=w+'%'}}})}
+/* Versione stampa = la stessa card della galleria, impaginata in 41×63 mm (mini card).
+   La card si disegna a 289×444 px (proporzione 41:63) e si scala di 41mm/289px; il testo dell'effetto si adatta allo spazio. */
+const EQ_PRINT_W=289,EQ_PRINT_H=Math.round(289*63/41);
+function eqPrintCard(e){return `<div class="eq-print"><div class="eq-print-in pl" style="width:${EQ_PRINT_W}px;height:${EQ_PRINT_H}px">${eqCard(e,'view')}</div></div>`}
+function eqPrintFit(root){root.querySelectorAll('.eq-print-in').forEach(card=>{const c=card.querySelector('.eq-card-content'),f=card.querySelector('.eq-feature');if(!c||!f)return;const over=()=>f.getBoundingClientRect().bottom>c.getBoundingClientRect().bottom-12*.53618;let px=15;f.style.fontSize=px+'px';while(over()&&px>8){px-=.5;f.style.fontSize=px+'px'}})}
 function eqLbHTML(e){const pos=EQ_LB.list.indexOf(e.id),many=EQ_LB.list.length>1,color={primary:'#926475',secondary:'#ae8443',armor:'#448b89',consumable:'#7963a3',item:'#657d8b'}[e.kind]||'#657d8b';
  const pills=[e.tier?`Tier ${e.tier}`:(e.rarity||'Item'),e.trait,e.range,e.damage,e.hands?`${e.hands} hand${e.hands>1?'s':''}`:'',e.kind==='armor'?`Soglie ${e.major}/${e.severe}`:'',e.kind==='armor'?`Armor ${e.score}`:'',e.magic?'Magic':''].filter(Boolean).map((x,i)=>`<span ${i?'':'class="dm"'}>${esc(String(x))}</span>`).join('');
  const book=e.book==='hf'?'Hope & Fear':e.book==='core'?'Core Rulebook':'';
