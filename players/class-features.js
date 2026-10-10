@@ -52,9 +52,33 @@ function plClassFxAction(c,o){const s=plFxState(c),op=o.op;c.counters||={};
 // rests and sessions refresh what the rules refresh
 function plClassFxReset(c,kind){const s=plFxState(c);
  if(kind==='long'){s.unstoppableUsed=false;s.unstoppable=0;s.channelUsed=false;s.communeUsed=false;s.commune=[]}
- if(kind==='rest'||kind==='long'){s.marked='';s.markedRoll=null}
+ if(kind==='rest'||kind==='long'){s.marked='';s.markedRoll=null;s.dodge=false;s.noMercy=false}
  if(kind==='session'){s.rallyUsed=false;s.rallyDie=false;s.rallyRoll=null;s.prayerText='';s.prayerUsed=[]}}
 function plClassFeatureCards(c){const k=plClass(c),cls=[[c.className,k?.features]];if(c.multiclass)cls.push([c.multiclass.className,PLAYER_RULES.classes[c.multiclass.className]?.features]);
  const cards=cls.flatMap(([name,text])=>plFxParts(text).map(f=>({...f,cls:name})));
  return `<div class="pl-fx-grid">${cards.map(f=>{const ui=PL_FX_UI[f.name];let widget='';try{widget=ui?ui(c):''}catch(e){widget=''}
   const len=f.items.reduce((n,x)=>n+(x.p||x.li||'').length,0);return `<article class="pl-fx-card ${widget?'live':''} ${len>480?'long':''}"><header><b>${esc(f.name)}</b>${cls.length>1?`<small>${esc(f.cls)}</small>`:''}</header><div class="pl-fx-text">${plFxText(f.items)}</div>${widget?`<div class="pl-fx-ui">${widget}</div>`:''}</article>`}).join('')}</div>`}
+
+/* Hope Feature: quando la usi fa davvero quello che dice sulla scheda (armatura, stress, bonus temporanei, Beastform). */
+function plHopeFeature(c){const cls=c.className,s=plFxState(c),st=plStats(c);
+ if(c.hope<3)throw Error('Servono 3 Hope.');
+ if(cls==='Guardian'&&!c.armor)throw Error('Nessun Armor Slot segnato da liberare.');
+ if(cls==='Assassin'&&!c.stress)throw Error('Nessuno Stress da liberare.');
+ if(cls==='Druid'){const b=PLAYER_RULES.beastformOptions.find(x=>x.name===document.getElementById('pl-beast-choice')?.value);if(!b||b.tier>plTier(c.level))throw Error('Scegli una Beastform nella card Beastform.');eqPay(c,'hope',3);c.beastform=b.name;s.evolution=true;plRecord(c,'Evolution: '+b.name+' senza Stress');return}
+ eqPay(c,'hope',3);
+ if(cls==='Guardian'){c.armor=Math.max(0,c.armor-2);plRecord(c,'Frontline Tank: liberati 2 Armor Slot')}
+ else if(cls==='Assassin'){c.stress=Math.max(0,c.stress-2);plRecord(c,'Deadly Determination: liberati 2 Stress')}
+ else if(cls==='Rogue'){s.dodge=true;plRecord(c,'Rogue’s Dodge: +2 Evasion')}
+ else if(cls==='Warrior'){s.noMercy=true;plRecord(c,'No Mercy: +1 agli attacchi fino al riposo')}
+ else plRecord(c,'Hope Feature usata')}
+function plHopeFxStats(c,st){const s=c.classFx||{};
+ if(s.dodge)st.evasion+=2;
+ if(s.noMercy)st.attackBonus=(st.attackBonus||0)+1;
+ if(s.evolution&&c.beastform){const t=+(s.evolutionTrait||0);if(st.traits[t]!=null)st.traits[t]++}
+ return st}
+// stato attivo della Hope Feature, mostrato nel suo riquadro
+function plHopeFxBadge(c){const s=c.classFx||{},end=(k,t)=>`<div class="pl-ha-active"><span>● ${t}</span><button type="button" class="btn" data-pl="hope-fx-end" data-k="${k}">Termina</button></div>`;
+ if(s.dodge)return end('dodge','+2 Evasion fino al prossimo attacco riuscito contro di te');
+ if(s.noMercy)return end('noMercy','+1 ai tiri d’attacco fino al riposo');
+ if(s.evolution&&c.beastform)return `<div class="pl-ha-active"><span>● Evolution · +1 a</span><select data-pl-field="classFx.evolutionTrait" aria-label="Tratto">${PL_TRAITS.map((n,i)=>`<option value="${i}" ${+(s.evolutionTrait||0)===i?'selected':''}>${n}</option>`).join('')}</select></div>`;
+ return ''}

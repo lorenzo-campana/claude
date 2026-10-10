@@ -450,3 +450,5 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pl-hope-ability .pl-ha-head{padding-right:96px;min-height:30px;justify-content:center}
 .pl-ha-head b{font-size:19px}.pl-ha-text{font-size:14.5px;line-height:1.45}
 .pl-official-sheet .pl-paper-wide>.pl-official-panel{min-height:0!important;height:auto!important;flex:none!important;padding-bottom:14px}.pl-official-sheet .pl-paper-wide{gap:16px}
+.pl-ha-active{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:5px 6px 5px 10px;border-radius:8px;background:#fff3d6;border:1px solid #e2c27a;font:700 12px/1.2 var(--sheet-text,var(--f-body));color:#6b4a10}
+.pl-ha-active span{flex:1;min-width:0}.pl-ha-active .btn{font-size:11px;padding:3px 9px;min-height:0;margin:0}.pl-ha-active select{font-size:12px;padding:2px 6px;width:auto}
