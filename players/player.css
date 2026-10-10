@@ -391,3 +391,7 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pl-official-panel .eq-equipment-slot .eq-owned-card .eq-card-content{padding-bottom:42px!important}
 .pl-official-panel .eq-equipment-slot .eq-card .cd-cap{display:none!important}
 .pl-official-panel .eq-equipment-slot .eq-card{display:flex!important;flex-direction:column}.pl-official-panel .eq-equipment-slot .eq-card>.kcard{flex:1 1 auto;display:flex!important;flex-direction:column}.pl-official-panel .eq-equipment-slot .eq-card .cd-i{flex:1 1 auto;display:flex!important;flex-direction:column}.pl-official-panel .eq-equipment-slot .eq-card .eq-card-content{flex:1 1 auto}
+/* oro compatto: pugni, borse, forzieri e totale su una sola riga */
+.pl-official-sheet .pl-gold-panel .pl-gold-count{grid-template-columns:auto 44px 48px 76px;gap:12px;align-items:center;justify-content:space-between;margin:2px 0 0}
+.pl-official-sheet .pl-gold-panel .pl-gold-count>div:first-child{display:flex;flex-direction:column-reverse;align-items:flex-start;gap:4px}
+.pl-gold-total label{display:flex;flex-direction:column-reverse;gap:3px;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}.pl-gold-total input{width:100%;text-align:center;font-weight:700;padding:3px 4px!important;border:1px solid var(--line)!important;border-radius:6px;background:#fff}
