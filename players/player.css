@@ -457,21 +457,6 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pl-fx-ui>.pl-fx-row{flex:1 1 200px;min-width:0}.pl-fx-ui>.pl-fx-actions{flex:none;margin-left:auto}
 .pl-fx-ui>.pl-fx-field{flex:1 1 180px}.pl-fx-ui>.pl-fx-chips{flex:1 1 100%}.pl-fx-ui>small,.pl-fx-ui>.pl-fx-note{flex:1 1 100%}
 .pl-fx-row small{line-height:1.25}
-/* mini card di stampa 41×63 mm */
-.eq-lb-scale{transform-origin:0 0;width:max-content}
-.eq-print{--mc:#657d8b;width:41mm;height:63mm;box-sizing:border-box;display:flex;flex-direction:column;background:#fffdf8;border-radius:2.2mm;overflow:hidden;color:#2f2a33;font-family:var(--sheet-text,'DH Overpass'),Arial,sans-serif;box-shadow:0 0 0 .35mm var(--mc) inset}
-.eq-print header{display:flex;justify-content:space-between;align-items:center;gap:1mm;padding:.9mm 2mm;background:var(--mc);color:#fff;font:800 5.6pt/1 var(--sheet-text,'DH Overpass'),Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase}
-.eq-print-art{display:block;flex:none;height:17.5mm;background:color-mix(in srgb,var(--mc) 18%,#efe9df);overflow:hidden}.eq-print-art img{width:100%;height:100%;object-fit:cover;display:block}
-.eq-print h3{margin:0;padding:1.2mm 2mm .4mm;font:10pt/1.02 var(--sheet-font,'DH Eveleth'),Arial,sans-serif;color:#2c2433;text-transform:uppercase;letter-spacing:.01em}
-.eq-print-stats{display:flex;gap:.8mm;padding:.6mm 2mm 0}.eq-print-stats span{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;padding:.5mm .6mm;border-radius:1mm;background:color-mix(in srgb,var(--mc) 13%,#fff);border:.2mm solid color-mix(in srgb,var(--mc) 45%,#fff)}
-.eq-print-stats small{font:700 5pt/1.05 var(--sheet-text,'DH Overpass'),Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em;color:color-mix(in srgb,var(--mc) 75%,#000);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.eq-print-stats b{font:800 8pt/1.1 var(--sheet-text,'DH Overpass'),Arial,sans-serif;color:#2c2433;white-space:nowrap}
-.eq-print-text{flex:1;min-height:0;overflow:hidden;padding:1.2mm 2mm .6mm;font-size:8.6pt;line-height:1.22}.eq-print-text p{margin:0 0 .8mm}.eq-print-text .eq-keyword{color:color-mix(in srgb,var(--mc) 80%,#000)}
-.eq-print-note{font-style:italic;opacity:.75}
-.eq-print footer{padding:.5mm 2mm 1.1mm;font:600 4.6pt/1 var(--sheet-text,'DH Overpass'),Arial,sans-serif;color:#8a8190;letter-spacing:.04em;text-align:right}
-.eq-lb-print{font-size:12px;opacity:.75}
-.eq-print-art{flex:1 1 0;min-height:14mm;height:auto}.eq-print-text{flex:none;overflow:visible;padding-bottom:1mm}.eq-print-text p:last-child{margin-bottom:0}
-.eq-print-stats span:first-child{flex:1.5}.eq-print-stats b{font-size:7.4pt;white-space:normal;text-align:center;line-height:1.05}
 /* scheda cartacea A4, ricalcata sulla scheda ufficiale */
 .pl-print-ov{position:fixed;inset:0;z-index:300;background:rgba(24,18,30,.86);display:flex;flex-direction:column}
 .pl-print-ov[hidden]{display:none}
@@ -514,3 +499,19 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pr-foot{display:flex;justify-content:space-between;font-size:6pt;color:#9a90a2}
 .pr-feats{overflow:visible;display:flex;flex-direction:column}.pr-feats-in{flex:1;min-height:0;overflow:hidden}
 .pr-flag small{font-size:4.6pt;letter-spacing:.04em;white-space:nowrap}
+
+/* mini card di stampa 41×63 mm: illustrazione intera 3:2, etichette sopra l'immagine */
+.eq-lb-scale{transform-origin:0 0;width:max-content}.eq-lb-print{font-size:12px;opacity:.75}
+.eq-print{--mc:#657d8b;width:41mm;height:63mm;box-sizing:border-box;display:flex;flex-direction:column;background:#fffdf8;border-radius:2.2mm;overflow:hidden;color:#2f2a33;font-family:'DH Overpass',Arial,sans-serif;border:.45mm solid var(--mc)}
+.eq-print-art{position:relative;flex:none;aspect-ratio:3/2;width:100%;background:color-mix(in srgb,var(--mc) 22%,#efe9df)}.eq-print-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.eq-print-kind,.eq-print-tier{position:absolute;top:1mm;padding:.5mm 1.4mm;border-radius:.9mm;background:var(--mc);color:#fff;font:800 5pt/1 'DH Overpass',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 .2mm .6mm rgba(0,0,0,.35)}.eq-print-kind{left:1mm}.eq-print-tier{right:1mm}
+.eq-print h3{margin:0;padding:1mm 1.8mm .8mm;background:var(--mc);color:#fff;font:9.5pt/1.02 'DH Eveleth',Arial,sans-serif;text-transform:uppercase;letter-spacing:.01em}
+.eq-print-stats{display:flex;gap:.6mm;padding:1mm 1.4mm 0}.eq-print-stats span{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;padding:.4mm .4mm .5mm;border-radius:.8mm;background:color-mix(in srgb,var(--mc) 13%,#fff);border:.2mm solid color-mix(in srgb,var(--mc) 45%,#fff)}.eq-print-stats span.w{flex:1.6}.eq-print-stats span.n{flex:.7}
+.eq-print-stats small{font:800 4.4pt/1.1 'DH Overpass',Arial,sans-serif;text-transform:uppercase;letter-spacing:.03em;color:color-mix(in srgb,var(--mc) 75%,#000);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.eq-print-stats b{font:800 6.8pt/1.05 'DH Overpass',Arial,sans-serif;color:#2c2433;text-align:center}
+.eq-print-text{flex:1 1 auto;min-height:0;padding:1mm 1.8mm 0;font-size:9pt;line-height:1.2}.eq-print-text p{margin:0 0 .6mm}.eq-print-text .eq-keyword{color:color-mix(in srgb,var(--mc) 80%,#000)}
+.eq-print-note{font-style:italic;opacity:.75}
+.eq-print footer{flex:none;padding:0 1.8mm .8mm;font:600 4.2pt/1 'DH Overpass',Arial,sans-serif;color:#8a8190;text-align:right}
+.eq-print-text{overflow:hidden}
+.eq-print-src{position:absolute;right:1mm;bottom:.8mm;padding:.3mm .9mm;border-radius:.6mm;background:rgba(255,253,248,.85);color:#5c5363;font:700 4pt/1 'DH Overpass',Arial,sans-serif}
+.eq-print-stats b{white-space:nowrap;font-size:6.4pt}.eq-print-text{line-height:1.14;padding-bottom:1mm}
