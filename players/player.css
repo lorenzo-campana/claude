@@ -524,3 +524,12 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .eq-print h3{padding:.8mm 1.8mm .6mm}.eq-print-stats{padding-top:.8mm;gap:.6mm}.eq-print-text{padding-top:.8mm;line-height:1.12}
 .eq-print-stats b{white-space:normal;text-align:center}
 .eq-print-art{margin:0 auto;border-radius:0 0 1mm 1mm;overflow:hidden}
+/* mini card più piccola ed equilibrata: margini uguali (1.6 mm), gerarchia nome > badge > testo */
+.eq-print{border-width:.35mm}
+.eq-print h3{padding:.9mm 1.6mm .8mm;font-size:8pt;line-height:1.05;letter-spacing:.02em}
+.eq-print-kind,.eq-print-tier{top:1.2mm;font-size:4.4pt;padding:.45mm 1.1mm;letter-spacing:.08em}.eq-print-kind{left:1.2mm}.eq-print-tier{right:1.2mm}
+.eq-print-src{font-size:3.8pt;right:1.2mm;bottom:1mm}
+.eq-print-stats{padding:1.2mm 1.6mm 0;gap:.8mm}
+.eq-print-stats span{padding:.45mm .6mm .55mm;border-width:.15mm}
+.eq-print-stats small{font-size:3.7pt;letter-spacing:.08em}.eq-print-stats b{font-size:5.8pt;line-height:1.1}
+.eq-print-text{padding:1.3mm 1.6mm 1.2mm;font-size:7.2pt;line-height:1.24}
