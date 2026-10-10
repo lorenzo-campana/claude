@@ -60,4 +60,4 @@ function plClassFxReset(c,kind){const s=plFxState(c);
 function plClassFeatureCards(c){const k=plClass(c),cls=[[c.className,k?.features]];if(c.multiclass)cls.push([c.multiclass.className,PLAYER_RULES.classes[c.multiclass.className]?.features]);
  const cards=cls.flatMap(([name,text])=>plFxParts(text).map(f=>({...f,cls:name})));
  return `<div class="pl-fx-grid">${cards.map(f=>{const ui=PL_FX_UI[f.name];let widget='';try{widget=ui?ui(c):''}catch(e){widget=''}
-  return `<article class="pl-fx-card ${widget?'live':''}"><header><b>${esc(f.name)}</b>${cls.length>1?`<small>${esc(f.cls)}</small>`:''}</header><div class="pl-fx-text">${plFxText(f.items)}</div>${widget?`<div class="pl-fx-ui">${widget}</div>`:''}</article>`}).join('')}</div>`}
+  const len=f.items.reduce((n,x)=>n+(x.p||x.li||'').length,0);return `<article class="pl-fx-card ${widget?'live':''} ${len>480?'long':''}"><header><b>${esc(f.name)}</b>${cls.length>1?`<small>${esc(f.cls)}</small>`:''}</header><div class="pl-fx-text">${plFxText(f.items)}</div>${widget?`<div class="pl-fx-ui">${widget}</div>`:''}</article>`}).join('')}</div>`}

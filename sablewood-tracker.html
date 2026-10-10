@@ -1369,6 +1369,21 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pl-fx-chips{display:flex;flex-wrap:wrap;gap:5px}.pl-fx-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 9px;border-radius:999px;background:color-mix(in srgb,var(--sheet-accent,#6e57a5) 14%,#fff);font-size:.75rem}.pl-fx-chip button{border:0;background:none;cursor:pointer;font-size:.9rem;line-height:1;color:#6b5f74}
 .eq-compact-inventory .eq-inventory-head{display:none}
 .pl-fx-row>.btn{flex:none;font-size:.74rem;padding:5px 10px;min-height:0;margin-left:auto}
+/* card feature compatte: niente spazi vuoti, altezza = contenuto */
+.pl-fx-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;align-items:start}
+.pl-fx-card{gap:5px;padding:9px 11px 10px}.pl-fx-card header{padding-bottom:4px}
+.pl-fx-text{font-size:.75rem;line-height:1.36}.pl-fx-text p:last-child,.pl-fx-text ul:last-child{margin-bottom:0}
+.pl-fx-ui{margin-top:2px;padding-top:7px;gap:6px}
+.pl-fx-row{gap:8px;flex-wrap:nowrap}.pl-fx-row>div{gap:1px}.pl-fx-row>div b{font-size:.8rem}.pl-fx-row small{font-size:.68rem}
+.pl-fx-pool{flex-wrap:wrap}
+.pl-fx-die{width:34px;height:34px}.pl-fx-die b{font-size:13px}.pl-fx-die[data-sides="4"] b{margin-top:7px}
+.pl-official-sheet .pl-fx-field{flex-direction:row;align-items:center;gap:8px;margin:0;font-size:.62rem}
+.pl-official-sheet .pl-fx-field input,.pl-official-sheet .pl-fx-field select{flex:1;min-width:0;margin:0;padding:3px 7px;height:auto;font-size:.8rem}
+.pl-fx-actions .btn{padding:4px 9px}
+.pl-fx-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));grid-auto-flow:row dense}
+.pl-fx-card.long{grid-column:span 2}.pl-fx-card.long .pl-fx-text{columns:2;column-gap:18px}.pl-fx-card.long .pl-fx-text>*{break-inside:avoid}
+.pl-fx-pool>div{flex:1 1 140px}.pl-fx-pool>.btn{margin-left:auto}
+.pl-fx-card.long .pl-fx-text>p{break-inside:auto}
 
 /* PLAYER_STYLE_END */
 /* RULES_STYLE_START */
@@ -5469,7 +5484,7 @@ function plClassFxReset(c,kind){const s=plFxState(c);
 function plClassFeatureCards(c){const k=plClass(c),cls=[[c.className,k?.features]];if(c.multiclass)cls.push([c.multiclass.className,PLAYER_RULES.classes[c.multiclass.className]?.features]);
  const cards=cls.flatMap(([name,text])=>plFxParts(text).map(f=>({...f,cls:name})));
  return `<div class="pl-fx-grid">${cards.map(f=>{const ui=PL_FX_UI[f.name];let widget='';try{widget=ui?ui(c):''}catch(e){widget=''}
-  return `<article class="pl-fx-card ${widget?'live':''}"><header><b>${esc(f.name)}</b>${cls.length>1?`<small>${esc(f.cls)}</small>`:''}</header><div class="pl-fx-text">${plFxText(f.items)}</div>${widget?`<div class="pl-fx-ui">${widget}</div>`:''}</article>`}).join('')}</div>`}
+  const len=f.items.reduce((n,x)=>n+(x.p||x.li||'').length,0);return `<article class="pl-fx-card ${widget?'live':''} ${len>480?'long':''}"><header><b>${esc(f.name)}</b>${cls.length>1?`<small>${esc(f.cls)}</small>`:''}</header><div class="pl-fx-text">${plFxText(f.items)}</div>${widget?`<div class="pl-fx-ui">${widget}</div>`:''}</article>`}).join('')}</div>`}
 
 /* Player characters. No dependencies: this source is embedded into the standalone artifact. */
 const PL_TRAITS=['Agility','Strength','Finesse','Instinct','Presence','Knowledge'];
