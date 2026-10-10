@@ -1501,6 +1501,14 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pr-right{margin-left:-.35mm}
 .pr-foot{margin:0 8mm}
 .pr-class h1{font-size:17pt;white-space:nowrap}
+/* colonna destra più larga: tre mini card affiancate (primaria, secondaria, armatura) */
+.pr-cols{grid-template-columns:76mm 1fr}
+.pr-left .pr-panel{padding-left:7mm;padding-right:4mm}
+.pr-right .pr-panel{padding-left:4mm;padding-right:6mm}
+.pr-slots{gap:1.6mm;justify-content:center}
+.pr-stack{background:repeating-linear-gradient(135deg,#faf8fb 0 2.4mm,#f2eef5 2.4mm 4.8mm)}
+.pr-thr{grid-template-columns:1fr 8mm 1fr 8mm 1fr;gap:.8mm}.pr-thr span{font-size:5pt}.pr-thr span b{font-size:6.2pt}
+.pr-goldrow .pr-boxes{flex-wrap:nowrap;gap:.6mm}.pr-coin{width:3.1mm;height:3.1mm}
 
 /* PLAYER_STYLE_END */
 /* RULES_STYLE_START */
@@ -5661,8 +5669,8 @@ function plPrintSheet(c){const k=plClass(c),st=plStats(c),cls=[[c.className,k?.f
   ${panel('Gold',`<div class="pr-goldrow"><div><small>Handfuls</small>${plPrintBoxes(9,'pr-coin')}</div><div class="pr-bag"><i></i><small>Bags</small></div><div class="pr-chest"><i></i><small>Chest</small></div></div>`)}
   ${panel('Notes',lines(4),'pr-notes')}</div>
   <div class="pr-col pr-right">
-  ${panel('Active Weapons',`<div class="pr-prof"><small>Proficiency</small>${Array.from({length:6},(_,i)=>`<i class="${i<c.proficiency?'on':''}"></i>`).join('')}</div><div class="pr-slots">${slot('Primary')}${slot('Secondary')}</div>`)}
-  ${panel('Active Armor & Inventory',`<div class="pr-armrow">${slot('Armor')}<div class="pr-inv"><small>Inventory</small>${lines(6)}</div></div>`)}
+  ${panel('Active Weapons & Armor',`<div class="pr-prof"><small>Proficiency</small>${Array.from({length:6},(_,i)=>`<i class="${i<c.proficiency?'on':''}"></i>`).join('')}</div><div class="pr-slots">${slot('Primary')}${slot('Secondary')}${slot('Armor')}</div>`)}
+  ${panel('Inventory',`<div class="pr-armrow"><div class="pr-slot pr-stack"><b>Inventory</b><small>inventory weapon<br>e carte oggetto<br>impilate qui</small></div><div class="pr-inv"><small>Oggetti senza carta</small>${lines(6)}</div></div>`)}
   ${panel('Class Feature',`<div class="pr-feats-in">${featHTML}</div>`,'pr-feats')}</div></div>
  <footer class="pr-foot"><span>Daggerheart © Darrington Press 2025 · scheda adattata</span><span>${esc(c.name||'')} · ${esc(c.className)} ${c.level}</span></footer></div>`}
 // il testo delle feature si rimpicciolisce finché la pagina sta in un A4

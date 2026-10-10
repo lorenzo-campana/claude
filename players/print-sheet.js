@@ -23,8 +23,8 @@ function plPrintSheet(c){const k=plClass(c),st=plStats(c),cls=[[c.className,k?.f
   ${panel('Gold',`<div class="pr-goldrow"><div><small>Handfuls</small>${plPrintBoxes(9,'pr-coin')}</div><div class="pr-bag"><i></i><small>Bags</small></div><div class="pr-chest"><i></i><small>Chest</small></div></div>`)}
   ${panel('Notes',lines(4),'pr-notes')}</div>
   <div class="pr-col pr-right">
-  ${panel('Active Weapons',`<div class="pr-prof"><small>Proficiency</small>${Array.from({length:6},(_,i)=>`<i class="${i<c.proficiency?'on':''}"></i>`).join('')}</div><div class="pr-slots">${slot('Primary')}${slot('Secondary')}</div>`)}
-  ${panel('Active Armor & Inventory',`<div class="pr-armrow">${slot('Armor')}<div class="pr-inv"><small>Inventory</small>${lines(6)}</div></div>`)}
+  ${panel('Active Weapons & Armor',`<div class="pr-prof"><small>Proficiency</small>${Array.from({length:6},(_,i)=>`<i class="${i<c.proficiency?'on':''}"></i>`).join('')}</div><div class="pr-slots">${slot('Primary')}${slot('Secondary')}${slot('Armor')}</div>`)}
+  ${panel('Inventory',`<div class="pr-armrow"><div class="pr-slot pr-stack"><b>Inventory</b><small>inventory weapon<br>e carte oggetto<br>impilate qui</small></div><div class="pr-inv"><small>Oggetti senza carta</small>${lines(6)}</div></div>`)}
   ${panel('Class Feature',`<div class="pr-feats-in">${featHTML}</div>`,'pr-feats')}</div></div>
  <footer class="pr-foot"><span>Daggerheart © Darrington Press 2025 · scheda adattata</span><span>${esc(c.name||'')} · ${esc(c.className)} ${c.level}</span></footer></div>`}
 // il testo delle feature si rimpicciolisce finché la pagina sta in un A4
