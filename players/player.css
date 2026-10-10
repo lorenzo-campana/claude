@@ -515,3 +515,12 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .eq-print-text{overflow:hidden}
 .eq-print-src{position:absolute;right:1mm;bottom:.8mm;padding:.3mm .9mm;border-radius:.6mm;background:rgba(255,253,248,.85);color:#5c5363;font:700 4pt/1 'DH Overpass',Arial,sans-serif}
 .eq-print-stats b{white-space:nowrap;font-size:6.4pt}.eq-print-text{line-height:1.14;padding-bottom:1mm}
+/* badge equilibrati: griglia 2×2, etichetta e valore sulla stessa riga */
+.eq-print-stats{display:grid;grid-template-columns:1fr 1fr;gap:.7mm;padding:1mm 1.4mm 0}
+.eq-print-stats span{flex-direction:row;justify-content:space-between;align-items:baseline;gap:1mm;padding:.6mm 1.2mm;border-radius:.8mm;min-width:0}
+.eq-print-stats small{font-size:4.4pt;flex:none}.eq-print-stats b{font-size:6.6pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.eq-print-stats span{flex-direction:column;align-items:center;justify-content:center;gap:0;padding:.35mm .8mm .45mm}
+.eq-print-stats small{font-size:4.2pt;line-height:1}.eq-print-stats b{font-size:6.6pt;line-height:1.08;max-width:100%}
+.eq-print h3{padding:.8mm 1.8mm .6mm}.eq-print-stats{padding-top:.8mm;gap:.6mm}.eq-print-text{padding-top:.8mm;line-height:1.12}
+.eq-print-stats b{white-space:normal;text-align:center}
+.eq-print-art{margin:0 auto;border-radius:0 0 1mm 1mm;overflow:hidden}
