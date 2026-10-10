@@ -1483,6 +1483,24 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .eq-print-in .eq-card-content{padding-bottom:30px!important}
 .eq-print-in .eq-card-content{padding-bottom:38px!important}
 .eq-ico{width:1.05em;height:1.05em;vertical-align:-.17em;margin-right:.28em;color:var(--dc,#7a6a86);flex:none}
+/* come nel manuale: banner della classe scuro e obliquo, riquadri aperti fino al bordo del foglio */
+.pr-page{padding:0 0 4mm;gap:3.4mm}
+.pr-head{grid-template-columns:70mm 1fr 22mm;gap:4mm;padding:0 6mm 0 0;min-height:26mm;background:#d6cfdc}
+.pr-class{background:#493d57;clip-path:polygon(0 0,100% 0,85% 100%,0 100%);padding:4mm 12mm 3.5mm 7mm;text-align:left;align-items:flex-start;gap:1mm}
+.pr-class-row{display:flex;align-items:flex-end;gap:2.5mm}.pr-class h1{font-size:21pt}
+.pr-doms{gap:1.6mm}.pr-doms img{width:6mm;height:7.4mm;filter:grayscale(1) contrast(3) brightness(1.5);mix-blend-mode:screen}
+.pr-class p{font:11pt/1.2 'DH Eveleth Thin','DH Eveleth',Arial,sans-serif;letter-spacing:0;font-weight:400;opacity:1}
+.pr-id div{background:#fff;border:.3mm solid #b7aec0;border-radius:1mm;padding:.8mm 1.6mm .6mm}
+.pr-top{margin:0 8mm}
+.pr-cols{gap:0;grid-template-columns:1fr 1fr;margin-top:1mm}.pr-col{gap:5.4mm}
+.pr-panel{border:0;border-radius:0;padding:5.4mm 5mm 3mm;border-bottom:.35mm solid var(--line)}
+.pr-panel:before{content:'';position:absolute;left:0;right:0;top:0;height:1mm;border-top:.35mm solid var(--line);border-bottom:.35mm solid var(--line)}
+.pr-panel h2{top:-2.9mm}
+.pr-left .pr-panel{border-right:.35mm solid var(--line);padding-left:8mm}
+.pr-right .pr-panel{border-left:.35mm solid var(--line);padding-right:8mm}
+.pr-right{margin-left:-.35mm}
+.pr-foot{margin:0 8mm}
+.pr-class h1{font-size:17pt;white-space:nowrap}
 
 /* PLAYER_STYLE_END */
 /* RULES_STYLE_START */
@@ -5631,18 +5649,18 @@ function plPrintSheet(c){const k=plClass(c),st=plStats(c),cls=[[c.className,k?.f
  const xp=Array.from({length:5},(_,i)=>{const e=c.experiences[i];return `<div class="pr-xp"><span>${e?esc(e.name):''}</span><b>${e&&e.name?sgn(e.value):''}</b></div>`}).join('');
  const slot=(label)=>`<div class="pr-slot"><b>${label}</b><small>mini card 41×63</small></div>`;
  return `<div class="pr-page" style="--pa:${accent}">
- <header class="pr-head"><div class="pr-class"><h1>${esc(c.className)}</h1><div class="pr-doms">${k.domains.map(i=>`<img src="${cdomimg(i)}" alt="">`).join('')}</div><p>${k.domains.map(i=>esc(CDOM[i].k)).join(' & ')}</p></div>
+ <header class="pr-head"><div class="pr-class"><div class="pr-class-row"><h1>${esc(c.className)}</h1><div class="pr-doms">${k.domains.map(i=>`<img src="${cdomimg(i)}" alt="">`).join('')}</div></div><p>${k.domains.map(i=>esc(CDOM[i].k)).join(' & ')}</p></div>
   <div class="pr-id"><div><small>Name</small><b>${esc(c.name||'')}</b></div><div><small>Pronouns</small><b>${esc(c.pronouns||'')}</b></div><div><small>Heritage</small><b>${esc(plCard(c.ancestry)?.n||'')}${c.mixed!==''&&c.mixed!=null?' / '+esc(plCard(c.mixed)?.n||''):''} · ${esc(plCard(c.community)?.n||'')}</b></div><div><small>Subclass</small><b>${esc(c.subclass||'')}${c.multiclass?' · '+esc(c.multiclass.className)+' '+esc(c.multiclass.subclass):''}</b></div></div>
   <div class="pr-level"><b>${c.level}</b><small>Level</small></div></header>
  <section class="pr-top"><div class="pr-def"><div class="pr-shield ev"><i></i><small>Evasion</small><em>base ${k.evasion+(c.evasionBonus||0)}</em></div><div class="pr-shield ar"><i></i><small>Armor</small></div><div class="pr-armslots">${Array.from({length:12},()=>'<i></i>').join('')}</div></div>
   <div class="pr-traits">${PL_TRAITS.map((n,i)=>`<div class="pr-trait"><div class="pr-flag"><small>${n}</small><b>${sgn(c.traits[i])}</b></div><em>${PL_VERBS[i].split(' · ').join('<br>')}</em></div>`).join('')}</div></section>
- <div class="pr-cols"><div class="pr-col">
+ <div class="pr-cols"><div class="pr-col pr-left">
   ${panel('Damage & Health',`<p class="pr-inst">Add your current level to your damage thresholds.</p><div class="pr-thr"><span><b>Minor</b>Mark 1 HP</span><i></i><span><b>Major</b>Mark 2 HP</span><i></i><span><b>Severe</b>Mark 3 HP</span></div><div class="pr-track"><b>HP</b>${plPrintBoxes(st.hp)}</div><div class="pr-track"><b>Stress</b>${plPrintBoxes(st.stress)}</div>`)}
   ${panel('Hope',`<p class="pr-inst">Spend a Hope to use an experience or help an ally.</p><div class="pr-hopes">${plPrintBoxes(st.hope,'pr-box dia')}</div><div class="pr-hope"><b>${esc(hi>0?hopeT.slice(0,hi):'Hope Feature')}:</b> ${esc((hi>0?hopeT.slice(hi+1):hopeT).replace(/\s*\n\s*/g,' ').trim())}</div>`)}
   ${panel('Experience',xp)}
   ${panel('Gold',`<div class="pr-goldrow"><div><small>Handfuls</small>${plPrintBoxes(9,'pr-coin')}</div><div class="pr-bag"><i></i><small>Bags</small></div><div class="pr-chest"><i></i><small>Chest</small></div></div>`)}
   ${panel('Notes',lines(4),'pr-notes')}</div>
-  <div class="pr-col">
+  <div class="pr-col pr-right">
   ${panel('Active Weapons',`<div class="pr-prof"><small>Proficiency</small>${Array.from({length:6},(_,i)=>`<i class="${i<c.proficiency?'on':''}"></i>`).join('')}</div><div class="pr-slots">${slot('Primary')}${slot('Secondary')}</div>`)}
   ${panel('Active Armor & Inventory',`<div class="pr-armrow">${slot('Armor')}<div class="pr-inv"><small>Inventory</small>${lines(6)}</div></div>`)}
   ${panel('Class Feature',`<div class="pr-feats-in">${featHTML}</div>`,'pr-feats')}</div></div>

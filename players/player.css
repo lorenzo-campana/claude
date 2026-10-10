@@ -516,3 +516,21 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .eq-print-in .eq-card-content{padding-bottom:30px!important}
 .eq-print-in .eq-card-content{padding-bottom:38px!important}
 .eq-ico{width:1.05em;height:1.05em;vertical-align:-.17em;margin-right:.28em;color:var(--dc,#7a6a86);flex:none}
+/* come nel manuale: banner della classe scuro e obliquo, riquadri aperti fino al bordo del foglio */
+.pr-page{padding:0 0 4mm;gap:3.4mm}
+.pr-head{grid-template-columns:70mm 1fr 22mm;gap:4mm;padding:0 6mm 0 0;min-height:26mm;background:#d6cfdc}
+.pr-class{background:#493d57;clip-path:polygon(0 0,100% 0,85% 100%,0 100%);padding:4mm 12mm 3.5mm 7mm;text-align:left;align-items:flex-start;gap:1mm}
+.pr-class-row{display:flex;align-items:flex-end;gap:2.5mm}.pr-class h1{font-size:21pt}
+.pr-doms{gap:1.6mm}.pr-doms img{width:6mm;height:7.4mm;filter:grayscale(1) contrast(3) brightness(1.5);mix-blend-mode:screen}
+.pr-class p{font:11pt/1.2 'DH Eveleth Thin','DH Eveleth',Arial,sans-serif;letter-spacing:0;font-weight:400;opacity:1}
+.pr-id div{background:#fff;border:.3mm solid #b7aec0;border-radius:1mm;padding:.8mm 1.6mm .6mm}
+.pr-top{margin:0 8mm}
+.pr-cols{gap:0;grid-template-columns:1fr 1fr;margin-top:1mm}.pr-col{gap:5.4mm}
+.pr-panel{border:0;border-radius:0;padding:5.4mm 5mm 3mm;border-bottom:.35mm solid var(--line)}
+.pr-panel:before{content:'';position:absolute;left:0;right:0;top:0;height:1mm;border-top:.35mm solid var(--line);border-bottom:.35mm solid var(--line)}
+.pr-panel h2{top:-2.9mm}
+.pr-left .pr-panel{border-right:.35mm solid var(--line);padding-left:8mm}
+.pr-right .pr-panel{border-left:.35mm solid var(--line);padding-right:8mm}
+.pr-right{margin-left:-.35mm}
+.pr-foot{margin:0 8mm}
+.pr-class h1{font-size:17pt;white-space:nowrap}
