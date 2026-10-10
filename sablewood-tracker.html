@@ -1384,6 +1384,14 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pl-fx-card.long{grid-column:span 2}.pl-fx-card.long .pl-fx-text{columns:2;column-gap:18px}.pl-fx-card.long .pl-fx-text>*{break-inside:avoid}
 .pl-fx-pool>div{flex:1 1 140px}.pl-fx-pool>.btn{margin-left:auto}
 .pl-fx-card.long .pl-fx-text>p{break-inside:auto}
+/* Card effects come chip compatte: nome della carta (apre la carta), interruttore se è uno stato */
+.pl-fx-list.pl-fx-chips-row{flex-direction:row;flex-wrap:wrap;gap:5px}
+.pl-fx-chips-row .pl-fx{gap:6px;padding:3px 6px 3px 9px;border-radius:999px;flex:none}
+.pl-fx-name{all:unset;cursor:pointer;font:11px/1.2 var(--sheet-font,DH Eveleth),Arial,sans-serif;text-transform:uppercase;color:#493d57;padding:2px 2px}
+.pl-fx-name:hover{text-decoration:underline}.pl-fx-name:focus-visible{outline:2px solid #6e57a5;border-radius:4px}
+.pl-fx-chips-row .pl-fx>b{font-size:11px}.pl-fx-chips-row .pl-fx:not(.tg){padding-right:11px}
+.pl-fx-chips-row .pl-fx-switch{transform:scale(.8);margin:-2px -2px -2px 0}
+.pl-fx-ctlrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px;font-size:11px}.pl-fx-ctlrow>b{font:11px/1.2 var(--sheet-font,DH Eveleth),Arial,sans-serif;text-transform:uppercase;color:#493d57}
 
 /* PLAYER_STYLE_END */
 /* RULES_STYLE_START */
@@ -5412,14 +5420,17 @@ function plCardEffects(c,st){
 /* Pannello "Card effects" della scheda: cosa sta modificando i numeri, e gli interruttori per gli stati temporanei. */
 function plCardFxPanel(c,st){
  if(!st.cardFx.length)return '';const x=plFxContext(c);
+ const pool=[...x.owned,...(c.subcards||[]).map(plCard),...[c.ancestry,c.mixed,c.community,c.transformation].map(i=>i===''||i==null?null:plCard(i))].filter(Boolean),cardOf=n=>pool.filter(y=>y.n===n).sort((a,b)=>(b.tier||0)-(a.tier||0))[0];
  const row=({r,on,ok,why})=>{const k=r.key,tg=r.mode==='toggle',ch=r.mode==='choice';let ctl='';
   if(tg)ctl+=`<button type="button" class="pl-fx-switch ${on?'on':''}" data-pl="cardfx" data-k="${k}" aria-pressed="${on}" aria-label="${esc(r.label)}: ${on?'attivo':'non attivo'}"><i></i></button>`;
   if(r.options&&r.key==='channel'&&on)ctl+=`<select data-pl-field="cardFx.channelEl" aria-label="Elemento">${r.options.map(([v,n])=>`<option value="${v}" ${(x.fx.channelEl||'earth')===v?'selected':''}>${n}</option>`).join('')}</select>`;
   if(r.pick&&(on||ch)){const key=r.key==='transcend'?'transcendPick':r.key,cur=x.fx[key]||[];ctl+=`<span class="pl-fx-picks">${r.options.map(([v,n])=>`<button type="button" class="${cur.includes(v)?'on':''}" data-pl="cardfx-pick" data-k="${key}" data-v="${v}" data-max="${r.pick}" aria-pressed="${cur.includes(v)}">${n}</button>`).join('')}</span>`;if(r.key==='transcend'&&cur.includes('trait'))ctl+=`<select data-pl-field="cardFx.transcendTrait" aria-label="Tratto">${PL_FX_TRAIT.map((n,i)=>`<option value="${i}" ${+(x.fx.transcendTrait||0)===i?'selected':''}>${n}</option>`).join('')}</select>`}
   if(r.key==='craft'){const xp=c.experiences.map((e,i)=>[i,e.name||'Experience '+(i+1)]),opts=[['','Scegli…'],...xp.map(([i,n])=>['3:'+i,'+3 a '+n]),...xp.flatMap(([i,n])=>xp.filter(([j])=>j>i).map(([j,m])=>['2:'+i+','+j,'+2 a '+n+' e '+m]))];ctl+=`<select data-pl-field="cardFx.craft" aria-label="Master of the Craft">${opts.map(([v,n])=>`<option value="${esc(v)}" ${(x.fx.craft||'')===v?'selected':''}>${esc(n)}</option>`).join('')}</select>`}
-  return `<li class="pl-fx ${ok?'ok':''} ${tg?'tg':''}"><span class="pl-fx-dot" aria-hidden="true"></span><div><b>${esc(r.label)}</b><small>${esc(r.text)}${why&&on?` · <em>${esc(why)}</em>`:''}</small></div>${ctl?`<div class="pl-fx-ctl">${ctl}</div>`:''}</li>`};
+  const card=cardOf(r.card),tip=esc(r.label+' · '+r.text+(why&&on?' · '+why:''));
+  return {chip:`<li class="pl-fx ${ok?'ok':''} ${tg?'tg':''}" title="${tip}"><span class="pl-fx-dot" aria-hidden="true"></span>${card?`<button type="button" class="pl-fx-name" data-pl="gallery-preview" data-i="${card.i}" aria-label="Apri la carta ${esc(r.label)}">${esc(r.label)}</button>`:`<b>${esc(r.label)}</b>`}${tg?ctl.slice(0,ctl.indexOf('</button>')+9):''}</li>`,ctl:tg?ctl.slice(ctl.indexOf('</button>')+9):ctl,label:r.label}};
  const extra=[st.rollBonus&&`Tiri ${sgn(st.rollBonus)}`,st.attackBonus&&`Attacco ${sgn(st.attackBonus)}`,st.spellBonus&&`Spellcast ${sgn(st.spellBonus)}`,(st.damageBonus||st.weaponDamage)&&`Danni ${sgn(st.damageBonus+st.weaponDamage)}`,st.meleeDamage&&`Danni in Melee ${sgn(st.meleeDamage)}`].filter(Boolean);
- return `<ul class="pl-fx-list">${st.cardFx.map(row).join('')}</ul>${extra.length?`<p class="pl-fx-sum">Già applicati ai lanci della scheda: ${extra.join(' · ')}</p>`:''}${st.noArmorSlots?'<p class="pl-fx-sum"><b>Frenzy:</b> finché dura non puoi segnare Armor Slot.</p>':''}`;
+ const rows=st.cardFx.map(row);
+ return `<ul class="pl-fx-list pl-fx-chips-row">${rows.map(x=>x.chip).join('')}</ul>${rows.filter(x=>x.ctl).map(x=>`<div class="pl-fx-ctlrow"><b>${esc(x.label)}</b><div class="pl-fx-ctl">${x.ctl}</div></div>`).join('')}${extra.length?`<p class="pl-fx-sum">Già applicati ai lanci della scheda: ${extra.join(' · ')}</p>`:''}${st.noArmorSlots?'<p class="pl-fx-sum"><b>Frenzy:</b> finché dura non puoi segnare Armor Slot.</p>':''}`;
 }
 
 /* Class features as interactive cards on the sheet: each feature of the class (and of a multiclass) gets its rules text

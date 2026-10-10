@@ -437,3 +437,11 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pl-fx-card.long{grid-column:span 2}.pl-fx-card.long .pl-fx-text{columns:2;column-gap:18px}.pl-fx-card.long .pl-fx-text>*{break-inside:avoid}
 .pl-fx-pool>div{flex:1 1 140px}.pl-fx-pool>.btn{margin-left:auto}
 .pl-fx-card.long .pl-fx-text>p{break-inside:auto}
+/* Card effects come chip compatte: nome della carta (apre la carta), interruttore se è uno stato */
+.pl-fx-list.pl-fx-chips-row{flex-direction:row;flex-wrap:wrap;gap:5px}
+.pl-fx-chips-row .pl-fx{gap:6px;padding:3px 6px 3px 9px;border-radius:999px;flex:none}
+.pl-fx-name{all:unset;cursor:pointer;font:11px/1.2 var(--sheet-font,DH Eveleth),Arial,sans-serif;text-transform:uppercase;color:#493d57;padding:2px 2px}
+.pl-fx-name:hover{text-decoration:underline}.pl-fx-name:focus-visible{outline:2px solid #6e57a5;border-radius:4px}
+.pl-fx-chips-row .pl-fx>b{font-size:11px}.pl-fx-chips-row .pl-fx:not(.tg){padding-right:11px}
+.pl-fx-chips-row .pl-fx-switch{transform:scale(.8);margin:-2px -2px -2px 0}
+.pl-fx-ctlrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px;font-size:11px}.pl-fx-ctlrow>b{font:11px/1.2 var(--sheet-font,DH Eveleth),Arial,sans-serif;text-transform:uppercase;color:#493d57}
