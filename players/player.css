@@ -472,7 +472,7 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .eq-lb-print{font-size:12px;opacity:.75}
 .eq-print-art{flex:1 1 0;min-height:14mm;height:auto}.eq-print-text{flex:none;overflow:visible;padding-bottom:1mm}.eq-print-text p:last-child{margin-bottom:0}
 .eq-print-stats span:first-child{flex:1.5}.eq-print-stats b{font-size:7.4pt;white-space:normal;text-align:center;line-height:1.05}
-/* scheda cartacea A4 */
+/* scheda cartacea A4, ricalcata sulla scheda ufficiale */
 .pl-print-ov{position:fixed;inset:0;z-index:300;background:rgba(24,18,30,.86);display:flex;flex-direction:column}
 .pl-print-ov[hidden]{display:none}
 .pl-print-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#1d1724;color:#fff;font:600 14px/1.2 var(--f-body,system-ui)}
@@ -480,31 +480,37 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pl-print-stage{flex:1;overflow:auto;padding:16px;display:flex;justify-content:center;align-items:flex-start}
 .pl-print-scale{transform-origin:0 0;flex:none}.pl-print-scale .pr-page{box-shadow:0 10px 40px rgba(0,0,0,.5)}
 .pl-print-capture{position:fixed;left:-10000px;top:0;z-index:-1}
-.pr-page{--pa:#6e57a5;width:210mm;height:297mm;box-sizing:border-box;padding:8mm 9mm 6mm;background:#fff;color:#2b2630;font-family:'DH Overpass',Arial,sans-serif;font-size:8pt;line-height:1.25;display:flex;flex-direction:column;gap:3.2mm;overflow:hidden}
-.pr-page h1,.pr-page h2{font-family:'DH Eveleth',Arial,sans-serif;margin:0;text-transform:uppercase;letter-spacing:.02em;color:#3b3046}
-.pr-page h2{font-size:9.5pt;padding:0 0 1mm;margin:0 0 1.6mm;border-bottom:.4mm solid var(--pa);display:block}
-.pr-page small{font-size:6pt;text-transform:uppercase;letter-spacing:.07em;color:#7a7180;font-weight:700}
-.pr-head{display:grid;grid-template-columns:46mm 1fr 18mm;gap:3mm;align-items:stretch}
-.pr-class{background:var(--pa);color:#fff;border-radius:2mm;padding:2.5mm 3mm;display:flex;flex-direction:column;justify-content:center}.pr-class h1{color:#fff;font-size:17pt;line-height:1}.pr-class p{margin:1mm 0 0;font-size:7.5pt;font-weight:700;opacity:.92}
-.pr-id{display:grid;grid-template-columns:1.3fr .7fr;gap:1.4mm 3mm}.pr-id div{border-bottom:.25mm solid #b9afbf;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:.6mm}.pr-id b{font-size:9.5pt;min-height:4mm}
-.pr-level{border:.5mm solid var(--pa);border-radius:2mm 2mm 9mm 9mm;display:flex;flex-direction:column;align-items:center;justify-content:center}.pr-level b{font:20pt/1 'DH Eveleth',Arial,sans-serif;color:#3b3046}
-.pr-top{display:grid;grid-template-columns:58mm 1fr;gap:4mm;align-items:stretch}
-.pr-def{display:grid;grid-template-columns:1fr 1fr;gap:1.6mm}.pr-big{border:.4mm solid #8d8295;border-radius:2mm;display:flex;flex-direction:column;align-items:center;padding:1.2mm}.pr-big i{flex:1;min-height:9mm}.pr-big em{font-size:6pt;color:#8a8190;font-style:normal}
-.pr-armslots{grid-column:1/-1;display:flex;align-items:center;gap:2mm}
-.pr-boxes{display:inline-flex;flex-wrap:wrap;gap:1.1mm;vertical-align:middle}.pr-box{width:4.2mm;height:4.2mm;border:.35mm solid #6f6577;border-radius:.8mm;display:inline-block;box-sizing:border-box}.pr-box.sm{width:3.2mm;height:3.2mm}.pr-box.dia{transform:rotate(45deg);width:3.8mm;height:3.8mm;margin:0 .8mm;border-color:#b08737}
-.pr-traits{display:grid;grid-template-columns:repeat(6,1fr);gap:1.6mm}.pr-trait{border:.4mm solid #8d8295;border-radius:1.5mm 1.5mm 6mm 6mm;display:flex;flex-direction:column;align-items:center;padding:1.2mm .8mm 1.6mm;text-align:center}.pr-trait b{font:15pt/1.1 'DH Eveleth',Arial,sans-serif;color:#3b3046}.pr-trait em{font-size:5.6pt;font-style:normal;color:#6f6577;line-height:1.2}
-.pr-equip-in{display:grid;grid-template-columns:20mm auto 1fr;gap:3mm;align-items:start}
-.pr-prof{display:flex;flex-direction:column;align-items:center;gap:1.2mm}.pr-prof i{width:3.4mm;height:3.4mm;border-radius:50%;border:.35mm solid #6f6577}.pr-prof i.on{background:#3b3046}
-.pr-slots{display:flex;gap:2.4mm}.pr-slot{width:41mm;height:63mm;box-sizing:border-box;border:.4mm dashed #9a90a2;border-radius:2.2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;color:#8a8190;text-align:center}.pr-slot b{font:8pt 'DH Eveleth',Arial,sans-serif;text-transform:uppercase;color:#7a7180}
-.pr-inv{display:flex;flex-direction:column}.pr-line{border-bottom:.25mm solid #b9afbf;min-height:6.6mm;display:flex;align-items:flex-end;justify-content:space-between;gap:2mm;padding-bottom:.6mm;font-size:8.5pt}.pr-line b{font-weight:800}
-.pr-gold{display:flex;flex-direction:column;gap:1.4mm;margin-top:2.4mm}.pr-gold>span{display:flex;align-items:center;justify-content:space-between;gap:2mm;font-size:7pt;font-weight:700;color:#5c5363}
-.pr-cols{flex:1;min-height:0;display:grid;grid-template-columns:78mm 1fr;gap:5mm}.pr-col{display:flex;flex-direction:column;gap:3mm;min-height:0}
-.pr-thr{display:grid;grid-template-columns:1fr 11mm 1fr 11mm 1fr;align-items:center;text-align:center;font-weight:800;font-size:7pt;text-transform:uppercase;color:#4a4150}.pr-thr em{font-style:normal;font-weight:600;color:#8a8190;text-transform:none}.pr-thr i{height:8mm;border:.4mm solid #6f6577;border-radius:1.5mm}
-.pr-hint{margin:.8mm 0 1.6mm;font-size:6pt;color:#8a8190;text-align:center}
-.pr-track{display:flex;align-items:center;gap:2.4mm;margin:1.2mm 0}.pr-track>b{width:11mm;font-size:7.5pt;text-transform:uppercase}
-.pr-hope{margin-top:1.6mm;padding:1.6mm 2mm;border:.3mm solid #c9a24f;border-radius:1.5mm;background:#fffaf0;font-size:7.6pt}.pr-hope b{text-transform:uppercase;color:#7b5413}
-.pr-feats{flex:1;min-height:0;overflow:hidden;font-size:8pt}.pr-feat{margin:0 0 1.8mm}.pr-feat>b{display:block;font-family:'DH Eveleth',Arial,sans-serif;text-transform:uppercase;font-size:1.05em;color:#3b3046;margin-bottom:.4mm}.pr-feat p{margin:0 0 .8mm}.pr-feat p.li{padding-left:2.5mm;text-indent:-2.5mm}
+.pr-page{--pa:#6e57a5;--ink:#37343a;--line:#7f7190;width:210mm;height:297mm;box-sizing:border-box;padding:7mm 8mm 5mm;background:#fff;color:var(--ink);font-family:'DH Overpass',Arial,sans-serif;font-size:8pt;line-height:1.25;display:flex;flex-direction:column;gap:3mm;overflow:hidden}
+.pr-page small{font-size:5.8pt;text-transform:uppercase;letter-spacing:.08em;color:#706b74;font-weight:800}
+.pr-head{display:grid;grid-template-columns:56mm 1fr 21mm;gap:4mm;background:#d6cfdc;align-items:center;padding-right:3mm;min-height:27mm}
+.pr-class{align-self:stretch;background:var(--pa);color:#fff;padding:2mm 3mm 2.4mm;display:flex;flex-direction:column;justify-content:center;gap:.8mm;clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%);text-align:center}
+.pr-class h1{margin:0;font:19pt/1 'DH Eveleth',Arial,sans-serif;text-transform:uppercase;letter-spacing:.02em;color:#fff}.pr-doms{display:flex;justify-content:center;gap:2mm}.pr-doms img{width:7mm;height:7mm;object-fit:contain}.pr-class p{margin:0;font-size:6.5pt;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.pr-id{display:grid;grid-template-columns:1.25fr .75fr;gap:1.8mm 4mm}.pr-id div{display:flex;flex-direction:column;border-bottom:.3mm solid #7f7190;padding-bottom:.5mm}.pr-id b{font-size:9.5pt;min-height:4.2mm}
+.pr-level{width:20mm;height:22mm;background:url("players/assets/level.svg") center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:3mm;box-sizing:border-box;color:#66547f}.pr-level b{font:16pt/1 'DH Eveleth',Arial,sans-serif}.pr-level small{font-size:5pt;color:#66547f}
+.pr-top{display:grid;grid-template-columns:62mm 1fr;gap:4mm;align-items:start;margin:0 1mm}
+.pr-def{display:grid;grid-template-columns:1fr 1fr;gap:1mm 2mm;justify-items:center}
+.pr-shield{width:22mm;height:22mm;background:center/contain no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:2.2mm;box-sizing:border-box}.pr-shield.ev{background-image:url("players/assets/evasion.svg")}.pr-shield.ar{background-image:url("players/assets/armor.svg")}.pr-shield small{color:#fff;font-size:5.4pt}.pr-shield em{font-style:normal;font-size:5pt;color:#fff;opacity:.9}
+.pr-armslots{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,4mm);gap:.8mm 1.6mm}.pr-armslots i{width:4mm;height:4.8mm;background:url("players/assets/armor-slot.svg") center/contain no-repeat}
+.pr-traits{display:grid;grid-template-columns:repeat(6,1fr);gap:2mm}.pr-trait{display:flex;flex-direction:column;align-items:center;text-align:center}
+.pr-flag{width:100%;aspect-ratio:65/52;background:url("players/assets/trait.svg") center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:1.6mm;box-sizing:border-box}.pr-flag small{color:#fff;font-size:5.6pt;margin-top:-1mm}.pr-flag b{font:14pt/1.05 'DH Eveleth',Arial,sans-serif;color:#493d57;margin-top:1.8mm}
+.pr-trait em{font-style:normal;font-size:5.8pt;line-height:1.2;color:#5d5763;margin-top:.8mm}
+.pr-cols{flex:1;min-height:0;display:grid;grid-template-columns:83mm 1fr;gap:4mm}.pr-col{display:flex;flex-direction:column;gap:4.4mm;min-height:0}
+.pr-panel{position:relative;border:.35mm solid var(--line);border-radius:2mm;padding:5mm 3mm 2.4mm}
+.pr-panel h2{position:absolute;left:0;right:0;top:-3.4mm;margin:0;display:flex;justify-content:center}.pr-panel h2 span{background:url("players/assets/section-banner.svg") center/100% 100% no-repeat;padding:1.2mm 7mm;font:9pt/1 'DH Eveleth',Arial,sans-serif;text-transform:uppercase;color:#493d57;white-space:nowrap}
+.pr-inst{margin:0 0 1.6mm;font-size:6.5pt;color:#706b74;text-align:center;font-style:italic}
+.pr-thr{display:grid;grid-template-columns:1fr 10mm 1fr 10mm 1fr;align-items:center;gap:1mm;margin-bottom:1.8mm}.pr-thr span{background:url("players/assets/damage-tab.svg") center/100% 100% no-repeat;text-align:center;padding:1.6mm .5mm;font-size:5.6pt;color:#fff;line-height:1.15}.pr-thr span b{display:block;font:7pt 'DH Eveleth',Arial,sans-serif;text-transform:uppercase}.pr-thr i{height:7mm;border:.35mm solid #6f6577;border-radius:1.4mm}
+.pr-track{display:flex;align-items:center;gap:2mm;margin:1.2mm 0}.pr-track>b{width:11mm;font:7pt 'DH Eveleth',Arial,sans-serif;text-transform:uppercase}
+.pr-boxes{display:inline-flex;flex-wrap:wrap;gap:1mm;vertical-align:middle}.pr-box{width:4.2mm;height:4.2mm;border:.35mm solid #6f6577;border-radius:.8mm;display:inline-block;box-sizing:border-box}
+.pr-hopes{display:flex;justify-content:center;margin:.6mm 0 2mm}.pr-box.dia{transform:rotate(45deg);width:4mm;height:4mm;margin:0 1.4mm;border-color:#b08737;border-width:.45mm}
+.pr-hope{padding:1.6mm 2mm;border:.3mm solid #c9a24f;border-radius:1.5mm;background:#fffaf0;font-size:7.2pt}.pr-hope b{text-transform:uppercase;color:#7b5413}
+.pr-xp{display:flex;justify-content:space-between;align-items:flex-end;gap:2mm;border-bottom:.25mm solid #b9afbf;min-height:5.6mm;padding-bottom:.5mm;font-size:8.5pt}.pr-xp b{width:7mm;text-align:center;border-left:.25mm solid #b9afbf}
+.pr-goldrow{display:grid;grid-template-columns:1fr 15mm 15mm;gap:2mm;align-items:center}.pr-goldrow>div{display:flex;flex-direction:column;align-items:center;gap:1mm}.pr-coin{width:3.6mm;height:3.6mm;border-radius:50%;border:.35mm solid #b08737;display:inline-block;box-sizing:border-box}
+.pr-bag i,.pr-chest i{width:9mm;height:9mm;background:center/contain no-repeat}.pr-bag i{background-image:url("players/assets/gold-bag.svg")}.pr-chest i{background-image:url("players/assets/gold-chest.svg")}
+.pr-line{border-bottom:.25mm solid #b9afbf;min-height:6mm}.pr-notes{flex:1;min-height:0}
+.pr-prof{display:flex;align-items:center;justify-content:center;gap:1.4mm;margin-bottom:2mm}.pr-prof small{margin-right:1mm}.pr-prof i{width:3.4mm;height:3.4mm;border-radius:50%;border:.35mm solid #6f6577}.pr-prof i.on{background:#493d57}
+.pr-slots{display:flex;justify-content:center;gap:4mm}.pr-slot{width:41mm;height:63mm;box-sizing:border-box;flex:none;border:.4mm dashed #9a90a2;border-radius:2.2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;text-align:center;background:#faf8fb}.pr-slot b{font:8pt 'DH Eveleth',Arial,sans-serif;text-transform:uppercase;color:#7a7180}
+.pr-armrow{display:flex;gap:3mm;align-items:stretch}.pr-inv{flex:1;display:flex;flex-direction:column;justify-content:space-between}.pr-inv .pr-line{min-height:0;flex:1}
+.pr-feats{flex:1;min-height:0;overflow:hidden;font-size:8pt}.pr-feat{margin:0 0 1.6mm}.pr-feat>b{display:block;font-family:'DH Eveleth',Arial,sans-serif;text-transform:uppercase;font-size:1.05em;color:#493d57;margin-bottom:.3mm}.pr-feat p{margin:0 0 .7mm}.pr-feat p.li{padding-left:2.5mm;text-indent:-2.5mm}
 .pr-foot{display:flex;justify-content:space-between;font-size:6pt;color:#9a90a2}
-.pr-gold>span{flex-direction:column;align-items:flex-start;gap:.8mm}.pr-gold .pr-boxes{gap:1.3mm}
-.pr-armslots .pr-boxes{flex-wrap:nowrap;gap:.9mm}.pr-armslots .pr-box.sm{width:2.9mm;height:2.9mm}
-.pr-gold .pr-boxes{flex-wrap:nowrap;gap:.8mm}.pr-gold .pr-box.sm{width:3mm;height:3mm}
+.pr-feats{overflow:visible;display:flex;flex-direction:column}.pr-feats-in{flex:1;min-height:0;overflow:hidden}
+.pr-flag small{font-size:4.6pt;letter-spacing:.04em;white-space:nowrap}
