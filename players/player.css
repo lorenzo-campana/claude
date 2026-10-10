@@ -515,3 +515,4 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .eq-print-src{position:absolute;left:2mm;right:2mm;bottom:1.3mm;padding-top:.8mm;border-top:.2mm solid rgba(80,70,90,.18);font:600 4.6pt/1 'DH Overpass',Arial,sans-serif;letter-spacing:.04em;color:#8a8190;text-align:right}
 .eq-print-in .eq-card-content{padding-bottom:30px!important}
 .eq-print-in .eq-card-content{padding-bottom:38px!important}
+.eq-ico{width:1.05em;height:1.05em;vertical-align:-.17em;margin-right:.28em;color:var(--dc,#7a6a86);flex:none}
