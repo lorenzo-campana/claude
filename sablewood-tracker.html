@@ -1479,6 +1479,9 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .eq-print-in .eq-card-content{flex:1;min-height:0;overflow:hidden}
 .eq-print-in.pl{padding:0!important;margin:0!important;min-height:0!important;background:none!important}.eq-print-in .cd-i{border-radius:17px!important;overflow:hidden}
 .eq-print-in .eq-feature{display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;max-height:none!important;overflow:visible!important;flex:none!important;line-height:1.35}
+.eq-print-src{position:absolute;left:2mm;right:2mm;bottom:1.3mm;padding-top:.8mm;border-top:.2mm solid rgba(80,70,90,.18);font:600 4.6pt/1 'DH Overpass',Arial,sans-serif;letter-spacing:.04em;color:#8a8190;text-align:right}
+.eq-print-in .eq-card-content{padding-bottom:30px!important}
+.eq-print-in .eq-card-content{padding-bottom:38px!important}
 
 /* PLAYER_STYLE_END */
 /* RULES_STYLE_START */
@@ -5367,8 +5370,8 @@ function eqLbOpen(id,src,uid){const box=src?.closest('.eq-catalog,.pl-official-p
 /* Versione stampa = la stessa card della galleria, impaginata in 41×63 mm (mini card).
    La card si disegna a 289×444 px (proporzione 41:63) e si scala di 41mm/289px; il testo dell'effetto si adatta allo spazio. */
 const EQ_PRINT_W=289,EQ_PRINT_H=Math.round(289*63/41);
-function eqPrintCard(e){return `<div class="eq-print"><div class="eq-print-in pl" style="width:${EQ_PRINT_W}px;height:${EQ_PRINT_H}px">${eqCard(e,'view')}</div></div>`}
-function eqPrintFit(root){root.querySelectorAll('.eq-print-in').forEach(card=>{const c=card.querySelector('.eq-card-content'),f=card.querySelector('.eq-feature');if(!c||!f)return;const over=()=>f.getBoundingClientRect().bottom>c.getBoundingClientRect().bottom-12*.53618;let px=15;f.style.fontSize=px+'px';while(over()&&px>8){px-=.5;f.style.fontSize=px+'px'}})}
+function eqPrintCard(e){const book=e.book==='hf'?'Hope & Fear':e.book==='core'?'Core Rulebook':e.book?'Campagna':'';return `<div class="eq-print"><div class="eq-print-in pl" style="width:${EQ_PRINT_W}px;height:${EQ_PRINT_H}px">${eqCard(e,'view')}</div>${book?`<span class="eq-print-src">${esc(book)}${e.page?' · p. '+e.page:''}</span>`:''}</div>`}
+function eqPrintFit(root){root.querySelectorAll('.eq-print-in').forEach(card=>{const c=card.querySelector('.eq-card-content'),f=card.querySelector('.eq-feature');if(!c||!f)return;const over=()=>c.scrollHeight>c.clientHeight+1;let px=15;f.style.fontSize=px+'px';while(over()&&px>8){px-=.5;f.style.fontSize=px+'px'}})}
 function eqLbHTML(e){const pos=EQ_LB.list.indexOf(e.id),many=EQ_LB.list.length>1,color={primary:'#926475',secondary:'#ae8443',armor:'#448b89',consumable:'#7963a3',item:'#657d8b'}[e.kind]||'#657d8b';
  const pills=[e.tier?`Tier ${e.tier}`:(e.rarity||'Item'),e.trait,e.range,e.damage,e.hands?`${e.hands} hand${e.hands>1?'s':''}`:'',e.kind==='armor'?`Soglie ${e.major}/${e.severe}`:'',e.kind==='armor'?`Armor ${e.score}`:'',e.magic?'Magic':''].filter(Boolean).map((x,i)=>`<span ${i?'':'class="dm"'}>${esc(String(x))}</span>`).join('');
  const book=e.book==='hf'?'Hope & Fear':e.book==='core'?'Core Rulebook':'';
