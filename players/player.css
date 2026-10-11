@@ -602,3 +602,10 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pr-hand i{width:2.9mm;height:2.9mm}.pr-hand>span,.pr-bags>span{gap:.35mm}.pr-bags i{width:2.6mm;height:3.4mm}.pr-chest i{width:5mm;height:5mm}
 .pr-hand small,.pr-bags small,.pr-chest small{align-self:flex-start}
 .pr-track>b{width:14.5mm;font-size:9pt}.pr-panel h2 span{padding:1.4mm 10mm}
+/* etichette centrate nella fascia scura degli scudi (posizione presa dalle SVG) */
+.pr-shield{background-size:100% 100%!important}
+.pr-shield small{top:73.1%;height:17.2%;bottom:auto!important;display:flex;align-items:center;justify-content:center;line-height:1}
+.pr-shield.ar small{top:70.6%;height:16.6%}
+.pl-official-sheet .pl-defense-values>div small{top:73.1%;height:17.2%!important;bottom:auto!important;display:flex;align-items:center;justify-content:center;line-height:1}
+.pl-official-sheet .pl-defense-values>div:nth-child(2) small{top:70.6%;height:16.6%!important}
+.pr-shield small{font-size:7.6pt}
