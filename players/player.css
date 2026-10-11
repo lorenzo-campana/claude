@@ -542,3 +542,23 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pr-stack{background:repeating-linear-gradient(135deg,#faf8fb 0 2.4mm,#f2eef5 2.4mm 4.8mm)}
 .pr-thr{grid-template-columns:1fr 8mm 1fr 8mm 1fr;gap:.8mm}.pr-thr span{font-size:5pt}.pr-thr span b{font-size:6.2pt}
 .pr-goldrow .pr-boxes{flex-wrap:nowrap;gap:.6mm}.pr-coin{width:3.1mm;height:3.1mm}
+/* Evasion, Armor e Armor Slot a linea grigia come sulla scheda del manuale */
+.pl-official-sheet .pl-defense-icon.evasion{background-image:url("players/assets/evasion-line.svg")}
+.pl-official-sheet .pl-defense-icon.armor{background-image:url("players/assets/armor-line.svg")}
+.pl-official-sheet .pl-defense-icon{filter:none;position:relative}
+.pl-official-sheet .pl-defense-icon b,.pl-official-sheet .pl-defense-icon.armor b{color:#3d3c40}
+.pl-official-sheet .pl-defense-values{position:relative}.pl-official-sheet .pl-defense-values:after{content:'';position:absolute;left:50%;top:18%;bottom:22%;border-left:1.5px solid #3d3c40}
+.pl-def-start{position:absolute;left:0;right:0;bottom:-15px;font:400 11px/1 var(--sheet-text,'DH Overpass'),Arial,sans-serif;font-style:normal;color:#5c5a60;text-align:center}
+.pl-official-sheet .pl-defense{padding-bottom:12px}
+.pl-official-sheet .pl-paper-pips.armor button:not(.pl-pip-reset){background-image:url("players/assets/armor-slot-line.svg")}
+.pl-official-sheet .pl-paper-pips.armor .on:after{background:#3d3c40}
+/* stampa */
+.pr-def{display:grid;grid-template-columns:22mm 2mm 22mm 1fr;align-items:center;gap:0 2mm;justify-items:center}
+.pr-shield{width:22mm;height:23mm;padding-bottom:0;justify-content:flex-end;position:relative}
+.pr-shield.ev{background-image:url("players/assets/evasion-line.svg")}.pr-shield.ar{background-image:url("players/assets/armor-line.svg");height:24mm}
+.pr-shield small{position:absolute;left:0;right:0;bottom:14.5%;text-align:center;color:#fff;font:9pt/1 'DH Eveleth',Arial,sans-serif;letter-spacing:.02em}
+.pr-shield.ar small{bottom:16.8%}
+.pr-shield em{position:absolute;left:-4mm;right:-4mm;bottom:-4mm;text-align:center;font:400 7pt/1 'DH Overpass',Arial,sans-serif;font-style:normal;color:#5c5a60}
+.pr-def-div{width:0;height:17mm;border-left:.35mm solid #3d3c40}
+.pr-armslots{grid-column:auto;display:grid;grid-template-columns:repeat(3,4.4mm);gap:.9mm 1.1mm}.pr-armslots i{width:4.4mm;height:5.1mm;background-image:url("players/assets/armor-slot-line.svg")}
+.pr-top{grid-template-columns:76mm 1fr;padding-bottom:3mm}
