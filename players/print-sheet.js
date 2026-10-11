@@ -2,6 +2,7 @@
    niente carte dominio né inventory weapon (sono carte stampate tenute accanto al foglio): per armi e armatura
    equipaggiate restano i posti delle mini card 41×63 mm. Anteprima a schermo, poi PDF con html2canvas + jsPDF. */
 function plPrintBoxes(n,cls='pr-box'){return `<span class="pr-boxes">${Array.from({length:n},()=>`<i class="${cls}"></i>`).join('')}</span>`}
+function plPrintSlots(n){return `<span class="pr-slots12">${Array.from({length:12},(_,i)=>`<i class="${i<n?'':'x'}"></i>`).join('')}</span>`}
 function plPrintSheet(c){const k=plClass(c),st=plStats(c),cls=[[c.className,k?.features]];if(c.multiclass)cls.push([c.multiclass.className,PLAYER_RULES.classes[c.multiclass.className]?.features]);
  const accent=CDOM[k.domains[0]]?.c||'#6e57a5',hopeT=String(k.hope||''),hi=hopeT.indexOf(':');
  const feats=cls.flatMap(([n,t])=>plFxParts(t).map(f=>({...f,cls:n})));
@@ -17,10 +18,10 @@ function plPrintSheet(c){const k=plClass(c),st=plStats(c),cls=[[c.className,k?.f
  <section class="pr-top"><div class="pr-def"><div class="pr-shield ev"><small>Evasion</small><em>Start at ${k.evasion+(c.evasionBonus||0)}</em></div><i class="pr-def-div"></i><div class="pr-shield ar"><small>Armor</small></div><div class="pr-armslots">${Array.from({length:12},()=>'<i></i>').join('')}</div></div>
   <div class="pr-traits">${PL_TRAITS.map((n,i)=>`<div class="pr-trait"><div class="pr-flag"><small>${n}</small><b>${sgn(c.traits[i])}</b></div><em>${PL_VERBS[i].split(' · ').join('<br>')}</em></div>`).join('')}</div></section>
  <div class="pr-cols"><div class="pr-col pr-left">
-  ${panel('Damage & Health',`<p class="pr-inst">Add your current level to your damage thresholds.</p><div class="pr-thr"><span><b>Minor</b>Mark 1 HP</span><i></i><span><b>Major</b>Mark 2 HP</span><i></i><span><b>Severe</b>Mark 3 HP</span></div><div class="pr-track"><b>HP</b>${plPrintBoxes(st.hp)}</div><div class="pr-track"><b>Stress</b>${plPrintBoxes(st.stress)}</div>`)}
-  ${panel('Hope',`<p class="pr-inst">Spend a Hope to use an experience or help an ally.</p><div class="pr-hopes">${plPrintBoxes(st.hope,'pr-box dia')}</div><div class="pr-hope"><b>${esc(hi>0?hopeT.slice(0,hi):'Hope Feature')}:</b> ${esc((hi>0?hopeT.slice(hi+1):hopeT).replace(/\s*\n\s*/g,' ').trim())}</div>`)}
+  ${panel('Damage & Health',`<p class="pr-inst">Add your current level to your damage thresholds.</p><div class="pr-thr"><div><span>Minor<br>Damage</span><em>Mark 1 HP</em></div><i></i><div><span>Major<br>Damage</span><em>Mark 2 HP</em></div><i></i><div><span>Severe<br>Damage</span><em>Mark 3 HP</em></div></div><div class="pr-track"><b>HP</b>${plPrintSlots(st.hp)}</div><div class="pr-track"><b>Stress</b>${plPrintSlots(st.stress)}</div>`)}
+  ${panel('Hope',`<p class="pr-inst">Spend a Hope to use an experience or help an ally.</p><div class="pr-hopebar">${Array.from({length:st.hope},()=>'<i></i>').join('<b></b>')}</div><p class="pr-hope"><b>${esc(hi>0?hopeT.slice(0,hi):'Hope Feature')}:</b> ${esc((hi>0?hopeT.slice(hi+1):hopeT).replace(/\s*\n\s*/g,' ').trim()).replace(/^(Spend \d+ Hope)/,'<strong>$1</strong>')}</p>`)}
   ${panel('Experience',xp)}
-  ${panel('Gold',`<div class="pr-goldrow"><div><small>Handfuls</small>${plPrintBoxes(9,'pr-coin')}</div><div class="pr-bag"><i></i><small>Bags</small></div><div class="pr-chest"><i></i><small>Chest</small></div></div>`)}
+  ${panel('Gold',`<div class="pr-goldrow"><div class="pr-hand"><span>${Array.from({length:9},()=>'<i></i>').join('')}</span><small>Handfuls</small></div><div class="pr-bags"><span>${Array.from({length:9},()=>'<i></i>').join('')}</span><small>Bags</small></div><div class="pr-chest"><i></i><small>Chest</small></div></div>`)}
   ${panel('Notes',lines(4),'pr-notes')}</div>
   <div class="pr-col pr-right">
   ${panel('Active Weapons & Armor',`<div class="pr-prof"><small>Proficiency</small>${Array.from({length:6},(_,i)=>`<i class="${i<c.proficiency?'on':''}"></i>`).join('')}</div><div class="pr-slots">${slot('Primary')}${slot('Secondary')}${slot('Armor')}</div>`)}

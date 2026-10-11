@@ -562,3 +562,43 @@ html{scrollbar-gutter:stable}.pv-hub.glass .hub-nav .nb{display:inline-block}#ba
 .pr-def-div{width:0;height:17mm;border-left:.35mm solid #3d3c40}
 .pr-armslots{grid-column:auto;display:grid;grid-template-columns:repeat(3,4.4mm);gap:.9mm 1.1mm}.pr-armslots i{width:4.4mm;height:5.1mm;background-image:url("players/assets/armor-slot-line.svg")}
 .pr-top{grid-template-columns:76mm 1fr;padding-bottom:3mm}
+/* riquadri come nel manuale: bordo grigio aperto verso il margine, angoli arrotondati, banner bianco a punta */
+.pr-page{--line:#5f5e63}
+.pr-panel{border:.35mm solid var(--line)!important;padding:6.2mm 5mm 3mm}
+.pr-panel:before{display:none}
+.pr-left .pr-panel{border-left:0!important;border-radius:0 3.2mm 3.2mm 0;padding-left:7mm}
+.pr-right .pr-panel{border-right:0!important;border-radius:3.2mm 0 0 3.2mm;padding-right:6mm}
+.pr-right{margin-left:2mm}.pr-cols{gap:0}
+.pr-panel h2{top:-3.4mm}
+.pr-panel h2 span{position:relative;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M7 1H93L99 10L93 19H7L1 10Z' fill='%23fff' stroke='%235f5e63' stroke-width='1.4' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M4.5 10 8.5 4.5H11L7 10 11 15.5H8.5ZM95.5 10 91.5 4.5H89L93 10 89 15.5H91.5Z' fill='%235f5e63'/%3E%3C/svg%3E") center/100% 100% no-repeat;padding:1.4mm 0;min-width:46mm;text-align:center;font-size:10.5pt;color:#3d3c40;letter-spacing:.01em}
+.pr-inst{font-style:normal;color:#3d3c40;font-size:6.6pt;margin-bottom:1.8mm}
+/* soglie: linguette scure e frecce bianche */
+.pr-thr{grid-template-columns:1fr 9mm 1fr 9mm 1fr;gap:0;align-items:start;margin-bottom:2.6mm}
+.pr-thr>div{display:flex;flex-direction:column;align-items:center;gap:.6mm}
+.pr-thr span{background:#5f5e63;color:#fff;width:100%;text-align:center;padding:1.2mm .5mm;font:7.4pt/1.05 'DH Eveleth',Arial,sans-serif;text-transform:uppercase;clip-path:polygon(1.4mm 0,calc(100% - 1.4mm) 0,100% 1.4mm,100% calc(100% - 1.4mm),calc(100% - 1.4mm) 100%,1.4mm 100%,0 calc(100% - 1.4mm),0 1.4mm)}
+.pr-thr em{font:6pt/1 'DH Overpass',Arial,sans-serif;font-style:normal;color:#3d3c40}
+.pr-thr>i{height:6.4mm;margin-top:1.2mm;border:0;border-radius:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20' preserveAspectRatio='none'%3E%3Cpath d='M1 1H22L29 10L22 19H1L6 10Z' fill='%23fff' stroke='%235f5e63' stroke-width='1.4' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+/* HP e Stress: 12 caselle, quelle oltre il massimo tratteggiate */
+.pr-track>b{font:10pt/1 'DH Eveleth',Arial,sans-serif;color:#77767b;width:14mm}
+.pr-slots12{display:flex;gap:.9mm}.pr-slots12 i{width:4.2mm;height:3.1mm;border:.35mm solid #5f5e63;border-radius:.7mm;box-sizing:border-box}.pr-slots12 i.x{border:.3mm dashed #a5a4a9}
+/* Hope: barra grigia con rombi */
+.pr-hopebar{display:flex;align-items:center;justify-content:space-around;height:6mm;margin:0 0 2.2mm;padding:0 3mm;background:#b9b8bd;clip-path:polygon(2mm 0,calc(100% - 2mm) 0,100% 50%,calc(100% - 2mm) 100%,2mm 100%,0 50%)}
+.pr-hopebar i{width:3.4mm;height:3.4mm;background:#fff;border:.35mm solid #5f5e63;transform:rotate(45deg);box-sizing:border-box}.pr-hopebar b{width:.35mm;height:3mm;background:#fff}
+.pr-hope{border:0;background:none;padding:0;margin:0;text-align:center;font-size:7.4pt;line-height:1.3;color:#2f2e32}.pr-hope b{font-style:italic;text-transform:none;color:#2f2e32;font-weight:800}.pr-hope strong{font-weight:800}
+/* Experience: riga con linguetta grigia per il modificatore */
+.pr-xp{border-bottom:.3mm solid #b9b8bd;position:relative;min-height:6.4mm}.pr-xp b{width:9mm;border:0;background:#cfced3;clip-path:polygon(1.6mm 0,100% 0,100% 100%,0 100%);align-self:flex-end;height:3.2mm;line-height:3.2mm;font-size:7.5pt}
+/* Gold */
+.pr-goldrow{grid-template-columns:auto auto auto;justify-content:space-between;align-items:end}
+.pr-hand,.pr-bags{display:grid!important;grid-auto-flow:column;gap:.6mm;align-items:end}.pr-hand small,.pr-bags small,.pr-chest small{grid-row:2;grid-column:1/-1;justify-self:start;font-size:5.6pt;color:#3d3c40}
+.pr-hand i{width:3.4mm;height:3.4mm;border-radius:50%;border:.35mm solid #77767b;box-shadow:inset 0 0 0 .6mm #fff,inset 0 0 0 .9mm #c9c8cd;box-sizing:border-box}
+.pr-bags i{width:3.6mm;height:4.4mm;background:url("players/assets/gold-bag.svg") center/contain no-repeat;filter:grayscale(1) opacity(.7)}
+.pr-chest{display:flex;flex-direction:column;align-items:center}.pr-chest i{width:6mm;height:6mm;filter:grayscale(1) opacity(.8)}
+.pr-panel h2 span{padding:1.4mm 9mm;min-width:0}
+.pr-slots12{gap:.7mm}.pr-slots12 i{width:3.5mm}.pr-track>b{width:13mm;font-size:9.5pt}
+.pr-hand,.pr-bags{display:flex!important;flex-direction:column;align-items:flex-start;gap:.8mm}.pr-hand>span,.pr-bags>span{display:flex;gap:.6mm;align-items:flex-end}
+.pr-hand small,.pr-bags small,.pr-chest small{grid-row:auto;grid-column:auto}
+.pr-goldrow{display:flex;justify-content:space-between;align-items:flex-end;gap:2mm}
+.pr-bags i{width:3mm;height:3.8mm}
+.pr-hand i{width:2.9mm;height:2.9mm}.pr-hand>span,.pr-bags>span{gap:.35mm}.pr-bags i{width:2.6mm;height:3.4mm}.pr-chest i{width:5mm;height:5mm}
+.pr-hand small,.pr-bags small,.pr-chest small{align-self:flex-start}
+.pr-track>b{width:14.5mm;font-size:9pt}.pr-panel h2 span{padding:1.4mm 10mm}
